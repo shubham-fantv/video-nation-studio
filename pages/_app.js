@@ -1,5 +1,6 @@
 import SnackBar from "@/src/component/Snackbar";
 import { SnackbarProvider } from "@/src/context/SnackbarContext";
+import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import { SuiClientProvider, WalletProvider, createNetworkConfig } from "@mysten/dapp-kit";
 import { getFullnodeUrl } from "@mysten/sui/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -12,6 +13,9 @@ import PageThemeProvider from "../src/styles/PageThemeProvider";
 import "/styles/globals.css";
 import "@mysten/dapp-kit/dist/index.css";
 import "@fontsource/inter";
+import { CacheProvider } from "@emotion/react";
+import createEmotionCache from "../createEmotionCache";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: { refetchOnWindowFocus: false, refetchOnMount: false },
@@ -23,21 +27,29 @@ const { networkConfig } = createNetworkConfig({
   mainnet: { url: getFullnodeUrl("mainnet") },
 });
 
-function MyApp({ Component, pageProps }) {
+const theme = createTheme({
+  typography: {
+    fontFamily: "inherit", // Prevent Material UI from overriding Tailwind fonts
+  },
+});
+
+function MyApp({ Component, pageProps, emotionCache = createEmotionCache() }) {
   return (
     <QueryClientProvider client={queryClient}>
       <SuiClientProvider networks={networkConfig} defaultNetwork="mainnet">
         <WalletProvider autoConnect>
           <Provider store={store}>
-            <PageThemeProvider {...pageProps}>
-              <AppSeo />
-              <SnackbarProvider>
-                <SnackBar />
-                <Layout {...pageProps}>
-                  <Component {...pageProps} />
-                </Layout>
-              </SnackbarProvider>
-            </PageThemeProvider>
+            <CacheProvider value={emotionCache}>
+              <PageThemeProvider {...pageProps}>
+                <AppSeo />
+                <SnackbarProvider>
+                  <SnackBar />
+                  <Layout {...pageProps}>
+                    <Component {...pageProps} />
+                  </Layout>
+                </SnackbarProvider>
+              </PageThemeProvider>
+            </CacheProvider>
           </Provider>
         </WalletProvider>
       </SuiClientProvider>

@@ -26,9 +26,6 @@ const Index = () => {
     },
   });
 
-  console.log("Fetched Data:", homeFeedData);
-  console.log("API URL:", `${FANTV_API_URL}/v1/airdrop/season-task`);
-
   return (
     <div>
       <Box className="min-h-screen text-white">

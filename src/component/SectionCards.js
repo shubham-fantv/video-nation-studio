@@ -52,9 +52,6 @@ function SectionCards() {
     },
   });
 
-  console.log("Fetched Data:", homeFeedData);
-  console.log("API URL:", `${FANTV_API_URL}/v1/airdrop/season-task`);
-
   return (
     <Box>
       <Box className="flex justify-between items-center mb-4">
