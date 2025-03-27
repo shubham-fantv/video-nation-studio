@@ -27,8 +27,8 @@ const index = () => {
               className="w-full rounded-full px-4 py-4 text-gray-700 placeholder-gray-400 focus:outline-none"
             />
             <div>
-              <Button
-                sx={{
+              <button
+                style={{
                   background: "linear-gradient(180deg, #5A5A5A 0%, #1E1E1E 100%)",
                   border: "1px solid #FFFFFF",
                   borderRadius: "100px",
@@ -39,11 +39,14 @@ const index = () => {
                   width: "max-content",
                   paddingInline: "16px",
                   marginRight: "4px",
+                  display: "flex",
+                  alignItems: "center",
+                  padding: "8px 16px",
                 }}
               >
                 <img src="/images/video-ai/star.png" style={{ height: "28px", width: "28px" }} />
                 Generate
-              </Button>
+              </button>
             </div>
           </div>
         </Link>

@@ -24,17 +24,16 @@ function CardComponent({ data }) {
           {data.description}
         </Typography>
 
-        <Button
-          variant="outlined"
+        <button
           size="small"
-          className="mt-6 py-2 px-4 rounded-xl text-sm font-regular normal-case   text-[#1E1E1E] bg-white"
+          className="mt-6 py-2 px-4 rounded-xl text-sm font-regular normal-case flex  text-[#1E1E1E] bg-white"
         >
           Explore Now
           <img
             src="/images/video-ai/arrowRight.png"
             style={{ height: "16px", width: "16px", marginLeft: "8px" }}
           />
-        </Button>
+        </button>
       </Box>
       <img src="/images/ellipse.png"></img>
     </Box>

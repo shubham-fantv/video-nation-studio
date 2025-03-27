@@ -75,13 +75,13 @@ function SectionCards() {
       </Box>
 
       <Box className="flex justify-center mt-6">
-        <Button
+        <button
           variant="outlined"
-          sx={{ border: "1px solid #404040" }}
+          style={{ border: "1px solid #404040" }}
           className="rounded-xl normal-case text-white px-3 py-2 text-base"
         >
-          Show All
-        </Button>
+          Show all
+        </button>
       </Box>
     </Box>
   );
