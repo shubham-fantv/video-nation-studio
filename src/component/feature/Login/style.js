@@ -1,0 +1,87 @@
+export const styles = {
+  wrapper: {
+    position: "relative",
+    display: "block",
+    maxWidth: "900px",
+    background: "custom.PrimaryButtonBorderColor",
+    margin: "auto",
+    borderRadius: "12px",
+    top: "50%",
+    margin: {
+      xs: "30px auto",
+      xm: "30px auto",
+      mobile: "30px auto",
+      tablet: "30px auto",
+      laptop: "30px auto",
+      lg: "auto",
+      xl: "auto",
+      xxl: "auto",
+    },
+    width: {
+      xs: "95%",
+      xm: "95%",
+      mobile: "95%",
+      tablet: "95%",
+      laptop: "95%",
+      lg: "100%",
+      xl: "100%",
+      xxl: "100%",
+    },
+    transform: {
+      xs: "unset",
+      xm: "unset",
+      mobile: "unset",
+      tablet: "unset",
+      laptop: "unset",
+      lg: "translateY(-50%)",
+      xl: "translateY(-50%)",
+      xxl: "translateY(-50%)",
+    },
+    top: {
+      xs: "unset",
+      xm: "unset",
+      mobile: "unset",
+      tablet: "unset",
+      laptop: "unset",
+      lg: "50%",
+      xl: "50%",
+      xxl: "50%",
+    },
+  },
+  innerWrapper: {
+    width: "265px",
+    "@media (max-width:480px)": {
+      width: "100%",
+    },
+  },
+  innerWrapperOPT: {
+    width: "300px",
+    "@media (max-width:480px)": {
+      width: "100%",
+    },
+  },
+  innerWrapperMail: {
+    width: {
+      xs: "100%",
+      xm: "100%",
+      mobile: "100%",
+      tablet: "550px",
+      laptop: "550px",
+      lg: "550px",
+      xl: "550px",
+      xxl: "550px",
+    },
+  },
+  innerWrapperMail2: {
+    "& input": {
+      width: "100px",
+    },
+  },
+  FanSinUp: {
+    display: "flex",
+    flexDirection: "row",
+    width: "auto",
+    height: "auto",
+    margin: "auto",
+  },
+};

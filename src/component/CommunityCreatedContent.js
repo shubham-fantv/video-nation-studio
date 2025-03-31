@@ -80,11 +80,16 @@
 
 // export default CommunityCreatedContent;
 
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 
-const CommunityCreatedContent = () => {
+const CommunityCreatedContent = ({
+  title = "Community Created Content",
+  subTitle = "Remix with our content created by our community",
+}) => {
   const [activeTab, setActiveTab] = useState("All");
 
+  const router = useRouter();
   const tabs = ["All", "Product Videos", "Music Videos", "Marketing Reels", "Explainer Videos"];
 
   const images = [
@@ -109,10 +114,8 @@ const CommunityCreatedContent = () => {
   return (
     <div className="mt-8 text-white">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold mb-2">Community Created Content</h1>
-        <p className="text-base text-[#D2D2D2] mb-6">
-          Remix with our content created by our community
-        </p>
+        <h1 className="text-2xl font-bold mb-2">{title}</h1>
+        <p className="text-base text-[#D2D2D2] mb-6">{subTitle}</p>
 
         {/* Tabs */}
         <div className="flex space-x-4">
@@ -137,10 +140,11 @@ const CommunityCreatedContent = () => {
       </div>
 
       {/* Masonry Grid - Simple CSS Solution */}
-      <div className="columns-1 sm:columns-2 lg:columns-3 gap-4">
+      <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 ">
         {images.map((image, index) => (
           <div
             key={index}
+            onClick={() => router.push("/generate-video")}
             className="mb-4 break-inside-avoid overflow-hidden rounded-xl transition-transform hover:scale-[1.02]"
           >
             <img

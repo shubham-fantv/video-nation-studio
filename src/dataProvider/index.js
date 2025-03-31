@@ -29,19 +29,19 @@ const fetcher = {
   ) => {
     console.log("🚀 ~ url:", url);
     const instance = fetchAxiosInstanceType(axiosInstanceType);
-    if (logConfigs.log)
-      return instance
-        .request({
-          url,
-          method: "GET",
-          ...paramConfigs,
-        })
-        .then((response) => {
-          return response;
-        })
-        .catch((err) => {
-          throw err;
-        });
+    console.log("🚀 ~ instance:", instance);
+    return instance
+      .request({
+        url,
+        method: "GET",
+        ...paramConfigs,
+      })
+      .then((response) => {
+        return response;
+      })
+      .catch((err) => {
+        throw err;
+      });
   },
   /**
    * @function post To create a resource

@@ -14,12 +14,15 @@ const Index = () => {
   const { data, error, isLoading, refetch } = useQuery({
     queryKey: ["seasonTask"],
     queryFn: async () => {
-      const response = await fetcher.get(`${FANTV_API_URL}/v1/airdrop/season-task`);
-      return response.data; // No need to manually update state here
+      const response = await fetcher.get(`${FANTV_API_URL}/homefeed`);
+      setHomeFeedData(response.data);
+      return response?.data;
     },
     refetchOnMount: "always",
     onSuccess: (data) => {
-      setHomeFeedData(data); // Update state here if needed
+      console.log("🚀 ~ Index ~ data:", data);
+
+      setHomeFeedData(data);
     },
     onError: (error) => {
       console.error("🚀 ~ API Error:", error);
@@ -31,7 +34,7 @@ const Index = () => {
       <Box className="min-h-screen text-white">
         <Banner />
         <Box className="mt-8">
-          <SectionCards data={homeFeedData} />
+          <SectionCards data={homeFeedData?.section1} />
         </Box>
       </Box>
     </div>

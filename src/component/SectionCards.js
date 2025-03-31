@@ -1,11 +1,7 @@
 // components/SectionCards.js
-import React, { useState } from "react";
-import { Box, Typography, Button } from "@mui/material";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { Box, Typography } from "@mui/material";
+import React from "react";
 import CardComponent from "./CardComponent";
-import { useQuery } from "@tanstack/react-query";
-import { FANTV_API_URL } from "../constant/constants";
-import fetcher from "../dataProvider";
 
 const cardData = [
   {
@@ -34,40 +30,23 @@ const cardData = [
   },
 ];
 
-function SectionCards() {
-  const [homeFeedData, setHomeFeedData] = useState([]);
-
-  const { data, error, isLoading, refetch } = useQuery({
-    queryKey: ["seasonTask"],
-    queryFn: async () => {
-      const response = await fetcher.get(`${FANTV_API_URL}/v1/airdrop/season-task`);
-      return response.data; // No need to manually update state here
-    },
-    refetchOnMount: "always",
-    onSuccess: (data) => {
-      setHomeFeedData(data); // Update state here if needed
-    },
-    onError: (error) => {
-      console.error("🚀 ~ API Error:", error);
-    },
-  });
-
+function SectionCards({ data }) {
   return (
     <Box>
       <Box className="flex justify-between items-center mb-4">
         <Box>
           <Typography variant="h5" className="font-semibold text-2xl text-white">
-            VideoNation Creator Studio
+            {data?.title}
           </Typography>
           <Typography variant="body2" className="text-normal pt-2 text-[#D2D2D2] text-base">
-            VideoNation Creator Studio
+            {data?.subtitle}
           </Typography>
         </Box>
       </Box>
 
       <Box className="grid grid-cols-4 gap-4">
-        {cardData.map((card) => (
-          <CardComponent key={card.id} data={card} />
+        {data?.data?.map((card) => (
+          <CardComponent key={card.id} data={card} redirect={`/category/${card.name}`} />
         ))}
       </Box>
 

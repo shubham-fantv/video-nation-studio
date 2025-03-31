@@ -2,6 +2,7 @@ import { Button } from "@mui/material";
 import React, { useState } from "react";
 import SectionCards from "../../src/component/SectionCards";
 import CommunityCreatedContent from "../../src/component/CommunityCreatedContent";
+import HowToCreate from "../../src/component/HowToCreate";
 
 const index = () => {
   const [captionEnabled, setCaptionEnabled] = useState(false);
@@ -61,6 +62,9 @@ const index = () => {
             ✨ Generate
           </button>
         </div>
+      </div>
+      <div>
+        <HowToCreate />
       </div>
       <div className="w-full">
         <CommunityCreatedContent />
