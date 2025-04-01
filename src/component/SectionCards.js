@@ -45,19 +45,9 @@ function SectionCards({ data }) {
       </Box>
 
       <Box className="grid grid-cols-4 gap-4">
-        {data?.data?.map((card) => (
+        {data?.data?.splice(0, 4)?.map((card) => (
           <CardComponent key={card.id} data={card} redirect={`/category/${card.name}`} />
         ))}
-      </Box>
-
-      <Box className="flex justify-center mt-6">
-        <button
-          variant="outlined"
-          style={{ border: "1px solid #404040" }}
-          className="rounded-xl normal-case text-white px-3 py-2 text-base"
-        >
-          Show all
-        </button>
       </Box>
     </Box>
   );

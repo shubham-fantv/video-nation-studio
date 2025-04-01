@@ -11,6 +11,7 @@ import styles from "./style";
 import MenuIcon from "@mui/icons-material/Menu";
 import { X } from "lucide-react";
 import { usePathname } from "next/navigation";
+import LoginAndSignup from "../feature/Login";
 
 const LogOutNavItem = [
   {
@@ -54,7 +55,7 @@ const HeaderNew = ({ app }) => {
 
   const handleWalletClick = (event) => {
     event.stopPropagation();
-    alert("ignin");
+    setIsPopupVisible({ login: true });
   };
 
   const router = useRouter();
@@ -69,8 +70,9 @@ const HeaderNew = ({ app }) => {
     setIsMenuOpen(open);
   };
 
-  const pathname = usePathname();
-
+  const handleLoginPopupClose = () => {
+    setIsPopupVisible({ login: false });
+  };
   const drawerContent = (
     <Box
       sx={{
@@ -164,7 +166,7 @@ const HeaderNew = ({ app }) => {
                   fontSize: "16px",
                 }}
               >
-                SignIn
+                Sign In
               </Button>
             </Box>
           </Box>
@@ -173,11 +175,17 @@ const HeaderNew = ({ app }) => {
               <MenuIcon style={{ color: "white", marginTop: "8px", marginLeft: "10px" }} />
             </Box>
           )}
-
           <Drawer anchor="right" open={isMenuOpen} onClose={toggleDrawer(false)}>
             {drawerContent}
           </Drawer>
         </Box>
+        {isPopupVisible.login && (
+          <LoginAndSignup
+            callBackName={"uniqueCommunity"}
+            open={isPopupVisible.login}
+            handleModalClose={handleLoginPopupClose}
+          />
+        )}
       </Box>
     </>
   );

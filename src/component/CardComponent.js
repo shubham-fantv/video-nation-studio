@@ -2,22 +2,23 @@ import React from "react";
 import { Box, Typography, Button } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import CLink from "./CLink";
+import { getDriveImageUrl } from "../utils/common";
 
 function CardComponent({ data, redirect }) {
-  console.log("🚀 ~ CardComponent ~ data:", data);
+  const imageUrl = getDriveImageUrl(data.imageUrl);
   return (
     <Box
       className="bg-[#FFFFFF0D] rounded-xl overflow-hidden"
       sx={{ boxShadow: "0px 4px 4px 0px #00000040" }}
     >
-      <Box
-        className="h-40 w-full"
-        sx={{
-          backgroundImage: `url(${data?.imageUrl})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      />
+      <Box className="h-40 w-full overflow-hidden">
+        <img
+          src={data?.imageUrl}
+          className="cover"
+          class="h-full object-cover h-64"
+          alt="description"
+        />
+      </Box>
       <Box className="pt-4 px-4">
         <Typography variant="h6" className="font-regular mb-2 text-white text-base wrap-1-line">
           {data?.title}

@@ -1,6 +1,6 @@
 export const openLink = (url) => {
-  const newWin = window.open(url, '_self');
-  if (!newWin || newWin.closed || typeof newWin.closed === 'undefined') {
+  const newWin = window.open(url, "_self");
+  if (!newWin || newWin.closed || typeof newWin.closed === "undefined") {
     return false;
   }
   return true;
@@ -9,16 +9,16 @@ export const openLink = (url) => {
 export const formatDateRange = (startDate, endDate) => {
   // Function to add ordinal suffix to a day
   const ordinalSuffix = (day) => {
-    if (day >= 11 && day <= 13) return 'th';
+    if (day >= 11 && day <= 13) return "th";
     switch (day % 10) {
       case 1:
-        return 'st';
+        return "st";
       case 2:
-        return 'nd';
+        return "nd";
       case 3:
-        return 'rd';
+        return "rd";
       default:
-        return 'th';
+        return "th";
     }
   };
 
@@ -29,8 +29,8 @@ export const formatDateRange = (startDate, endDate) => {
   // Extract and format dates
   const startDay = start.getDate();
   const endDay = end.getDate();
-  const startMonth = start.toLocaleString('default', { month: 'short' });
-  const endMonth = end.toLocaleString('default', { month: 'short' });
+  const startMonth = start.toLocaleString("default", { month: "short" });
+  const endMonth = end.toLocaleString("default", { month: "short" });
 
   // Construct the formatted date range
   const formattedStart = `${startDay}${ordinalSuffix(startDay)} ${startMonth}`;
@@ -39,14 +39,8 @@ export const formatDateRange = (startDate, endDate) => {
 };
 
 export function formatWalletAddress(input) {
-  if (
-    typeof input !== 'string' ||
-    !input.startsWith('0x') ||
-    input.length <= 10
-  ) {
-    throw new Error(
-      "Invalid input. Ensure it is a valid hex string starting with '0x'."
-    );
+  if (typeof input !== "string" || !input.startsWith("0x") || input.length <= 10) {
+    throw new Error("Invalid input. Ensure it is a valid hex string starting with '0x'.");
   }
 
   // Extract and return the formatted string
@@ -59,3 +53,14 @@ export function formatAddressInLeaderboard(address) {
   const end = address?.slice(-10); // Take the last 10 characters.
   return `${start}...${end}`; // Concatenate with ellipsis.
 }
+
+export const getDriveImageUrl = (driveUrl) => {
+  const regex = /\/d\/(.*?)(\/|$)/;
+  const match = driveUrl.match(regex);
+  if (match && match[1]) {
+    const fileId = match[1];
+    return `https://drive.google.com/uc?export=view&id=${fileId}`;
+  }
+  console.log("🚀 ~ getDriveImageUrl ~ driveUrl:", driveUrl);
+  return null; // In case the URL is invalid
+};
