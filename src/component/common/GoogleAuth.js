@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
-const GoogleAuth = () => {
+import useGoogleLoginHook from "../hooks/useGoogleLogin";
+const GoogleAuth = ({ text, handleModalClose }) => {
   // const login = useGoogleLogin({
   //   onSuccess: (codeResponse) => console.log(codeResponse),
   //   flow: "auth-code",
   //   flow: 'implicit',
   // });
+
+  const [_, loginGoogle] = useGoogleLoginHook();
 
   const login = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
@@ -18,16 +21,18 @@ const GoogleAuth = () => {
       // });
 
       // const userInfo = await userInfoResponse.json();
+      const id_token = tokenResponse.code;
+      loginGoogle({ id_token });
     },
     onError: (error) => console.log("Login Failed:", error),
     scope: "openid email profile", // Ensure OpenID scope is included for ID token
     flow: "auth-code", // Ensures immediate token retrieval
   });
   return (
-    <div className="auth-container text-white">
-      <button onClick={() => login()} className="google-login-button">
+    <div className="text-white">
+      <button onClick={() => login()}>
         <span className="google-icon">G</span>
-        Sign in with Google
+        {text}
       </button>
     </div>
   );

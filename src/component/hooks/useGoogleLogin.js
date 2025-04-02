@@ -1,26 +1,24 @@
 import { useState } from "react";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query"; // Updated import
 import fetcher from "../../dataProvider";
 
-const useGoogleLogin = () => {
+const useGoogleLoginHook = () => {
   const [isGoogleLoginSuccess, setIsGoogleLoginSuccess] = useState(false);
-  const { mutate: loginGoogle } = useMutation(
-    ({ id_token, referralCode, deviceId, userId }) =>
-      fetcher.post(`v1/auth/login-google`, {
-        id_token,
-      }),
-    {
-      onSuccess: (res) => {
-        console.log("🚀 ~ useGoogleLogin ~ res:", res);
-        setIsGoogleLoginSuccess(true);
-      },
-      onError: (err) => {
-        console.log("🚀 ~ useGoogleLogin ~ err:", err);
-      },
-    }
-  );
 
-  return [isGoogleLoginSuccess, loginGoogle];
+  const loginGoogle = useMutation({
+    mutationFn: async ({ id_token }) => {
+      return fetcher.post(`v1/auth/login-google`, { id_token });
+    },
+    onSuccess: (res) => {
+      console.log("🚀 ~ useGoogleLogin ~ res:", res);
+      setIsGoogleLoginSuccess(true);
+    },
+    onError: (err) => {
+      console.log("🚀 ~ useGoogleLogin ~ err:", err);
+    },
+  });
+
+  return [isGoogleLoginSuccess, loginGoogle.mutate];
 };
 
-export default useGoogleLogin;
+export default useGoogleLoginHook;

@@ -16,6 +16,8 @@ import "@fontsource/inter";
 import { CacheProvider } from "@emotion/react";
 import createEmotionCache from "../createEmotionCache";
 
+import { GoogleOAuthProvider } from "@react-oauth/google";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: { refetchOnWindowFocus: false, refetchOnMount: false },
@@ -38,19 +40,21 @@ function MyApp({ Component, pageProps, emotionCache = createEmotionCache() }) {
     <QueryClientProvider client={queryClient}>
       <SuiClientProvider networks={networkConfig} defaultNetwork="mainnet">
         <WalletProvider autoConnect>
-          <Provider store={store}>
-            <CacheProvider value={emotionCache}>
-              <PageThemeProvider {...pageProps}>
-                <AppSeo />
-                <SnackbarProvider>
-                  <SnackBar />
-                  <Layout {...pageProps}>
-                    <Component {...pageProps} />
-                  </Layout>
-                </SnackbarProvider>
-              </PageThemeProvider>
-            </CacheProvider>
-          </Provider>
+          <GoogleOAuthProvider clientId="508551165708-227o7s8mmoc7sdt41999gqjratr78tjq.apps.googleusercontent.com">
+            <Provider store={store}>
+              <CacheProvider value={emotionCache}>
+                <PageThemeProvider {...pageProps}>
+                  <AppSeo />
+                  <SnackbarProvider>
+                    <SnackBar />
+                    <Layout {...pageProps}>
+                      <Component {...pageProps} />
+                    </Layout>
+                  </SnackbarProvider>
+                </PageThemeProvider>
+              </CacheProvider>
+            </Provider>
+          </GoogleOAuthProvider>
         </WalletProvider>
       </SuiClientProvider>
     </QueryClientProvider>

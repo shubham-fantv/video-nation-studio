@@ -1,7 +1,7 @@
 import { Box, Button, Modal, useMediaQuery } from "@mui/material";
 import { useEffect, useState } from "react";
-import GoogleLogin1 from "../../GoogleLogin";
 import { styles } from "./style";
+import GoogleAuth from "../../common/GoogleAuth";
 
 const LoginAndSignup = ({ open, handleModalClose }) => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -24,22 +24,24 @@ const LoginAndSignup = ({ open, handleModalClose }) => {
             sx={{
               cursor: "pointer",
               background: "#fff",
-              borderRadius: "16px",
+              borderRadius: "100px",
               position: "absolute",
               right: "5px",
               top: "5px",
+              height: "20px",
+              width: "20px",
             }}
             component="img"
-            src="/images/community/close.svg"
+            src="/images/close.svg"
             onClick={handleModalClose}
+            className="text-white"
           />
-          <Box sx={styles.LoginButton}>
-            <Box sx={styles.googleButton}>
-              <GoogleLogin1
-                text={isSignUp ? "Sign up with Google" : "Sign in with Google"}
-                handleModalClose={handleModalClose}
-              />
-            </Box>
+          <p className="text-white text-center text-2xl mb-6">Welcome to VideoNation </p>
+          <Box sx={styles.googleButton}>
+            <GoogleAuth
+              text={isSignUp ? "Sign up with Google" : "Sign in with Google"}
+              handleModalClose={handleModalClose}
+            />
           </Box>
         </Box>
       </Modal>

@@ -61,6 +61,5 @@ export const getDriveImageUrl = (driveUrl) => {
     const fileId = match[1];
     return `https://drive.google.com/uc?export=view&id=${fileId}`;
   }
-  console.log("🚀 ~ getDriveImageUrl ~ driveUrl:", driveUrl);
   return null; // In case the URL is invalid
 };
