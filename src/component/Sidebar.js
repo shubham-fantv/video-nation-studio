@@ -46,6 +46,23 @@ function Sidebar({ children }) {
                   </a>
                 </li>
               </ul>
+              <ul>
+                <li>
+                  <a href="/my-video" class="flex items-center pl-4 py-2">
+                    <span class="text-white mr-3">
+                      <svg
+                        class="w-6 h-6 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path d="M17 10.5V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-3.5l4 4v-11l-4 4z" />
+                      </svg>
+                    </span>
+                    <span class="text-sm text-[#D2D2D2]">My Video</span>
+                  </a>
+                </li>
+              </ul>
             </div>
 
             <div class="mt-6">
