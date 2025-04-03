@@ -4,30 +4,21 @@ import SectionCards from "../../src/component/SectionCards";
 import Link from "next/link";
 import fetcher from "../../src/dataProvider";
 import { FANTV_API_URL } from "../../src/constant/constants";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "react-query";
 import CardComponent from "../../src/component/CardComponent";
 
 const index = () => {
   const [homeFeedData, setHomeFeedData] = useState([]);
-  console.log("🚀 ~ index ~ homeFeedData:", homeFeedData);
 
-  const { data, error, isLoading, refetch } = useQuery({
-    queryKey: ["seasonTask"],
-    queryFn: async () => {
-      const response = await fetcher.get(`${FANTV_API_URL}/categories`);
-      setHomeFeedData(response.data);
-      return response?.data;
-    },
-    refetchOnMount: "always",
-    onSuccess: (data) => {
-      console.log("🚀 ~ Index ~ data:", data);
-
-      setHomeFeedData(data);
-    },
-    onError: (error) => {
-      console.error("🚀 ~ API Error:", error);
-    },
-  });
+  useQuery(
+    `${FANTV_API_URL}/api/v1/categories`,
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/categories`),
+    {
+      onSuccess: ({ data }) => {
+        setHomeFeedData(data);
+      },
+    }
+  );
 
   return (
     <div>
@@ -38,7 +29,11 @@ const index = () => {
         <p className="text-[#D2D2D2] pt-2 text-base font-normal text-center">
           VideoNation Creator Studio
         </p>
-        <Link href={"/generate"} passHref className="flex items-center justify-center w-full mt-4">
+        <Link
+          href={"/generate-video"}
+          passHref
+          className="flex items-center justify-center w-full mt-4"
+        >
           <div
             className="flex w-full items-center rounded-full border-2 border-gray-500 bg-white "
             style={{

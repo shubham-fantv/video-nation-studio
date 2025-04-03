@@ -1,0 +1,86 @@
+import React, { useState } from "react";
+import { ChevronDown, LogOut, User, Mail } from "lucide-react";
+import { useSelector } from "react-redux";
+import logout from "../../utils/logout";
+import Image from "next/image";
+
+const UserProfileDropdown = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  //   const {useData}= useSelector(state)
+  const { userData } = useSelector((state) => state.user);
+
+  const user = {
+    name: "Jane Smith",
+    email: "jane.smith@example.com",
+    avatarUrl: "/api/placeholder/40/40", // placeholder image
+  };
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
+  // Close dropdown when clicking outside
+  const closeDropdown = () => {
+    setIsOpen(false);
+  };
+
+  return (
+    <div className="relative">
+      {/* User profile button */}
+      <button
+        onClick={toggleDropdown}
+        className="flex items-center space-x-2 rounded-full bg-white p-2 shadow-sm hover:bg-gray-50 transition-colors"
+      >
+        <Image
+          source={{ uri: userData?.profilePicture || "/images/icons/user.png" }}
+          alt="User avatar"
+          className="h-8 w-8 rounded-full object-cover"
+          onError={(e) => (e.currentTarget.src = "/images/icons/user.png")}
+        />
+        <span className="font-medium text-gray-700">{userData.name}</span>
+        <ChevronDown
+          className={`h-4 w-4 text-gray-500 transition-transform ${isOpen ? "rotate-180" : ""}`}
+        />
+      </button>
+
+      {/* Dropdown menu */}
+      {isOpen && (
+        <>
+          <div className="fixed inset-0 z-10" onClick={closeDropdown} />
+          <div className="absolute right-0 z-20 mt-2 w-56 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+            <div className="py-1">
+              <div className="px-4 py-3">
+                <p className="text-sm font-medium text-gray-900 truncate">{userData.name}</p>
+                <div className="flex items-center space-x-1 mt-1">
+                  <Mail className="h-4 w-4 text-gray-400" />
+                  <p className="text-sm text-gray-500 truncate">{userData.email}</p>
+                </div>
+              </div>
+
+              <hr className="my-1 border-gray-200" />
+
+              <a
+                href="/"
+                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
+                <User className="mr-2 h-4 w-4 text-gray-500" />
+                Profile
+              </a>
+
+              <button
+                onClick={() => logout()}
+                className="flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Log out
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default UserProfileDropdown;

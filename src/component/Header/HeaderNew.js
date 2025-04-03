@@ -12,6 +12,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import LoginAndSignup from "../feature/Login";
+import UserProfileDropdown from "./UserProfileDropdown";
 
 const LogOutNavItem = [
   {
@@ -36,6 +37,7 @@ const HeaderNew = ({ app }) => {
   const [isPopupVisible, setIsPopupVisible] = useState({
     login: false,
   });
+  const { isLoggedIn } = useSelector((state) => state.user);
 
   const layoutData = useSelector((state) => state.layout);
   const [airdropPoints, setAirdropPoints] = useState(layoutData.airdropPoints);
@@ -158,17 +160,21 @@ const HeaderNew = ({ app }) => {
             </Box>
           </Box>
           <Box>
-            <Box sx={styles.btnContainer} onClick={handleWalletClick}>
-              <Button
-                sx={{
-                  color: "#000000",
-                  fontFamily: "Nohemi",
-                  fontSize: "16px",
-                }}
-              >
-                Sign In
-              </Button>
-            </Box>
+            {isLoggedIn ? (
+              <UserProfileDropdown />
+            ) : (
+              <Box sx={styles.btnContainer} onClick={handleWalletClick}>
+                <Button
+                  sx={{
+                    color: "#000000",
+                    fontFamily: "Nohemi",
+                    fontSize: "16px",
+                  }}
+                >
+                  Sign In
+                </Button>
+              </Box>
+            )}
           </Box>
           {isMobile && (
             <Box sx={styles.profileNavBar} onClick={toggleDrawer(true)}>

@@ -2,12 +2,13 @@ export const styles = {
   wrapper: {
     position: "relative",
     display: "block",
-    maxWidth: "900px",
-    background: "#1E1E1E",
+    maxWidth: "450px",
+    background: "#292929",
     margin: "auto",
     borderRadius: "12px",
     top: "50%",
-    padding: "100px",
+    padding: "32px 24px",
+    border: "1px solid #FFFFFF26",
 
     transform: {
       xs: "unset",
@@ -57,11 +58,10 @@ export const styles = {
     margin: "auto",
   },
   googleButton: {
-    background: "#FFFFFF33 !important",
+    background: "#FFFFFF33",
+    border: "1px solid #FFFFFF26",
     borderRadius: "100px",
-    border: "none",
     padding: "7px",
-    width: "max-content",
     margin: "auto",
     fontWeight: "500",
     cursor: "pointer",
@@ -71,6 +71,9 @@ export const styles = {
     height: "50px",
     fontSize: "16px",
     paddingInline: "20px",
+    width: "100%",
+    marginTop: "44px",
+    marginBottom: "44px",
 
     "& img": {
       marginRight: "10px",

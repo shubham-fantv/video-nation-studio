@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import AvatarDropdown from "../../src/component/common/AvatarDropdown";
 import { useRouter } from "next/router";
+import { useQuery } from "react-query";
+import { FANTV_API_URL } from "../../src/constant/constants";
+import fetcher from "../../src/dataProvider";
 
 const Index = () => {
   const [aspectRatio, setAspectRatio] = useState("16:9");
@@ -10,6 +13,20 @@ const Index = () => {
   const [captionEnabled, setCaptionEnabled] = useState(true);
   const [prompt, setPrompt] = useState("A girl sipping coffee on the train");
   const router = useRouter();
+  console.log("🚀 ~ Index ~ router:", router.query.slug);
+  const [template, setTemplate] = useState();
+  console.log("🚀 ~ Index ~ template:", template);
+
+  useQuery(
+    `${FANTV_API_URL}/api/v1/templates/${router.query.slug}`,
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/templates/${router.query.slug}`),
+    {
+      enabled: !!router.query.slug,
+      onSuccess: ({ data }) => {
+        setTemplate(data);
+      },
+    }
+  );
 
   return (
     <div className="flex text-white gap-8">
@@ -223,7 +240,18 @@ const Index = () => {
           {/* Video Preview */}
           <div className="bg-[#FFFFFF0D] rounded-lg aspect-video flex items-center justify-center mb-4">
             <div className="text-gray-500">
-              <img src="/images/video-play.png " className="h-[150px] w-[150px]" />
+              <video
+                src={template?.videoUrl}
+                muted
+                poster={template?.imageUrl}
+                loop
+                playsInline
+                onMouseEnter={(e) => e.target.play()}
+                onMouseLeave={(e) => e.target.pause()}
+                onEnded={(e) => e.target.play()}
+                className="w-full h-full object-cover rounded-xl"
+              />
+              {/* <img src="/images/video-play.png " className="h-[150px] w-[150px]" /> */}
             </div>
           </div>
 

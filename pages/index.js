@@ -1,35 +1,28 @@
 import { Box, Typography } from "@mui/material";
 import { useMediaQuery } from "@mui/system";
 import { default as React, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "react-query";
 import SectionCards from "../src/component/SectionCards";
 import Banner from "../src/component/banner";
 import fetcher from "../src/dataProvider";
 import { FANTV_API_URL } from "../src/constant/constants";
 import CLink from "../src/component/CLink";
 import CardComponent from "../src/component/CardComponent";
+import CommunityCreatedContent from "../src/component/CommunityCreatedContent";
 
 const Index = () => {
-  const isMobile = useMediaQuery("(max-width:768px)");
   const [homeFeedData, setHomeFeedData] = useState([]);
 
-  const { data, error, isLoading, refetch } = useQuery({
-    queryKey: ["seasonTask"],
-    queryFn: async () => {
-      const response = await fetcher.get(`${FANTV_API_URL}/homefeed`);
-      setHomeFeedData(response.data);
-      return response?.data;
-    },
-    refetchOnMount: "always",
-    onSuccess: (data) => {
-      console.log("🚀 ~ Index ~ data:", data);
-
-      setHomeFeedData(data);
-    },
-    onError: (error) => {
-      console.error("🚀 ~ API Error:", error);
-    },
-  });
+  useQuery(
+    `${FANTV_API_URL}/api/v1/homefeed`,
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/homefeed`),
+    {
+      refetchOnMount: "always",
+      onSuccess: ({ data }) => {
+        setHomeFeedData(data);
+      },
+    }
+  );
 
   return (
     <div>
@@ -65,6 +58,15 @@ const Index = () => {
               </button>
             </CLink>
           </Box>
+          <div className="mt-12">
+            <div className="w-full">
+              <CommunityCreatedContent
+                title={homeFeedData?.section2?.title}
+                subTitle={homeFeedData?.section2?.subtitle}
+                data={homeFeedData?.section2?.data}
+              />
+            </div>
+          </div>
         </Box>
       </Box>
     </div>

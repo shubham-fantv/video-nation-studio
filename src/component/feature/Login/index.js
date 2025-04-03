@@ -1,24 +1,37 @@
 import { Box, Button, Modal, useMediaQuery } from "@mui/material";
 import { useEffect, useState } from "react";
 import { styles } from "./style";
-import GoogleAuth from "../../common/GoogleAuth";
+import useGoogleLoginHook from "../../hooks/useGoogleLogin";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const LoginAndSignup = ({ open, handleModalClose }) => {
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [isOpen, setOpen] = useState(false);
+  const [loginData, loginGoogle] = useGoogleLoginHook();
+  console.log("🚀 ~ LoginAndSignup ~ loginData:", loginData);
+
+  const login = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      const access_token = tokenResponse.access_token;
+      loginGoogle({ access_token });
+    },
+    onError: (error) => console.log("Login Failed:", error),
+    scope: "openid email profile",
+    flow: "implicit",
+  });
 
   useEffect(() => {
-    return () => {
-      if (handleModalClose) {
-        setOpen(false);
-        setIsSignUp(false);
-      }
-    };
-  }, [handleModalClose]);
+    if (loginData) {
+      handleModalClose();
+    }
+  }, [loginData]);
 
   return (
     <>
-      <Modal style={{ zIndex: "9999" }} open={open} onClose={handleModalClose} closeAfterTransition>
+      <Modal
+        style={{ zIndex: "9999", backdropFilter: "blur(44px)", blur: "40px" }}
+        open={open}
+        onClose={handleModalClose}
+        closeAfterTransition
+      >
         <Box sx={styles.wrapper}>
           <Box
             sx={{
@@ -36,13 +49,41 @@ const LoginAndSignup = ({ open, handleModalClose }) => {
             onClick={handleModalClose}
             className="text-white"
           />
-          <p className="text-white text-center text-2xl mb-6">Welcome to VideoNation </p>
-          <Box sx={styles.googleButton}>
-            <GoogleAuth
-              text={isSignUp ? "Sign up with Google" : "Sign in with Google"}
-              handleModalClose={handleModalClose}
+          <div className="justify-center flex">
+            <img
+              src={"/images/logo.svg"}
+              alt="FanTV Logo"
+              width={140}
+              loading="eager"
+              decoding="async"
             />
-          </Box>
+          </div>
+
+          <p className="text-white text-center text-2xl font-semibold  mt-6 ">
+            Welcome to VideoNation{" "}
+          </p>
+          <button style={styles.googleButton} onClick={() => login()}>
+            <div className="text-white flex align-center justify-center">
+              <span className="h-6 w-6">
+                <img className="h-6 w-6" src="/images/icons/google.svg" />{" "}
+              </span>{" "}
+              &nbsp;
+              <span>Sign in with Google</span>
+            </div>
+          </button>
+
+          <div>
+            <span className="text-white text-sm">
+              By signing up, you agree to our{" "}
+              <a href="/" className="text-[#FFA0FF]">
+                Terms
+              </a>{" "}
+              and{" "}
+              <a href="/" className="text-[#FFA0FF]">
+                Privacy Policy
+              </a>
+            </span>
+          </div>
         </Box>
       </Modal>
     </>

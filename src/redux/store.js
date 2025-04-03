@@ -1,15 +1,15 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore } from "@reduxjs/toolkit";
 // import { getDefaultMiddleware } from '@reduxjs/toolkit';
 
 // const customizedMiddleware = getDefaultMiddleware({
 //   serializableCheck: false,
 // });
 
-import rootReducer from './reducers';
+import rootReducer from "./reducers";
 
 const store = configureStore({
   reducer: rootReducer,
-  devTools: process.env.NODE_ENV !== 'production',
+  devTools: process.env.NODE_ENV !== "production",
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,

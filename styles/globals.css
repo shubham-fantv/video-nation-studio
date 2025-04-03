@@ -36,7 +36,7 @@ body {
   font-family: "Inter", sans-serif;
   font-weight: 400;
   overflow-x: clip;
-  line-height: 19px;
+  /* line-height: 19px; */
   letter-spacing: 0.16px;
   background-color: #1e1e1e;
   descent-override: 0%;

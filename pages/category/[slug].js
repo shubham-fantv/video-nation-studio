@@ -3,30 +3,23 @@ import React, { useState } from "react";
 import SectionCards from "../../src/component/SectionCards";
 import Link from "next/link";
 import CommunityCreatedContent from "../../src/component/CommunityCreatedContent";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "react-query";
 import fetcher from "../../src/dataProvider";
 import { FANTV_API_URL } from "../../src/constant/constants";
 
 const index = () => {
   const [templates, setTemplates] = useState([]);
+  console.log("🚀 ~ index ~ templates:", templates);
 
-  const { data, error, isLoading, refetch } = useQuery({
-    queryKey: ["seasonTask"],
-    queryFn: async () => {
-      const response = await fetcher.get(`${FANTV_API_URL}/templates?limit=30`);
-      setTemplates(response.data);
-      return response?.data;
-    },
-    refetchOnMount: "always",
-    onSuccess: (data) => {
-      console.log("🚀 ~ Index ~ data:", data);
-
-      setTemplates(data);
-    },
-    onError: (error) => {
-      console.error("🚀 ~ API Error:", error);
-    },
-  });
+  useQuery(
+    `${FANTV_API_URL}/api/v1/templates?limit=30`,
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/templates?limit=30`),
+    {
+      onSuccess: ({ data }) => {
+        setTemplates(data.results);
+      },
+    }
+  );
 
   return (
     <div>
