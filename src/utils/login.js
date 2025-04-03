@@ -1,6 +1,6 @@
 import cookie from "js-cookie";
 import eventBus from "./eventBus";
-const login = async (accessToken, userName, email, userId) => {
+const loginData = async (accessToken, userName, email, userId) => {
   cookie.remove("aToken");
   cookie.set("aToken", accessToken, { expires: 360 });
 
@@ -18,4 +18,4 @@ const login = async (accessToken, userName, email, userId) => {
     userId,
   });
 };
-export default login;
+export default loginData;

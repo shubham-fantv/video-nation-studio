@@ -1,28 +1,47 @@
-import { Box, Button, Modal, useMediaQuery } from "@mui/material";
-import { useEffect, useState } from "react";
-import { styles } from "./style";
-import useGoogleLoginHook from "../../hooks/useGoogleLogin";
+import { Box, Modal } from "@mui/material";
 import { useGoogleLogin } from "@react-oauth/google";
+import { useMutation } from "react-query";
+import { useDispatch } from "react-redux";
+import { API_BASE_URL } from "../../../constant/constants";
+import fetcher from "../../../dataProvider";
+import { setToken, setUserData } from "../../../redux/slices/user";
+import loginData from "../../../utils/login";
+import { styles } from "./style";
 
 const LoginAndSignup = ({ open, handleModalClose }) => {
-  const [loginData, loginGoogle] = useGoogleLoginHook();
-  console.log("🚀 ~ LoginAndSignup ~ loginData:", loginData);
+  const dispatch = useDispatch();
+
+  const { mutate: loginGoogleApi } = useMutation(
+    (obj) => fetcher.post(`${API_BASE_URL}/api/v1/auth/login-google`, obj),
+    {
+      onSuccess: (res) => {
+        loginData(res.data.token, res.data.user.name, res.data.user.email, res.data.user.id);
+        dispatch(setUserData(res?.data?.user));
+        dispatch(
+          setToken({
+            accessToken: res.data.token,
+            refreshToken: res.data.token,
+            isLoggedIn: true,
+          })
+        );
+        handleModalClose();
+      },
+      onError: (error) => {
+        alert(error.response.data.message);
+      },
+    }
+  );
 
   const login = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       const access_token = tokenResponse.access_token;
-      loginGoogle({ access_token });
+      console.log("🚀 ~ onSuccess: ~ access_token:", access_token);
+      loginGoogleApi({ access_token });
     },
     onError: (error) => console.log("Login Failed:", error),
     scope: "openid email profile",
     flow: "implicit",
   });
-
-  useEffect(() => {
-    if (loginData) {
-      handleModalClose();
-    }
-  }, [loginData]);
 
   return (
     <>
