@@ -5,7 +5,7 @@ import CommunityCreatedContent from "../../src/component/CommunityCreatedContent
 import HowToCreate from "../../src/component/HowToCreate";
 import { useMutation, useQuery } from "react-query";
 import fetcher from "../../src/dataProvider";
-import { FANTV_API_URL } from "../../src/constant/constants";
+import { API_BASE_URL, FANTV_API_URL } from "../../src/constant/constants";
 import axios from "axios";
 
 const index = () => {
@@ -20,8 +20,9 @@ const index = () => {
     `${FANTV_API_URL}/api/v1/templates?limit=30`,
     () => fetcher.get(`${FANTV_API_URL}/api/v1/templates?limit=30`),
     {
+      refetchOnMount: "always",
       onSuccess: ({ data }) => {
-        setTemplates(data);
+        setTemplates(data.results);
       },
     }
   );
@@ -58,7 +59,9 @@ const index = () => {
     (obj) => fetcher.post(`${API_BASE_URL}/api/v1/ai-video`, obj),
     {
       onSuccess: (response) => {
-        alert("video generation started");
+        setImagePreview(null);
+        setPrompt("");
+        alert(" Success => video generation started");
       },
       onError: (error) => {
         alert(error.response.data.message);
@@ -169,9 +172,11 @@ const index = () => {
       <div>
         <HowToCreate />
       </div>
-      <div className="w-full">
-        <CommunityCreatedContent data={templates} isTabEnabled />
-      </div>
+      {templates.length > 0 && (
+        <div className="w-full">
+          <CommunityCreatedContent data={templates} isTabEnabled />
+        </div>
+      )}
     </div>
   );
 };

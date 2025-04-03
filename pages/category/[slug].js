@@ -15,6 +15,7 @@ const index = () => {
     `${FANTV_API_URL}/api/v1/templates?limit=30`,
     () => fetcher.get(`${FANTV_API_URL}/api/v1/templates?limit=30`),
     {
+      refetchOnMount: "always",
       onSuccess: ({ data }) => {
         setTemplates(data.results);
       },
