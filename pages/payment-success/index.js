@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import get from "lodash/get";
 import fetcher from "../../src/dataProvider";
 import { useRouter } from "next/router";
 
@@ -17,7 +16,7 @@ const index = () => {
   };
 
   useEffect(() => {
-    const token = get(router, "query.session_id", null);
+    const token = router?.query?.session_id || null;
     if (!!token) {
       checkToken(token);
     }
