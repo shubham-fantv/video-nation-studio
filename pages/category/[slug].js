@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 
 const index = () => {
   const [templates, setTemplates] = useState([]);
+  console.log("🚀 ~ index ~ templates:", templates);
   const [category, setCategory] = useState([]);
 
   const router = useRouter();

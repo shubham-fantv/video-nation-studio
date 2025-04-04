@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import AvatarDropdown from "../../src/component/common/AvatarDropdown";
 import { useRouter } from "next/router";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { FANTV_API_URL } from "../../src/constant/constants";
 import fetcher from "../../src/dataProvider";
+import axios from "axios";
 
-const Index = () => {
+const Index = ({ masterData, template }) => {
   const [aspectRatio, setAspectRatio] = useState("16:9");
   const [avatar, setAvatar] = useState("Luke");
   const [voice, setVoice] = useState("Default");
@@ -13,18 +14,67 @@ const Index = () => {
   const [captionEnabled, setCaptionEnabled] = useState(true);
   const [prompt, setPrompt] = useState("A girl sipping coffee on the train");
   const router = useRouter();
-  const [template, setTemplate] = useState();
+  const [imagePreview, setImagePreview] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [image, setImage] = useState("");
 
-  useQuery(
-    `${FANTV_API_URL}/api/v1/templates/${router.query.slug}`,
-    () => fetcher.get(`${FANTV_API_URL}/api/v1/templates/${router.query.slug}`),
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await axios.post("https://upload.artistfirst.in/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      setImage(response?.data?.data?.[0]?.url);
+      setImagePreview(URL.createObjectURL(file));
+    } catch (error) {
+      console.error("Upload failed", error);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setImagePreview(null);
+  };
+
+  const { mutate: generateVideoApi } = useMutation(
+    (obj) => fetcher.post(`${FANTV_API_URL}/api/v1/ai-video`, obj),
     {
-      enabled: !!router.query.slug,
-      onSuccess: ({ data }) => {
-        setTemplate(data);
+      onSuccess: (response) => {
+        setImagePreview(null);
+        setPrompt("");
+        alert(" Success => video generation started");
+      },
+      onError: (error) => {
+        alert(error.response.data.message);
       },
     }
   );
+
+  const handleGenerateVideo = () => {
+    if (!prompt.trim()) {
+      alert("Please enter a prompt!");
+      return;
+    }
+
+    const requestBody = {
+      userId: "67e634cd3712275c56272853",
+      prompt,
+      imageInput: image ? [image] : [],
+      creditsUsed: 20,
+      aspectRatio: "16:9",
+      caption: captionEnabled,
+    };
+    generateVideoApi(requestBody);
+  };
 
   return (
     <div className="flex text-white gap-8">
@@ -54,7 +104,14 @@ const Index = () => {
           <div className="mb-6">
             <h3 className="text-sm font-medium mb-2">Prompt</h3>
             <div className="bg-[#343434] rounded-lg p-3 flex justify-between items-start">
-              <p className="text-sm text-gray-300">{prompt}</p>
+              <textarea
+                className="w-full rounded-md bg-transparent  text-sm text-[#D2D2D2] text-normal placeholder-gray-500 focus:outline-none"
+                placeholder="Enter your prompt..."
+                rows={5}
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+              ></textarea>
+              {/* <p className="text-sm text-gray-300">{prompt}</p> */}
             </div>
           </div>
 
@@ -73,22 +130,52 @@ const Index = () => {
 
           <div className="mb-6">
             <h3 className="text-sm font-medium mb-2">Add Image</h3>
-            <div className="bg-[#343434] rounded-lg p-6 flex items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-12 w-12 text-gray-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1}
-                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-            </div>
+            <label className="bg-[#343434] rounded-lg w-full h-[120px] flex items-center justify-center cursor-pointer">
+              {uploading ? (
+                <div>Uploading...</div>
+              ) : (
+                <>
+                  {imagePreview ? (
+                    <div className="relative">
+                      <img
+                        src={imagePreview}
+                        alt="Uploaded"
+                        className="w-full h-[120px] object-fit rounded-md"
+                      />
+                      <button
+                        onClick={handleRemoveImage}
+                        className="absolute top-0 right-0 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                      >
+                        ✖
+                      </button>
+                    </div>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-12 w-12 text-gray-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1}
+                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      />
+                    </svg>
+                  )}
+                </>
+              )}
+
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageUpload}
+                disabled={uploading}
+              />
+            </label>
           </div>
 
           <div className="mb-4">
@@ -99,10 +186,9 @@ const Index = () => {
                 onChange={(e) => setAspectRatio(e.target.value)}
                 className=" h-[48px] block w-full rounded-md bg-[#343434] border-0 py-2 pl-3 pr-10 text-white focus:ring-0 sm:text-sm appearance-none" // Add appearance-none
               >
-                <option>16:9</option>
-                <option>4:3</option>
-                <option>1:1</option>
-                <option>9:16</option>
+                {masterData?.aspectRatios?.map((item) => (
+                  <option key={item}>{item}</option>
+                ))}
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                 <svg
@@ -121,7 +207,7 @@ const Index = () => {
             </div>
           </div>
           <div className="mb-4">
-            <AvatarDropdown />
+            <AvatarDropdown data={masterData?.avatars} />
           </div>
 
           <div className="mb-4">
@@ -129,12 +215,12 @@ const Index = () => {
             <div className="relative ">
               <select
                 value={voice}
-                onChange={(e) => setVoice(e.target.value)}
+                onChange={(e) => setVoice(e.target._id)}
                 className=" h-[48px] block w-full rounded-md bg-[#343434] border-0 py-2 pl-10 pr-10 text-white focus:ring-0 sm:text-sm appearance-none"
               >
-                <option>Default</option>
-                <option>Male</option>
-                <option>Female</option>
+                {masterData?.voices?.map((item) => (
+                  <option key={item._id}>{item?.name}</option>
+                ))}
               </select>
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <div className="h-6 w-6 rounded-full bg-gray-600 flex items-center justify-center">
@@ -177,9 +263,9 @@ const Index = () => {
                 onChange={(e) => setVisibility(e.target.value)}
                 className=" h-[48px] block w-full rounded-md bg-[#343434] border-0 py-2 pl-10 pr-10 text-white focus:ring-0 sm:text-sm appearance-none"
               >
-                <option>Public</option>
-                <option>Private</option>
-                <option>Unlisted</option>
+                {masterData?.visibilityOptions?.map((item) => (
+                  <option key={item}>{item}</option>
+                ))}
               </select>
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <div className="h-6 w-6 rounded-full bg-gray-600 flex items-center justify-center">
@@ -241,12 +327,14 @@ const Index = () => {
               <video
                 src={template?.videoUrl}
                 muted
+                autoPlay
                 poster={template?.imageUrl}
-                loop
+                // loop
                 playsInline
-                onMouseEnter={(e) => e.target.play()}
-                onMouseLeave={(e) => e.target.pause()}
-                onEnded={(e) => e.target.play()}
+                controls
+                // onMouseEnter={(e) => e.target.play()}
+                // onMouseLeave={(e) => e.target.pause()}
+                // onEnded={(e) => e.target.play()}
                 className="w-full h-full object-cover rounded-xl"
               />
               {/* <img src="/images/video-play.png " className="h-[150px] w-[150px]" /> */}
@@ -255,7 +343,10 @@ const Index = () => {
 
           {/* Controls */}
           <div className="flex items-center justify-center  gap-4 mt-2">
-            <button className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-3 text-white shadow-md transition-all hover:brightness-110">
+            <button
+              onClick={handleGenerateVideo}
+              className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-3 text-white shadow-md transition-all hover:brightness-110"
+            >
               ✨ Generate
             </button>
           </div>
@@ -267,10 +358,43 @@ const Index = () => {
 
 export default Index;
 
-export async function getServerSideProps(ctx) {
-  return {
-    props: {
-      withSideBar: false,
-    },
-  };
+// export async function getServerSideProps(context) {
+//   const masterData = await fetcher.get(`${FANTV_API_URL}/api/v1/homefeed/metadata`);
+
+//   if (!masterData.success) {
+//     return { notFound: true };
+//   }
+
+//   return {
+//     props: {
+//       masterData: masterData.data,
+//       withSideBar: false,
+//     },
+//   };
+// }
+
+export async function getServerSideProps(context) {
+  try {
+    const {
+      params: { slug },
+    } = context;
+
+    var [masterData, template] = await Promise.all([
+      fetcher.get(`${FANTV_API_URL}/api/v1/homefeed/metadata`),
+      fetcher.get(`${FANTV_API_URL}/api/v1/templates/${slug}`),
+    ]);
+    return {
+      props: {
+        masterData: masterData || [],
+        template: template?.data || [],
+        withSideBar: false,
+        slug,
+      },
+    };
+  } catch (err) {
+    console.log("error occures in while getting data==>", err);
+    return {
+      props: {},
+    };
+  }
 }

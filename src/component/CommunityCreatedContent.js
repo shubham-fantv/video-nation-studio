@@ -81,7 +81,10 @@
 // export default CommunityCreatedContent;
 
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useQuery } from "react-query";
+import { FANTV_API_URL } from "../constant/constants";
+import fetcher from "../dataProvider";
 
 const CommunityCreatedContent = ({
   title = "Community Created Content",
@@ -89,10 +92,12 @@ const CommunityCreatedContent = ({
   isTabEnabled = false,
   data,
 }) => {
-  const [activeTab, setActiveTab] = useState("All");
+  const [activeTab, setActiveTab] = useState("all");
+
+  const [templateData, setTemplateData] = useState(data);
 
   const router = useRouter();
-  const tabs = ["All", "Product Videos", "Music Videos", "Marketing Reels", "Explainer Videos"];
+  const [allTabs, setAllTabs] = useState([]);
 
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
@@ -103,48 +108,94 @@ const CommunityCreatedContent = ({
   const handleMouseLeave = () => {
     setHoveredIndex(null);
   };
+
+  useEffect(() => {
+    setTemplateData(data);
+  }, [data]);
+
+  useQuery(
+    `${FANTV_API_URL}/api/v1/categories/category-tabs`,
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/categories/category-tabs`),
+    {
+      refetchOnMount: "always",
+      onSuccess: ({ data }) => {
+        setAllTabs(data);
+      },
+    }
+  );
+
+  useQuery(
+    `${FANTV_API_URL}/api/v1/templates/category/${activeTab}`,
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/templates/category/${activeTab}`),
+    {
+      refetchOnMount: "always",
+      enabled: isTabEnabled,
+      onSuccess: ({ data }) => {
+        console.log("🚀 ~ data:", data);
+        setTemplateData(data.results);
+      },
+    }
+  );
+
   return (
-    <div className="mt-8 text-white">
-      <div className="mb-6">
+    <div className="text-white">
+      <div>
         <h1 className="text-2xl font-bold mb-2">{title}</h1>
-        <p className="text-base text-[#D2D2D2] mb-6">{subTitle}</p>
+        <p className="text-base text-[#D2D2D2]">{subTitle}</p>
 
         {isTabEnabled && (
-          <div className="flex space-x-4">
-            {tabs.map((tab) => (
+          <div className="gap-4 mt-5">
+            <button
+              key={"all"}
+              className={`px-4 py-1 rounded-t-lg`}
+              onClick={() => setActiveTab("all")}
+              style={{
+                background:
+                  activeTab === "all"
+                    ? "linear-gradient(180deg, #6C6C6C 0%, #4B4B4B 100%)"
+                    : "transparent",
+                borderRadius: activeTab === "all" ? "100px" : "null",
+                border: activeTab === "all" ? "1px solid #FFFFFF4D" : "1px solid #1e1e1e",
+                color: activeTab === "all" ? "#FFF" : "#D2D2D2",
+              }}
+            >
+              All
+            </button>
+            {allTabs?.map((tab) => (
               <button
                 key={tab}
-                className={`px-4 py-2 rounded-t-lg `}
-                onClick={() => setActiveTab(tab)}
+                className={`px-4 py-1 rounded-t-lg  m-1`}
+                onClick={() => setActiveTab(tab?.slug)}
                 style={{
                   background:
-                    activeTab === tab
+                    activeTab === tab?.slug
                       ? "linear-gradient(180deg, #6C6C6C 0%, #4B4B4B 100%)"
                       : "transparent",
-                  borderRadius: activeTab === tab ? "100px" : "null",
-                  border: activeTab === tab ? "1px solid #FFFFFF4D" : null,
+                  borderRadius: activeTab === tab?.slug ? "100px" : "null",
+                  border: activeTab === tab?.slug ? "1px solid #FFFFFF4D" : "1px solid #1e1e1e",
+                  color: activeTab === tab?.slug ? "#FFF" : "#D2D2D2",
                 }}
               >
-                {tab}
+                {tab?.name}
               </button>
             ))}
           </div>
         )}
       </div>
 
-      <div className="p-4">
-        <div className="columns-3 gap-4">
-          {data &&
-            data?.map((video, index) => (
+      <div className="min-h-[50vh] mt-5">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 ">
+          {templateData &&
+            templateData?.map((video, index) => (
               <div
-                key={video._id}
+                key={video?._id}
                 onClick={() => router.push(`/generate-video/${video?._id}`)}
-                className="mb-4 rounded-xl  cursor-pointer relative"
+                className="rounded-xl  cursor-pointer relative"
                 onMouseEnter={() => handleMouseEnter(video._id)}
                 onMouseLeave={handleMouseLeave}
               >
                 <video
-                  src={video.videoUrl}
+                  src={video?.videoUrl}
                   muted
                   poster={video.imageUrl}
                   loop
@@ -152,11 +203,11 @@ const CommunityCreatedContent = ({
                   onMouseEnter={(e) => e.target.play()}
                   onMouseLeave={(e) => e.target.pause()}
                   onEnded={(e) => e.target.play()}
-                  className="w-full h-full object-cover rounded-xl"
+                  className="w-full  h-full object-cover rounded-xl"
                 />
                 {hoveredIndex == video._id && (
                   <div
-                    className="absolute top-[-75%] left-0 rounded-t-xl right-0 z-1  p-3  text-white bg-[#653EFF]"
+                    className="absolute bottom-[-75%] left-0 rounded-b-xl right-0 z-1  p-3  text-white bg-[#653EFF]"
                     style={{ zIndex: "999999" }}
                   >
                     <h3 className="text-xl pb-2 font-medium truncate">{video?.title}</h3>

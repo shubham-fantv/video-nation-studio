@@ -169,12 +169,14 @@ const index = () => {
           </button>
         </div>
       </div>
-      <div>
+      <div className="mt-12">
         <HowToCreate />
       </div>
       {templates.length > 0 && (
-        <div className="w-full">
-          <CommunityCreatedContent data={templates} isTabEnabled />
+        <div className="mt-12">
+          <div className="w-full">
+            <CommunityCreatedContent data={templates} isTabEnabled />
+          </div>
         </div>
       )}
     </div>

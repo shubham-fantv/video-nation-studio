@@ -16,7 +16,7 @@ const DefaultLayout = ({ withSideBar = true, children, customStyles = {} }) => {
             <Sidebar> {children} </Sidebar>
           </Box>
         ) : (
-          <Box>{children}</Box>
+          <div style={{ overflow: "visible" }}>{children}</div>
         )}
         <RevampFooter />
       </Box>

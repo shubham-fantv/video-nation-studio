@@ -8,6 +8,7 @@ const styles = {
     // "@media (max-width: 320px)": {
     //   paddingTop: "0px",
     // },
+    overflow: "visible",
   },
 };
 export default styles;

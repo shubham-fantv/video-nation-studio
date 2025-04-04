@@ -13,7 +13,7 @@ const index = () => {
 
   useQuery(
     `${FANTV_API_URL}/api/v1/categories`,
-    () => fetcher.get(`${FANTV_API_URL}/api/v1/categories`),
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/categories?limit=30`),
     {
       refetchOnMount: "always",
       onSuccess: ({ data }) => {
@@ -111,6 +111,7 @@ const index = () => {
             title="Use a Template"
             subTitle="Remix with our content created by our community"
             data={templates}
+            isTabEnabled
           />
         </div>
       </div>

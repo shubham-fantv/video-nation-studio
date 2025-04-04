@@ -1,28 +1,24 @@
 import { Box, Typography } from "@mui/material";
-import { useMediaQuery } from "@mui/system";
-import { default as React, useState } from "react";
-import { useQuery } from "react-query";
-import SectionCards from "../src/component/SectionCards";
-import Banner from "../src/component/banner";
-import fetcher from "../src/dataProvider";
-import { FANTV_API_URL } from "../src/constant/constants";
+import { default as React } from "react";
 import CLink from "../src/component/CLink";
 import CardComponent from "../src/component/CardComponent";
 import CommunityCreatedContent from "../src/component/CommunityCreatedContent";
+import Banner from "../src/component/banner";
+import { FANTV_API_URL } from "../src/constant/constants";
+import fetcher from "../src/dataProvider";
 
-const Index = () => {
-  const [homeFeedData, setHomeFeedData] = useState([]);
-
-  useQuery(
-    `${FANTV_API_URL}/api/v1/homefeed`,
-    () => fetcher.get(`${FANTV_API_URL}/api/v1/homefeed`),
-    {
-      refetchOnMount: "always",
-      onSuccess: ({ data }) => {
-        setHomeFeedData(data);
-      },
-    }
-  );
+const Index = ({ homeFeed }) => {
+  // const [homeFeedData, setHomeFeedData] = useState([]);
+  // useQuery(
+  //   `${FANTV_API_URL}/api/v1/homefeed`,
+  //   () => fetcher.get(`${FANTV_API_URL}/api/v1/homefeed`),
+  //   {
+  //     refetchOnMount: "always",
+  //     onSuccess: ({ data }) => {
+  //       setHomeFeedData(data);
+  //     },
+  //   }
+  // );
 
   return (
     <div>
@@ -32,16 +28,16 @@ const Index = () => {
           <Box className="flex justify-between items-center mb-4">
             <Box>
               <Typography variant="h5" className="font-semibold text-2xl text-white">
-                {homeFeedData?.section1?.title}
+                {homeFeed?.section1?.title}
               </Typography>
               <Typography variant="body2" className="text-normal pt-2 text-[#D2D2D2] text-base">
-                {homeFeedData?.section1?.subtitle}
+                {homeFeed?.section1?.subtitle}
               </Typography>
             </Box>
           </Box>
 
           <Box className="grid grid-cols-4 gap-4">
-            {homeFeedData?.section1?.data?.splice(0, 4)?.map((card) => (
+            {homeFeed?.section1?.data?.splice(0, 4)?.map((card) => (
               <CardComponent key={card.id} data={card} redirect={`/category/${card?.slug}`} />
             ))}
           </Box>
@@ -61,9 +57,10 @@ const Index = () => {
           <div className="mt-12">
             <div className="w-full">
               <CommunityCreatedContent
-                title={homeFeedData?.section2?.title}
-                subTitle={homeFeedData?.section2?.subtitle}
-                data={homeFeedData?.section2?.data}
+                title={homeFeed?.section2?.title}
+                subTitle={homeFeed?.section2?.subtitle}
+                data={homeFeed?.section2?.data}
+                isTabEnabled
               />
             </div>
           </div>
@@ -74,3 +71,17 @@ const Index = () => {
 };
 
 export default Index;
+
+export async function getServerSideProps(context) {
+  const homeFeed = await fetcher.get(`${FANTV_API_URL}/api/v1/homefeed`);
+
+  if (!homeFeed.success) {
+    return { notFound: true };
+  }
+
+  return {
+    props: {
+      homeFeed: homeFeed.data,
+    },
+  };
+}
