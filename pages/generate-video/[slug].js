@@ -5,6 +5,8 @@ import { useMutation, useQuery } from "react-query";
 import { FANTV_API_URL } from "../../src/constant/constants";
 import fetcher from "../../src/dataProvider";
 import axios from "axios";
+import Loading from "../../src/component/common/Loading/loading";
+import { quotes } from "../../src/utils/common";
 
 const Index = ({ masterData, template }) => {
   const [aspectRatio, setAspectRatio] = useState("16:9");
@@ -17,6 +19,9 @@ const Index = ({ masterData, template }) => {
   const [imagePreview, setImagePreview] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [image, setImage] = useState("");
+
+  const [subTitle, setSubTitle] = useState("");
+  const [isLoading, setLoading] = useState(false);
 
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
@@ -52,8 +57,10 @@ const Index = ({ masterData, template }) => {
         setImagePreview(null);
         setPrompt("");
         alert(" Success => video generation started");
+        setLoading(false);
       },
       onError: (error) => {
+        setLoading(false);
         alert(error.response.data.message);
       },
     }
@@ -73,11 +80,24 @@ const Index = ({ masterData, template }) => {
       aspectRatio: "16:9",
       caption: captionEnabled,
     };
+    setLoading(true);
     generateVideoApi(requestBody);
   };
 
+  useEffect(() => {
+    const pickRandomQuote = () => {
+      const randomIndex = Math.floor(Math.random() * quotes.length);
+      setSubTitle(quotes[randomIndex]);
+    };
+    pickRandomQuote();
+    const interval = setInterval(pickRandomQuote, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="flex text-white gap-8">
+      {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
       <div className="w-64 bg-[#FFFFFF0D] p-4">
         <div className="">
           <button

@@ -63,3 +63,13 @@ export const getDriveImageUrl = (driveUrl) => {
   }
   return null; // In case the URL is invalid
 };
+
+export const quotes = [
+  "Crafting your vision with AI magic ✨",
+  "Turning imagination into pixels...",
+  "Almost there, your masterpiece is coming...",
+  "The future is being generated...",
+  "Rendering creativity in progress...",
+  "AI is cooking something amazing for you 🍿",
+  "Generating your story, frame by frame...",
+];

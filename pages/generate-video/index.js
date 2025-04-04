@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SectionCards from "../../src/component/SectionCards";
 import CommunityCreatedContent from "../../src/component/CommunityCreatedContent";
 import HowToCreate from "../../src/component/HowToCreate";
@@ -7,6 +7,8 @@ import { useMutation, useQuery } from "react-query";
 import fetcher from "../../src/dataProvider";
 import { API_BASE_URL, FANTV_API_URL } from "../../src/constant/constants";
 import axios from "axios";
+import Loading from "../../src/component/common/Loading/loading";
+import { quotes } from "../../src/utils/common";
 
 const index = () => {
   const [captionEnabled, setCaptionEnabled] = useState(false);
@@ -15,6 +17,9 @@ const index = () => {
   const [uploading, setUploading] = useState(false);
   const [prompt, setPrompt] = useState("");
   const [image, setImage] = useState("");
+  const [subTitle, setSubTitle] = useState("");
+
+  const [isLoading, setLoading] = useState(false);
 
   useQuery(
     `${FANTV_API_URL}/api/v1/templates?limit=30`,
@@ -61,9 +66,11 @@ const index = () => {
       onSuccess: (response) => {
         setImagePreview(null);
         setPrompt("");
+        setLoading(false);
         alert(" Success => video generation started");
       },
       onError: (error) => {
+        setLoading(false);
         alert(error.response.data.message);
       },
     }
@@ -83,11 +90,24 @@ const index = () => {
       aspectRatio: "16:9",
       caption: captionEnabled,
     };
+    setLoading(true);
     generateVideoApi(requestBody);
   };
 
+  useEffect(() => {
+    const pickRandomQuote = () => {
+      const randomIndex = Math.floor(Math.random() * quotes.length);
+      setSubTitle(quotes[randomIndex]);
+    };
+    pickRandomQuote();
+    const interval = setInterval(pickRandomQuote, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div>
+      {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
       <div className="justify-center m-auto">
         <h1 className="text-white text-[32px] font-semibold text-center leading-[38px]">
           AI-Powered Video Creation. Just Type & Generate
