@@ -42,7 +42,7 @@ const Index = () => {
 
           <Box className="grid grid-cols-4 gap-4">
             {homeFeedData?.section1?.data?.splice(0, 4)?.map((card) => (
-              <CardComponent key={card.id} data={card} redirect={`/category/${card.name}`} />
+              <CardComponent key={card.id} data={card} redirect={`/category/${card?.slug}`} />
             ))}
           </Box>
 

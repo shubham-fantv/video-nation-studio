@@ -32,7 +32,7 @@ const index = () => {
       enabled: !!router.query.slug,
       refetchOnMount: "always",
       onSuccess: ({ data }) => {
-        setCategory(data);
+        setCategory(data[0]);
       },
     }
   );
