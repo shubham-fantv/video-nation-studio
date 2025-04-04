@@ -6,18 +6,33 @@ import CommunityCreatedContent from "../../src/component/CommunityCreatedContent
 import { useQuery } from "react-query";
 import fetcher from "../../src/dataProvider";
 import { FANTV_API_URL } from "../../src/constant/constants";
+import { useRouter } from "next/router";
 
 const index = () => {
   const [templates, setTemplates] = useState([]);
-  console.log("🚀 ~ index ~ templates:", templates);
+  const [category, setCategory] = useState([]);
 
+  const router = useRouter();
   useQuery(
     `${FANTV_API_URL}/api/v1/templates?limit=30`,
-    () => fetcher.get(`${FANTV_API_URL}/api/v1/templates?limit=30`),
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/templates/category/${router.query.slug}`),
     {
+      enabled: !!router.query.slug,
       refetchOnMount: "always",
       onSuccess: ({ data }) => {
         setTemplates(data.results);
+      },
+    }
+  );
+
+  useQuery(
+    `${FANTV_API_URL}/api/v1/categories/${router.query.slug}`,
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/categories/${router.query.slug}`),
+    {
+      enabled: !!router.query.slug,
+      refetchOnMount: "always",
+      onSuccess: ({ data }) => {
+        setCategory(data);
       },
     }
   );
@@ -26,10 +41,10 @@ const index = () => {
     <div>
       <div className="justify-center m-auto">
         <h1 className="text-white text-[32px] font-semibold text-center leading-[38px]">
-          Video Studio
+          {category?.title || " Video Studio"}
         </h1>
         <p className="text-[#D2D2D2] pt-2 text-base font-normal text-center">
-          VideoNation Creator Studio
+          {category?.description || " VideoNation Creator Studio"}
         </p>
         <Link
           href={"/generate-video"}

@@ -13,9 +13,7 @@ const Index = () => {
   const [captionEnabled, setCaptionEnabled] = useState(true);
   const [prompt, setPrompt] = useState("A girl sipping coffee on the train");
   const router = useRouter();
-  console.log("🚀 ~ Index ~ router:", router.query.slug);
   const [template, setTemplate] = useState();
-  console.log("🚀 ~ Index ~ template:", template);
 
   useQuery(
     `${FANTV_API_URL}/api/v1/templates/${router.query.slug}`,
