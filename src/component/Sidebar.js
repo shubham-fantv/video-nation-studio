@@ -31,7 +31,7 @@ function Sidebar({ children }) {
               <h2 class="text-white text-base font-semibold px-4 mb-2">Studios</h2>
               <ul>
                 <li>
-                  <a href="/video-nation" class="flex items-center pl-4 py-2">
+                  <a href="/video-studio" class="flex items-center pl-4 py-2">
                     <span class="text-white mr-3">
                       <svg
                         class="w-6 h-6 text-white"

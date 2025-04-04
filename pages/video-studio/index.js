@@ -1,9 +1,40 @@
 import { Button } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import SectionCards from "../../src/component/SectionCards";
 import Link from "next/link";
+import fetcher from "../../src/dataProvider";
+import { FANTV_API_URL } from "../../src/constant/constants";
+import { useQuery } from "react-query";
+import CardComponent from "../../src/component/CardComponent";
+import CommunityCreatedContent from "../../src/component/CommunityCreatedContent";
 
 const index = () => {
+  const [homeFeedData, setHomeFeedData] = useState([]);
+
+  useQuery(
+    `${FANTV_API_URL}/api/v1/categories`,
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/categories`),
+    {
+      refetchOnMount: "always",
+      onSuccess: ({ data }) => {
+        setHomeFeedData(data);
+      },
+    }
+  );
+
+  const [templates, setTemplates] = useState([]);
+
+  useQuery(
+    `${FANTV_API_URL}/api/v1/templates?limit=30`,
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/templates?limit=30`),
+    {
+      refetchOnMount: "always",
+      onSuccess: ({ data }) => {
+        setTemplates(data.results);
+      },
+    }
+  );
+
   return (
     <div>
       <div className="justify-center m-auto">
@@ -13,7 +44,11 @@ const index = () => {
         <p className="text-[#D2D2D2] pt-2 text-base font-normal text-center">
           VideoNation Creator Studio
         </p>
-        <Link href={"/generate"} passHref className="flex items-center justify-center w-full mt-4">
+        <Link
+          href={"/generate-video"}
+          passHref
+          className="flex items-center justify-center w-full mt-4"
+        >
           <div
             className="flex w-full items-center rounded-full border-2 border-gray-500 bg-white "
             style={{
@@ -52,7 +87,32 @@ const index = () => {
         </Link>
       </div>
       <div className="mt-12">
-        <SectionCards />
+        {/* <SectionCards data={homeFeedData?.section1} /> */}
+        <div className="flex justify-between items-center mb-4">
+          <div>
+            <p variant="h5" className="font-semibold text-2xl text-white">
+              {homeFeedData?.title}
+            </p>
+            <p variant="body2" className="text-normal pt-2 text-[#D2D2D2] text-base">
+              {homeFeedData?.subtitle}
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-4 gap-4">
+          {homeFeedData?.results?.map((card) => (
+            <CardComponent key={card.id} data={card} redirect={`/category/${card.name}`} />
+          ))}
+        </div>
+      </div>
+      <div className="mt-12">
+        <div className="w-full">
+          <CommunityCreatedContent
+            title="Use a Template"
+            subTitle="Remix with our content created by our community"
+            data={templates}
+          />
+        </div>
       </div>
     </div>
   );
