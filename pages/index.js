@@ -47,7 +47,7 @@ const Index = () => {
           </Box>
 
           <Box className="flex justify-center mt-6">
-            <CLink href="/all-categories">
+            <CLink href="/video-nation">
               {" "}
               <button
                 variant="outlined"

@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import fetcher from "../../src/dataProvider";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { FANTV_API_URL } from "../../src/constant/constants";
-import usePayment from "../../src/component/hooks/usePayment";
 const PricingPlans = () => {
   const plans = [
     {
@@ -42,14 +41,25 @@ const PricingPlans = () => {
 
   const [subscriptions, setSubscriptions] = useState([]);
 
-  const [_, initiatePayment] = usePayment();
-
   useQuery(
     `${FANTV_API_URL}/api/v1/subscription-plans`,
     () => fetcher.get(`${FANTV_API_URL}/api/v1/subscription-plans`),
     {
       onSuccess: ({ data }) => {
         setSubscriptions(data);
+      },
+    }
+  );
+
+  const { mutate: initiatePayment } = useMutation(
+    (obj) => fetcher.post(`${FANTV_API_URL}/create-checkout-session`, obj),
+    {
+      onSuccess: (response) => {
+        console.log("🚀 ~ PricingPlans ~ response:", response);
+        window.location.href = response.url;
+      },
+      onError: (error) => {
+        alert(error.response.data.message);
       },
     }
   );

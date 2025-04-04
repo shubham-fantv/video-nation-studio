@@ -6,6 +6,7 @@ import fetcher from "../../src/dataProvider";
 import { FANTV_API_URL } from "../../src/constant/constants";
 import { useQuery } from "react-query";
 import CardComponent from "../../src/component/CardComponent";
+import CommunityCreatedContent from "../../src/component/CommunityCreatedContent";
 
 const index = () => {
   const [homeFeedData, setHomeFeedData] = useState([]);
@@ -14,8 +15,22 @@ const index = () => {
     `${FANTV_API_URL}/api/v1/categories`,
     () => fetcher.get(`${FANTV_API_URL}/api/v1/categories`),
     {
+      refetchOnMount: "always",
       onSuccess: ({ data }) => {
         setHomeFeedData(data);
+      },
+    }
+  );
+
+  const [templates, setTemplates] = useState([]);
+
+  useQuery(
+    `${FANTV_API_URL}/api/v1/templates?limit=30`,
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/templates?limit=30`),
+    {
+      refetchOnMount: "always",
+      onSuccess: ({ data }) => {
+        setTemplates(data.results);
       },
     }
   );
@@ -88,6 +103,15 @@ const index = () => {
           {homeFeedData?.results?.map((card) => (
             <CardComponent key={card.id} data={card} redirect={`/category/${card.name}`} />
           ))}
+        </div>
+      </div>
+      <div className="mt-12">
+        <div className="w-full">
+          <CommunityCreatedContent
+            title="Use a Template"
+            subTitle="Remix with our content created by our community"
+            data={templates}
+          />
         </div>
       </div>
     </div>
