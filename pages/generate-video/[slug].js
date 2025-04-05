@@ -405,7 +405,7 @@ export async function getServerSideProps(context) {
     ]);
     return {
       props: {
-        masterData: masterData || [],
+        masterData: masterData?.data || [],
         template: template?.data || [],
         withSideBar: false,
         slug,
