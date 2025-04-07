@@ -7,6 +7,7 @@ import fetcher from "../../src/dataProvider";
 import axios from "axios";
 import Loading from "../../src/component/common/Loading/loading";
 import { quotes } from "../../src/utils/common";
+import { parseCookies } from "nookies";
 
 const Index = ({ masterData, template }) => {
   const [aspectRatio, setAspectRatio] = useState("16:9");
@@ -378,43 +379,49 @@ const Index = ({ masterData, template }) => {
 
 export default Index;
 
-// export async function getServerSideProps(context) {
-//   const masterData = await fetcher.get(`${FANTV_API_URL}/api/v1/homefeed/metadata`);
+export async function getServerSideProps(ctx) {
+  const cookie = parseCookies(ctx);
 
-//   if (!masterData.success) {
-//     return { notFound: true };
-//   }
+  const authToken = cookie["aToken"];
 
-//   return {
-//     props: {
-//       masterData: masterData.data,
-//       withSideBar: false,
-//     },
-//   };
-// }
-
-export async function getServerSideProps(context) {
   try {
     const {
       params: { slug },
     } = context;
 
     var [masterData, template] = await Promise.all([
-      fetcher.get(`${FANTV_API_URL}/api/v1/homefeed/metadata`),
-      fetcher.get(`${FANTV_API_URL}/api/v1/templates/${slug}`),
+      fetcher.get(
+        `${FANTV_API_URL}/api/v1/homefeed/metadata`,
+        {
+          headers: {
+            ...(!!authToken && { Authorization: `Bearer ${authToken}` }),
+          },
+        },
+        "default"
+      ),
+      fetcher.get(
+        `${FANTV_API_URL}/api/v1/templates/${slug}`,
+        {
+          headers: {
+            ...(!!authToken && { Authorization: `Bearer ${authToken}` }),
+          },
+        },
+        "default"
+      ),
     ]);
     return {
       props: {
         masterData: masterData?.data || [],
         template: template?.data || [],
-        withSideBar: false,
         slug,
       },
     };
   } catch (err) {
     console.log("error occures in while getting data==>", err);
     return {
-      props: {},
+      props: {
+        withSideBar: false,
+      },
     };
   }
 }

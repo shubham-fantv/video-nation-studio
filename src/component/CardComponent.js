@@ -11,7 +11,7 @@ function CardComponent({ data, redirect }) {
       className="bg-[#FFFFFF0D] rounded-xl overflow-hidden"
       sx={{ boxShadow: "0px 4px 4px 0px #00000040" }}
     >
-      <Box className="h-40 w-full overflow-hidden">
+      <Box className="w-full overflow-hidden">
         <img
           src={data?.imageUrl}
           className="cover"

@@ -6,6 +6,7 @@ import CommunityCreatedContent from "../src/component/CommunityCreatedContent";
 import Banner from "../src/component/banner";
 import { FANTV_API_URL } from "../src/constant/constants";
 import fetcher from "../src/dataProvider";
+import { parseCookies } from "nookies";
 
 const Index = ({ homeFeed }) => {
   // const [homeFeedData, setHomeFeedData] = useState([]);
@@ -36,7 +37,7 @@ const Index = ({ homeFeed }) => {
             </Box>
           </Box>
 
-          <Box className="grid grid-cols-4 gap-4">
+          <Box className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {homeFeed?.section1?.data?.splice(0, 4)?.map((card) => (
               <CardComponent key={card.id} data={card} redirect={`/category/${card?.slug}`} />
             ))}
@@ -72,8 +73,19 @@ const Index = ({ homeFeed }) => {
 
 export default Index;
 
-export async function getServerSideProps(context) {
-  const homeFeed = await fetcher.get(`${FANTV_API_URL}/api/v1/homefeed`);
+export async function getServerSideProps(ctx) {
+  const cookie = parseCookies(ctx);
+
+  const authToken = cookie["aToken"];
+  const homeFeed = await fetcher.get(
+    `${FANTV_API_URL}/api/v1/homefeed`,
+    {
+      headers: {
+        ...(!!authToken && { Authorization: `Bearer ${authToken}` }),
+      },
+    },
+    "default"
+  );
 
   if (!homeFeed.success) {
     return { notFound: true };
@@ -81,7 +93,7 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      homeFeed: homeFeed.data,
+      homeFeed: homeFeed?.data || [],
     },
   };
 }

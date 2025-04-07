@@ -30,7 +30,7 @@ const UserProfileDropdown = () => {
       {/* User profile button */}
       <button
         onClick={toggleDropdown}
-        className="flex items-center space-x-2 rounded-full bg-white p-2 shadow-sm hover:bg-gray-50 transition-colors"
+        className="flex items-center space-x-2 rounded-full bg-white p-1 md:p-2 shadow-sm hover:bg-gray-50 transition-colors"
       >
         <Image
           source={{ uri: userData?.profilePicture || "/images/icons/user.png" }}
@@ -38,7 +38,7 @@ const UserProfileDropdown = () => {
           className="h-8 w-8 rounded-full object-cover"
           onError={(e) => (e.currentTarget.src = "/images/icons/user.png")}
         />
-        <span className="font-medium text-gray-700">{userData.name}</span>
+        <span className="font-medium text-gray-700 truncate">{userData.name}</span>
         <ChevronDown
           className={`h-4 w-4 text-gray-500 transition-transform ${isOpen ? "rotate-180" : ""}`}
         />

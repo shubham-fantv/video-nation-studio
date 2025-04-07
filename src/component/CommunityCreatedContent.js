@@ -81,7 +81,7 @@
 // export default CommunityCreatedContent;
 
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { FANTV_API_URL } from "../constant/constants";
 import fetcher from "../dataProvider";
@@ -131,11 +131,26 @@ const CommunityCreatedContent = ({
       refetchOnMount: "always",
       enabled: isTabEnabled,
       onSuccess: ({ data }) => {
-        console.log("🚀 ~ data:", data);
         setTemplateData(data.results);
       },
     }
   );
+
+  const [isOverflowing, setIsOverflowing] = useState(false);
+  const scrollContainerRef = useRef(null);
+
+  useEffect(() => {
+    const checkOverflow = () => {
+      if (scrollContainerRef.current) {
+        const { scrollWidth, clientWidth } = scrollContainerRef.current;
+        setIsOverflowing(scrollWidth > clientWidth);
+      }
+    };
+
+    checkOverflow();
+    window.addEventListener("resize", checkOverflow);
+    return () => window.removeEventListener("resize", checkOverflow);
+  }, []);
 
   return (
     <div className="text-white">
@@ -143,7 +158,7 @@ const CommunityCreatedContent = ({
         <h1 className="text-2xl font-bold mb-2">{title}</h1>
         <p className="text-base text-[#D2D2D2]">{subTitle}</p>
 
-        {isTabEnabled && (
+        {/* {isTabEnabled && (
           <div className="gap-4 mt-5">
             <button
               key={"all"}
@@ -180,7 +195,56 @@ const CommunityCreatedContent = ({
               </button>
             ))}
           </div>
-        )}
+        )} */}
+
+        <div className="w-full">
+          {/* Tab container with horizontal scroll on small screens */}
+          <div
+            ref={scrollContainerRef}
+            className="flex gap-2 mt-5 overflow-x-auto pb-2 md:pb-0 md:flex-wrap"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
+            <button
+              key="all"
+              className="px-4 py-1 rounded-full shrink-0"
+              onClick={() => setActiveTab("all")}
+              style={{
+                background:
+                  activeTab === "all"
+                    ? "linear-gradient(180deg, #6C6C6C 0%, #4B4B4B 100%)"
+                    : "transparent",
+                border: activeTab === "all" ? "1px solid #FFFFFF4D" : "1px solid #1e1e1e",
+                color: activeTab === "all" ? "#FFF" : "#D2D2D2",
+              }}
+            >
+              All
+            </button>
+
+            {allTabs.map((tab) => (
+              <button
+                key={tab.slug}
+                className="px-4 py-1 rounded-full shrink-0"
+                onClick={() => setActiveTab(tab.slug)}
+                style={{
+                  background:
+                    activeTab === tab.slug
+                      ? "linear-gradient(180deg, #6C6C6C 0%, #4B4B4B 100%)"
+                      : "transparent",
+                  border: activeTab === tab.slug ? "1px solid #FFFFFF4D" : "1px solid #1e1e1e",
+                  color: activeTab === tab.slug ? "#FFF" : "#D2D2D2",
+                }}
+              >
+                {tab.name}
+              </button>
+            ))}
+          </div>
+
+          {isOverflowing && (
+            <div className="flex justify-end mt-1 md:hidden">
+              <span className="text-xs text-gray-400">Scroll for more →</span>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="min-h-[50vh] mt-5">

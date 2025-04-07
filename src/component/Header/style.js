@@ -14,11 +14,12 @@ const styles = {
 
     "@media (max-width:767px)": {
       height: "55px",
-      position: "absolute",
+      position: "sticky !important",
       top: "0",
       zIndex: "999",
       width: "100%",
       padding: "0px",
+      marginBottom: "20px",
     },
     "& .nav-container": {
       display: "flex",

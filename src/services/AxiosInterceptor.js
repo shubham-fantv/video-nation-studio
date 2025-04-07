@@ -1,5 +1,5 @@
 import axios from "axios";
-// import logout from '../components/Layout/util/logout';
+import logout from "../utils/logout";
 import { API_BASE_URL } from "@/src/constant/constants";
 let Api = axios.create({
   baseURL: API_BASE_URL,
@@ -41,12 +41,14 @@ Api.interceptors.response.use(
     return response?.data;
   },
   (error) => {
+    console.log("🚀 ~ error:", error, error?.response?.status);
+
     if (error?.request?.responseURL?.includes("login")) {
       return Promise.reject(error);
     }
 
     if (error?.response?.status === 401 || error?.response?.data?.errorCode === 403) {
-      // logout();
+      logout();
     }
 
     return Promise.reject(error);

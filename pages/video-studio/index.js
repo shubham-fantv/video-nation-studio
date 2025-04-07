@@ -99,7 +99,7 @@ const index = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {homeFeedData?.results?.map((card) => (
             <CardComponent key={card.id} data={card} redirect={`/category/${card?.slug}`} />
           ))}

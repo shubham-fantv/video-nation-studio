@@ -144,7 +144,7 @@ const index = () => {
         )}
 
         {/* Buttons & Toggle */}
-        <div className="flex items-center gap-3">
+        <div className="flex  flex-wrap items-center gap-3">
           <label className="flex items-center gap-2 rounded-md bg-[#1E1E1E] px-4 py-2 text-sm text-[#D2D2D2] shadow-md transition-all hover:bg-gray-800 cursor-pointer">
             + Add image
             <input
@@ -155,10 +155,6 @@ const index = () => {
               disabled={uploading}
             />
           </label>
-
-          <button className="flex items-center gap-2 rounded-md bg-[#1E1E1E] px-4 py-2 text-sm text-[#D2D2D2] shadow-md transition-all hover:bg-gray-800">
-            <span className="w-4 h-3 border border-white rounded-sm"></span> 16:9
-          </button>
 
           {/* Caption Toggle */}
           <button
@@ -178,8 +174,11 @@ const index = () => {
             </div>
             Caption
           </button>
+          <button className="flex items-center gap-2 rounded-md bg-[#1E1E1E] px-4 py-2 text-sm text-[#D2D2D2] shadow-md transition-all hover:bg-gray-800">
+            <span className="w-4 h-3 border border-white rounded-sm"></span> 16:9
+          </button>
 
-          <div className="flex-1"></div>
+          <div className="flex-1 hidden md:block"></div>
 
           <button
             onClick={() => handleGenerateVideo()}
