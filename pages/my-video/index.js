@@ -5,47 +5,7 @@ import { useQuery } from "react-query";
 import fetcher from "../../src/dataProvider";
 
 const VideoGrid = () => {
-  const videos = [
-    {
-      id: 1,
-      thumbnail: "images/content/thumb1.png",
-      title: "Girl singing on stage",
-      duration: "2:00",
-    },
-    {
-      id: 2,
-      thumbnail: "images/content/thumb2.png",
-      title: "A dog and man having converstion",
-      duration: "2:00",
-    },
-    {
-      id: 3,
-      thumbnail: "images/content/thumb3.png",
-      title: "Man Facetiming",
-      duration: "2:00",
-    },
-    {
-      id: 4,
-      thumbnail: "images/content/thumb1.png",
-      title: "Girl singing on stage",
-      duration: "2:00",
-    },
-    {
-      id: 5,
-      thumbnail: "images/content/thumb2.png",
-      title: "A dog and man having converstion",
-      duration: "2:00",
-    },
-    {
-      id: 6,
-      thumbnail: "images/content/thumb3.png",
-      title: "Man Facetiming",
-      duration: "2:00",
-    },
-  ];
-
   const [myVideo, setMyVideo] = useState([]);
-
   useQuery(
     `${FANTV_API_URL}/api/v1/ai-video?userId=67ebe5e10d3fe414d69baba5&page=1&limit=10`,
     () =>

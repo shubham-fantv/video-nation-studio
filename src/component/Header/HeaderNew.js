@@ -27,6 +27,18 @@ const LogOutNavItem = [
     icon: "🎵",
     newTag: false,
   },
+  {
+    path: "/video-studio",
+    title: "Video Studio",
+    icon: "🎵",
+    newTag: false,
+  },
+  {
+    path: "/my-video",
+    title: "My Video",
+    icon: "🎵",
+    newTag: false,
+  },
 ];
 
 const HeaderNew = ({ app }) => {

@@ -222,8 +222,8 @@ function Banner() {
         backgroundImage: 'url("/images/video-ai/bannerBg.png")',
         backgroundSize: "cover",
         backgroundPosition: "center",
-        height: { xs: "auto", md: "300px" },
-        minHeight: { xs: "400px", md: "300px" },
+        height: { xs: "auto", md: "auto" },
+        minHeight: { xs: "400px", md: "270px" },
         display: "flex",
         flexDirection: { xs: "column", md: "row" },
         justifyContent: "space-between",
@@ -239,7 +239,7 @@ function Banner() {
       >
         <Typography
           variant="h3"
-          className="font-semibold text-white font-inter"
+          className="font-semibold text-white font-inter w-max"
           sx={{
             fontSize: { xs: "24px", md: "32px" },
             lineHeight: { xs: "1.3", md: "normal" },

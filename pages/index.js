@@ -25,13 +25,13 @@ const Index = ({ homeFeed }) => {
     <div>
       <Box className="min-h-screen text-white">
         <Banner />
-        <Box className="mt-8">
+        <Box className="mt-6">
           <Box className="flex justify-between items-center mb-4">
             <Box>
               <Typography variant="h5" className="font-semibold text-2xl text-white">
                 {homeFeed?.section1?.title}
               </Typography>
-              <Typography variant="body2" className="text-normal pt-2 text-[#D2D2D2] text-base">
+              <Typography variant="body2" className="text-normal pt-1 text-[#D2D2D2] text-base">
                 {homeFeed?.section1?.subtitle}
               </Typography>
             </Box>

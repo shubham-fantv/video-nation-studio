@@ -10,16 +10,19 @@ import { quotes } from "../../src/utils/common";
 import { parseCookies } from "nookies";
 
 const Index = ({ masterData, template }) => {
+  console.log("🚀 ~ Index ~ template:", template);
+  console.log("🚀 ~ Index ~ masterData:", masterData);
+
   const [aspectRatio, setAspectRatio] = useState("16:9");
   const [avatar, setAvatar] = useState("Luke");
   const [voice, setVoice] = useState("Default");
   const [visibility, setVisibility] = useState("Public");
   const [captionEnabled, setCaptionEnabled] = useState(true);
-  const [prompt, setPrompt] = useState("A girl sipping coffee on the train");
+  const [prompt, setPrompt] = useState(template?.prompt);
   const router = useRouter();
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState(template?.imageUrl);
   const [uploading, setUploading] = useState(false);
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(template?.imageUrl);
 
   const [subTitle, setSubTitle] = useState("");
   const [isLoading, setLoading] = useState(false);
@@ -387,7 +390,7 @@ export async function getServerSideProps(ctx) {
   try {
     const {
       params: { slug },
-    } = context;
+    } = ctx;
 
     var [masterData, template] = await Promise.all([
       fetcher.get(
@@ -414,6 +417,7 @@ export async function getServerSideProps(ctx) {
         masterData: masterData?.data || [],
         template: template?.data || [],
         slug,
+        withSideBar: false,
       },
     };
   } catch (err) {

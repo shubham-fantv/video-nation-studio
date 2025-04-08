@@ -1,20 +1,144 @@
+// import { Box } from "@mui/material";
+// import Link from "next/link";
+// import React from "react";
+// import styles from "./styles";
+
+// function Sidebar({ children }) {
+//   return (
+//     <Box sx={styles.wrapper}>
+//       <Box sx={styles.sidebar}>
+//         <div class="flex h-screen">
+//           <aside class="p-6">
+//             <ul>
+//               <Link  legacyBehavior href={"/"} passHref>
+//                 <li
+//                   class="mb-6 cursor-pointer rounded-xl bg-[#FFFFFF0D] p-3 flex items-center"
+//                   style={{ border: "1px solid #3E3E3E" }}
+//                 >
+//                   <span class="text-white mr-3">
+//                     <svg
+//                       class="w-6 h-6 text-white"
+//                       xmlns="http://www.w3.org/2000/svg"
+//                       viewBox="0 0 24 24"
+//                       fill="currentColor"
+//                     >
+//                       <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+//                     </svg>
+//                   </span>
+//                   <span class="text-sm text-[#D2D2D2]">Home</span>
+//                 </li>
+//               </Link>
+//             </ul>
+
+//             <div class="mb-4">
+//               <h2 class="text-white text-base font-semibold px-4 mb-2">Studios</h2>
+//               <ul>
+//                 <li>
+//                   <a href="/video-studio" class="flex items-center pl-4 py-2">
+//                     <span class="text-white mr-3">
+//                       <svg
+//                         class="w-6 h-6 text-white"
+//                         xmlns="http://www.w3.org/2000/svg"
+//                         viewBox="0 0 24 24"
+//                         fill="currentColor"
+//                       >
+//                         <path d="M17 10.5V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-3.5l4 4v-11l-4 4z" />
+//                       </svg>
+//                     </span>
+//                     <span class="text-sm text-[#D2D2D2]">Video Studio</span>
+//                   </a>
+//                 </li>
+//               </ul>
+//               <ul>
+//                 <li>
+//                   <a href="/my-video" class="flex items-center pl-4 py-2">
+//                     <span class="text-white mr-3">
+//                       <svg
+//                         class="w-6 h-6 text-white"
+//                         xmlns="http://www.w3.org/2000/svg"
+//                         viewBox="0 0 24 24"
+//                         fill="currentColor"
+//                       >
+//                         <path d="M17 10.5V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-3.5l4 4v-11l-4 4z" />
+//                       </svg>
+//                     </span>
+//                     <span class="text-sm text-[#D2D2D2]">My Video</span>
+//                   </a>
+//                 </li>
+//               </ul>
+//             </div>
+
+//             <div class="mt-6">
+//               <h2 class="text-white text-base font-semibold px-4 mb-2">
+//                 Subscription and Billings
+//               </h2>
+//               <ul>
+//                 <li>
+//                   <a href="/subscription" class="flex items-center pl-4 py-2">
+//                     <span class="text-white mr-3">
+//                       <svg
+//                         class="w-6 h-6 text-white"
+//                         xmlns="http://www.w3.org/2000/svg"
+//                         viewBox="0 0 24 24"
+//                         fill="currentColor"
+//                       >
+//                         <path d="M22 10V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v4h20zM2 12v6c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-6H2z" />
+//                       </svg>
+//                     </span>
+//                     <span class="text-sm text-[#D2D2D2]">Manage Subscription</span>
+//                   </a>
+//                 </li>
+//               </ul>
+//             </div>
+//           </aside>
+//         </div>
+//       </Box>
+//       <Box sx={styles.mainWrapper}>
+//         <Box sx={styles.contentFavtv}>{children}</Box>
+//       </Box>
+//     </Box>
+//   );
+// }
+
+// export default Sidebar;
+
 import { Box } from "@mui/material";
 import Link from "next/link";
 import React from "react";
+import { useRouter } from "next/router";
 import styles from "./styles";
 
 function Sidebar({ children }) {
+  const router = useRouter();
+  const currentPath = router.pathname;
+
+  // Function to check if a link is active
+  const isActiveLink = (path) => {
+    return currentPath === path;
+  };
+
+  // Style for active menu items
+  const activeStyle = {
+    backgroundColor: "#FFFFFF0D",
+    border: "1px solid #3E3E3E",
+  };
+
   return (
     <Box sx={styles.wrapper}>
       <Box sx={styles.sidebar}>
-        <div class="flex h-screen">
-          <aside class="p-6">
+        <div className="flex h-screen">
+          <aside className="p-6">
             <ul>
-              <Link href={"/"} passHref>
-                <li class="mb-6 cursor-pointer rounded-xl bg-[#FFFFFF0D] p-3 flex items-center">
-                  <span class="text-white mr-3">
+              <Link legacyBehavior href="/" passHref>
+                <li
+                  className={`mb-3 cursor-pointer rounded-xl p-3 flex items-center ${
+                    isActiveLink("/") ? "bg-[#FFFFFF0D]" : ""
+                  }`}
+                  style={isActiveLink("/") ? activeStyle : {}}
+                >
+                  <span className="text-white mr-3">
                     <svg
-                      class="w-6 h-6 text-gray-400"
+                      className="w-6 h-6 text-white"
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
                       fill="currentColor"
@@ -22,84 +146,96 @@ function Sidebar({ children }) {
                       <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
                     </svg>
                   </span>
-                  <span class="text-gray-300">Home</span>
+                  <span className="text-sm text-[#D2D2D2]">Home</span>
                 </li>
               </Link>
             </ul>
 
-            <div class="mb-4">
-              <h2 class="text-white text-base font-semibold px-4 mb-2">Studios</h2>
+            <div className="mb-4">
+              <h2 className="text-white text-base font-semibold px-4 ">Studios</h2>
               <ul>
                 <li>
-                  <a href="/video-studio" class="flex items-center pl-4 py-2">
-                    <span class="text-white mr-3">
-                      <svg
-                        class="w-6 h-6 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
+                  <Link legacyBehavior href="/video-studio" passHref>
+                    <a className="flex items-center pl-4 pt-1">
+                      <div
+                        className={`flex items-center rounded-xl p-3 w-full ${
+                          isActiveLink("/video-studio") ? "bg-[#FFFFFF0D]" : ""
+                        }`}
+                        style={isActiveLink("/video-studio") ? activeStyle : {}}
                       >
-                        <path d="M17 10.5V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-3.5l4 4v-11l-4 4z" />
-                      </svg>
-                    </span>
-                    <span class="text-sm text-[#D2D2D2]">Video Studio</span>
-                  </a>
+                        <span className="text-white mr-3">
+                          <svg
+                            className="w-6 h-6 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                          >
+                            <path d="M17 10.5V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-3.5l4 4v-11l-4 4z" />
+                          </svg>
+                        </span>
+                        <span className="text-sm text-[#D2D2D2]">Video Studio</span>
+                      </div>
+                    </a>
+                  </Link>
                 </li>
               </ul>
               <ul>
                 <li>
-                  <a href="/my-video" class="flex items-center pl-4 py-2">
-                    <span class="text-white mr-3">
-                      <svg
-                        class="w-6 h-6 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
+                  <Link href="/my-video" passHref legacyBehavior>
+                    <div className="flex items-center pl-4 ">
+                      <div
+                        className={`flex items-center rounded-xl p-3 w-full ${
+                          isActiveLink("/my-video") ? "bg-[#FFFFFF0D]" : ""
+                        }`}
+                        style={isActiveLink("/my-video") ? activeStyle : {}}
                       >
-                        <path d="M17 10.5V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-3.5l4 4v-11l-4 4z" />
-                      </svg>
-                    </span>
-                    <span class="text-sm text-[#D2D2D2]">My Video</span>
-                  </a>
+                        <span className="text-white mr-3">
+                          <svg
+                            className="w-6 h-6 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                          >
+                            <path d="M17 10.5V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-3.5l4 4v-11l-4 4z" />
+                          </svg>
+                        </span>
+                        <span className="text-sm text-[#D2D2D2]">My Video</span>
+                      </div>
+                    </div>
+                  </Link>
                 </li>
               </ul>
             </div>
 
-            <div class="mt-6">
-              <h2 class="text-white text-base font-semibold px-4 mb-2">
+            <div className="">
+              <h2 className="text-white text-base font-semibold px-4 mb-2">
                 Subscription and Billings
               </h2>
               <ul>
                 <li>
-                  <a href="/subscription" class="flex items-center pl-4 py-2">
-                    <span class="text-white mr-3">
-                      <svg
-                        class="w-6 h-6 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
+                  <Link legacyBehavior href="/subscription" passHref>
+                    <a className="flex items-center pl-4 py-2">
+                      <div
+                        className={`flex items-center rounded-xl p-3 w-full ${
+                          isActiveLink("/subscription") ? "bg-[#FFFFFF0D]" : ""
+                        }`}
+                        style={isActiveLink("/subscription") ? activeStyle : {}}
                       >
-                        <path d="M22 10V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v4h20zM2 12v6c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-6H2z" />
-                      </svg>
-                    </span>
-                    <span class="text-sm text-[#D2D2D2]">Manage Subscription</span>
-                  </a>
+                        <span className="text-white mr-3">
+                          <svg
+                            className="w-6 h-6 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                          >
+                            <path d="M22 10V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v4h20zM2 12v6c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-6H2z" />
+                          </svg>
+                        </span>
+                        <span className="text-sm text-[#D2D2D2]">Manage Subscription</span>
+                      </div>
+                    </a>
+                  </Link>
                 </li>
-                {/* <li>
-                  <a href="#" class="flex items-center pl-4 py-2">
-                    <span class="text-white mr-3">
-                      <svg
-                        class="w-6 h-6 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                      >
-                        <path d="M20 12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2H4C2.9 2 2 2.9 2 4v6c0 1.1.9 2 2 2h16zM4 14c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-4c0-1.1-.9-2-2-2H4z" />
-                      </svg>
-                    </span>
-                    <span class="text-sm text-[#D2D2D2]">Rewards</span>
-                  </a>
-                </li> */}
               </ul>
             </div>
           </aside>

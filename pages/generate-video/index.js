@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import SectionCards from "../../src/component/SectionCards";
 import CommunityCreatedContent from "../../src/component/CommunityCreatedContent";
 import HowToCreate from "../../src/component/HowToCreate";
@@ -105,6 +105,12 @@ const index = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const textareaRef = useRef();
+
+  useEffect(() => {
+    textareaRef.current?.focus(); // Auto-focus on mount (for testing)
+  }, []);
+
   return (
     <div>
       {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
@@ -119,6 +125,7 @@ const index = () => {
       <div className="flex mt-8 w-full flex-col gap-4 rounded-lg bg-[#292929] p-4 shadow-md">
         {/* Text Area */}
         <textarea
+          ref={textareaRef}
           className="w-full rounded-md bg-transparent p-3 text-sm text-[#D2D2D2] text-normal placeholder-gray-500 focus:outline-none"
           placeholder="Enter your prompt..."
           rows={6}

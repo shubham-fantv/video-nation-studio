@@ -138,6 +138,7 @@ const CommunityCreatedContent = ({
 
   const [isOverflowing, setIsOverflowing] = useState(false);
   const scrollContainerRef = useRef(null);
+  const tabRefs = useRef({});
 
   useEffect(() => {
     const checkOverflow = () => {
@@ -152,62 +153,57 @@ const CommunityCreatedContent = ({
     return () => window.removeEventListener("resize", checkOverflow);
   }, []);
 
+  const scrollToEnd = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo({
+        left: scrollContainerRef.current.scrollWidth,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const scrollTabIntoView = (key) => {
+    const tabEl = tabRefs.current[key];
+    const container = scrollContainerRef.current;
+
+    if (tabEl && container) {
+      const tabRect = tabEl.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+
+      // Check if the tab is outside left or right
+      if (tabRect.left < containerRect.left) {
+        // Scroll left
+        container.scrollBy({
+          left: tabRect.left - containerRect.left - 16,
+          behavior: "smooth",
+        });
+      } else if (tabRect.right > containerRect.right) {
+        // Scroll right
+        container.scrollBy({
+          left: tabRect.right - containerRect.right + 16,
+          behavior: "smooth",
+        });
+      }
+    }
+  };
+
   return (
     <div className="text-white">
       <div>
         <h1 className="text-2xl font-bold mb-2">{title}</h1>
         <p className="text-base text-[#D2D2D2]">{subTitle}</p>
-
-        {/* {isTabEnabled && (
-          <div className="gap-4 mt-5">
-            <button
-              key={"all"}
-              className={`px-4 py-1 rounded-t-lg`}
-              onClick={() => setActiveTab("all")}
-              style={{
-                background:
-                  activeTab === "all"
-                    ? "linear-gradient(180deg, #6C6C6C 0%, #4B4B4B 100%)"
-                    : "transparent",
-                borderRadius: activeTab === "all" ? "100px" : "null",
-                border: activeTab === "all" ? "1px solid #FFFFFF4D" : "1px solid #1e1e1e",
-                color: activeTab === "all" ? "#FFF" : "#D2D2D2",
-              }}
-            >
-              All
-            </button>
-            {allTabs?.map((tab) => (
-              <button
-                key={tab}
-                className={`px-4 py-1 rounded-t-lg  m-1`}
-                onClick={() => setActiveTab(tab?.slug)}
-                style={{
-                  background:
-                    activeTab === tab?.slug
-                      ? "linear-gradient(180deg, #6C6C6C 0%, #4B4B4B 100%)"
-                      : "transparent",
-                  borderRadius: activeTab === tab?.slug ? "100px" : "null",
-                  border: activeTab === tab?.slug ? "1px solid #FFFFFF4D" : "1px solid #1e1e1e",
-                  color: activeTab === tab?.slug ? "#FFF" : "#D2D2D2",
-                }}
-              >
-                {tab?.name}
-              </button>
-            ))}
-          </div>
-        )} */}
-
         <div className="w-full">
-          {/* Tab container with horizontal scroll on small screens */}
           <div
             ref={scrollContainerRef}
-            className="flex gap-2 mt-5 overflow-x-auto pb-2 md:pb-0 md:flex-wrap"
+            className="flex gap-2 mt-5 overflow-x-auto pb-2 md:pb-0 "
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             <button
               key="all"
               className="px-4 py-1 rounded-full shrink-0"
-              onClick={() => setActiveTab("all")}
+              onClick={() => {
+                setActiveTab("all");
+              }}
               style={{
                 background:
                   activeTab === "all"
@@ -224,7 +220,11 @@ const CommunityCreatedContent = ({
               <button
                 key={tab.slug}
                 className="px-4 py-1 rounded-full shrink-0"
-                onClick={() => setActiveTab(tab.slug)}
+                ref={(el) => (tabRefs.current[tab.slug] = el)}
+                onClick={() => {
+                  setActiveTab(tab.slug);
+                  scrollTabIntoView(tab.slug);
+                }}
                 style={{
                   background:
                     activeTab === tab.slug
@@ -240,8 +240,13 @@ const CommunityCreatedContent = ({
           </div>
 
           {isOverflowing && (
-            <div className="flex justify-end mt-1 md:hidden">
-              <span className="text-xs text-gray-400">Scroll for more →</span>
+            <div className="flex justify-end mt-1">
+              <span
+                className="text-xs text-gray-400 pr-2 cursor-pointer"
+                onClick={() => scrollToEnd()}
+              >
+                Scroll for more →
+              </span>
             </div>
           )}
         </div>
