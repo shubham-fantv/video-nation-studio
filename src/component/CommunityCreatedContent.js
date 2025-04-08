@@ -279,7 +279,7 @@ const CommunityCreatedContent = ({
                     className="absolute bottom-[-75%] left-0 rounded-b-xl right-0 z-1  p-3  text-white bg-[#653EFF]"
                     style={{ zIndex: "999999" }}
                   >
-                    <h3 className="text-xl pb-2 font-medium truncate">{video?.title}</h3>
+                    <h3 className="text-lg pb-2 font-medium truncate">{video?.title}</h3>
                     <h3 className="text-sm font-medium line-clamp-2">
                       {video?.prompt ||
                         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"}
@@ -298,7 +298,7 @@ const CommunityCreatedContent = ({
                           display: "flex",
                           alignItems: "center",
                           display: "flex",
-                          padding: "8px 16px",
+                          padding: "6px 16px",
                           marginTop: "8px",
                         }}
                       >

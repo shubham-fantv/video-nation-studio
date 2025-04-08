@@ -182,7 +182,7 @@ function Sidebar({ children }) {
               <ul>
                 <li>
                   <Link href="/my-video" passHref legacyBehavior>
-                    <div className="flex items-center pl-4 ">
+                    <div className="flex items-center pl-4  cursor-pointer">
                       <div
                         className={`flex items-center rounded-xl p-3 w-full ${
                           isActiveLink("/my-video") ? "bg-[#FFFFFF0D]" : ""

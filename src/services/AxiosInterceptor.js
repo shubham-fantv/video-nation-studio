@@ -49,6 +49,7 @@ Api.interceptors.response.use(
 
     if (error?.response?.status === 401 || error?.response?.data?.errorCode === 403) {
       logout();
+      alert("Please sign in to continue");
     }
 
     return Promise.reject(error);
