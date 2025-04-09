@@ -17,8 +17,10 @@ const index = () => {
   const [uploading, setUploading] = useState(false);
   const [prompt, setPrompt] = useState("");
   const [image, setImage] = useState("");
+  const [aspectRatio, setAspectRatio] = useState("16:9");
   const [subTitle, setSubTitle] = useState("");
 
+  const aspectRatioData = ["16:9", "9:16"];
   const [isLoading, setLoading] = useState(false);
 
   useQuery(
@@ -82,11 +84,10 @@ const index = () => {
     }
 
     const requestBody = {
-      userId: "67e634cd3712275c56272853",
       prompt,
       imageInput: image ? [image] : [],
       creditsUsed: 20,
-      aspectRatio: "16:9",
+      aspectRatio: aspectRatio,
       caption: captionEnabled,
     };
     setLoading(true);
@@ -181,9 +182,18 @@ const index = () => {
             Caption
           </button>
           <button className="flex items-center gap-2 rounded-md bg-[#1E1E1E] px-4 py-2 text-sm text-[#D2D2D2] shadow-md transition-all hover:bg-gray-800">
-            <span className="w-4 h-3 border border-white rounded-sm"></span> 16:9
+            <span className="w-4 h-3 border border-white rounded-sm"></span>
+            <select
+              value={aspectRatio}
+              onChange={(e) => setAspectRatio(e.target.value)}
+              className="bg-[#1E1E1E]"
+              // className=" h-[48px] block w-full rounded-md bg-[#343434] border-0 py-2 pl-3 pr-10 text-white focus:ring-0 sm:text-sm appearance-none" // Add appearance-none
+            >
+              {aspectRatioData?.map((item) => (
+                <option key={item}>{item}</option>
+              ))}
+            </select>
           </button>
-
           <div className="flex-1 hidden md:block"></div>
 
           <button
