@@ -7,7 +7,6 @@ const index = () => {
 
   const checkToken = async (token) => {
     let data = await fetcher.get(`verify-payment?session_id=${token}`);
-    console.log("🚀 ~ checkToken ~ data:", data);
 
     // if (data.status == 204) {
     // } else {

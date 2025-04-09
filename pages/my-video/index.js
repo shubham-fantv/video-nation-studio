@@ -1,24 +1,11 @@
 import React, { useState } from "react";
 import { ArrowUpRight, Download } from "lucide-react";
 import { FANTV_API_URL } from "../../src/constant/constants";
-import { useQuery } from "react-query";
 import fetcher from "../../src/dataProvider";
+import { parseCookies } from "nookies";
 
-const VideoGrid = () => {
-  const [myVideo, setMyVideo] = useState([]);
-  useQuery(
-    `${FANTV_API_URL}/api/v1/ai-video?userId=67ebe5e10d3fe414d69baba5&page=1&limit=10`,
-    () =>
-      fetcher.get(
-        `${FANTV_API_URL}/api/v1/ai-video?userId=67ebe5e10d3fe414d69baba5&page=1&limit=10`
-      ),
-    {
-      refetchOnMount: "always",
-      onSuccess: ({ data }) => {
-        setMyVideo(data);
-      },
-    }
-  );
+const VideoGrid = ({ data }) => {
+  const [myVideo, setMyVideo] = useState(data);
 
   return (
     <div className=" min-h-screen w-full p-6">
@@ -28,10 +15,26 @@ const VideoGrid = () => {
         {myVideo?.map((video) => (
           <div key={video.id} className="flex flex-col">
             <div className="relative rounded-lg overflow-hidden mb-2">
-              <img src={video?.imageUrl} alt={video?.prompt} className="w-full h-48 object-cover" />
-              {/* <span className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white px-2 py-0.5 rounded-sm text-sm">
-                {video?.duration}
-              </span> */}
+              {video.finalVideoUrl ? (
+                <video
+                  src={video?.finalVideoUrl}
+                  muted
+                  // poster={video.imageUrl}
+                  controls
+                  loop
+                  playsInline
+                  onMouseEnter={(e) => e.target.play()}
+                  onMouseLeave={(e) => e.target.pause()}
+                  onEnded={(e) => e.target.play()}
+                  className="w-full  h-full object-cover rounded-xl"
+                />
+              ) : (
+                <img
+                  src={video?.imageUrl}
+                  alt={video?.prompt}
+                  className="w-full h-48 object-cover"
+                />
+              )}
             </div>
 
             <div className="flex justify-between items-center">
@@ -53,3 +56,28 @@ const VideoGrid = () => {
 };
 
 export default VideoGrid;
+
+export async function getServerSideProps(ctx) {
+  const cookie = parseCookies(ctx);
+
+  const authToken = cookie["aToken"];
+  const data = await fetcher.get(
+    `${FANTV_API_URL}/api/v1/ai-video?page=1&limit=100`,
+    {
+      headers: {
+        ...(!!authToken && { Authorization: `Bearer ${authToken}` }),
+      },
+    },
+    "default"
+  );
+
+  if (!data.success) {
+    return { notFound: true };
+  }
+
+  return {
+    props: {
+      data: data?.data || [],
+    },
+  };
+}

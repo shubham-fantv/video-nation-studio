@@ -55,7 +55,6 @@ const PricingPlans = () => {
     (obj) => fetcher.post(`${FANTV_API_URL}/create-checkout-session`, obj),
     {
       onSuccess: (response) => {
-        console.log("🚀 ~ PricingPlans ~ response:", response);
         window.location.href = response.url;
       },
       onError: (error) => {

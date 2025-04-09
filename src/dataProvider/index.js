@@ -27,7 +27,6 @@ const fetcher = {
     axiosInstanceType = "default",
     logConfigs = { log: false }
   ) => {
-    console.log("🚀 ~ url:", url);
     const instance = fetchAxiosInstanceType(axiosInstanceType);
     console.log("🚀 ~ instance:", instance);
     return instance

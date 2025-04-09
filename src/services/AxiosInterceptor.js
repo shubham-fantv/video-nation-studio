@@ -18,9 +18,13 @@ const getToken = () => {
 
 Api.interceptors.request.use(
   (request) => {
+    console.log("🚀 ~ request:", request.url);
+
     if (
-      (request.url.includes("v1/") || request.url.includes("v2/")) &&
-      (request.url.includes("kyc-login") || !request.url.includes("login"))
+      (request.url.includes("v1/") ||
+        request.url.includes("v2/") ||
+        request.url.includes("checkout")) &&
+      !request.url.includes("login")
     ) {
       const token = getToken();
       if (token) {
@@ -48,7 +52,7 @@ Api.interceptors.response.use(
     }
 
     if (error?.response?.status === 401 || error?.response?.data?.errorCode === 403) {
-      logout();
+      // logout();
       alert("Please sign in to continue");
     }
 

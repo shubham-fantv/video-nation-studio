@@ -46,7 +46,6 @@ const index = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log("🚀 ~ handleImageUpload ~ response:", response);
       setImage(response?.data?.data?.[0]?.url);
       setImagePreview(URL.createObjectURL(file));
     } catch (error) {

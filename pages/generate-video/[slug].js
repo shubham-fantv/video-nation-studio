@@ -10,9 +10,6 @@ import { quotes } from "../../src/utils/common";
 import { parseCookies } from "nookies";
 
 const Index = ({ masterData, template }) => {
-  console.log("🚀 ~ Index ~ template:", template);
-  console.log("🚀 ~ Index ~ masterData:", masterData);
-
   const [aspectRatio, setAspectRatio] = useState("16:9");
   const [avatar, setAvatar] = useState("Luke");
   const [voice, setVoice] = useState("Default");
@@ -77,11 +74,10 @@ const Index = ({ masterData, template }) => {
     }
 
     const requestBody = {
-      userId: "67e634cd3712275c56272853",
       prompt,
       imageInput: image ? [image] : [],
       creditsUsed: 20,
-      aspectRatio: "16:9",
+      aspectRatio: aspectRatio,
       caption: captionEnabled,
     };
     setLoading(true);
@@ -106,7 +102,7 @@ const Index = ({ masterData, template }) => {
         <div className="">
           <button
             onClick={() => router.back()}
-            className="flex items-center text-sm mb-6 text-gray-400"
+            className="flex items-center text-sm mb-6 text-white"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -230,101 +226,107 @@ const Index = ({ masterData, template }) => {
               </div>
             </div>
           </div>
-          <div className="mb-4">
-            <AvatarDropdown data={masterData?.avatars} />
-          </div>
+          {template?.avatar && (
+            <div className="mb-4">
+              <AvatarDropdown data={masterData?.avatars} />
+            </div>
+          )}
 
-          <div className="mb-4">
-            <h3 className="text-sm font-medium mb-2">AI Voice</h3>
-            <div className="relative ">
-              <select
-                value={voice}
-                onChange={(e) => setVoice(e.target._id)}
-                className=" h-[48px] block w-full rounded-md bg-[#343434] border-0 py-2 pl-10 pr-10 text-white focus:ring-0 sm:text-sm appearance-none"
-              >
-                {masterData?.voices?.map((item) => (
-                  <option key={item._id}>{item?.name}</option>
-                ))}
-              </select>
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <div className="h-6 w-6 rounded-full bg-gray-600 flex items-center justify-center">
+          {template?.voice && (
+            <div className="mb-4">
+              <h3 className="text-sm font-medium mb-2">AI Voice</h3>
+              <div className="relative ">
+                <select
+                  value={voice}
+                  onChange={(e) => setVoice(e.target._id)}
+                  className=" h-[48px] block w-full rounded-md bg-[#343434] border-0 py-2 pl-10 pr-10 text-white focus:ring-0 sm:text-sm appearance-none"
+                >
+                  {masterData?.voices?.map((item) => (
+                    <option key={item._id}>{item?.name}</option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <div className="h-6 w-6 rounded-full bg-gray-600 flex items-center justify-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4 text-white"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-white"
+                    className="h-5 w-5 text-gray-400"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
                     <path
                       fillRule="evenodd"
-                      d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z"
+                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                       clipRule="evenodd"
                     />
                   </svg>
                 </div>
               </div>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 text-gray-400"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
             </div>
-          </div>
+          )}
 
-          <div className="mb-4">
-            <h3 className="text-sm font-medium mb-2">Visibility</h3>
-            <div className="relative">
-              <select
-                value={visibility}
-                onChange={(e) => setVisibility(e.target.value)}
-                className=" h-[48px] block w-full rounded-md bg-[#343434] border-0 py-2 pl-10 pr-10 text-white focus:ring-0 sm:text-sm appearance-none"
-              >
-                {masterData?.visibilityOptions?.map((item) => (
-                  <option key={item}>{item}</option>
-                ))}
-              </select>
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <div className="h-6 w-6 rounded-full bg-gray-600 flex items-center justify-center">
+          {template?.visibility && (
+            <div className="mb-4">
+              <h3 className="text-sm font-medium mb-2">Visibility</h3>
+              <div className="relative">
+                <select
+                  value={visibility}
+                  onChange={(e) => setVisibility(e.target.value)}
+                  className=" h-[48px] block w-full rounded-md bg-[#343434] border-0 py-2 pl-10 pr-10 text-white focus:ring-0 sm:text-sm appearance-none"
+                >
+                  {masterData?.visibilityOptions?.map((item) => (
+                    <option key={item}>{item}</option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <div className="h-6 w-6 rounded-full bg-gray-600 flex items-center justify-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4 text-white"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-white"
+                    className="h-5 w-5 text-gray-400"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
                     <path
                       fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z"
+                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                       clipRule="evenodd"
                     />
                   </svg>
                 </div>
               </div>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 text-gray-400"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
             </div>
-          </div>
+          )}
 
-          <div className="text-xs text-gray-500 flex items-center mt-12">
+          {/* <div className="text-xs text-gray-500 flex items-center mt-12">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4 mr-1"
@@ -338,7 +340,7 @@ const Index = ({ masterData, template }) => {
               />
             </svg>
             All rights reserved
-          </div>
+          </div> */}
         </div>
       </div>
 
