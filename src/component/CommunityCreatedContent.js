@@ -276,7 +276,7 @@ const CommunityCreatedContent = ({
                 />
                 {hoveredIndex == video._id && (
                   <div
-                    className="absolute bottom-[-70%] left-0 rounded-b-xl right-0 z-1  p-3  text-white bg-[#653EFF]"
+                    className="absolute bottom-[-68%] left-0 rounded-b-xl right-0 z-1  p-3  text-white bg-[#292929]"
                     style={{ zIndex: "999999" }}
                   >
                     <h3 className="text-lg pb-2 font-medium truncate">{video?.title}</h3>
