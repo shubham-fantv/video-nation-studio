@@ -13,7 +13,7 @@ const index = () => {
 
   useQuery(
     `${FANTV_API_URL}/api/v1/categories`,
-    () => fetcher.get(`${FANTV_API_URL}/api/v1/categories?limit=30`),
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/categories?limit=50`),
     {
       refetchOnMount: "always",
       onSuccess: ({ data }) => {
@@ -25,8 +25,8 @@ const index = () => {
   const [templates, setTemplates] = useState([]);
 
   useQuery(
-    `${FANTV_API_URL}/api/v1/templates?limit=30`,
-    () => fetcher.get(`${FANTV_API_URL}/api/v1/templates?limit=30`),
+    `${FANTV_API_URL}/api/v1/templates?limit=50`,
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/templates?limit=50`),
     {
       refetchOnMount: "always",
       onSuccess: ({ data }) => {

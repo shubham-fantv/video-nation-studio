@@ -13,6 +13,7 @@ import { X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import LoginAndSignup from "../feature/Login";
 import UserProfileDropdown from "./UserProfileDropdown";
+import CLink from "../CLink";
 
 const LogOutNavItem = [
   {
@@ -45,6 +46,14 @@ const HeaderNew = ({ app }) => {
   const wallet = useWallet();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [walletAnchorEl, setWalletAnchorEl] = useState(null);
+  const router = useRouter();
+
+  const currentPath = router.pathname;
+
+  // Function to check if a link is active
+  const isActiveLink = (path) => {
+    return currentPath === path;
+  };
 
   const [isPopupVisible, setIsPopupVisible] = useState({
     login: false,
@@ -72,7 +81,6 @@ const HeaderNew = ({ app }) => {
     setIsPopupVisible({ login: true });
   };
 
-  const router = useRouter();
   const dispatch = useDispatch();
 
   const isMobile = useIsMobile(app?.deviceParsedInfo?.device?.isMobile);
@@ -170,8 +178,46 @@ const HeaderNew = ({ app }) => {
                 </Box>
               )}
             </Box>
+            <div
+              className={`text-white text-base font-medium m-auto ${
+                isActiveLink("/video-studio") ? "underline underline-offset-8" : ""
+              }`}
+            >
+              <CLink href="/video-studio">
+                <div>Video studio</div>
+              </CLink>
+            </div>
           </Box>
-          <Box>
+          <Box className="flex">
+            <CLink href={"/subscription"}>
+              <button
+                style={{
+                  background: "linear-gradient(180deg, #5A5A5A 0%, #1E1E1E 100%)",
+                  border: "1px solid #FFFFFF",
+                  borderRadius: "12px",
+                  color: "#FFF",
+                  fontSize: isMobile ? "14px" : "16px",
+                  textTransform: "capitalize",
+                  width: "max-content",
+                  display: "flex",
+                  alignItems: "center",
+                  marginRight: "20px",
+                  height: "40px",
+                  padding: isMobile ? "6px 14px" : "4px 16px",
+                }}
+              >
+                <img
+                  src="/images/video-ai/star.png"
+                  style={{
+                    height: isMobile ? "24px" : "28px",
+                    width: isMobile ? "24px" : "28px",
+                    marginRight: "6px",
+                  }}
+                  alt="star icon"
+                />
+                Upgrade Now
+              </button>
+            </CLink>
             {isLoggedIn ? (
               <UserProfileDropdown />
             ) : (

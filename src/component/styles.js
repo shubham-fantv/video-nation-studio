@@ -38,7 +38,7 @@ const styles = {
     minHeight: "100vh",
     // overflow: "clip",
     marginLeft: "270px",
-    paddingInline: "32px",
+    paddingRight: "32px",
     "@media(max-width:767px)": {
       marginLeft: "0px",
     },

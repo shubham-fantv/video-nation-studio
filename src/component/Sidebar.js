@@ -34,7 +34,7 @@
 //               <h2 class="text-white text-base font-semibold px-4 mb-2">Studios</h2>
 //               <ul>
 //                 <li>
-//                   <a href="/video-studio" class="flex items-center pl-4 py-2">
+//                   <a href="/video-studio" class="flex items-center  py-2">
 //                     <span class="text-white mr-3">
 //                       <svg
 //                         class="w-6 h-6 text-white"
@@ -51,7 +51,7 @@
 //               </ul>
 //               <ul>
 //                 <li>
-//                   <a href="/my-video" class="flex items-center pl-4 py-2">
+//                   <a href="/my-video" class="flex items-center  py-2">
 //                     <span class="text-white mr-3">
 //                       <svg
 //                         class="w-6 h-6 text-white"
@@ -74,7 +74,7 @@
 //               </h2>
 //               <ul>
 //                 <li>
-//                   <a href="/subscription" class="flex items-center pl-4 py-2">
+//                   <a href="/subscription" class="flex items-center  py-2">
 //                     <span class="text-white mr-3">
 //                       <svg
 //                         class="w-6 h-6 text-white"
@@ -134,19 +134,8 @@ function Sidebar({ children }) {
                   onClick={() => router.back()}
                   className="flex items-center text-sm p-3 text-white"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mr-2"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Back
+                  <img src="/images/icons/arrow-left.svg" />
+                  <span className="text-sm text-white pl-2">Back</span>
                 </button>
               </ul>
             )}
@@ -158,44 +147,26 @@ function Sidebar({ children }) {
                   }`}
                   style={isActiveLink("/") ? activeStyle : {}}
                 >
-                  <span className="text-white mr-3">
-                    <svg
-                      className="w-6 h-6 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                    >
-                      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-                    </svg>
-                  </span>
-                  <span className="text-sm text-[#D2D2D2]">Home</span>
+                  <img src="/images/icons/home.svg" />
+                  <span className="text-sm text-white pl-2">Home</span>
                 </li>
               </Link>
             </ul>
 
             <div className="mb-4">
-              <h2 className="text-white text-base font-semibold px-4 ">Studios</h2>
+              <h2 className="text-[#D2D2D2] text-base font-semibold px-4 ">Studios</h2>
               <ul>
                 <li>
                   <Link legacyBehavior href="/video-studio" passHref>
-                    <a className="flex items-center pl-4 pt-1">
+                    <a className="flex items-center  pt-1">
                       <div
                         className={`flex items-center rounded-xl p-3 w-full ${
                           isActiveLink("/video-studio") ? "bg-[#FFFFFF0D]" : ""
                         }`}
                         style={isActiveLink("/video-studio") ? activeStyle : {}}
                       >
-                        <span className="text-white mr-3">
-                          <svg
-                            className="w-6 h-6 text-white"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                          >
-                            <path d="M17 10.5V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-3.5l4 4v-11l-4 4z" />
-                          </svg>
-                        </span>
-                        <span className="text-sm text-[#D2D2D2]">Video Studio</span>
+                        <img src="/images/icons/video.svg" /> &nbsp;
+                        <span className="text-sm text-white pl-2">Video Studio</span>
                       </div>
                     </a>
                   </Link>
@@ -204,14 +175,14 @@ function Sidebar({ children }) {
               <ul>
                 <li>
                   <Link href="/my-video" passHref legacyBehavior>
-                    <div className="flex items-center pl-4  cursor-pointer">
+                    <div className="flex items-center   cursor-pointer">
                       <div
                         className={`flex items-center rounded-xl p-3 w-full ${
                           isActiveLink("/my-video") ? "bg-[#FFFFFF0D]" : ""
                         }`}
                         style={isActiveLink("/my-video") ? activeStyle : {}}
                       >
-                        <span className="text-white mr-3">
+                        <span className="text-white">
                           <svg
                             className="w-6 h-6 text-white"
                             xmlns="http://www.w3.org/2000/svg"
@@ -221,7 +192,7 @@ function Sidebar({ children }) {
                             <path d="M17 10.5V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-3.5l4 4v-11l-4 4z" />
                           </svg>
                         </span>
-                        <span className="text-sm text-[#D2D2D2]">My Video</span>
+                        <span className="text-sm text-white pl-2">My Video</span>
                       </div>
                     </div>
                   </Link>
@@ -230,30 +201,21 @@ function Sidebar({ children }) {
             </div>
 
             <div className="">
-              <h2 className="text-white text-base font-semibold px-4 mb-2">
+              <h2 className=" text-[#D2D2D2] text-base font-semibold px-4 mb-2">
                 Subscription and Billings
               </h2>
               <ul>
                 <li>
                   <Link legacyBehavior href="/subscription" passHref>
-                    <a className="flex items-center pl-4 py-2">
+                    <a className="flex items-center  py-2">
                       <div
                         className={`flex items-center rounded-xl p-3 w-full ${
                           isActiveLink("/subscription") ? "bg-[#FFFFFF0D]" : ""
                         }`}
                         style={isActiveLink("/subscription") ? activeStyle : {}}
                       >
-                        <span className="text-white mr-3">
-                          <svg
-                            className="w-6 h-6 text-white"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                          >
-                            <path d="M22 10V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v4h20zM2 12v6c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-6H2z" />
-                          </svg>
-                        </span>
-                        <span className="text-sm text-[#D2D2D2]">Manage Subscription</span>
+                        <img src="/images/icons/subscription.svg" />
+                        <span className="text-sm text-white pl-2">Manage Subscription</span>
                       </div>
                     </a>
                   </Link>

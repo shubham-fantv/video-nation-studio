@@ -8,7 +8,7 @@ const styles = {
     position: "sticky",
     top: "0",
     zIndex: "99",
-    padding: "0 15px",
+    padding: "0 40px",
     width: "100%",
     backgroundColor: "#1e1e1e",
 
@@ -28,7 +28,7 @@ const styles = {
       fontWeight: "400",
       width: "100%",
       // height: "75px",
-      maxWidth: "1296px",
+      // maxWidth: "1296px",
       "@media (max-width:1024px)": {
         width: "100%",
         maxWidth: "100%",

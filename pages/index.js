@@ -9,18 +9,7 @@ import fetcher from "../src/dataProvider";
 import { parseCookies } from "nookies";
 
 const Index = ({ homeFeed }) => {
-  // const [homeFeedData, setHomeFeedData] = useState([]);
-  // useQuery(
-  //   `${FANTV_API_URL}/api/v1/homefeed`,
-  //   () => fetcher.get(`${FANTV_API_URL}/api/v1/homefeed`),
-  //   {
-  //     refetchOnMount: "always",
-  //     onSuccess: ({ data }) => {
-  //       setHomeFeedData(data);
-  //     },
-  //   }
-  // );
-
+  console.log("🚀 ~ Index ~ homeFeed:", homeFeed);
   return (
     <div>
       <Box className="min-h-screen text-white">
@@ -49,7 +38,7 @@ const Index = ({ homeFeed }) => {
               <button
                 variant="outlined"
                 style={{ border: "1px solid #404040" }}
-                className="rounded-xl normal-case text-white px-3 py-2 text-base"
+                className="rounded-xl normal-case bg-[#FFFFFF1A] text-white px-3 py-2 text-base"
               >
                 Show all
               </button>

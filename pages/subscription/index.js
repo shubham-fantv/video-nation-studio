@@ -45,6 +45,7 @@ const PricingPlans = () => {
     `${FANTV_API_URL}/api/v1/subscription-plans`,
     () => fetcher.get(`${FANTV_API_URL}/api/v1/subscription-plans`),
     {
+      refetchOnMount: "always",
       onSuccess: ({ data }) => {
         setSubscriptions(data);
       },
@@ -71,10 +72,10 @@ const PricingPlans = () => {
   };
   return (
     <div className=" text-white min-h-screen flex flex-col items-center py-16">
-      <h1 className="text-4xl font-bold mb-2">Plans That Fit Your Needs</h1>
+      <h1 className="text-[32px] font-bold mb-2">Plans That Fit Your Needs</h1>
       <p className="text-xl mb-12 text-gray-300">VideoNation Creator Studio</p>
 
-      <div className="relative w-full max-w-6xl px-4">
+      <div className="relative w-full px-4">
         {/* Blue Circle Badge */}
         {plans.findIndex((plan) => plan.isHighlighted) >= 0 && (
           <div
@@ -83,7 +84,7 @@ const PricingPlans = () => {
           ></div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {subscriptions?.map((plan, index) => (
             <div
               key={index}
@@ -92,7 +93,7 @@ const PricingPlans = () => {
               }`}
               style={{ border: "1px solid #FFFFFF26" }}
             >
-              <h2 className="text-4xl font-bold mb-2">{plan.planName}</h2>
+              <h2 className="text-2xl font-bold mb-2">{plan.planName}</h2>
               <div className="mb-8">
                 <span className="text-xl">{plan.cost}/month</span>
                 {plan.billedType && (

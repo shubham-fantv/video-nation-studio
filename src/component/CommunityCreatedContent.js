@@ -192,10 +192,10 @@ const CommunityCreatedContent = ({
       <div>
         <h1 className="text-2xl font-bold mb-2">{title}</h1>
         <p className="text-base text-[#D2D2D2]">{subTitle}</p>
-        <div className="w-full">
+        <div className="w-full" style={{ maxWidth: "1120px" }}>
           <div
             ref={scrollContainerRef}
-            className="flex gap-2 mt-5 overflow-x-auto pb-2 md:pb-0 "
+            className="flex gap-2 mt-5 overflow-x-auto pb-1 md:pb-0 "
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             <button
@@ -238,22 +238,87 @@ const CommunityCreatedContent = ({
               </button>
             ))}
           </div>
-
-          {isOverflowing && (
-            <div className="flex justify-end mt-1">
-              <span
-                className="text-xs text-gray-400 pr-2 cursor-pointer"
-                onClick={() => scrollToEnd()}
-              >
-                Scroll for more →
-              </span>
-            </div>
-          )}
+          <div className="flex justify-end">
+            <span className="text-xs text-gray-400  cursor-pointer" onClick={() => scrollToEnd()}>
+              Scroll for more →
+            </span>
+          </div>
         </div>
       </div>
 
-      <div className="min-h-[50vh] mt-5">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 ">
+      <div className="mt-2 min-h-[50vh]">
+        <div>
+          <div className="columns-1 sm:columns-2 lg:columns-4 gap-3">
+            {templateData &&
+              templateData?.map((video, index) => (
+                <div
+                  key={index}
+                  onClick={() => router.push(`/generate-video/${video?._id}`)}
+                  className="mb-3 break-inside-avoid rounded-xl transition-transform relative"
+                  onMouseEnter={() => handleMouseEnter(video._id)}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  <div className="relative">
+                    <video
+                      src={video?.videoUrl}
+                      muted
+                      loop
+                      playsInline
+                      onMouseEnter={(e) => e.target.play()}
+                      onMouseLeave={(e) => e.target.pause()}
+                      onEnded={(e) => e.target.play()}
+                      className="w-full h-full object-cover rounded-xl"
+                    />
+                    {hoveredIndex === video._id && (
+                      <div
+                        className="absolute bottom-2 left-0 right-0 z-10 p-2 text-white bg-[#292929] rounded-b-xl"
+                        style={{ transform: "translateY(100%)" }}
+                      >
+                        <div className="flex">
+                          <div>
+                            <h3 className="text-base pb-1 font-medium line-clamp-1">
+                              {video?.title}
+                            </h3>
+                            <h3 className="text-xs font-normal line-clamp-2">
+                              {video?.prompt ||
+                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"}
+                            </h3>
+                          </div>
+
+                          <div className="flex justify-end">
+                            <button
+                              style={{
+                                background: "linear-gradient(180deg, #5A5A5A 0%, #1E1E1E 100%)",
+                                border: "1px solid #FFFFFF",
+                                borderRadius: "100px",
+                                color: "#FFF",
+                                fontSize: "14px",
+                                textTransform: "capitalize",
+                                width: "max-content",
+                                marginRight: "4px",
+                                display: "flex",
+                                alignItems: "center",
+                                padding: "2px 8px",
+                                alignSelf: "center",
+                              }}
+                            >
+                              <img
+                                src="/images/video-ai/star.png"
+                                style={{ height: "28px", width: "28px" }}
+                              />
+                              Recreate
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+          </div>
+        </div>
+
+        {/* <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {templateData &&
             templateData?.map((video, index) => (
               <div
@@ -313,7 +378,7 @@ const CommunityCreatedContent = ({
                 )}
               </div>
             ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );
