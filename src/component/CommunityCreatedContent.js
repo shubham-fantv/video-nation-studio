@@ -125,8 +125,8 @@ const CommunityCreatedContent = ({
   );
 
   useQuery(
-    `${FANTV_API_URL}/api/v1/templates/category/${activeTab}`,
-    () => fetcher.get(`${FANTV_API_URL}/api/v1/templates/category/${activeTab}`),
+    `${FANTV_API_URL}/api/v1/templates/category/${activeTab}?limit=50`,
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/templates/category/${activeTab}?limit=50`),
     {
       refetchOnMount: "always",
       enabled: isTabEnabled,
