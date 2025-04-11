@@ -147,7 +147,8 @@ import CLink from "../CLink";
 const videoCards = [
   {
     id: 2,
-    src: "/images/video-ai/video2.mp4",
+    // src: "/images/video-ai/video2.mp4",
+    src: "https://assets.artistfirst.in/uploads/1744316625596-e080895d-e9d6-4163-a201-e647be77ed55.mp4",
     poster: "/images/workshop-poster.jpg",
     width: 128,
     height: 169,
@@ -157,7 +158,8 @@ const videoCards = [
   },
   {
     id: 3,
-    src: "/images/video-ai/video2.mp4",
+    // src: "/images/video-ai/video2.mp4",
+    src: "https://assets.artistfirst.in/uploads/1744317048087-a6dbe479-315a-4d50-9727-25af5da837a0.mp4",
     poster: "/images/gallery-poster.jpg",
     width: 136,
     height: 192,
@@ -167,8 +169,9 @@ const videoCards = [
   },
   {
     id: 4,
-    src: "/images/video-ai/video2.mp4",
-    poster: "/images/vr-poster.jpg",
+    // src: "/images/video-ai/video2.mp4",
+    src: "https://video-assets.fantv.world/3ce2d405-db18-4882-b581-efb38fe118e9.mp4",
+    // poster: "/images/vr-poster.jpg",
     width: 212,
     height: 224,
     position: { left: "54%", bottom: "10%" },
@@ -245,7 +248,8 @@ function Banner() {
             lineHeight: { xs: "1.3", md: "normal" },
           }}
         >
-          Lorem ipsum dolor sit amet, <br /> consectetur
+          Transform your ideas into stunning
+          <br /> videos in seconds.
         </Typography>
         <Typography
           variant="body1"
@@ -253,7 +257,7 @@ function Banner() {
             fontSize: { xs: "14px", md: "16px" },
           }}
         >
-          Lorem ipsum dolor sit amet, consectetur
+          Beautiful. Fast. Custom.
         </Typography>
 
         <CLink href={"/generate-video"}>

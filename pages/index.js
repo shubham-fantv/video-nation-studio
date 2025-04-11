@@ -9,7 +9,6 @@ import fetcher from "../src/dataProvider";
 import { parseCookies } from "nookies";
 
 const Index = ({ homeFeed }) => {
-  console.log("🚀 ~ Index ~ homeFeed:", homeFeed);
   return (
     <div>
       <Box className="min-h-screen text-white">
