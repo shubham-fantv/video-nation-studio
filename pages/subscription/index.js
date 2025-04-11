@@ -95,7 +95,7 @@ const PricingPlans = () => {
             >
               <h2 className="text-2xl font-bold mb-2">{plan.planName}</h2>
               <div className="mb-8">
-                <span className="text-xl">{plan.cost}/month</span>
+                <span className="text-xl">${plan.cost}/month</span>
                 {plan.billedType && (
                   <p className="text-sm text-gray-400">Billed {plan.billedType}</p>
                 )}
@@ -111,7 +111,7 @@ const PricingPlans = () => {
               <ul className="space-y-4">
                 {plan?.benefits?.map((feature, featureIndex) => (
                   <li key={featureIndex} className="flex items-start">
-                    <span className="mr-2 mt-1">•</span>
+                    <span className="mr-2 ">•</span>
                     <span>{feature}</span>
                   </li>
                 ))}
