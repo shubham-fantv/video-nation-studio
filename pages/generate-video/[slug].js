@@ -122,7 +122,22 @@ const Index = ({ masterData, template }) => {
           <h2 className="text-lg font-medium mb-4">Settings</h2>
 
           <div className="mb-6">
-            <h3 className="text-sm font-medium mb-2">Prompt</h3>
+            <div className="flex justify-between">
+              <h3 className="text-sm font-medium mb-2">Prompt</h3>
+              <div className="flex items-center justify-between mb-4">
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={captionEnabled}
+                    onChange={() => setCaptionEnabled(!captionEnabled)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"></div>
+                </label>
+                <span className="text-sm font-medium pl-2">Caption</span>
+              </div>
+            </div>
+
             <div className="bg-[#343434] rounded-lg p-3 flex justify-between items-start">
               <textarea
                 className="w-full rounded-md bg-transparent  text-sm text-[#D2D2D2] text-normal placeholder-gray-500 focus:outline-none"
@@ -135,22 +150,9 @@ const Index = ({ masterData, template }) => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-medium">Caption</span>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={captionEnabled}
-                onChange={() => setCaptionEnabled(!captionEnabled)}
-                className="sr-only peer"
-              />
-              <div className="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"></div>
-            </label>
-          </div>
-
           <div className="mb-6">
             <h3 className="text-sm font-medium mb-2">Add Image</h3>
-            <label className="bg-[#343434] rounded-lg w-full h-[120px] flex items-center justify-center cursor-pointer">
+            <label className="bg-[#343434] rounded-lg w-[72px] h-[50px] flex items-center justify-center cursor-pointer">
               {uploading ? (
                 <div>Uploading...</div>
               ) : (
@@ -160,7 +162,7 @@ const Index = ({ masterData, template }) => {
                       <img
                         src={imagePreview}
                         alt="Uploaded"
-                        className="w-full h-[120px] object-fit rounded-md"
+                        className="w-full h-[50px] object-fit rounded-md"
                       />
                       <button
                         onClick={handleRemoveImage}
@@ -170,20 +172,7 @@ const Index = ({ masterData, template }) => {
                       </button>
                     </div>
                   ) : (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-12 w-12 text-gray-500"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1}
-                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
+                    <img src="/images/icons/plus.svg" />
                   )}
                 </>
               )}
@@ -325,6 +314,15 @@ const Index = ({ masterData, template }) => {
               </div>
             </div>
           )}
+
+          <div className="flex items-center justify-center  gap-4 mt-2 ">
+            <button
+              onClick={handleGenerateVideo}
+              className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-3 text-white shadow-md transition-all hover:brightness-110"
+            >
+              ✨ Generate
+            </button>
+          </div>
 
           {/* <div className="text-xs text-gray-500 flex items-center mt-12">
             <svg

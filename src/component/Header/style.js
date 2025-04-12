@@ -54,7 +54,7 @@ const styles = {
 
         "& .fan__tigerDekstopLogo": {
           " & img": {
-            width: "140px",
+            width: "190px",
             display: "block",
           },
 

@@ -130,28 +130,30 @@ function Sidebar({ children }) {
           <aside className="px-6">
             {!isActiveLink("/") && (
               <ul>
-                <button
-                  onClick={() => router.back()}
-                  className="flex items-center text-sm p-3 text-white"
-                >
-                  <img src="/images/icons/arrow-left.svg" />
-                  <span className="text-sm text-white pl-2">Back</span>
-                </button>
+                <div onClick={() => router.back()}>
+                  <li className={`mb-3 cursor-pointer rounded-xl p-3 flex items-center`}>
+                    <img src="/images/icons/arrow-left.svg" />
+                    <span className="text-sm text-white pl-2">Back</span>
+                  </li>
+                </div>
               </ul>
             )}
-            <ul>
-              <Link legacyBehavior href="/" passHref>
-                <li
-                  className={`mb-3 cursor-pointer rounded-xl p-3 flex items-center ${
-                    isActiveLink("/") ? "bg-[#FFFFFF0D]" : ""
-                  }`}
-                  style={isActiveLink("/") ? activeStyle : {}}
-                >
-                  <img src="/images/icons/home.svg" />
-                  <span className="text-sm text-white pl-2">Home</span>
-                </li>
-              </Link>
-            </ul>
+
+            {isActiveLink("/") && (
+              <ul>
+                <Link legacyBehavior href="/" passHref>
+                  <li
+                    className={`mb-3 cursor-pointer rounded-xl p-3 flex items-center ${
+                      isActiveLink("/") ? "bg-[#FFFFFF0D]" : ""
+                    }`}
+                    style={isActiveLink("/") ? activeStyle : {}}
+                  >
+                    <img src="/images/icons/home.svg" />
+                    <span className="text-sm text-white pl-2">Home</span>
+                  </li>
+                </Link>
+              </ul>
+            )}
 
             <div className="mb-4">
               <h2 className="text-[#D2D2D2] text-base font-semibold px-4 ">Studios</h2>
@@ -170,6 +172,37 @@ function Sidebar({ children }) {
                       </div>
                     </a>
                   </Link>
+                </li>
+                <li>
+                  <div>
+                    <div className="flex items-center  pt-1">
+                      <div className={`flex items-center rounded-xl p-3 w-full`}>
+                        <img
+                          style={{ height: "16px", width: "16px" }}
+                          src="/images/icons/image.svg"
+                        />{" "}
+                        &nbsp;
+                        <span className="text-sm text-white pl-2">Image Studio</span>
+                        <sup
+                          style={{
+                            marginLeft: "10px",
+                            contentVisibility: "auto",
+                            background: "linear-gradient(96.61deg, #FFA0FF 4.52%, #653EFF 102.26%)",
+                            right: "0px",
+                            padding: " 8px",
+                            borderRadius: " 10px",
+                            fontSize: "8px",
+                            fontWeight: 700,
+                            color: "rgb(255, 255, 255)",
+                            textAlign: "center",
+                            height: "max-content",
+                          }}
+                        >
+                          coming Soon
+                        </sup>
+                      </div>
+                    </div>
+                  </div>
                 </li>
               </ul>
               <ul>

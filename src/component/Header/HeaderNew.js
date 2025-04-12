@@ -171,13 +171,15 @@ const HeaderNew = ({ app }) => {
                   <img
                     src={"/images/logo.svg"}
                     alt="FanTV Logo"
-                    width={140}
+                    width={150}
                     loading="eager"
                     decoding="async"
                   />
                 </Box>
               )}
             </Box>
+          </Box>
+          <div className="flex">
             <div
               className={`text-white text-base font-medium m-auto ${
                 isActiveLink("/video-studio") ? "underline underline-offset-8" : ""
@@ -187,7 +189,29 @@ const HeaderNew = ({ app }) => {
                 <div>Video studio</div>
               </CLink>
             </div>
-          </Box>
+            <div className={`text-white flex ml-10 text-base font-medium m-auto`}>
+              <div>
+                <div>Image studio</div>
+              </div>
+              <sup
+                style={{
+                  marginLeft: "10px",
+                  contentVisibility: "auto",
+                  background: "linear-gradient(96.61deg, #FFA0FF 4.52%, #653EFF 102.26%)",
+                  right: "0px",
+                  padding: " 8px",
+                  borderRadius: " 10px",
+                  fontSize: "8px",
+                  fontWeight: 700,
+                  color: "rgb(255, 255, 255)",
+                  textAlign: "center",
+                  height: "max-content",
+                }}
+              >
+                coming Soon
+              </sup>
+            </div>
+          </div>
           <Box className="flex">
             <CLink href={"/subscription"}>
               <button
