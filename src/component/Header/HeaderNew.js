@@ -181,7 +181,7 @@ const HeaderNew = ({ app }) => {
           </Box>
           <div className="flex">
             <div
-              className={`text-white text-base font-medium m-auto ${
+              className={`text-black text-base font-medium m-auto ${
                 isActiveLink("/video-studio") ? "underline underline-offset-8" : ""
               }`}
             >
@@ -189,7 +189,7 @@ const HeaderNew = ({ app }) => {
                 <div>Video studio</div>
               </CLink>
             </div>
-            <div className={`text-white flex ml-10 text-base font-medium m-auto`}>
+            <div className={`text-black flex ml-10 text-base font-medium m-auto`}>
               <div>
                 <div>Image studio</div>
               </div>

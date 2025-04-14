@@ -1,74 +1,60 @@
 import React from "react";
 import { Box, Container, Grid, Typography, Link } from "@mui/material";
+import TwitterIcon from "@mui/icons-material/Twitter";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import TelegramIcon from "@mui/icons-material/Telegram";
+import Discord from "@mui/icons-material/Forum";
 
 const Footer = () => {
   return (
     <Box
       sx={{
-        py: { xs: "10px", md: "80px" },
-        alignItems: "center",
-        justifyContent: "center",
-        alignContent: "center",
+        bgcolor: "#FFF",
+        py: "50px",
         fontFamily: "Nohemi",
+        zIndex: 99999,
       }}
     >
       <Container>
-        <Grid container spacing={4}>
+        <Grid container>
           {/* Logo and Description Section */}
-          <Grid item xs={12} md={12}>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                mb: 2,
-              }}
-            >
-              <Box component="img" src="/images/logo.svg" alt="FANTV" sx={{ height: 66 }} />
+          <Grid item xs={12} md={8}>
+            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+              <Box component="img" src="/images/logo.svg" alt="FANTV" sx={{ height: 36 }} />
             </Box>
-            {/* <Typography variant="body2" sx={{ mb: 2, color: "#FFFDD4" }}>
+            <Typography variant="body2" sx={{ mb: 2, color: "#000" }}>
               The end-to-end platform for
               <br /> creators powered by AI
             </Typography>
-            <Typography variant="body2" sx={{ color: "#FFFDD480", fontSize: "0.875rem" }}>
+            <Typography variant="body2" sx={{ color: "#000", fontSize: "0.875rem" }}>
               Crafted with ❤️ by Spacekayak
             </Typography>
-            <Typography variant="body2" sx={{ color: "#FFFDD480", fontSize: "0.875rem" }}>
+            <Typography variant="body2" sx={{ color: "#000", fontSize: "0.875rem" }}>
               © 2024 FanTV. All rights reserved.
-            </Typography> */}
+            </Typography>
           </Grid>
 
-          {/* <Grid item xs={6} md={2}>
+          {/* Company Section */}
+          <Grid item xs={12} md={2} sx={{ fontFamily: "Nohemi", fontSize: "16px" }}>
             <Typography
               variant="h6"
-              sx={{
-                mb: { xs: 1.5, md: 2 },
-                color: "#FFFDD4",
-                fontFamily: "Nohemi",
-                fontSize: "16px",
-              }}
+              sx={{ mb: 2, color: "#000", fontFamily: "Nohemi", fontSize: "16px" }}
             >
               Company
             </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: { xs: 2, md: 4 },
-              }}
-            >
-              {["Whitepaper", "Airdrop", "Privacy", "Terms & Conditions"].map((text) => (
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              {["Privacy", "Terms & Conditions"].map((text) => (
                 <Link
                   key={text}
                   href="#"
                   sx={{
-                    color: "#FFFDD480",
+                    color: "#000",
                     fontWeight: "400",
                     fontSize: "16px",
                     fontFamily: "Nohemi",
                     textDecoration: "none",
                     "&:hover": {
-                      color: "#fff",
+                      color: "#000",
                     },
                   }}
                 >
@@ -78,46 +64,22 @@ const Footer = () => {
             </Box>
           </Grid>
 
-          <Grid item xs={6} md={2}>
+          {/* Keep in touch Section */}
+          <Grid item xs={12} md={2}>
             <Typography
               variant="h6"
-              sx={{
-                mb: { xs: 1.5, md: 2 },
-                color: "#FFFDD4",
-                fontFamily: "Nohemi",
-                fontSize: "16px",
-              }}
+              sx={{ mb: 2, color: "#000", fontFamily: "Nohemi", fontSize: "16px" }}
             >
               Keep in touch
             </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: { xs: 2, md: 2.6 },
-              }}
-            >
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2.6 }}>
               {[
                 {
                   text: "Twitter",
                   icon: <TwitterIcon />,
                   link: "https://twitter.com/FanTV_official",
                 },
-                {
-                  text: "Instagram",
-                  icon: <InstagramIcon />,
-                  link: "https://www.instagram.com/fantv.official/",
-                },
-                {
-                  text: "Telegram",
-                  icon: <TelegramIcon />,
-                  link: "https://t.me/FanTVDiscussions",
-                },
-                {
-                  text: "Discord",
-                  icon: <Discord />,
-                  link: "https://discord.gg/WTVgMFCceX",
-                },
+                { text: "Telegram", icon: <TelegramIcon />, link: "https://t.me/FanTVDiscussions" },
               ].map((item) => (
                 <Link
                   key={item.text}
@@ -125,16 +87,17 @@ const Footer = () => {
                   target="_blank"
                   rel="noreferrer"
                   sx={{
-                    color: "#FFFDD480",
+                    color: "#000",
                     textDecoration: "none",
                     display: "flex",
                     alignItems: "center",
                     fontWeight: "400",
                     fontSize: "16px",
                     fontFamily: "Nohemi",
+
                     gap: 1,
                     "&:hover": {
-                      color: "#fff",
+                      color: "#000",
                     },
                   }}
                 >
@@ -143,7 +106,7 @@ const Footer = () => {
                 </Link>
               ))}
             </Box>
-          </Grid> */}
+          </Grid>
         </Grid>
       </Container>
     </Box>

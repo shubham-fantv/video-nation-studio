@@ -38,10 +38,10 @@ const index = () => {
   return (
     <div>
       <div className="justify-center m-auto">
-        <h1 className="text-white text-[32px] font-semibold text-center leading-[38px]">
+        <h1 className="text-black text-[32px] font-semibold text-center leading-[38px]">
           Video Studio
         </h1>
-        <p className="text-[#D2D2D2] pt-2 text-base font-normal text-center">
+        <p className="text-gray-700 pt-2 text-base font-normal text-center">
           VideoNation Creator Studio
         </p>
         <Link

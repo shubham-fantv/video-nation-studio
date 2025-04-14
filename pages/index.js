@@ -11,12 +11,12 @@ import { parseCookies } from "nookies";
 const Index = ({ homeFeed }) => {
   return (
     <div>
-      <Box className="min-h-screen text-white">
+      <Box className="min-h-screen text-black bg-[#FFF]">
         <Banner />
         <Box className="mt-6">
           <Box className="flex justify-between items-center mb-4">
             <Box>
-              <Typography variant="h5" className="font-semibold text-2xl text-white">
+              <Typography variant="h5" className="font-semibold text-2xl text-black">
                 {homeFeed?.section1?.title}
               </Typography>
               <Typography variant="body2" className="text-normal pt-1 text-[#D2D2D2] text-base">
@@ -37,7 +37,7 @@ const Index = ({ homeFeed }) => {
               <button
                 variant="outlined"
                 style={{ border: "1px solid #404040" }}
-                className="rounded-xl normal-case bg-[#FFFFFF1A] text-white px-3 py-2 text-base"
+                className="rounded-xl normal-case bg-[#FFFFFF1A] text-black px-3 py-2 text-base"
               >
                 Show all
               </button>

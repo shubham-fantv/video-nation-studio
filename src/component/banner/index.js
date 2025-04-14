@@ -256,6 +256,7 @@ function Banner() {
           sx={{
             fontSize: { xs: "14px", md: "16px" },
           }}
+          className="text-white "
         >
           Beautiful. Fast. Custom.
         </Typography>

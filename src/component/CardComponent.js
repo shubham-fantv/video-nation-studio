@@ -21,10 +21,10 @@ function CardComponent({ data, redirect }) {
           />
         </Box>
         <Box className="pt-4 px-4">
-          <Typography variant="h6" className="font-regular mb-2 text-white text-base wrap-1-line">
+          <Typography variant="h6" className="font-regular mb-2 text-black text-base wrap-1-line">
             {data?.title}
           </Typography>
-          <Typography variant="body2" className=" font-regular text-[#D2D2D2] text-sm wrap-2-line">
+          <Typography variant="body2" className=" font-regular text-black text-sm wrap-2-line">
             {data?.description}
           </Typography>
           <button
