@@ -11,7 +11,10 @@ const defaultLayoutType = "DefaultLayout";
 
 const Layout = ({ asLayout = defaultLayoutType, children, ...rest }) => {
   const LayoutType = LayoutTypesMapping[asLayout];
-
+  console.log(window.location.pathname);
+  if (window.location.pathname.includes("/edit-video")) {
+    return <LayoutType withSideBar={false}>{children}</LayoutType>;
+  }
   return <LayoutType {...rest}>{children}</LayoutType>;
 };
 

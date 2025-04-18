@@ -33,11 +33,15 @@ const Index = ({ masterData, template }) => {
     formData.append("file", file);
 
     try {
-      const response = await axios.post("https://upload.artistfirst.in/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        "https://upload.artistfirst.in/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       setImage(response?.data?.data?.[0]?.url);
       setImagePreview(URL.createObjectURL(file));
     } catch (error) {
@@ -66,6 +70,11 @@ const Index = ({ masterData, template }) => {
       },
     }
   );
+
+  const handleEdit = () => {
+    console.log(template);
+    router.push(`/edit-video/${template?._id}`);
+  };
 
   const handleGenerateVideo = () => {
     if (!prompt.trim()) {
@@ -372,6 +381,12 @@ const Index = ({ masterData, template }) => {
               className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-3 text-white shadow-md transition-all hover:brightness-110"
             >
               ✨ Generate
+            </button>
+            <button
+              onClick={handleEdit}
+              className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-3 text-white shadow-md transition-all hover:brightness-110"
+            >
+              Edit
             </button>
           </div>
         </div>
