@@ -91,6 +91,7 @@ const index = () => {
       <div className="mt-12">
         <div className="w-full">
           <CommunityCreatedContent
+            activeSlug={router?.query?.slug}
             title="Use a Template"
             subTitle="Remix with our content created by our community"
             data={templates}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ArrowUpRight, Download } from "lucide-react";
 import { FANTV_API_URL } from "../../src/constant/constants";
 import fetcher from "../../src/dataProvider";
@@ -6,8 +6,14 @@ import { parseCookies } from "nookies";
 import { useRouter } from "next/router";
 
 const VideoGrid = ({ data }) => {
+  console.log("🚀 ~ VideoGrid ~ data:", data);
   const [myVideo, setMyVideo] = useState(data);
   const router = useRouter();
+
+  useEffect(() => {
+    setMyVideo(myVideo);
+  }, []);
+
   return (
     <div className=" min-h-screen w-full p-6">
       <h1 className="text-black text-3xl font-bold text-center mb-8">My Videos</h1>

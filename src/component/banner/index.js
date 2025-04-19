@@ -145,17 +145,17 @@ import { Box, Typography, useMediaQuery } from "@mui/material";
 import CLink from "../CLink";
 
 const videoCards = [
-  {
-    id: 2,
-    // src: "/images/video-ai/video2.mp4",
-    src: "https://assets.artistfirst.in/uploads/1744316625596-e080895d-e9d6-4163-a201-e647be77ed55.mp4",
-    poster: "/images/workshop-poster.jpg",
-    width: 128,
-    height: 169,
-    position: { left: "27%", bottom: "8%" },
-    rotation: "rotate(-5.97deg)",
-    zIndex: 1,
-  },
+  // {
+  //   id: 2,
+  //   // src: "/images/video-ai/video2.mp4",
+  //   src: "https://assets.artistfirst.in/uploads/1744316625596-e080895d-e9d6-4163-a201-e647be77ed55.mp4",
+  //   poster: "/images/workshop-poster.jpg",
+  //   width: 128,
+  //   height: 169,
+  //   position: { left: "27%", bottom: "8%" },
+  //   rotation: "rotate(-5.97deg)",
+  //   zIndex: 1,
+  // },
   {
     id: 3,
     // src: "/images/video-ai/video2.mp4",
@@ -172,7 +172,7 @@ const videoCards = [
     // src: "/images/video-ai/video2.mp4",
     src: "https://video-assets.fantv.world/3ce2d405-db18-4882-b581-efb38fe118e9.mp4",
     // poster: "/images/vr-poster.jpg",
-    width: 212,
+    width: 140,
     height: 224,
     position: { left: "54%", bottom: "10%" },
     rotation: "rotate(11.16deg)",
@@ -302,13 +302,44 @@ function Banner() {
           right: { xs: 0, md: "auto" },
         }}
       >
+        <Box
+          sx={{
+            width: 169 * videoScale,
+            height: 128 * videoScale,
+            borderRadius: "12px",
+            overflow: "hidden",
+            boxShadow: "0px 4px 10px 0px #00000073",
+            transform: isMobile ? "scale(0.7)" : "none",
+            transformOrigin: "bottom right",
+          }}
+        >
+          <video
+            ref={(el) => (videoRefs.current[0] = el)}
+            width={200}
+            height={113}
+            muted
+            playsInline
+            loop
+            poster={"/images/workshop-poster.jpg"}
+            style={{ objectFit: "contain" }}
+          >
+            <source
+              src={
+                "https://assets.artistfirst.in/uploads/1744316625596-e080895d-e9d6-4163-a201-e647be77ed55.mp4"
+              }
+              type="video/mp4"
+            />
+            Your browser does not support the video tag.
+          </video>
+        </Box>
+
         {videoCards.map((card, index) => (
           <Box
             key={card.id}
             sx={{
               width: card.width * videoScale,
               height: card.height * videoScale,
-              borderRadius: "16px",
+              borderRadius: "12px",
               overflow: "hidden",
               boxShadow: "0px 4px 10px 0px #00000073",
               transform: isMobile ? "scale(0.7)" : "none",
@@ -316,8 +347,8 @@ function Banner() {
             }}
           >
             <video
-              ref={(el) => (videoRefs.current[index] = el)}
-              width={card.width}
+              ref={(el) => (videoRefs.current[index + 1] = el)}
+              width={169}
               height={card.height}
               muted
               playsInline

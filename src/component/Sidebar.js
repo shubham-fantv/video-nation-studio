@@ -132,7 +132,10 @@ function Sidebar({ children }) {
               <ul>
                 <div onClick={() => router.back()}>
                   <li className={`mb-3 cursor-pointer rounded-xl p-3 flex items-center`}>
-                    <img src="/images/icons/arrow-left.svg" />
+                    <img
+                      style={{ height: "20px", width: "20px" }}
+                      src="/images/icons/arrow-left.svg"
+                    />
                     <span className="text-sm text-black pl-2">Back</span>
                   </li>
                 </div>
@@ -144,7 +147,7 @@ function Sidebar({ children }) {
                 <Link legacyBehavior href="/" passHref>
                   <li
                     className={`mb-3 cursor-pointer rounded-xl p-3 flex items-center ${
-                      isActiveLink("/") ? "bg-[#FFFFFF0D]" : ""
+                      isActiveLink("/") ? "bg-[#FFFFFF0D] font-bold" : ""
                     }`}
                     style={isActiveLink("/") ? activeStyle : {}}
                   >
@@ -163,11 +166,16 @@ function Sidebar({ children }) {
                     <a className="flex items-center  pt-1">
                       <div
                         className={`flex items-center rounded-xl p-3 w-full ${
-                          isActiveLink("/video-studio") ? "bg-[#FFFFFF0D]" : ""
+                          isActiveLink("/video-studio") ? "bg-[#FFFFFF0D] font-bold" : ""
                         }`}
                         style={isActiveLink("/video-studio") ? activeStyle : {}}
                       >
-                        <img src="/images/icons/video.svg" className="w-6 h-6 text-black" /> &nbsp;
+                        <img
+                          style={{ height: "20px", width: "20px" }}
+                          src="/images/icons/video.svg"
+                          className="text-black"
+                        />{" "}
+                        &nbsp;
                         <span className="text-sm text-black pl-2">Video Studio</span>
                       </div>
                     </a>
@@ -178,15 +186,15 @@ function Sidebar({ children }) {
                     <div className="flex items-center  pt-1">
                       <div className={`flex items-center rounded-xl p-3 w-full`}>
                         <img
-                          style={{ height: "16px", width: "16px" }}
+                          style={{ height: "20px", width: "20px" }}
                           src="/images/icons/image.svg"
-                          className="w-6 h-6 text-black"
+                          className="text-black"
                         />{" "}
                         &nbsp;
                         <span className="text-sm text-black pl-2">Image Studio</span>
                         <sup
                           style={{
-                            marginLeft: "10px",
+                            marginLeft: "4px",
                             contentVisibility: "auto",
                             background: "linear-gradient(96.61deg, #FFA0FF 4.52%, #653EFF 102.26%)",
                             right: "0px",
@@ -212,7 +220,7 @@ function Sidebar({ children }) {
                     <div className="flex items-center   cursor-pointer">
                       <div
                         className={`flex items-center rounded-xl p-3 w-full ${
-                          isActiveLink("/my-video") ? "bg-[#FFFFFF0D]" : ""
+                          isActiveLink("/my-video") ? "bg-[#FFFFFF0D] font-bold" : ""
                         }`}
                         style={isActiveLink("/my-video") ? activeStyle : {}}
                       >
@@ -244,11 +252,14 @@ function Sidebar({ children }) {
                     <a className="flex items-center  py-2">
                       <div
                         className={`flex items-center rounded-xl p-3 w-full ${
-                          isActiveLink("/subscription") ? "bg-[#FFFFFF0D]" : ""
+                          isActiveLink("/subscription") ? "bg-[#FFFFFF0D] font-bold" : ""
                         }`}
                         style={isActiveLink("/subscription") ? activeStyle : {}}
                       >
-                        <img src="/images/icons/subscription.svg" />
+                        <img
+                          style={{ height: "20px", width: "20px" }}
+                          src="/images/icons/subscription.svg"
+                        />
                         <span className="text-sm text-black pl-2">Manage Subscription</span>
                       </div>
                     </a>

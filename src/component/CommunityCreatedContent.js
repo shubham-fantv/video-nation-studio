@@ -1,85 +1,3 @@
-// import React, { useState } from "react";
-
-// const CommunityCreatedContent = () => {
-//   const [activeTab, setActiveTab] = useState("All");
-
-//   const tabs = ["All", "Product Videos", "Music Videos", "Marketing Reels", "Explainer Videos"];
-
-//   const images = [
-//     { src: "/images/video-ai/images/img1.png", height: 200 },
-//     { src: "/images/video-ai/images/img2.png", height: 300 },
-//     { src: "/images/video-ai/images/img3.png", height: 400 },
-//     { src: "/images/video-ai/images/img2.png", height: 450 },
-//     { src: "/images/video-ai/images/img1.png", height: 400 },
-//     { src: "/images/video-ai/images/img3.png", height: 200 },
-//     { src: "/images/video-ai/images/img1.png", height: 400 },
-//     { src: "/images/video-ai/images/img1.png", height: 450 },
-//     { src: "/images/video-ai/images/img1.png", height: 500 },
-//     { src: "/images/video-ai/images/img3.png", height: 300 },
-//     { src: "/images/video-ai/images/img2.png", height: 200 },
-//     { src: "/images/video-ai/images/img2.png", height: 300 },
-//     { src: "/images/video-ai/images/img3.png", height: 300 },
-//     { src: "/images/video-ai/images/img1.png", height: 300 },
-//     { src: "/images/video-ai/images/img1.png", height: 450 },
-//     { src: "/images/video-ai/images/img1.png", height: 300 },
-//   ];
-
-//   return (
-//     <div className="mt-8 text-white">
-//       <div className="mb-6">
-//         <h1 className="text-4xl font-bold mb-4">Community Created Content</h1>
-//         <p className="text-lg text-gray-300 mb-6">
-//           Remix with our content created by our community
-//         </p>
-
-//         {/* Tabs */}
-//         <div className="flex space-x-4 border-b border-gray-800">
-//           {tabs.map((tab) => (
-//             <button
-//               key={tab}
-//               className={`pb-3 ${
-//                 activeTab === tab
-//                   ? "text-white border-b-2 border-white"
-//                   : "text-gray-500 hover:text-gray-300"
-//               }`}
-//               onClick={() => setActiveTab(tab)}
-//             >
-//               {tab}
-//             </button>
-//           ))}
-//         </div>
-//       </div>
-
-//       {/* Masonry-like Grid */}
-//       <div className="grid grid-cols-3 gap-4 auto-rows-auto">
-//         {images.map((image, index) => (
-//           <div
-//             key={index}
-//             className={`
-//               overflow-hidden rounded-xl
-//             `}
-//             style={{
-//               gridRow: `span ${Math.ceil(image.height / 100)}`,
-//             }}
-//           >
-//             <img
-//               src={image.src}
-//               alt={`Community content ${index + 1}`}
-//               className="w-full h-full object-cover"
-//               style={{
-//                 height: `${image.height}px`,
-//                 aspectRatio: "16/9",
-//               }}
-//             />
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default CommunityCreatedContent;
-
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
 import { useQuery } from "react-query";
@@ -91,8 +9,9 @@ const CommunityCreatedContent = ({
   subTitle = "Remix with our content created by our community",
   isTabEnabled = false,
   data,
+  activeSlug = "all",
 }) => {
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeTab, setActiveTab] = useState(activeSlug);
 
   const [templateData, setTemplateData] = useState(data);
 
@@ -100,6 +19,22 @@ const CommunityCreatedContent = ({
   const [allTabs, setAllTabs] = useState([]);
 
   const [hoveredIndex, setHoveredIndex] = useState(null);
+
+  useEffect(() => {
+    setActiveTab(activeSlug);
+  }, [activeSlug]);
+
+  useEffect(() => {
+    setActiveTab(activeTab);
+  }, [activeTab]);
+
+  useEffect(() => {
+    if (activeTab) {
+      setTimeout(() => {
+        refetch();
+      }, 0);
+    }
+  }, [activeTab]);
 
   const handleMouseEnter = (index) => {
     setHoveredIndex(index);
@@ -124,7 +59,7 @@ const CommunityCreatedContent = ({
     }
   );
 
-  useQuery(
+  const { refetch } = useQuery(
     `${FANTV_API_URL}/api/v1/templates/category/${activeTab}?limit=50`,
     () => fetcher.get(`${FANTV_API_URL}/api/v1/templates/category/${activeTab}?limit=50`),
     {
@@ -170,15 +105,12 @@ const CommunityCreatedContent = ({
       const tabRect = tabEl.getBoundingClientRect();
       const containerRect = container.getBoundingClientRect();
 
-      // Check if the tab is outside left or right
       if (tabRect.left < containerRect.left) {
-        // Scroll left
         container.scrollBy({
           left: tabRect.left - containerRect.left - 16,
           behavior: "smooth",
         });
       } else if (tabRect.right > containerRect.right) {
-        // Scroll right
         container.scrollBy({
           left: tabRect.right - containerRect.right + 16,
           behavior: "smooth",
@@ -190,8 +122,8 @@ const CommunityCreatedContent = ({
   return (
     <div className="text-black">
       <div>
-        <h1 className="text-2xl font-bold mb-2">{title}</h1>
-        <p className="text-base text-[#D2D2D2]">{subTitle}</p>
+        <h1 className="text-2xl font-bold mb-2 text-[#1E1E1E]">{title}</h1>
+        <p className="text-base text-[#1E1E1EB2]">{subTitle}</p>
         <div className="w-full" style={{ maxWidth: "1120px" }}>
           <div
             ref={scrollContainerRef}
@@ -209,7 +141,7 @@ const CommunityCreatedContent = ({
                   activeTab === "all"
                     ? "linear-gradient(180deg, #6C6C6C 0%, #4B4B4B 100%)"
                     : "transparent",
-                border: activeTab === "all" ? "1px solid #FFFFFF4D" : "1px solid #1e1e1e",
+                border: activeTab === "all" ? "1px solid #FFFFFF4D" : "none",
                 color: activeTab === "all" ? "#FFF" : "#000",
               }}
             >
@@ -230,7 +162,7 @@ const CommunityCreatedContent = ({
                     activeTab === tab.slug
                       ? "linear-gradient(180deg, #6C6C6C 0%, #4B4B4B 100%)"
                       : "transparent",
-                  border: activeTab === tab.slug ? "1px solid #FFFFFF4D" : "1px solid #1e1e1e",
+                  border: activeTab === tab.slug ? "1px solid #FFFFFF4D" : "none",
                   color: activeTab === tab.slug ? "#FFF" : "#000",
                 }}
               >
@@ -238,15 +170,15 @@ const CommunityCreatedContent = ({
               </button>
             ))}
           </div>
-          <div className="flex justify-end">
+          {/* <div className="flex justify-end">
             <span className="text-xs text-gray-400  cursor-pointer" onClick={() => scrollToEnd()}>
               Scroll for more →
             </span>
-          </div>
+          </div> */}
         </div>
       </div>
 
-      <div className="mt-2 min-h-[50vh]">
+      <div className="mt-4 min-h-[50vh]">
         <div>
           <div className="columns-1 sm:columns-2 lg:columns-4 gap-4">
             {templateData &&

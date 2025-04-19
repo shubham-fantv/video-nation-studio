@@ -16,10 +16,10 @@ const Index = ({ homeFeed }) => {
         <Box className="mt-6">
           <Box className="flex justify-between items-center mb-4">
             <Box>
-              <Typography variant="h5" className="font-semibold text-2xl text-black">
+              <Typography variant="h5" className="font-semibold text-2xl text-[#1E1E1E]">
                 {homeFeed?.section1?.title}
               </Typography>
-              <Typography variant="body2" className="text-normal pt-1 text-[#D2D2D2] text-base">
+              <Typography variant="body2" className="text-normal pt-1 text-[#1E1E1EB2] text-base">
                 {homeFeed?.section1?.subtitle}
               </Typography>
             </Box>

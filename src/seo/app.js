@@ -18,7 +18,7 @@ const AppSeo = () => {
           },
           {
             property: "al:android:app_name",
-            content: "FanTV",
+            content: "VideoNation",
           },
           {
             property: "al:android:package",

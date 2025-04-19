@@ -161,7 +161,7 @@ const HeaderNew = ({ app }) => {
                 <Box className="fan__TigerMobileLogo">
                   <img
                     src={"/images/logo.svg"}
-                    alt="mobile FanTV logo"
+                    alt="mobile VideoNation logo"
                     loading="eager"
                     decoding="async"
                   />
@@ -170,7 +170,7 @@ const HeaderNew = ({ app }) => {
                 <Box className="fan__tigerDekstopLogo">
                   <img
                     src={"/images/logo.svg"}
-                    alt="FanTV Logo"
+                    alt="VideoNation Logo"
                     width={150}
                     loading="eager"
                     decoding="async"

@@ -10,6 +10,13 @@ import axios from "axios";
 import Loading from "../../src/component/common/Loading/loading";
 import { quotes } from "../../src/utils/common";
 
+const aspectRatioSizeMap = {
+  "1:1": "w-4 h-4",
+  "4:5": "w-10 h-12",
+  "9:16": "w-4 h-3",
+  "16:9": "w-3 h-4",
+};
+
 const index = () => {
   const [captionEnabled, setCaptionEnabled] = useState(false);
   const [templates, setTemplates] = useState([]);
@@ -20,7 +27,7 @@ const index = () => {
   const [aspectRatio, setAspectRatio] = useState("16:9");
   const [subTitle, setSubTitle] = useState("");
 
-  const aspectRatioData = ["16:9", "9:16"];
+  const aspectRatioData = ["16:9", "9:16", "1:1"];
   const [isLoading, setLoading] = useState(false);
 
   useQuery(
@@ -122,11 +129,11 @@ const index = () => {
           Transform words into cinematic visuals—effortless, fast, and stunning.
         </p>
       </div>
-      <div className="flex mt-8 w-full flex-col gap-4 rounded-lg bg-[#292929] p-4 shadow-md">
+      <div className="flex mt-8 w-full flex-col gap-4 rounded-lg bg-[#F5F5F5] p-4 shadow-md">
         {/* Text Area */}
         <textarea
           ref={textareaRef}
-          className="w-full rounded-md bg-transparent p-3 text-sm text-[#D2D2D2] text-normal placeholder-gray-500 focus:outline-none"
+          className="w-full rounded-md bg-[#F5F5F5] p-3 text-sm text-[#D2D2D2] text-normal placeholder-gray-500 focus:outline-none"
           placeholder="Enter your prompt..."
           rows={6}
           value={prompt}
@@ -152,7 +159,7 @@ const index = () => {
 
         {/* Buttons & Toggle */}
         <div className="flex  flex-wrap items-center gap-3">
-          <label className="flex items-center gap-2 rounded-md bg-[#1E1E1E] px-4 py-2 text-sm text-[#D2D2D2] shadow-md transition-all hover:bg-gray-800 cursor-pointer">
+          <label className="flex items-center gap-2 rounded-md bg-[#FFF] px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all cursor-pointer">
             + Add image
             <input
               type="file"
@@ -166,10 +173,10 @@ const index = () => {
           {/* Caption Toggle */}
           <button
             onClick={() => setCaptionEnabled(!captionEnabled)}
-            className="flex items-center gap-2 rounded-md bg-[#1E1E1E] px-4 py-2 text-sm text-[#D2D2D2] shadow-md transition-all"
+            className="flex items-center gap-2 rounded-md bg-[#FFF] px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all"
           >
             <div
-              className={`w-6 h-4 flex items-center rounded-full bg-gray-700 p-1 transition-all ${
+              className={`w-6 h-4 flex items-center rounded-full p-1 transition-all ${
                 captionEnabled ? "bg-green-500" : "bg-gray-500"
               }`}
             >
@@ -181,13 +188,17 @@ const index = () => {
             </div>
             Caption
           </button>
-          <button className="flex items-center gap-2 rounded-md bg-[#1E1E1E] px-4 py-2 text-sm text-[#D2D2D2] shadow-md transition-all hover:bg-gray-800">
-            <span className="w-4 h-3 border border-white rounded-sm"></span>
+          <button className="flex items-center gap-2 rounded-md bg-[#FFF] px-4 py-2 text-sm text-[1E1E1E] shadow-md transition-all">
+            {/* <span className="w-4 h-3 border border-black rounded-sm"></span> */}
+            <span
+              className={`border border-black rounded-sm ${
+                aspectRatioSizeMap[aspectRatio] || "w-4 h-3"
+              }`}
+            ></span>
             <select
               value={aspectRatio}
               onChange={(e) => setAspectRatio(e.target.value)}
-              className="bg-[#1E1E1E]"
-              // className=" h-[48px] block w-full rounded-md bg-[#343434] border-0 py-2 pl-3 pr-10 text-black focus:ring-0 sm:text-sm appearance-none" // Add appearance-none
+              className="bg-[#FFF]"
             >
               {aspectRatioData?.map((item) => (
                 <option key={item}>{item}</option>
@@ -198,7 +209,7 @@ const index = () => {
 
           <button
             onClick={() => handleGenerateVideo()}
-            className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-2 text-black shadow-md transition-all hover:brightness-110"
+            className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-2 text-white shadow-md transition-all hover:brightness-110"
           >
             ✨ Generate
           </button>

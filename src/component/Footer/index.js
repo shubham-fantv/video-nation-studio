@@ -30,7 +30,7 @@ const Footer = () => {
               Crafted with ❤️ by Spacekayak
             </Typography>
             <Typography variant="body2" sx={{ color: "#000", fontSize: "0.875rem" }}>
-              © 2024 FanTV. All rights reserved.
+              © 2024 VideoNation. All rights reserved.
             </Typography>
           </Grid>
 

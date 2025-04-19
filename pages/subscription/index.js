@@ -71,9 +71,9 @@ const PricingPlans = () => {
     initiatePayment(requestBody);
   };
   return (
-    <div className=" text-white min-h-screen flex flex-col items-center py-16">
+    <div className=" text-black min-h-screen flex flex-col items-center py-16">
       <h1 className="text-[32px] font-bold mb-2">Plans That Fit Your Needs</h1>
-      <p className="text-xl mb-12 text-gray-300">VideoNation Creator Studio</p>
+      <p className="text-xl mb-12 text-[#1E1E1EB2]">VideoNation Creator Studio</p>
 
       <div className="relative w-full px-4">
         {/* Blue Circle Badge */}
@@ -91,7 +91,7 @@ const PricingPlans = () => {
               className={`bg-[#FFFFFF0D] rounded-lg p-8 flex flex-col relative ${
                 plan.isHighlighted ? "z-0" : ""
               }`}
-              style={{ border: "1px solid #FFFFFF26" }}
+              style={{ border: "1px solid #FFFFFF26", boxShadow: "1px 4px 4px 3px #00000040" }}
             >
               <h2 className="text-2xl font-bold mb-2">{plan.planName}</h2>
               <div className="mb-8">
@@ -103,7 +103,7 @@ const PricingPlans = () => {
 
               <button
                 onClick={() => handleChoosePlan(plan)}
-                className={`py-3 px-4 rounded-md mb-8 font-medium bg-white text-black hover:bg-gray-100`}
+                className={`py-3 px-4 rounded-md mb-8 font-medium bg-[#1E1E1E] text-white`}
               >
                 Choose Plan
               </button>
