@@ -3,7 +3,7 @@ import React from "react";
 const HowToCreate = () => {
   return (
     <div>
-      <h1 className="text-2xl text-white font-bold mb-2">Steps to create a video</h1>
+      <h1 className="text-2xl text-black font-bold mb-2">Steps to create a video</h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6  pt-6">
         {/* Step 1 */}
         <div className="bg-[#292929] rounded-lg px-6 pt-6 relative border border-[#FFFFFF26] ">

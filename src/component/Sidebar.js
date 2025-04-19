@@ -133,7 +133,7 @@ function Sidebar({ children }) {
                 <div onClick={() => router.back()}>
                   <li className={`mb-3 cursor-pointer rounded-xl p-3 flex items-center`}>
                     <img src="/images/icons/arrow-left.svg" />
-                    <span className="text-sm text-white pl-2">Back</span>
+                    <span className="text-sm text-black pl-2">Back</span>
                   </li>
                 </div>
               </ul>
@@ -149,14 +149,14 @@ function Sidebar({ children }) {
                     style={isActiveLink("/") ? activeStyle : {}}
                   >
                     <img src="/images/icons/home.svg" />
-                    <span className="text-sm text-white pl-2">Home</span>
+                    <span className="text-sm text-black pl-2">Home</span>
                   </li>
                 </Link>
               </ul>
             )}
 
             <div className="mb-4">
-              <h2 className="text-[#D2D2D2] text-base font-semibold px-4 ">Studios</h2>
+              <h2 className="text-black text-base font-semibold px-4 ">Studios</h2>
               <ul>
                 <li>
                   <Link legacyBehavior href="/video-studio" passHref>
@@ -167,8 +167,8 @@ function Sidebar({ children }) {
                         }`}
                         style={isActiveLink("/video-studio") ? activeStyle : {}}
                       >
-                        <img src="/images/icons/video.svg" /> &nbsp;
-                        <span className="text-sm text-white pl-2">Video Studio</span>
+                        <img src="/images/icons/video.svg" className="w-6 h-6 text-black" /> &nbsp;
+                        <span className="text-sm text-black pl-2">Video Studio</span>
                       </div>
                     </a>
                   </Link>
@@ -180,9 +180,10 @@ function Sidebar({ children }) {
                         <img
                           style={{ height: "16px", width: "16px" }}
                           src="/images/icons/image.svg"
+                          className="w-6 h-6 text-black"
                         />{" "}
                         &nbsp;
-                        <span className="text-sm text-white pl-2">Image Studio</span>
+                        <span className="text-sm text-black pl-2">Image Studio</span>
                         <sup
                           style={{
                             marginLeft: "10px",
@@ -215,9 +216,9 @@ function Sidebar({ children }) {
                         }`}
                         style={isActiveLink("/my-video") ? activeStyle : {}}
                       >
-                        <span className="text-white">
+                        <span className="text-black">
                           <svg
-                            className="w-6 h-6 text-white"
+                            className="w-6 h-6 text-black"
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             fill="currentColor"
@@ -225,7 +226,7 @@ function Sidebar({ children }) {
                             <path d="M17 10.5V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-3.5l4 4v-11l-4 4z" />
                           </svg>
                         </span>
-                        <span className="text-sm text-white pl-2">My Video</span>
+                        <span className="text-sm text-black pl-2">My Video</span>
                       </div>
                     </div>
                   </Link>
@@ -234,7 +235,7 @@ function Sidebar({ children }) {
             </div>
 
             <div className="">
-              <h2 className=" text-[#D2D2D2] text-base font-semibold px-4 mb-2">
+              <h2 className=" text-black text-base font-semibold px-4 mb-2">
                 Subscription and Billings
               </h2>
               <ul>
@@ -248,7 +249,7 @@ function Sidebar({ children }) {
                         style={isActiveLink("/subscription") ? activeStyle : {}}
                       >
                         <img src="/images/icons/subscription.svg" />
-                        <span className="text-sm text-white pl-2">Manage Subscription</span>
+                        <span className="text-sm text-black pl-2">Manage Subscription</span>
                       </div>
                     </a>
                   </Link>

@@ -38,16 +38,16 @@ const index = () => {
   return (
     <div>
       <div className="justify-center m-auto">
-        <h1 className="text-white text-[32px] font-semibold text-center leading-[38px]">
+        <h1 className="text-black text-[32px] font-semibold text-center leading-[38px]">
           Video Studio
         </h1>
-        <p className="text-[#D2D2D2] pt-2 text-base font-normal text-center">
+        {/* <p className="text-gray-700 pt-2 text-base font-normal text-center">
           VideoNation Creator Studio
-        </p>
+        </p> */}
         <Link
           href={"/generate-video"}
           passHref
-          className="flex items-center justify-center w-full mt-4"
+          className="flex items-center justify-center w-full mt-6"
         >
           <div
             className="flex w-full items-center rounded-full border-2 border-gray-500 bg-white "

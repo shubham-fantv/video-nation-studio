@@ -10,7 +10,7 @@ const VideoGrid = ({ data }) => {
   const router = useRouter();
   return (
     <div className=" min-h-screen w-full p-6">
-      <h1 className="text-white text-3xl font-bold text-center mb-8">My Videos</h1>
+      <h1 className="text-black text-3xl font-bold text-center mb-8">My Videos</h1>
 
       {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {myVideo?.map((video) => (
@@ -55,13 +55,13 @@ const VideoGrid = ({ data }) => {
 
       <div className="mt-2 min-h-[50vh]" style={{ maxWidth: "1120px" }}>
         <div>
-          <div className="columns-1 sm:columns-2 lg:columns-4 gap-3">
+          <div className="columns-1 sm:columns-2 lg:columns-4 gap-4">
             {myVideo &&
               myVideo?.map((video, index) => (
                 <div
                   key={index}
                   onClick={() => router.push(`/generate-video/${video?._id}`)}
-                  className="mb-3 break-inside-avoid rounded-xl transition-transform relative cursor-pointer"
+                  className="mb-6 break-inside-avoid rounded-xl transition-transform relative cursor-pointer"
                 >
                   <div className="relative">
                     <video

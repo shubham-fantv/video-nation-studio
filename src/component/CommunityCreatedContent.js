@@ -188,7 +188,7 @@ const CommunityCreatedContent = ({
   };
 
   return (
-    <div className="text-white">
+    <div className="text-black">
       <div>
         <h1 className="text-2xl font-bold mb-2">{title}</h1>
         <p className="text-base text-[#D2D2D2]">{subTitle}</p>
@@ -210,7 +210,7 @@ const CommunityCreatedContent = ({
                     ? "linear-gradient(180deg, #6C6C6C 0%, #4B4B4B 100%)"
                     : "transparent",
                 border: activeTab === "all" ? "1px solid #FFFFFF4D" : "1px solid #1e1e1e",
-                color: activeTab === "all" ? "#FFF" : "#D2D2D2",
+                color: activeTab === "all" ? "#FFF" : "#000",
               }}
             >
               All
@@ -231,7 +231,7 @@ const CommunityCreatedContent = ({
                       ? "linear-gradient(180deg, #6C6C6C 0%, #4B4B4B 100%)"
                       : "transparent",
                   border: activeTab === tab.slug ? "1px solid #FFFFFF4D" : "1px solid #1e1e1e",
-                  color: activeTab === tab.slug ? "#FFF" : "#D2D2D2",
+                  color: activeTab === tab.slug ? "#FFF" : "#000",
                 }}
               >
                 {tab.name}
@@ -248,13 +248,13 @@ const CommunityCreatedContent = ({
 
       <div className="mt-2 min-h-[50vh]">
         <div>
-          <div className="columns-1 sm:columns-2 lg:columns-4 gap-3">
+          <div className="columns-1 sm:columns-2 lg:columns-4 gap-4">
             {templateData &&
               templateData?.map((video, index) => (
                 <div
                   key={index}
                   onClick={() => router.push(`/generate-video/${video?._id}`)}
-                  className="mb-3 break-inside-avoid rounded-xl transition-transform relative"
+                  className="mb-6 break-inside-avoid rounded-xl transition-transform relative"
                   onMouseEnter={() => handleMouseEnter(video._id)}
                   onMouseLeave={handleMouseLeave}
                 >

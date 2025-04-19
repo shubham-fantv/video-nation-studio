@@ -115,7 +115,7 @@ const index = () => {
     <div>
       {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
       <div className="justify-center m-auto">
-        <h1 className="text-white text-[32px] font-semibold text-center leading-[38px]">
+        <h1 className="text-black text-[32px] font-semibold text-center leading-[38px]">
           AI-Powered Video Creation. Just Type & Generate
         </h1>
         <p className="text-[#D2D2D2] pt-2 text-base font-normal text-center">
@@ -143,7 +143,7 @@ const index = () => {
             />
             <button
               onClick={handleRemoveImage}
-              className="absolute top-0 right-0 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center"
+              className="absolute top-0 right-0 bg-red-600 text-black rounded-full w-6 h-6 flex items-center justify-center"
             >
               ✖
             </button>
@@ -187,7 +187,7 @@ const index = () => {
               value={aspectRatio}
               onChange={(e) => setAspectRatio(e.target.value)}
               className="bg-[#1E1E1E]"
-              // className=" h-[48px] block w-full rounded-md bg-[#343434] border-0 py-2 pl-3 pr-10 text-white focus:ring-0 sm:text-sm appearance-none" // Add appearance-none
+              // className=" h-[48px] block w-full rounded-md bg-[#343434] border-0 py-2 pl-3 pr-10 text-black focus:ring-0 sm:text-sm appearance-none" // Add appearance-none
             >
               {aspectRatioData?.map((item) => (
                 <option key={item}>{item}</option>
@@ -198,7 +198,7 @@ const index = () => {
 
           <button
             onClick={() => handleGenerateVideo()}
-            className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-2 text-white shadow-md transition-all hover:brightness-110"
+            className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-2 text-black shadow-md transition-all hover:brightness-110"
           >
             ✨ Generate
           </button>

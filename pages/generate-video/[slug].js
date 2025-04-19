@@ -105,13 +105,13 @@ const Index = ({ masterData, template }) => {
   }, []);
 
   return (
-    <div className="flex text-white gap-8">
+    <div className="flex text-black gap-8">
       {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
       <div className="w-64 bg-[#FFFFFF0D] p-4">
         <div className="">
           <button
             onClick={() => router.back()}
-            className="flex items-center text-sm mb-6 text-white"
+            className="flex items-center text-sm mb-6 text-black"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
