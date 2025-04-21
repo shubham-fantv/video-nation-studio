@@ -211,7 +211,7 @@ const CommunityCreatedContent = ({
                             <h3 className="text-base pb-1 font-medium line-clamp-1">
                               {video?.title}
                             </h3>
-                            <h3 className="text-xs font-normal line-clamp-2">
+                            <h3 className="text-xs font-normal line-clamp-2 pr-1">
                               {video?.prompt ||
                                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"}
                             </h3>
@@ -249,68 +249,6 @@ const CommunityCreatedContent = ({
               ))}
           </div>
         </div>
-
-        {/* <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {templateData &&
-            templateData?.map((video, index) => (
-              <div
-                key={video?._id}
-                onClick={() => router.push(`/generate-video/${video?._id}`)}
-                className="rounded-xl  cursor-pointer relative"
-                onMouseEnter={() => handleMouseEnter(video._id)}
-                onMouseLeave={handleMouseLeave}
-              >
-                <video
-                  src={video?.videoUrl}
-                  muted
-                  poster={video.imageUrl}
-                  loop
-                  playsInline
-                  onMouseEnter={(e) => e.target.play()}
-                  onMouseLeave={(e) => e.target.pause()}
-                  onEnded={(e) => e.target.play()}
-                  className="w-full  h-full object-cover rounded-xl"
-                />
-                {hoveredIndex == video._id && (
-                  <div
-                    className="absolute bottom-[-68%] left-0 rounded-b-xl right-0 z-1  p-3  text-white bg-[#292929]"
-                    style={{ zIndex: "999999" }}
-                  >
-                    <h3 className="text-lg pb-2 font-medium truncate">{video?.title}</h3>
-                    <h3 className="text-sm font-medium line-clamp-2">
-                      {video?.prompt ||
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"}
-                    </h3>
-                    <div className="flex justify-end">
-                      <button
-                        style={{
-                          background: "linear-gradient(180deg, #5A5A5A 0%, #1E1E1E 100%)",
-                          border: "1px solid #FFFFFF",
-                          borderRadius: "100px",
-                          color: "#FFF",
-                          fontSize: "16px",
-                          textTransform: "capitalize",
-                          width: "max-content",
-                          marginRight: "4px",
-                          display: "flex",
-                          alignItems: "center",
-                          display: "flex",
-                          padding: "6px 16px",
-                          marginTop: "8px",
-                        }}
-                      >
-                        <img
-                          src="/images/video-ai/star.png"
-                          style={{ height: "28px", width: "28px" }}
-                        />
-                        Recreate
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-        </div> */}
       </div>
     </div>
   );

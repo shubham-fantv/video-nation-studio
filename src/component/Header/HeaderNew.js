@@ -161,7 +161,7 @@ const HeaderNew = ({ app }) => {
                 <Box className="fan__TigerMobileLogo">
                   <img
                     src={"/images/logo.svg"}
-                    alt="mobile VideoNation logo"
+                    alt="mobile FanTV logo"
                     loading="eager"
                     decoding="async"
                   />
@@ -170,7 +170,7 @@ const HeaderNew = ({ app }) => {
                 <Box className="fan__tigerDekstopLogo">
                   <img
                     src={"/images/logo.svg"}
-                    alt="VideoNation Logo"
+                    alt="FanTV Logo"
                     width={150}
                     loading="eager"
                     decoding="async"
@@ -179,7 +179,7 @@ const HeaderNew = ({ app }) => {
               )}
             </Box>
           </Box>
-          <div className="flex">
+          <div className="flex hidden md:flex">
             <div
               className={`text-black text-base font-medium m-auto ${
                 isActiveLink("/video-studio") ? "underline underline-offset-8" : ""
@@ -212,15 +212,16 @@ const HeaderNew = ({ app }) => {
               </sup>
             </div>
           </div>
-          <Box className="flex">
+
+          <Box className="flex hidden md:flex">
             <CLink href={"/subscription"}>
               <button
                 style={{
-                  background: "linear-gradient(180deg, #5A5A5A 0%, #1E1E1E 100%)",
-                  border: "1px solid #FFFFFF",
+                  // background: "linear-gradient(180deg, #5A5A5A 0%, #1E1E1E 100%)",
+                  border: "1px solid #262626",
                   borderRadius: "12px",
-                  color: "#FFF",
-                  fontSize: isMobile ? "14px" : "16px",
+                  color: "#000",
+                  fontSize: "14px",
                   textTransform: "capitalize",
                   width: "max-content",
                   display: "flex",
@@ -231,7 +232,7 @@ const HeaderNew = ({ app }) => {
                 }}
               >
                 <img
-                  src="/images/video-ai/star.png"
+                  src="/images/icons/blackStar.svg"
                   style={{
                     height: isMobile ? "24px" : "28px",
                     width: isMobile ? "24px" : "28px",
@@ -258,9 +259,10 @@ const HeaderNew = ({ app }) => {
               </Box>
             )}
           </Box>
+
           {isMobile && (
             <Box sx={styles.profileNavBar} onClick={toggleDrawer(true)}>
-              <MenuIcon style={{ color: "white", marginTop: "8px", marginLeft: "10px" }} />
+              <MenuIcon style={{ color: "black", marginTop: "8px", marginLeft: "10px" }} />
             </Box>
           )}
           <Drawer anchor="right" open={isMenuOpen} onClose={toggleDrawer(false)}>

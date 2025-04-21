@@ -33,15 +33,11 @@ const Index = ({ masterData, template }) => {
     formData.append("file", file);
 
     try {
-      const response = await axios.post(
-        "https://upload.artistfirst.in/upload",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.post("https://upload.artistfirst.in/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       setImage(response?.data?.data?.[0]?.url);
       setImagePreview(URL.createObjectURL(file));
     } catch (error) {
@@ -104,6 +100,26 @@ const Index = ({ masterData, template }) => {
     return () => clearInterval(interval);
   }, []);
 
+  const handleDownloadVideo = async () => {
+    if (!template?.videoUrl) return;
+
+    try {
+      const response = await fetch(template.videoUrl);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "video.mp4";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Failed to download video:", error);
+    }
+  };
   return (
     <div className="flex text-black gap-8">
       {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
@@ -111,7 +127,7 @@ const Index = ({ masterData, template }) => {
         <div className="">
           <button
             onClick={() => router.back()}
-            className="flex items-center text-sm mb-6 text-black"
+            className="flex items-center text-sm mb-4 text-black"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -128,7 +144,7 @@ const Index = ({ masterData, template }) => {
             Back
           </button>
 
-          <h2 className="text-lg font-medium mb-4">Settings</h2>
+          {/* <h2 className="text-lg font-medium mb-4">Settings</h2> */}
 
           <div className="mb-6">
             <div className="flex justify-between">
@@ -147,9 +163,9 @@ const Index = ({ masterData, template }) => {
               </div>
             </div>
 
-            <div className="bg-[#343434] rounded-lg p-3 flex justify-between items-start">
+            <div className="bg-[#F5F5F5] rounded-lg p-3 flex justify-between items-start">
               <textarea
-                className="w-full rounded-md bg-transparent  text-sm text-[#D2D2D2] text-normal placeholder-gray-500 focus:outline-none"
+                className="w-full rounded-md bg-transparent  text-sm text-[#1E1E1EB2] text-normal placeholder-gray-500 focus:outline-none"
                 placeholder="Enter your prompt..."
                 rows={5}
                 value={prompt}
@@ -161,7 +177,7 @@ const Index = ({ masterData, template }) => {
 
           <div className="mb-6">
             <h3 className="text-sm font-medium mb-2">Add Image</h3>
-            <label className="bg-[#343434] rounded-lg w-[72px] h-[50px] flex items-center justify-center cursor-pointer">
+            <label className="bg-[#F5F5F5] rounded-lg w-[72px] h-[50px] flex items-center justify-center cursor-pointer">
               {uploading ? (
                 <div>Uploading...</div>
               ) : (
@@ -202,7 +218,7 @@ const Index = ({ masterData, template }) => {
               <select
                 value={aspectRatio}
                 onChange={(e) => setAspectRatio(e.target.value)}
-                className=" h-[48px] block w-full rounded-md bg-[#343434] border-0 py-2 pl-3 pr-10 text-white focus:ring-0 sm:text-sm appearance-none" // Add appearance-none
+                className=" h-[48px] block w-full rounded-md bg-[#F5F5F5] border-0 py-2 pl-3 pr-10 text-[#1E1E1EB2] focus:ring-0 sm:text-sm appearance-none" // Add appearance-none
               >
                 {masterData?.aspectRatios?.map((item) => (
                   <option key={item}>{item}</option>
@@ -352,11 +368,11 @@ const Index = ({ masterData, template }) => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center p-8 bg-[#292929] px-[150px] py-[120px] ">
+      <div className="flex-1 flex flex-col items-center p-8 bg-[#F5F5F5] px-[80px] py-[80px] ">
         <div className="w-full">
           {/* Video Preview */}
-          <div className="bg-[#FFFFFF0D] rounded-lg aspect-video flex items-center justify-center mb-4">
-            <div className="text-gray-500">
+          <div className="bg-[#FFFFFF0D] rounded-lg aspect-video flex items-center justify-center mb-4 m-auto max-h-[450px]">
+            <div className="text-gray-500 ">
               <video
                 src={template?.videoUrl}
                 muted
@@ -368,7 +384,7 @@ const Index = ({ masterData, template }) => {
                 // onMouseEnter={(e) => e.target.play()}
                 // onMouseLeave={(e) => e.target.pause()}
                 // onEnded={(e) => e.target.play()}
-                className="w-full h-full object-cover rounded-xl"
+                className="w-full h-full object-contain rounded-xl max-h-[450px]"
               />
               {/* <img src="/images/video-play.png " className="h-[150px] w-[150px]" /> */}
             </div>
@@ -377,10 +393,10 @@ const Index = ({ masterData, template }) => {
           {/* Controls */}
           <div className="flex items-center justify-center  gap-4 mt-2">
             <button
-              onClick={handleGenerateVideo}
+              onClick={handleDownloadVideo}
               className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-3 text-white shadow-md transition-all hover:brightness-110"
             >
-              ✨ Generate
+              ✨ Download
             </button>
             <button
               onClick={handleEdit}

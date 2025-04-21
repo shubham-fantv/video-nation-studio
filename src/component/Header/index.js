@@ -179,7 +179,7 @@ const RevampHeader = ({ app }) => {
                 <Box className="fan__TigerMobileLogo">
                   <img
                     src={"/images/logo.svg"}
-                    alt="mobile VideoNation logo"
+                    alt="mobile FanTV logo"
                     loading="eager"
                     decoding="async"
                   />
@@ -188,7 +188,7 @@ const RevampHeader = ({ app }) => {
                 <Box className="fan__tigerDekstopLogo">
                   <img
                     src={"/images/logo.svg"}
-                    alt="VideoNation Logo"
+                    alt="FanTV Logo"
                     width={140}
                     loading="eager"
                     decoding="async"

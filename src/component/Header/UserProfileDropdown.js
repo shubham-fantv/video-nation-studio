@@ -30,7 +30,8 @@ const UserProfileDropdown = () => {
       {/* User profile button */}
       <button
         onClick={toggleDropdown}
-        className="flex items-center space-x-2 rounded-xl h-[40px] bg-white p-1 md:p-2 shadow-sm hover:bg-gray-50 transition-colors"
+        style={{ border: "1px solid #262626" }}
+        className="flex items-center space-x-2 rounded-xl h-[40px]  p-1 md:p-2 shadow-sm hover:bg-gray-50 transition-colors"
       >
         <Image
           source={{ uri: userData?.profilePicture || "/images/icons/user.png" }}

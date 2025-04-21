@@ -125,7 +125,7 @@ const index = () => {
         <h1 className="text-black text-[32px] font-semibold text-center leading-[38px]">
           AI-Powered Video Creation. Just Type & Generate
         </h1>
-        <p className="text-[#D2D2D2] pt-2 text-base font-normal text-center">
+        <p className="text-[#1E1E1EB2] pt-2 text-base font-normal text-center">
           Transform words into cinematic visuals—effortless, fast, and stunning.
         </p>
       </div>
@@ -133,7 +133,7 @@ const index = () => {
         {/* Text Area */}
         <textarea
           ref={textareaRef}
-          className="w-full rounded-md bg-[#F5F5F5] p-3 text-sm text-[#D2D2D2] text-normal placeholder-gray-500 focus:outline-none"
+          className="w-full rounded-md bg-[#F5F5F5] p-3 text-sm text-[#1E1E1EB2] text-normal placeholder-gray-500 focus:outline-none"
           placeholder="Enter your prompt..."
           rows={6}
           value={prompt}

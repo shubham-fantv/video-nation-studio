@@ -20,7 +20,7 @@ const Footer = () => {
           {/* Logo and Description Section */}
           <Grid item xs={12} md={8}>
             <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-              <Box component="img" src="/images/logo.svg" alt="FANTV" sx={{ height: 36 }} />
+              <Box component="img" src="/images/logo.svg" alt="videoNation" sx={{ height: 36 }} />
             </Box>
             <Typography variant="body2" sx={{ mb: 2, color: "#000" }}>
               The end-to-end platform for
@@ -30,7 +30,7 @@ const Footer = () => {
               Crafted with ❤️ by Spacekayak
             </Typography>
             <Typography variant="body2" sx={{ color: "#000", fontSize: "0.875rem" }}>
-              © 2024 VideoNation. All rights reserved.
+              © 2024 videoNation. All rights reserved.
             </Typography>
           </Grid>
 
@@ -77,9 +77,13 @@ const Footer = () => {
                 {
                   text: "Twitter",
                   icon: <TwitterIcon />,
-                  link: "https://twitter.com/FanTV_official",
+                  link: "https://twitter.com/videoNation_official",
                 },
-                { text: "Telegram", icon: <TelegramIcon />, link: "https://t.me/FanTVDiscussions" },
+                {
+                  text: "Telegram",
+                  icon: <TelegramIcon />,
+                  link: "https://t.me/videoNationDiscussions",
+                },
               ].map((item) => (
                 <Link
                   key={item.text}
