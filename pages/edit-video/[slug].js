@@ -1,24 +1,3 @@
-// import React from "react";
-// import { useRouter } from "next/router";
-
-// const Edit = () => {
-//   const router = useRouter();
-//   const { slug } = router.query;
-//   console.log(slug);
-//   return (
-//     <div className="h-screen w-screen">
-//       <iframe
-//         src={`http://localhost:5173/${slug}`}
-//         className="w-full h-full"
-//         style={{ border: "none" }}
-//         title="Video Editor"
-//       />
-//     </div>
-//   );
-// };
-
-// export default Edit;
-
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Loader from "../../src/component/common/Loading/loading";
@@ -41,7 +20,8 @@ const Edit = () => {
       {loading && <Loader />}
       {slug && (
         <iframe
-          src={`http://20.244.29.252:5173/${slug}`}
+          // src={`http://20.244.29.252:5173/${slug}`}
+          src={`https://editor.videonation.xyz/${slug}`}
           // src={`http://localhost:5173/${slug}`}
           className="w-full h-full"
           style={{ border: "none" }}
