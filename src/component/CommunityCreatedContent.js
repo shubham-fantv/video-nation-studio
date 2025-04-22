@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { FANTV_API_URL } from "../constant/constants";
 import fetcher from "../dataProvider";
+import useIsMobile from "../hooks/useIsMobile";
 
 const CommunityCreatedContent = ({
   title = "Community Created Content",
@@ -118,6 +119,7 @@ const CommunityCreatedContent = ({
       }
     }
   };
+  const isMobile = useIsMobile();
 
   return (
     <div className="text-black">
@@ -195,12 +197,34 @@ const CommunityCreatedContent = ({
                       src={video?.videoUrl}
                       muted
                       loop
+                      poster={video?.imageUrl}
                       playsInline
                       onMouseEnter={(e) => e.target.play()}
                       onMouseLeave={(e) => e.target.pause()}
                       onEnded={(e) => e.target.play()}
                       className="w-full h-full object-cover rounded-xl"
                     />
+                    {/* <video
+                      src={video?.videoUrl}
+                      muted
+                      playsInline
+                      poster={video?.imageUrl}
+                      preload="metadata"
+                      loop
+                      className="w-full h-full object-cover rounded-xl"
+                      onClick={(e) => {
+                        if (isMobile) {
+                          if (e.target.paused) {
+                            e.target.play().catch((err) => console.log("Playback failed:", err));
+                          } else {
+                            e.target.pause();
+                          }
+                        }
+                      }}
+                      onMouseEnter={(e) => !isMobile && e.target.play()}
+                      onMouseLeave={(e) => !isMobile && e.target.pause()}
+                      onEnded={(e) => e.target.play()}
+                    /> */}
                     {hoveredIndex === video._id && (
                       <div
                         className="absolute bottom-2 left-0 right-0 z-10 p-2 text-white bg-[#292929] rounded-b-xl"
