@@ -226,7 +226,7 @@ function Banner() {
         backgroundSize: "cover",
         backgroundPosition: "center",
         height: { xs: "auto", md: "auto" },
-        minHeight: { xs: "400px", md: "270px" },
+        minHeight: { md: "270px" },
         display: "flex",
         flexDirection: { xs: "column", md: "row" },
         justifyContent: "space-between",
@@ -236,20 +236,26 @@ function Banner() {
         className="relative px-4 md:px-8 flex flex-col justify-center gap-4"
         sx={{
           paddingTop: { xs: "2rem", md: 0 },
-          paddingBottom: { xs: "2rem", md: 0 },
+          paddingBottom: { xs: "0", md: 0 },
           zIndex: 5,
         }}
       >
         <Typography
           variant="h3"
-          className="font-semibold text-white font-inter w-max"
+          className="font-semibold text-white font-inter  md:w-max"
           sx={{
             fontSize: { xs: "24px", md: "32px" },
             lineHeight: { xs: "1.3", md: "normal" },
           }}
         >
-          Transform your ideas into stunning
-          <br /> videos in seconds.
+          {isMobile ? (
+            <span>Transform your ideas into stunning videos in seconds.</span>
+          ) : (
+            <span>
+              Transform your ideas into stunning
+              <br /> videos in seconds.
+            </span>
+          )}
         </Typography>
         <Typography
           variant="body1"
@@ -295,7 +301,7 @@ function Banner() {
         sx={{
           paddingBottom: { xs: "2rem", md: "1.5rem" },
           paddingRight: { xs: "1rem", md: "1.5rem" },
-          gap: { xs: "0.5rem", md: "1rem" },
+          gap: { xs: "10px", md: "1rem" },
           width: "100%",
           position: { xs: "absolute", md: "relative" },
           bottom: { xs: 0, md: "auto" },
@@ -309,7 +315,7 @@ function Banner() {
             borderRadius: "12px",
             overflow: "hidden",
             boxShadow: "0px 4px 10px 0px #00000073",
-            transform: isMobile ? "scale(0.7)" : "none",
+            // transform: isMobile ? "none" : "none",
             transformOrigin: "bottom right",
           }}
         >
@@ -342,7 +348,7 @@ function Banner() {
               borderRadius: "12px",
               overflow: "hidden",
               boxShadow: "0px 4px 10px 0px #00000073",
-              transform: isMobile ? "scale(0.7)" : "none",
+              // transform: isMobile ? "scale(0.7)" : "none",
               transformOrigin: "bottom right",
             }}
           >
