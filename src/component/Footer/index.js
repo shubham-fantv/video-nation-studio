@@ -27,7 +27,7 @@ const Footer = () => {
               <br /> creators powered by AI
             </Typography>
             <Typography variant="body2" sx={{ color: "#000", fontSize: "0.875rem" }}>
-              Crafted with ❤️ by Spacekayak
+              Crafted with ❤️ in India
             </Typography>
             <Typography variant="body2" sx={{ color: "#000", fontSize: "0.875rem" }}>
               © 2024 videoNation. All rights reserved.

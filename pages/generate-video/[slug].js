@@ -631,9 +631,9 @@ const Index = ({ masterData, template }) => {
                       />
                       <button
                         onClick={handleRemoveImage}
-                        className="absolute top-0 right-0 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                        className="absolute top-0 right-0 bg-white text-white rounded-full w-4 h-4 flex items-center justify-center"
                       >
-                        ✖
+                        <img src="/images/close.svg" />
                       </button>
                     </div>
                   ) : (

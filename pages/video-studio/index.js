@@ -90,11 +90,11 @@ const index = () => {
         {/* <SectionCards data={homeFeedData?.section1} /> */}
         <div className="flex justify-between items-center mb-4">
           <div>
-            <p variant="h5" className="font-semibold text-2xl text-white">
-              {homeFeedData?.title}
+            <p variant="h5" className="font-semibold text-2xl text-[#1E1E1E]">
+              {homeFeedData?.title || "Categories"}
             </p>
-            <p variant="body2" className="text-normal pt-2 text-[#D2D2D2] text-base">
-              {homeFeedData?.subtitle}
+            <p variant="body2" className="text-normal pt-2 text-[#1E1E1EB2] text-base">
+              {homeFeedData?.subtitle || "Pick a category to discover purpose-built templates"}
             </p>
           </div>
         </div>

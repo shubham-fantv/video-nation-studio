@@ -13,8 +13,8 @@ import { quotes } from "../../src/utils/common";
 const aspectRatioSizeMap = {
   "1:1": "w-4 h-4",
   "4:5": "w-10 h-12",
-  "9:16": "w-4 h-3",
-  "16:9": "w-3 h-4",
+  "9:16": "w-3 h-4",
+  "16:9": "w-4 h-3",
 };
 
 const index = () => {
