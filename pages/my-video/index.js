@@ -88,7 +88,7 @@ const VideoGrid = ({ data }) => {
                       </div>
                     )}
                     <div className=" pt-1 flex justify-between items-center">
-                      <h3 className="text-white text-sm truncate">{video?.prompt}</h3>
+                      <h3 className="text-black text-sm truncate">{video?.prompt}</h3>
                     </div>
                   </div>
                 </div>

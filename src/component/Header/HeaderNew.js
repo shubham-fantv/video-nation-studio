@@ -14,6 +14,10 @@ import { usePathname } from "next/navigation";
 import LoginAndSignup from "../feature/Login";
 import UserProfileDropdown from "./UserProfileDropdown";
 import CLink from "../CLink";
+import { useQuery } from "react-query";
+import { FANTV_API_URL } from "../../constant/constants";
+import fetcher from "../../dataProvider";
+import { setUserData } from "../../redux/slices/user";
 
 const LogOutNavItem = [
   {
@@ -52,7 +56,7 @@ const HeaderNew = ({ app }) => {
   const [isPopupVisible, setIsPopupVisible] = useState({
     login: false,
   });
-  const { isLoggedIn } = useSelector((state) => state.user);
+  const { isLoggedIn, userData } = useSelector((state) => state.user);
 
   const layoutData = useSelector((state) => state.layout);
   const [airdropPoints, setAirdropPoints] = useState(layoutData.airdropPoints);
@@ -86,6 +90,18 @@ const HeaderNew = ({ app }) => {
     setIsMenuOpen(open);
   };
 
+  useQuery(
+    `${FANTV_API_URL}/api/v1/users/${userData?.id}`,
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/users/${userData?.id}`),
+    {
+      enabled: !!userData?.id,
+      refetchOnMount: "always",
+      onSuccess: ({ data }) => {
+        dispatch(setUserData(data));
+      },
+    }
+  );
+
   const handleLoginPopupClose = () => {
     setIsPopupVisible({ login: false });
   };
@@ -117,35 +133,65 @@ const HeaderNew = ({ app }) => {
       </Box>
       <Box sx={styles.mobileScroll}>
         <Box className="">
-          <CLink href={"/subscription"}>
-            <button
-              style={{
-                // background: "linear-gradient(180deg, #5A5A5A 0%, #1E1E1E 100%)",
-                border: "1px solid #262626",
-                borderRadius: "12px",
-                color: "#000",
-                fontSize: "14px",
-                textTransform: "capitalize",
-                width: "max-content",
-                display: "flex",
-                alignItems: "center",
-                marginRight: "20px",
-                height: "40px",
-                padding: isMobile ? "6px 10px" : "4px 16px",
-              }}
-            >
-              <img
-                src="/images/icons/blackStar.svg"
+          {userData?.credits > 0 ? (
+            <div>
+              <button
                 style={{
-                  height: isMobile ? "24px" : "28px",
-                  width: isMobile ? "24px" : "28px",
-                  marginRight: "6px",
+                  border: "1px solid #262626",
+                  borderRadius: "12px",
+                  color: "#000",
+                  fontSize: "14px",
+                  textTransform: "capitalize",
+                  width: "max-content",
+                  display: "flex",
+                  alignItems: "center",
+                  marginRight: "20px",
+                  height: "40px",
+                  padding: isMobile ? "6px 10px" : "4px 16px",
                 }}
-                alt="star icon"
-              />
-              Upgrade Now
-            </button>
-          </CLink>
+              >
+                <img
+                  src="/images/icons/blackStar.svg"
+                  style={{
+                    height: isMobile ? "24px" : "28px",
+                    width: isMobile ? "24px" : "28px",
+                    marginRight: "6px",
+                  }}
+                  alt="star icon"
+                />
+                {userData?.credits} Credits
+              </button>
+            </div>
+          ) : (
+            <CLink href={"/subscription"}>
+              <button
+                style={{
+                  border: "1px solid #262626",
+                  borderRadius: "12px",
+                  color: "#000",
+                  fontSize: "14px",
+                  textTransform: "capitalize",
+                  width: "max-content",
+                  display: "flex",
+                  alignItems: "center",
+                  marginRight: "20px",
+                  height: "40px",
+                  padding: isMobile ? "6px 10px" : "4px 16px",
+                }}
+              >
+                <img
+                  src="/images/icons/blackStar.svg"
+                  style={{
+                    height: isMobile ? "24px" : "28px",
+                    width: isMobile ? "24px" : "28px",
+                    marginRight: "6px",
+                  }}
+                  alt="star icon"
+                />
+                Upgrade Now
+              </button>
+            </CLink>
+          )}
         </Box>
 
         {LogOutNavItem?.map((item, i) => (
@@ -266,35 +312,65 @@ const HeaderNew = ({ app }) => {
           </div>
 
           <Box className="flex hidden md:flex">
-            <CLink href={"/subscription"}>
-              <button
-                style={{
-                  // background: "linear-gradient(180deg, #5A5A5A 0%, #1E1E1E 100%)",
-                  border: "1px solid #262626",
-                  borderRadius: "12px",
-                  color: "#000",
-                  fontSize: "14px",
-                  textTransform: "capitalize",
-                  width: "max-content",
-                  display: "flex",
-                  alignItems: "center",
-                  marginRight: "20px",
-                  height: "40px",
-                  padding: isMobile ? "6px 14px" : "4px 16px",
-                }}
-              >
-                <img
-                  src="/images/icons/blackStar.svg"
+            {userData?.credits > 0 ? (
+              <div>
+                <button
                   style={{
-                    height: isMobile ? "24px" : "28px",
-                    width: isMobile ? "24px" : "28px",
-                    marginRight: "6px",
+                    border: "1px solid #262626",
+                    borderRadius: "12px",
+                    color: "#000",
+                    fontSize: "14px",
+                    textTransform: "capitalize",
+                    width: "max-content",
+                    display: "flex",
+                    alignItems: "center",
+                    marginRight: "20px",
+                    height: "40px",
+                    padding: isMobile ? "6px 10px" : "4px 16px",
                   }}
-                  alt="star icon"
-                />
-                Upgrade Now
-              </button>
-            </CLink>
+                >
+                  <img
+                    src="/images/icons/blackStar.svg"
+                    style={{
+                      height: isMobile ? "24px" : "28px",
+                      width: isMobile ? "24px" : "28px",
+                      marginRight: "6px",
+                    }}
+                    alt="star icon"
+                  />
+                  {userData?.credits} Credits
+                </button>
+              </div>
+            ) : (
+              <CLink href={"/subscription"}>
+                <button
+                  style={{
+                    border: "1px solid #262626",
+                    borderRadius: "12px",
+                    color: "#000",
+                    fontSize: "14px",
+                    textTransform: "capitalize",
+                    width: "max-content",
+                    display: "flex",
+                    alignItems: "center",
+                    marginRight: "20px",
+                    height: "40px",
+                    padding: isMobile ? "6px 10px" : "4px 16px",
+                  }}
+                >
+                  <img
+                    src="/images/icons/blackStar.svg"
+                    style={{
+                      height: isMobile ? "24px" : "28px",
+                      width: isMobile ? "24px" : "28px",
+                      marginRight: "6px",
+                    }}
+                    alt="star icon"
+                  />
+                  Upgrade Now
+                </button>
+              </CLink>
+            )}
             {isLoggedIn ? (
               <UserProfileDropdown />
             ) : (

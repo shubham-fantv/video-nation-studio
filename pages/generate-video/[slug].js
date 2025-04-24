@@ -453,6 +453,7 @@ import { quotes } from "../../src/utils/common";
 import { parseCookies } from "nookies";
 
 const Index = ({ masterData, template }) => {
+  console.log("🚀 ~ Index ~ template:", template);
   const [aspectRatio, setAspectRatio] = useState("16:9");
   const [avatar, setAvatar] = useState("Luke");
   const [voice, setVoice] = useState("Default");
@@ -779,6 +780,8 @@ const Index = ({ masterData, template }) => {
               </div>
             </div>
           )}
+
+          <h3 className="text-sm text-[#1E1E1EB2] text-normal mb-4"> Credit Usage:20</h3>
 
           <div className="flex items-center justify-center gap-4 mt-2">
             <button

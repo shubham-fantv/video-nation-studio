@@ -21,7 +21,16 @@ const index = () => {
     }
   }, [router]);
 
-  return <div className="text-white">Payment Success</div>;
+  return (
+    <div>
+      <div className="flex pt-10 justify-center align-center text-2xl text-black">
+        <div>
+          <img src="/images/paymentdone.png" className="h-40 mb-5 ml-4" />
+          Payment Success
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default index;
