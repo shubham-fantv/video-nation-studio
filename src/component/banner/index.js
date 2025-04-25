@@ -159,7 +159,7 @@ const videoCards = [
   {
     id: 3,
     // src: "/images/video-ai/video2.mp4",
-    src: "https://assets.artistfirst.in/uploads/1744317048087-a6dbe479-315a-4d50-9727-25af5da837a0.mp4",
+    src: "/video/video2.mp4",
     poster: "/images/gallery-poster.jpg",
     width: 136,
     height: 192,
@@ -170,7 +170,7 @@ const videoCards = [
   {
     id: 4,
     // src: "/images/video-ai/video2.mp4",
-    src: "https://video-assets.fantv.world/3ce2d405-db18-4882-b581-efb38fe118e9.mp4",
+    src: "/video/video3.mp4",
     // poster: "/images/vr-poster.jpg",
     width: 140,
     height: 224,
@@ -310,8 +310,7 @@ function Banner() {
       >
         <Box
           sx={{
-            width: 169 * videoScale,
-            height: 128 * videoScale,
+            width: 210 * videoScale,
             borderRadius: "12px",
             overflow: "hidden",
             boxShadow: "0px 4px 10px 0px #00000073",
@@ -321,20 +320,14 @@ function Banner() {
         >
           <video
             ref={(el) => (videoRefs.current[0] = el)}
-            width={200}
-            height={113}
+            width={210}
             muted
             playsInline
             loop
             poster={"/images/workshop-poster.jpg"}
             style={{ objectFit: "contain" }}
           >
-            <source
-              src={
-                "https://assets.artistfirst.in/uploads/1744316625596-e080895d-e9d6-4163-a201-e647be77ed55.mp4"
-              }
-              type="video/mp4"
-            />
+            <source src={"/video/video1.mp4"} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         </Box>

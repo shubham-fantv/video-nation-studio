@@ -176,7 +176,7 @@ const index = () => {
             className="flex items-center gap-2 rounded-md bg-[#FFF] px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all"
           >
             <div
-              className={`w-6 h-4 flex items-center rounded-full p-1 transition-all ${
+              className={`w-6 h-4 flex items-center rounded-full p-[2px] transition-all ${
                 captionEnabled ? "bg-green-500" : "bg-gray-500"
               }`}
             >
