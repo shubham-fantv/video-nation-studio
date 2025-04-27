@@ -123,6 +123,13 @@ function Sidebar({ children }) {
     border: "1px solid #3E3E3E",
   };
 
+  const handleBack = () => {
+    if (isActiveLink("/payment-success")) {
+      router.push("/");
+    } else {
+      router.back();
+    }
+  };
   return (
     <Box sx={styles.wrapper}>
       <Box sx={styles.sidebar}>
@@ -130,7 +137,7 @@ function Sidebar({ children }) {
           <aside className="px-6">
             {!isActiveLink("/") && (
               <ul>
-                <div onClick={() => router.back()}>
+                <div onClick={() => handleBack()}>
                   <li className={`mb-3 cursor-pointer rounded-xl p-3 flex items-center`}>
                     <img
                       style={{ height: "20px", width: "20px" }}
