@@ -57,7 +57,6 @@ const HeaderNew = ({ app }) => {
     login: false,
   });
   const { isLoggedIn, userData } = useSelector((state) => state.user);
-  console.log("🚀 ~ HeaderNew ~ userData:", userData);
 
   const layoutData = useSelector((state) => state.layout);
   const [airdropPoints, setAirdropPoints] = useState(layoutData.airdropPoints);
@@ -92,10 +91,10 @@ const HeaderNew = ({ app }) => {
   };
 
   useQuery(
-    `${FANTV_API_URL}/api/v1/users/${userData?._id}`,
-    () => fetcher.get(`${FANTV_API_URL}/api/v1/users/${userData?._id}`),
+    `${FANTV_API_URL}/api/v1/users/${userData?._id || userData?.id}`,
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/users/${userData?._id || userData?.id}`),
     {
-      enabled: !!userData?._id,
+      enabled: !!(userData?._id || userData?.id),
       refetchOnMount: "always",
       onSuccess: ({ data }) => {
         dispatch(setUserData(data));

@@ -9,6 +9,10 @@ import { API_BASE_URL, FANTV_API_URL } from "../../src/constant/constants";
 import axios from "axios";
 import Loading from "../../src/component/common/Loading/loading";
 import { quotes } from "../../src/utils/common";
+import { useSelector } from "react-redux";
+import LoginAndSignup from "../../src/component/feature/Login";
+import { useRouter } from "next/router";
+import SweetAlert2 from "react-sweetalert2";
 
 const aspectRatioSizeMap = {
   "1:1": "w-4 h-4",
@@ -26,10 +30,15 @@ const index = () => {
   const [image, setImage] = useState("");
   const [aspectRatio, setAspectRatio] = useState("16:9");
   const [subTitle, setSubTitle] = useState("");
+  const router = useRouter();
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
 
   const aspectRatioData = ["16:9", "9:16", "1:1"];
   const [isLoading, setLoading] = useState(false);
+  const [swalProps, setSwalProps] = useState({});
 
+  const { isLoggedIn, userData } = useSelector((state) => state.user);
+  console.log("🚀 ~ index ~ userData:", userData);
   useQuery(
     `${FANTV_API_URL}/api/v1/templates?limit=30`,
     () => fetcher.get(`${FANTV_API_URL}/api/v1/templates?limit=30`),
@@ -75,7 +84,17 @@ const index = () => {
         setImagePreview(null);
         setPrompt("");
         setLoading(false);
-        alert(" Success => video generation started");
+        setSwalProps({
+          icon: "success",
+          show: true,
+          title: "Success",
+          text: "Video generation is in progress",
+          showCancelButton: true,
+          confirmButtonText: "Go to My Video",
+          cancelButtonText: "Cancel",
+          allowOutsideClick: false, // Optional: prevent dismiss by clicking outside
+          allowEscapeKey: false, // Optional: prevent ESC close
+        });
       },
       onError: (error) => {
         setLoading(false);
@@ -84,21 +103,35 @@ const index = () => {
     }
   );
 
-  const handleGenerateVideo = () => {
-    if (!prompt.trim()) {
-      alert("Please enter a prompt!");
-      return;
-    }
+  const handleConfirm = () => {
+    router.push("/my-video");
+  };
 
-    const requestBody = {
-      prompt,
-      imageInput: image ? [image] : [],
-      creditsUsed: 20,
-      aspectRatio: aspectRatio,
-      caption: captionEnabled,
-    };
-    setLoading(true);
-    generateVideoApi(requestBody);
+  const handleGenerateVideo = () => {
+    if (isLoggedIn) {
+      if (!prompt.trim()) {
+        alert("Please enter a prompt!");
+        return;
+      }
+
+      if (userData.credits <= 0) {
+        router.push("/subscription");
+        return;
+      }
+
+      const requestBody = {
+        prompt,
+        imageInput: image ? [image] : [],
+        creditsUsed: 20,
+        aspectRatio: aspectRatio,
+        caption: captionEnabled,
+      };
+      setLoading(true);
+
+      generateVideoApi(requestBody);
+    } else {
+      setIsPopupVisible(true);
+    }
   };
 
   useEffect(() => {
@@ -225,6 +258,15 @@ const index = () => {
           </div>
         </div>
       )}
+
+      {isPopupVisible && (
+        <LoginAndSignup
+          callBackName={"uniqueCommunity"}
+          open={isPopupVisible}
+          handleModalClose={() => setIsPopupVisible(false)}
+        />
+      )}
+      <SweetAlert2 {...swalProps} onConfirm={handleConfirm} />
     </div>
   );
 };
