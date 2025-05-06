@@ -1,17 +1,26 @@
 import React, { useEffect } from "react";
 import fetcher from "../../src/dataProvider";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
+import useGTM from "../../src/hooks/useGTM";
 
 const index = () => {
   const router = useRouter();
+  const { userData } = useSelector((state) => state.user);
+  const { sendEvent } = useGTM();
 
   const checkToken = async (token) => {
     let data = await fetcher.get(`verify-payment?session_id=${token}`);
 
-    // if (data.status == 204) {
-    // } else {
-    // }
-    // router.push("/");
+    if (data.status == 204) {
+      sendEvent({
+        event: "Subscribe",
+        email: userData?.email,
+        name: userData?.name,
+      });
+    } else {
+    }
+    router.push("/");
   };
 
   useEffect(() => {

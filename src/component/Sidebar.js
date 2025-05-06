@@ -107,6 +107,8 @@ import Link from "next/link";
 import React from "react";
 import { useRouter } from "next/router";
 import styles from "./styles";
+import useGTM from "../hooks/useGTM";
+import { useSelector } from "react-redux";
 
 function Sidebar({ children }) {
   const router = useRouter();
@@ -122,6 +124,8 @@ function Sidebar({ children }) {
     backgroundColor: "#FFFFFF0D",
     border: "1px solid #3E3E3E",
   };
+  const { userData } = useSelector((state) => state.user);
+  const { sendEvent } = useGTM();
 
   const handleBack = () => {
     if (isActiveLink("/payment-success")) {
@@ -258,6 +262,13 @@ function Sidebar({ children }) {
                   <Link legacyBehavior href="/subscription" passHref>
                     <a className="flex items-center  py-2">
                       <div
+                        onClick={() =>
+                          sendEvent({
+                            event: "Upgrade Now / Manage Subscription",
+                            email: userData?.email,
+                            name: userData?.name,
+                          })
+                        }
                         className={`flex items-center rounded-xl p-3 w-full ${
                           isActiveLink("/subscription") ? "bg-[#FFFFFF0D] font-bold" : ""
                         }`}

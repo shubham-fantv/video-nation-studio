@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import fetcher from "../../src/dataProvider";
 import { useMutation, useQuery } from "react-query";
 import { FANTV_API_URL } from "../../src/constant/constants";
+import { useSelector } from "react-redux";
+import useGTM from "../../src/hooks/useGTM";
 const PricingPlans = () => {
   const plans = [
     {
@@ -41,6 +43,9 @@ const PricingPlans = () => {
 
   const [subscriptions, setSubscriptions] = useState([]);
 
+  const { userData } = useSelector((state) => state.user);
+  const { sendEvent } = useGTM();
+
   useQuery(
     `${FANTV_API_URL}/api/v1/subscription-plans`,
     () => fetcher.get(`${FANTV_API_URL}/api/v1/subscription-plans`),
@@ -68,6 +73,13 @@ const PricingPlans = () => {
     const requestBody = {
       subscriptionPlanId: plan._id,
     };
+    sendEvent({
+      event: "Choose Plan (Initiate Checkout)",
+      email: userData?.email,
+      name: userData?.name,
+      planId: plan._id,
+    });
+
     initiatePayment(requestBody);
   };
   return (

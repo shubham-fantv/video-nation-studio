@@ -10,12 +10,6 @@ const UserProfileDropdown = () => {
   //   const {useData}= useSelector(state)
   const { userData } = useSelector((state) => state.user);
 
-  const user = {
-    name: "Jane Smith",
-    email: "jane.smith@example.com",
-    avatarUrl: "/api/placeholder/40/40", // placeholder image
-  };
-
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };

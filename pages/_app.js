@@ -13,8 +13,12 @@ import store from "../src/redux/store";
 import AppSeo from "../src/seo/app";
 import PageThemeProvider from "../src/styles/PageThemeProvider";
 import "/styles/globals.css";
+import * as gtm from "../src/lib/gtm";
 
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import useGTM from "../src/hooks/useGTM";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,6 +31,25 @@ const persistor = persistStore(store, {}, function () {
 });
 
 function MyApp({ Component, pageProps, emotionCache = createEmotionCache() }) {
+  const router = useRouter();
+  const { sendPageView } = useGTM();
+
+  console.log = () => {};
+  console.error = () => {};
+  console.debug = () => {};
+
+  useEffect(() => {
+    const handleRouteChange = (url) => {
+      sendPageView(url); // fire GTM event
+    };
+    router.events.on("routeChangeComplete", handleRouteChange);
+    // Fire on first load
+    handleRouteChange(window.location.pathname);
+    return () => {
+      router.events.off("routeChangeComplete", handleRouteChange);
+    };
+  }, [router]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <GoogleOAuthProvider clientId="508551165708-227o7s8mmoc7sdt41999gqjratr78tjq.apps.googleusercontent.com">

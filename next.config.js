@@ -50,7 +50,7 @@ const moduleExports = {
   },
   poweredByHeader: false,
   compiler: {
-    // removeConsole: false,
+    removeConsole: false,
   },
   experimental: { optimizeCss: false },
 };

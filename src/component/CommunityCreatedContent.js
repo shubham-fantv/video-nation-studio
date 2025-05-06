@@ -4,6 +4,8 @@ import { useQuery } from "react-query";
 import { FANTV_API_URL } from "../constant/constants";
 import fetcher from "../dataProvider";
 import useIsMobile from "../hooks/useIsMobile";
+import { useSelector } from "react-redux";
+import useGTM from "../hooks/useGTM";
 
 const CommunityCreatedContent = ({
   title = "Community Created Content",
@@ -11,10 +13,14 @@ const CommunityCreatedContent = ({
   isTabEnabled = false,
   data,
   activeSlug = "all",
+  page = "",
 }) => {
   const [activeTab, setActiveTab] = useState(activeSlug);
 
   const [templateData, setTemplateData] = useState(data);
+
+  const { userData } = useSelector((state) => state.user);
+  const { sendEvent } = useGTM();
 
   const router = useRouter();
   const [allTabs, setAllTabs] = useState([]);
@@ -121,6 +127,17 @@ const CommunityCreatedContent = ({
   };
   const isMobile = useIsMobile();
 
+  const handleNavigate = (video) => {
+    sendEvent({
+      event: page == "Category?" ? "Home --> Explore --> Recreate" : "Home --> Recreate",
+      email: userData?.email,
+      name: userData?.name,
+      video: video?._id,
+      category: activeSlug,
+    });
+    router.push(`/generate-video/${video?._id}`);
+  };
+
   return (
     <div className="text-black">
       <div>
@@ -187,7 +204,7 @@ const CommunityCreatedContent = ({
               templateData?.map((video, index) => (
                 <div
                   key={index}
-                  onClick={() => router.push(`/generate-video/${video?._id}`)}
+                  onClick={() => handleNavigate(video)}
                   className="mb-6 break-inside-avoid rounded-xl transition-transform relative"
                   onMouseEnter={() => handleMouseEnter(video._id)}
                   onMouseLeave={handleMouseLeave}

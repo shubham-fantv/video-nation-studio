@@ -95,6 +95,7 @@ const index = () => {
             title="Use a Template"
             subTitle="Remix with our content created by our community"
             data={templates}
+            page="Category"
           />
         </div>
       </div>

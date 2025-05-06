@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import LoginAndSignup from "../../src/component/feature/Login";
 import { useRouter } from "next/router";
 import SweetAlert2 from "react-sweetalert2";
+import useGTM from "../../src/hooks/useGTM";
 
 const aspectRatioSizeMap = {
   "1:1": "w-4 h-4",
@@ -37,8 +38,9 @@ const index = () => {
   const [isLoading, setLoading] = useState(false);
   const [swalProps, setSwalProps] = useState({});
 
+  const { sendEvent } = useGTM();
+
   const { isLoggedIn, userData } = useSelector((state) => state.user);
-  console.log("🚀 ~ index ~ userData:", userData);
   useQuery(
     `${FANTV_API_URL}/api/v1/templates?limit=30`,
     () => fetcher.get(`${FANTV_API_URL}/api/v1/templates?limit=30`),
@@ -127,6 +129,15 @@ const index = () => {
         caption: captionEnabled,
       };
       setLoading(true);
+
+      sendEvent({
+        event: "Generate Video",
+        email: userData?.email,
+        name: userData?.name,
+        prompt: prompt,
+        aspectRatio: aspectRatio,
+        caption: captionEnabled,
+      });
 
       generateVideoApi(requestBody);
     } else {

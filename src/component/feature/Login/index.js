@@ -7,10 +7,11 @@ import fetcher from "../../../dataProvider";
 import { setToken, setUserData } from "../../../redux/slices/user";
 import loginData from "../../../utils/login";
 import { styles } from "./style";
+import useGTM from "../../../hooks/useGTM";
 
 const LoginAndSignup = ({ open, handleModalClose }) => {
   const dispatch = useDispatch();
-
+  const { sendEvent } = useGTM();
   const { mutate: loginGoogleApi } = useMutation(
     (obj) => fetcher.post(`${API_BASE_URL}/api/v1/auth/login-google`, obj),
     {
@@ -24,6 +25,11 @@ const LoginAndSignup = ({ open, handleModalClose }) => {
             isLoggedIn: true,
           })
         );
+        sendEvent({
+          event: "Sign In / Login",
+          email: res?.data?.user?.email,
+          name: res?.data?.user?.name,
+        });
         handleModalClose();
       },
       onError: (error) => {

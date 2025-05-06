@@ -143,6 +143,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Box, Typography, useMediaQuery } from "@mui/material";
 import CLink from "../CLink";
+import { useSelector } from "react-redux";
+import useGTM from "../../hooks/useGTM";
 
 const videoCards = [
   // {
@@ -184,6 +186,9 @@ function Banner() {
   const videoRefs = useRef([]);
   const isMobile = useMediaQuery("(max-width:768px)");
   const [videoScale, setVideoScale] = useState(1);
+
+  const { userData } = useSelector((state) => state.user);
+  const { sendEvent } = useGTM();
 
   useEffect(() => {
     // Set appropriate scale for videos on mobile
@@ -269,6 +274,13 @@ function Banner() {
 
         <CLink href={"/generate-video"}>
           <button
+            onClick={() =>
+              sendEvent({
+                event: "Home --> Generate",
+                email: userData?.email,
+                name: userData?.name,
+              })
+            }
             style={{
               background: "linear-gradient(180deg, #5A5A5A 0%, #1E1E1E 100%)",
               border: "1px solid #FFFFFF",

@@ -18,6 +18,7 @@ import { useQuery } from "react-query";
 import { FANTV_API_URL } from "../../constant/constants";
 import fetcher from "../../dataProvider";
 import { setUserData } from "../../redux/slices/user";
+import useGTM from "../../hooks/useGTM";
 
 const LogOutNavItem = [
   {
@@ -52,7 +53,7 @@ const HeaderNew = ({ app }) => {
   const isActiveLink = (path) => {
     return currentPath === path;
   };
-
+  const { sendEvent } = useGTM();
   const [isPopupVisible, setIsPopupVisible] = useState({
     login: false,
   });
@@ -178,6 +179,13 @@ const HeaderNew = ({ app }) => {
                   height: "40px",
                   padding: isMobile ? "6px 10px" : "4px 16px",
                 }}
+                onClick={() =>
+                  sendEvent({
+                    event: "Upgrade Now / Manage Subscription",
+                    email: userData?.email,
+                    name: userData?.name,
+                  })
+                }
               >
                 <img
                   src="/images/icons/blackStar.svg"

@@ -451,9 +451,10 @@ import axios from "axios";
 import Loading from "../../src/component/common/Loading/loading";
 import { quotes } from "../../src/utils/common";
 import { parseCookies } from "nookies";
+import { useSelector } from "react-redux";
+import useGTM from "../../src/hooks/useGTM";
 
-const Index = ({ masterData, template }) => {
-  console.log("🚀 ~ Index ~ template:", template);
+const Index = ({ masterData, template, slug }) => {
   const [aspectRatio, setAspectRatio] = useState("16:9");
   const [avatar, setAvatar] = useState("Luke");
   const [voice, setVoice] = useState("Default");
@@ -464,6 +465,9 @@ const Index = ({ masterData, template }) => {
   const [imagePreview, setImagePreview] = useState(template?.imageUrl);
   const [uploading, setUploading] = useState(false);
   const [image, setImage] = useState(template?.imageUrl);
+
+  const { userData } = useSelector((state) => state.user);
+  const { sendEvent } = useGTM();
 
   const [subTitle, setSubTitle] = useState("");
   const [isLoading, setLoading] = useState(false);
@@ -521,6 +525,15 @@ const Index = ({ masterData, template }) => {
       alert("Please enter a prompt!");
       return;
     }
+    sendEvent({
+      event: "Generate Video Slug",
+      slug: slug,
+      email: userData?.email,
+      name: userData?.name,
+      prompt: prompt,
+      aspectRatio: aspectRatio,
+      caption: captionEnabled,
+    });
 
     const requestBody = {
       prompt,
@@ -546,6 +559,15 @@ const Index = ({ masterData, template }) => {
 
   const handleDownloadVideo = async () => {
     if (!template?.videoUrl) return;
+
+    sendEvent({
+      event: "Home --> Recreate --> Download",
+      email: userData?.email,
+      name: userData?.name,
+      video: video?._id,
+      videoUrl: template?.videoUrl,
+      category: activeSlug,
+    });
 
     try {
       const response = await fetch(template.videoUrl);

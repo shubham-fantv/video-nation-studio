@@ -18,8 +18,6 @@ const getToken = () => {
 
 Api.interceptors.request.use(
   (request) => {
-    console.log("🚀 ~ request:", request.url);
-
     if (
       (request.url.includes("v1/") ||
         request.url.includes("v2/") ||
