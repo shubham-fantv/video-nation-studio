@@ -135,7 +135,7 @@ const index = () => {
       const requestBody = {
         prompt,
         imageInput: image ? [image] : [],
-        // imageUrl: image ? image : "",
+        imageUrl: image ? image : "",
         creditsUsed: 20,
         aspectRatio: aspectRatio,
         caption: captionEnabled,
@@ -270,23 +270,22 @@ const index = () => {
             ✨ Generate
           </button>
         </div>
-        
       </div>
-       <div className="flex flex-wrap gap-2 mt-4 overflow-auto">
-          {[
-            "A serene sunrise over the Himalayas with birds flying in a formation",
-            "A futuristic city skyline with flying cars at dusk in vibrant colors",
-            "A jungle scene where a tiger moves through dense fog",
-          ].map((sample, idx) => (
-            <button
-              key={idx}
-              onClick={() => setPrompt(sample)}
-              className="w-[360px] h-[75px] rounded-full bg-[#F5F5F5] px-5 py-4 text-sm text-[#1E1E1E] shadow-sm hover:bg-gray-200 transition-all"
-            >
-              {sample}
-            </button>
-          ))}
-        </div>
+      <div className="flex flex-wrap gap-2 mt-4 overflow-auto">
+        {[
+          "A serene sunrise over the Himalayas with birds flying in a formation",
+          "A futuristic city skyline with flying cars at dusk in vibrant colors",
+          "A jungle scene where a tiger moves through dense fog",
+        ].map((sample, idx) => (
+          <button
+            key={idx}
+            onClick={() => setPrompt(sample)}
+            className="w-[360px] h-[75px] rounded-full bg-[#F5F5F5] px-5 py-4 text-sm text-[#1E1E1E] shadow-sm hover:bg-gray-200 transition-all"
+          >
+            {sample}
+          </button>
+        ))}
+      </div>
       <div className="mt-8">
         <HowToCreate />
       </div>
