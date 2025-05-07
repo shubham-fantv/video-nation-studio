@@ -46,6 +46,12 @@ const PricingPlans = () => {
   const { userData } = useSelector((state) => state.user);
   const { sendEvent } = useGTM();
 
+  const [billingCycle, setBillingCycle] = useState("monthly");
+
+  const filteredPlans = subscriptions?.filter(
+    (plan) => plan.billedType === billingCycle
+  );
+
   useQuery(
     `${FANTV_API_URL}/api/v1/subscription-plans`,
     () => fetcher.get(`${FANTV_API_URL}/api/v1/subscription-plans`),
@@ -83,9 +89,33 @@ const PricingPlans = () => {
     initiatePayment(requestBody);
   };
   return (
-    <div className=" text-black min-h-screen flex flex-col items-center py-16">
+    <div className=" text-black min-h-screen flex flex-col items-center py-1">
       <h1 className="text-[32px] font-bold mb-2">Plans That Fit Your Needs</h1>
-      <p className="text-xl mb-12 text-[#1E1E1EB2]">VideoNation Creator Studio</p>
+      <p className="text-xl mb-4 text-[#1E1E1EB2]">VideoNation Creator Studio</p>
+
+     {/* 🔄 Toggle Switch */}
+     <div className="flex mb-8 bg-gray-200 rounded-full p-1">
+        <button
+          onClick={() => setBillingCycle("monthly")}
+          className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+            billingCycle === "monthly"
+              ? "bg-[#1E1E1E] text-white"
+              : "text-gray-700"
+          }`}
+        >
+          Monthly
+        </button>
+        <button
+          onClick={() => setBillingCycle("yearly")}
+          className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+            billingCycle === "yearly"
+              ? "bg-[#1E1E1E] text-white"
+              : "text-gray-700"
+          }`}
+        >
+          Yearly
+        </button>
+      </div>
 
       <div className="relative w-full px-4">
         {/* Blue Circle Badge */}
@@ -97,7 +127,7 @@ const PricingPlans = () => {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {subscriptions?.map((plan, index) => (
+          {filteredPlans?.map((plan, index) => (
             <div
               key={index}
               className={`bg-[#FFFFFF0D] rounded-lg p-8 flex flex-col relative ${
@@ -107,7 +137,7 @@ const PricingPlans = () => {
             >
               <h2 className="text-2xl font-bold mb-2">{plan.planName}</h2>
               <div className="mb-8">
-                <span className="text-xl">${plan.cost}/month</span>
+                <span className="text-xl">${plan.cost}/{billingCycle === "monthly" ? "month" : "year"}</span>
                 {plan.billedType && (
                   <p className="text-sm text-gray-400">Billed {plan.billedType}</p>
                 )}
@@ -115,12 +145,12 @@ const PricingPlans = () => {
 
               <button
                 onClick={() => handleChoosePlan(plan)}
-                className={`py-3 px-4 rounded-md mb-8 font-medium bg-[#1E1E1E] text-white`}
+                className={`py-2 px-2 rounded-md mb-4 font-medium bg-[#1E1E1E] text-white`}
               >
                 Choose Plan
               </button>
 
-              <ul className="space-y-4">
+              <ul className="space-y-2">
                 {plan?.benefits?.map((feature, featureIndex) => (
                   <li key={featureIndex} className="flex items-start">
                     <span className="mr-2 ">•</span>

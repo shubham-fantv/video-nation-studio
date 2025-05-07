@@ -455,17 +455,17 @@ import { useSelector } from "react-redux";
 import useGTM from "../../src/hooks/useGTM";
 
 const Index = ({ masterData, template, slug }) => {
-  const [aspectRatio, setAspectRatio] = useState("16:9");
-  const [avatar, setAvatar] = useState("Luke");
-  const [voice, setVoice] = useState("Default");
+  const [aspectRatio, setAspectRatio] = useState(template?.aspectRatio);
+  const [avatar, setAvatar] = useState(template?.avatarId);
+  const [voice, setVoice] = useState(template?.voiceId || "Default");
   const [visibility, setVisibility] = useState("Public");
-  const [captionEnabled, setCaptionEnabled] = useState(true);
+  const [captionEnabled, setCaptionEnabled] = useState(template?.caption);
   const [prompt, setPrompt] = useState(template?.prompt);
   const router = useRouter();
-  const [imagePreview, setImagePreview] = useState(template?.imageUrl);
+  const [imagePreview, setImagePreview] = useState("");
   const [uploading, setUploading] = useState(false);
   const [image, setImage] = useState(template?.imageUrl);
-
+  
   const { userData } = useSelector((state) => state.user);
   const { sendEvent } = useGTM();
 
@@ -538,22 +538,25 @@ const Index = ({ masterData, template, slug }) => {
     const requestBody = {
       prompt,
       imageInput: image ? [image] : [],
+      imageUrl: image ? image : "",
       creditsUsed: 20,
       aspectRatio: aspectRatio,
       caption: captionEnabled,
     };
+    console.log(requestBody);
     setLoading(true);
     generateVideoApi(requestBody);
   };
 
   useEffect(() => {
+    
     const pickRandomQuote = () => {
       const randomIndex = Math.floor(Math.random() * quotes.length);
       setSubTitle(quotes[randomIndex]);
     };
     pickRandomQuote();
     const interval = setInterval(pickRandomQuote, 5000);
-
+  
     return () => clearInterval(interval);
   }, []);
 
@@ -587,30 +590,11 @@ const Index = ({ masterData, template, slug }) => {
     }
   };
   return (
-    <div className="flex flex-col md:flex-row text-black gap-4 md:gap-8">
+    <div className="flex flex-col md:flex-row text-black md:gap-4">
       {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
       <div className="w-full md:w-64 bg-[#FFFFFF0D] p-4">
         <div className="">
-          <button
-            onClick={() => router.back()}
-            className="flex items-center text-sm mb-4 text-black"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 mr-2"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Back
-          </button>
-
-          <div className="mb-6">
+          <div className="mb-4">
             <div className="flex justify-between flex-wrap">
               <h3 className="text-sm font-medium mb-2">Prompt</h3>
               <div className="flex items-center justify-between mb-4">
@@ -638,9 +622,9 @@ const Index = ({ masterData, template, slug }) => {
             </div>
           </div>
 
-          <div className="mb-6">
+          <div className="mb-4">
             <h3 className="text-sm font-medium mb-2">Add Image</h3>
-            <label className="bg-[#F5F5F5] rounded-lg w-[72px] h-[50px] flex items-center justify-center cursor-pointer">
+            <label className="bg-[#F5F5F5] text-xs rounded-lg w-[72px] h-[50px] flex items-center justify-center cursor-pointer">
               {uploading ? (
                 <div>Uploading...</div>
               ) : (
@@ -703,20 +687,20 @@ const Index = ({ masterData, template, slug }) => {
               </div>
             </div>
           </div>
-          {template?.avatar && (
+          {(
             <div className="mb-4">
               <AvatarDropdown data={masterData?.avatars} />
             </div>
           )}
 
-          {template?.voice && (
+          {(
             <div className="mb-4">
               <h3 className="text-sm font-medium mb-2">AI Voice</h3>
               <div className="relative ">
                 <select
                   value={voice}
                   onChange={(e) => setVoice(e.target._id)}
-                  className="h-[48px] block w-full rounded-md bg-[#343434] border-0 py-2 pl-10 pr-10 text-white focus:ring-0 sm:text-sm appearance-none"
+                  className="h-[48px] block w-full rounded-md bg-[#F5F5F5] border-0 py-2 pl-10 pr-10 text-[#1E1E1EB2] focus:ring-0 sm:text-sm appearance-none"
                 >
                   {masterData?.voices?.map((item) => (
                     <option key={item._id}>{item?.name}</option>
@@ -763,7 +747,7 @@ const Index = ({ masterData, template, slug }) => {
                 <select
                   value={visibility}
                   onChange={(e) => setVisibility(e.target.value)}
-                  className="h-[48px] block w-full rounded-md bg-[#343434] border-0 py-2 pl-10 pr-10 text-white focus:ring-0 sm:text-sm appearance-none"
+                  className="h-[48px] block w-full rounded-md bg-[#F5F5F5] border-0 py-2 pl-10 pr-10 text-[#1E1E1EB2]  focus:ring-0 sm:text-sm appearance-none"
                 >
                   {masterData?.visibilityOptions?.map((item) => (
                     <option key={item}>{item}</option>
@@ -803,9 +787,7 @@ const Index = ({ masterData, template, slug }) => {
             </div>
           )}
 
-          <h3 className="text-sm text-[#1E1E1EB2] text-normal mb-4"> Credit Usage:20</h3>
-
-          <div className="flex items-center justify-center gap-4 mt-2">
+          <div className="flex items-center justify-center gap-4 mt-2 mb-4">
             <button
               onClick={handleGenerateVideo}
               className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
@@ -813,11 +795,34 @@ const Index = ({ masterData, template, slug }) => {
               ✨ Generate
             </button>
           </div>
+          <h3 className="text-sm text-[#1E1E1EB2] text-normal">Credits : 20</h3>
+
         </div>
       </div>
-
-      <div className="flex-1 flex flex-col items-center p-4 md:p-8 bg-[#F5F5F5] px-4 md:px-[80px] py-4 md:py-[80px]">
-        <div className="w-full">
+      
+      <div className="flex-1 flex flex-col items-center ">
+      <div className="w-full md:p-4 bg-[#F5F5F5]">
+                  <button
+                      onClick={() => router.back()}
+                      className="flex items-center text-sm mb-1 text-black"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 mr-2"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      Back
+                    </button>
+          </div>
+          <div className="w-full p-4 md:p-4 bg-[#F5F5F5] px-4 md:px-[30px] py-4 md:py-[30px]">
+            
           <div className="bg-[#FFFFFF0D] rounded-lg aspect-video flex items-center justify-center mb-4 m-auto max-h-[300px] md:max-h-[450px]">
             <div className="text-gray-500 w-full h-full">
               <video
@@ -884,6 +889,7 @@ export async function getServerSideProps(ctx) {
         "default"
       ),
     ]);
+    console.log("template",template?.data)
     return {
       props: {
         masterData: masterData?.data || [],

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 const AvatarDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedAvatar, setSelectedAvatar] = useState("Luke");
+  const [selectedAvatar, setSelectedAvatar] = useState("Not Selected");
   const dropdownRef = useRef(null);
 
   const avatars = [
@@ -43,7 +43,7 @@ const AvatarDropdown = () => {
   const selected = avatars.find((avatar) => avatar.name === selectedAvatar);
 
   return (
-    <div className="w-full  text-white">
+    <div className="w-full text-black">
       <h3 className="text-sm font-medium mb-2">Avatar</h3>
 
       {/* Dropdown container with ref for detecting outside clicks */}
@@ -51,7 +51,7 @@ const AvatarDropdown = () => {
         {/* Selected Avatar Button */}
         <button
           onClick={toggleDropdown}
-          className="h-[48px] w-full flex items-center justify-between w-full rounded-md bg-[#343434] border-0  px-2 py-1.5 mr-1     focus:outline-none"
+          className="h-[48px] w-full flex items-center justify-between w-full rounded-md bg-[#F5F5F5] text-[#1E1E1EB2] border-0  px-2 py-1.5 mr-1     focus:outline-none"
         >
           <div className="flex items-center ">
             <div className="w-[32px] h-[32px] rounded-full mr-2  overflow-hidden ">
@@ -79,7 +79,7 @@ const AvatarDropdown = () => {
 
         {/* Dropdown - Absolutely positioned */}
         {isOpen && (
-          <div className="absolute left-0 right-0 mt-4 p-6 bg-[#343434] rounded-2xl border border-[#FFFFFF26] z-10">
+          <div className="absolute left-0 right-0 mt-4 p-6 bg-[#F5F5F5] rounded-2xl border border-[#FFFFFF26] z-10">
             <div className="grid grid-cols-3 gap-6">
               {avatars.map((avatar) => (
                 <div

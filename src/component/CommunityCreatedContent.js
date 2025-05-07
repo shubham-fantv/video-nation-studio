@@ -9,7 +9,7 @@ import useGTM from "../hooks/useGTM";
 
 const CommunityCreatedContent = ({
   title = "Community Created Content",
-  subTitle = "Remix with our content created by our community",
+  subTitle = "Use the content created by our community as a template and add your taste",
   isTabEnabled = false,
   data,
   activeSlug = "all",
@@ -249,7 +249,7 @@ const CommunityCreatedContent = ({
                       >
                         <div className="flex">
                           <div>
-                            <h3 className="text-base pb-1 font-medium line-clamp-1">
+                            <h3 className="text-sm pb-1 font-medium line-clamp-1 text-amber-400">
                               {video?.title}
                             </h3>
                             <h3 className="text-xs font-normal line-clamp-2 pr-1">
@@ -268,7 +268,7 @@ const CommunityCreatedContent = ({
                                 fontSize: "14px",
                                 textTransform: "capitalize",
                                 width: "max-content",
-                                marginRight: "4px",
+                                marginRight: "0px",
                                 display: "flex",
                                 alignItems: "center",
                                 padding: "2px 8px",
@@ -277,9 +277,9 @@ const CommunityCreatedContent = ({
                             >
                               <img
                                 src="/images/video-ai/star.png"
-                                style={{ height: "28px", width: "28px" }}
+                                style={{ height: "20px", width: "20px" }}
                               />
-                              Recreate
+                              Select
                             </button>
                           </div>
                         </div>

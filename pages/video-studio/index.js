@@ -58,7 +58,8 @@ const index = () => {
           >
             <input
               type="text"
-              placeholder="Enter Your Prompt"
+              readOnly
+              placeholder="Enter your prompt to create a AI video"
               className="w-full rounded-full px-4 py-4 text-gray-700 placeholder-gray-400 focus:outline-none"
             />
             <div>
