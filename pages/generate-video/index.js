@@ -100,14 +100,11 @@ const index = () => {
       },
       onError: (error) => {
         setLoading(false);
-      
+
         const defaultMessage = "Something went wrong. Please try again later.";
-      
-        const message =
-          error?.response?.data?.message ||
-          error?.message ||
-          defaultMessage;
-      
+
+        const message = error?.response?.data?.message || error?.message || defaultMessage;
+
         setSwalProps({
           icon: "error",
           show: true,
@@ -138,7 +135,7 @@ const index = () => {
       const requestBody = {
         prompt,
         imageInput: image ? [image] : [],
-        imageUrl: image ? image : "",
+        // imageUrl: image ? image : "",
         creditsUsed: 20,
         aspectRatio: aspectRatio,
         caption: captionEnabled,
