@@ -193,7 +193,7 @@ function Sidebar({ children }) {
                   </Link>
                 </li>
                 <li>
-                  <Link legacyBehavior href="/image-studio" passHref>
+                  <div>
                     <a className="flex items-center  pt-1">
                       <div
                         className={`flex items-center rounded-xl p-3 w-full ${
@@ -208,13 +208,30 @@ function Sidebar({ children }) {
                         />{" "}
                         &nbsp;
                         <span className="text-sm text-black pl-2">Image Studio</span>
+                        <sup
+                          style={{
+                            marginLeft: "4px",
+                            contentVisibility: "auto",
+                            background: "linear-gradient(96.61deg, #FFA0FF 4.52%, #653EFF 102.26%)",
+                            right: "0px",
+                            padding: " 8px",
+                            borderRadius: " 10px",
+                            fontSize: "8px",
+                            fontWeight: 700,
+                            color: "rgb(255, 255, 255)",
+                            textAlign: "center",
+                            height: "max-content",
+                          }}
+                        >
+                          Coming Soon
+                        </sup>
                       </div>
                     </a>
-                  </Link>
+                  </div>
                 </li>
                 <li>
                   <div>
-                  {/* <Link legacyBehavior href="/image-studio" passHref>
+                    {/* <Link legacyBehavior href="/image-studio" passHref>
                     <div className="flex items-center  pt-1">
                       <div className={`flex items-center rounded-xl p-3 w-full`}>
                         <img

@@ -66,12 +66,12 @@ const VideoGrid = ({ data }) => {
               myVideo?.map((video, index) => (
                 <div
                   key={index}
-                  onClick={() => router.push(`/generate-video/${video?._id||video?.id}`)}
+                  onClick={() => router.push(`/generate-video/${video?._id || video?.id}`)}
                   className="mb-6 break-inside-avoid rounded-xl transition-transform relative cursor-pointer"
                 >
                   <div className="relative">
                     <video
-                      src={video?.finalVideoUrl || "https://video-assets.fantv.world/3d6f2592-fd7c-477c-93d9-5b2b50cd78bf.mp4"}
+                      src={video?.finalVideoUrl}
                       muted
                       loop
                       playsInline
@@ -87,10 +87,9 @@ const VideoGrid = ({ data }) => {
                         <p className="text-white font-medium text-lg">{video?.status}</p>
                       </div>
                     )}
-                    
                   </div>
                   <div className=" pt-1 flex justify-between items-center">
-                      <h3 className="text-black text-sm truncate">&nbsp;{video?.prompt}</h3>
+                    <h3 className="text-black text-sm truncate">&nbsp;{video?.prompt}</h3>
                   </div>
                 </div>
               ))}
