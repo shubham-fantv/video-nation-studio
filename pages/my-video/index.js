@@ -4,6 +4,7 @@ import { FANTV_API_URL } from "../../src/constant/constants";
 import fetcher from "../../src/dataProvider";
 import { parseCookies } from "nookies";
 import { useRouter } from "next/router";
+import moment from "moment";
 
 const VideoGrid = ({ data }) => {
   console.log("🚀 ~ VideoGrid ~ data:", data);
@@ -17,53 +18,11 @@ const VideoGrid = ({ data }) => {
   return (
     <div className=" min-h-screen w-full p-6">
       <h1 className="text-black text-3xl font-bold text-center mb-8">My Videos</h1>
-
-      {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {myVideo?.map((video) => (
-          <div key={video.id} className="flex flex-col">
-            <div className="relative rounded-lg overflow-hidden mb-2">
-              {video.finalVideoUrl ? (
-                <video
-                  src={video?.finalVideoUrl}
-                  muted
-                  // poster={video.imageUrl}
-                  controls
-                  loop
-                  playsInline
-                  onMouseEnter={(e) => e.target.play()}
-                  onMouseLeave={(e) => e.target.pause()}
-                  onEnded={(e) => e.target.play()}
-                  className="w-full  h-full object-cover rounded-xl"
-                />
-              ) : (
-                <img
-                  src={video?.imageUrl}
-                  alt={video?.prompt}
-                  className="w-full h-48 object-cover"
-                />
-              )}
-            </div>
-
-            <div className="flex justify-between items-center">
-              <h3 className="text-white text-sm truncate">{video?.prompt}</h3>
-              <div className="flex space-x-2">
-                <button className="text-white p-1 rounded-full hover:bg-gray-700">
-                  <ArrowUpRight size={18} />
-                </button>
-                <button className="text-white p-1 rounded-full hover:bg-gray-700">
-                  <Download size={18} />
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div> */}
-
       <div className="mt-2 min-h-[50vh]" style={{ maxWidth: "1120px" }}>
         <div>
           <div className="columns-1 sm:columns-2 lg:columns-4 gap-4">
             {myVideo &&
-              myVideo?.map((video, index) => (
+              [...myVideo].reverse().map((video, index) => (
                 <div
                   key={index}
                   onClick={() => router.push(`/generate-video/${video?._id || video?.id}`)}
@@ -91,6 +50,9 @@ const VideoGrid = ({ data }) => {
                   <div className=" pt-1 flex justify-between items-center">
                     <h3 className="text-black text-sm truncate">&nbsp;{video?.prompt}</h3>
                   </div>
+                  <h3 className="text-black text-sm truncate">
+                    &nbsp;{moment(video?.created_at).format("MMMM D, YYYY, h:mm A")}
+                  </h3>
                 </div>
               ))}
           </div>
