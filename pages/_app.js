@@ -34,9 +34,11 @@ function MyApp({ Component, pageProps, emotionCache = createEmotionCache() }) {
   const router = useRouter();
   const { sendPageView } = useGTM();
 
-  // console.log = () => {};
-  // console.error = () => {};
-  // console.debug = () => {};
+  if (process.env.NEXT_PUBLIC_ENVIRONMENT_FOR_LOG == "prod") {
+    console.log = () => {};
+    console.error = () => {};
+    console.debug = () => {};
+  }
 
   useEffect(() => {
     const handleRouteChange = (url) => {
