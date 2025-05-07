@@ -21,8 +21,8 @@ const Edit = () => {
       {slug && (
         <iframe
           // src={`http://20.244.29.252:5173/${slug}`}
-          src={`https://editor.videonation.xyz/${slug}`}
-          // src={`http://localhost:5173/${slug}`}
+          //src={`https://editor.videonation.xyz/${slug}`}
+          src={`http://localhost:5173/${slug}`}
           className="w-full h-full"
           style={{ border: "none" }}
           title="Video Editor"

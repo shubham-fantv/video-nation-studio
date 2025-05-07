@@ -100,7 +100,21 @@ const index = () => {
       },
       onError: (error) => {
         setLoading(false);
-        alert(error.response.data.message);
+      
+        const defaultMessage = "Something went wrong. Please try again later.";
+      
+        const message =
+          error?.response?.data?.message ||
+          error?.message ||
+          defaultMessage;
+      
+        setSwalProps({
+          icon: "error",
+          show: true,
+          title: "Error",
+          text: message,
+          confirmButtonText: "OK",
+        });
       },
     }
   );
@@ -124,6 +138,7 @@ const index = () => {
       const requestBody = {
         prompt,
         imageInput: image ? [image] : [],
+        imageUrl: image ? image : "",
         creditsUsed: 20,
         aspectRatio: aspectRatio,
         caption: captionEnabled,

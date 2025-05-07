@@ -193,7 +193,28 @@ function Sidebar({ children }) {
                   </Link>
                 </li>
                 <li>
+                  <Link legacyBehavior href="/image-studio" passHref>
+                    <a className="flex items-center  pt-1">
+                      <div
+                        className={`flex items-center rounded-xl p-3 w-full ${
+                          isActiveLink("/image-studio") ? "bg-[#FFFFFF0D] font-bold" : ""
+                        }`}
+                        style={isActiveLink("/image-studio") ? activeStyle : {}}
+                      >
+                        <img
+                          style={{ height: "20px", width: "20px" }}
+                          src="/images/icons/video.svg"
+                          className="text-black"
+                        />{" "}
+                        &nbsp;
+                        <span className="text-sm text-black pl-2">Image Studio</span>
+                      </div>
+                    </a>
+                  </Link>
+                </li>
+                <li>
                   <div>
+                  {/* <Link legacyBehavior href="/image-studio" passHref>
                     <div className="flex items-center  pt-1">
                       <div className={`flex items-center rounded-xl p-3 w-full`}>
                         <img
@@ -218,10 +239,11 @@ function Sidebar({ children }) {
                             height: "max-content",
                           }}
                         >
-                          coming Soon
+                          Coming Soon
                         </sup>
                       </div>
                     </div>
+                    </Link> */}
                   </div>
                 </li>
               </ul>
