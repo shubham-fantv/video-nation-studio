@@ -79,8 +79,8 @@ const index = () => {
     setImagePreview(null);
   };
 
-  const { mutate: generateVideoApi } = useMutation(
-    (obj) => fetcher.post(`${API_BASE_URL}/api/v1/ai-video`, obj),
+  const { mutate: generateImageApi } = useMutation(
+    (obj) => fetcher.post(`${API_BASE_URL}/api/v1/ai-image`, obj),
     {
       onSuccess: (response) => {
         setImagePreview(null);
@@ -90,9 +90,9 @@ const index = () => {
           icon: "success",
           show: true,
           title: "Success",
-          text: "Video generation is in progress",
+          text: "Image generation is in progress",
           showCancelButton: true,
-          confirmButtonText: "Go to My Video",
+          confirmButtonText: "Go to My Library",
           cancelButtonText: "Cancel",
           allowOutsideClick: false, // Optional: prevent dismiss by clicking outside
           allowEscapeKey: false, // Optional: prevent ESC close
@@ -100,11 +100,14 @@ const index = () => {
       },
       onError: (error) => {
         setLoading(false);
-
+      
         const defaultMessage = "Something went wrong. Please try again later.";
-
-        const message = error?.response?.data?.message || error?.message || defaultMessage;
-
+      
+        const message =
+          error?.response?.data?.message ||
+          error?.message ||
+          defaultMessage;
+      
         setSwalProps({
           icon: "error",
           show: true,
@@ -120,7 +123,7 @@ const index = () => {
     router.push("/my-video");
   };
 
-  const handleGenerateVideo = () => {
+  const handleGenerateImage = () => {
     if (isLoggedIn) {
       if (!prompt.trim()) {
         alert("Please enter a prompt!");
@@ -135,7 +138,7 @@ const index = () => {
       const requestBody = {
         prompt,
         imageInput: image ? [image] : [],
-        // imageUrl: image ? image : "",
+        imageUrl: image ? image : "",
         creditsUsed: 20,
         aspectRatio: aspectRatio,
         caption: captionEnabled,
@@ -143,7 +146,7 @@ const index = () => {
       setLoading(true);
 
       sendEvent({
-        event: "Generate Video",
+        event: "Generate Image",
         email: userData?.email,
         name: userData?.name,
         prompt: prompt,
@@ -151,7 +154,7 @@ const index = () => {
         caption: captionEnabled,
       });
 
-      generateVideoApi(requestBody);
+      generateImageApi(requestBody);
     } else {
       setIsPopupVisible(true);
     }
@@ -179,10 +182,10 @@ const index = () => {
       {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
       <div className="justify-center m-auto">
         <h1 className="text-black text-[32px] font-semibold text-center leading-[38px]">
-          AI-Powered Video Creation. Just Type & Generate
+          AI-Powered Image Creation. Just Type & Generate
         </h1>
         <p className="text-[#1E1E1EB2] pt-2 text-base font-normal text-center">
-          Transform words into cinematic visuals—effortless, fast, and stunning.
+          Transform words into cinematic visuals — effortless, fast, and stunning.
         </p>
       </div>
       <div className="flex mt-8 w-full flex-col gap-4 rounded-lg bg-[#F5F5F5] p-4 shadow-md">
@@ -264,7 +267,7 @@ const index = () => {
           <div className="flex-1 hidden md:block"></div>
 
           <button
-            onClick={() => handleGenerateVideo()}
+            onClick={() => handleGenerateImage()}
             className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-2 text-white shadow-md transition-all hover:brightness-110"
           >
             ✨ Generate
