@@ -185,11 +185,11 @@ function Sidebar({ children }) {
                     <a className="flex items-center  pt-1">
                       <div
                         className={`flex items-center rounded-xl p-3 w-full ${
-                          isActiveLink("/video-studio", "/category")
+                          isActiveLink("/video-studio", "/category","/generate-video")
                             ? "bg-[#FFFFFF0D] font-bold"
                             : ""
                         }`}
-                        style={isActiveLink("/video-studio", "/category") ? activeStyle : {}}
+                        style={isActiveLink("/video-studio", "/category","/generate-video") ? activeStyle : {}}
                       >
                         <img
                           style={{ height: "20px", width: "20px" }}
@@ -207,11 +207,11 @@ function Sidebar({ children }) {
                     <a className="flex items-center  pt-1">
                       <div
                         className={`flex items-center rounded-xl p-3 w-full ${
-                          isActiveLink("/image-studio", "/image-category")
+                          isActiveLink("/image-studio", "/image-category","/generate-image")
                             ? "bg-[#FFFFFF0D] font-bold"
                             : ""
                         }`}
-                        style={isActiveLink("/image-studio", "/image-category") ? activeStyle : {}}
+                        style={isActiveLink("/image-studio", "/image-category","/generate-image") ? activeStyle : {}}
                       >
                         <img
                           style={{ height: "20px", width: "20px" }}
