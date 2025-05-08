@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import SectionCards from "../../src/component/SectionCards";
-import CommunityCreatedContent from "../../src/component/CommunityCreatedContent";
+import CommunityCreatedContent from "../../src/component/imageCommunityCreatedContent";
 import HowToCreate from "../../src/component/HowToCreate";
 import { useMutation, useQuery } from "react-query";
 import fetcher from "../../src/dataProvider";
@@ -9,6 +9,7 @@ import { API_BASE_URL, FANTV_API_URL } from "../../src/constant/constants";
 import axios from "axios";
 import Loading from "../../src/component/common/Loading/loading";
 import { quotes } from "../../src/utils/common";
+import { allPromptSamples } from "../../src/utils/common";
 import { useSelector } from "react-redux";
 import LoginAndSignup from "../../src/component/feature/Login";
 import { useRouter } from "next/router";
@@ -38,6 +39,29 @@ const index = () => {
   const [isLoading, setLoading] = useState(false);
   const [swalProps, setSwalProps] = useState({});
 
+  const getRandomPrompts = (list, count = 3) =>
+    list
+      .sort(() => 0.5 - Math.random()) // Shuffle
+      .slice(0, count); // Pick first 3
+  
+  const [samplePrompts, setSamplePrompts] = useState([]);
+
+
+  const magicPrompts = [
+    "A dragon soaring over snow-covered mountains at dusk",
+    "A glowing forest where fireflies light up the night",
+    "A cyberpunk girl walking through a neon-lit alley",
+    "A quiet Japanese teahouse on a rainy evening",
+    "An astronaut relaxing on a tropical alien beach",
+    // Add more here...
+  ];
+  
+  const generateMagicPrompt = () => {
+    const randomPrompt =
+      magicPrompts[Math.floor(Math.random() * magicPrompts.length)];
+    setPrompt(randomPrompt);
+  };
+  
   const { sendEvent } = useGTM();
 
   const { isLoggedIn, userData } = useSelector((state) => state.user);
@@ -120,7 +144,7 @@ const index = () => {
   );
 
   const handleConfirm = () => {
-    router.push("/my-video");
+    router.push("/my-library");
   };
 
   const handleGenerateImage = () => {
@@ -138,10 +162,10 @@ const index = () => {
       const requestBody = {
         prompt,
         imageInput: image ? [image] : [],
-        imageUrl: image ? image : "",
-        creditsUsed: 20,
+        creditsUsed: 1,
         aspectRatio: aspectRatio,
         caption: captionEnabled,
+        ...(image && { imageUrl: image }), // ✅ only include if `image` is truthy
       };
       setLoading(true);
 
@@ -169,6 +193,10 @@ const index = () => {
     const interval = setInterval(pickRandomQuote, 5000);
 
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    setSamplePrompts(getRandomPrompts(allPromptSamples));
   }, []);
 
   const textareaRef = useRef();
@@ -264,6 +292,12 @@ const index = () => {
               ))}
             </select>
           </button>
+          <button
+            onClick={generateMagicPrompt}
+            className="flex items-center gap-2 rounded-md bg-[#FFF] px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all hover:bg-gray-100"
+          >
+            🪄 Magic Prompt
+          </button>
           <div className="flex-1 hidden md:block"></div>
 
           <button
@@ -276,11 +310,7 @@ const index = () => {
         
       </div>
        <div className="flex flex-wrap gap-2 mt-4 overflow-auto">
-          {[
-            "A serene sunrise over the Himalayas with birds flying in a formation",
-            "A futuristic city skyline with flying cars at dusk in vibrant colors",
-            "A jungle scene where a tiger moves through dense fog",
-          ].map((sample, idx) => (
+          {samplePrompts.map((sample, idx) => (
             <button
               key={idx}
               onClick={() => setPrompt(sample)}

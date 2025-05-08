@@ -95,7 +95,7 @@ const Index = ({ masterData, template, slug }) => {
       prompt,
       imageInput: image ? [image] : [],
       imageUrl: image ? image : "",
-      creditsUsed: 20,
+      creditsUsed: 1,
       aspectRatio: aspectRatio
     };
     console.log(requestBody);

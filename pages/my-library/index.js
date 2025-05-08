@@ -103,7 +103,7 @@ const VideoGrid = ({ data, data1 }) => {
             >
               <div className="relative">
                 <img
-                  src={image?.imageUrl}
+                  src={image?.finalImageUrl}
                   alt={image?.prompt || "Generated Image"}
                   className="w-full min-h-[150px] object-cover rounded-xl"
                 />

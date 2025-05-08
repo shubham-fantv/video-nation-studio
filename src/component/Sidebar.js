@@ -114,9 +114,17 @@ function Sidebar({ children }) {
   const router = useRouter();
   const currentPath = router.pathname;
 
-  // Function to check if a link is active
-  const isActiveLink = (path) => {
-    return currentPath === path;
+  const isActiveLink = (...paths) => {
+    const exactMatch = paths.find((path) => router.pathname === path);
+    if (exactMatch) return true;
+  
+    // If no exact match, fall back to the longest prefix match (most specific)
+    const matchedPrefix = paths
+      .filter((path) => path !== "/")
+      .sort((a, b) => b.length - a.length) // prioritize longer (more specific) paths
+      .find((path) => router.pathname.startsWith(path));
+  
+    return matchedPrefix ? router.pathname.startsWith(matchedPrefix) : false;
   };
 
   // Style for active menu items
@@ -177,9 +185,9 @@ function Sidebar({ children }) {
                     <a className="flex items-center  pt-1">
                       <div
                         className={`flex items-center rounded-xl p-3 w-full ${
-                          isActiveLink("/video-studio") ? "bg-[#FFFFFF0D] font-bold" : ""
+                          isActiveLink("/video-studio","/category",) ? "bg-[#FFFFFF0D] font-bold" : ""
                         }`}
-                        style={isActiveLink("/video-studio") ? activeStyle : {}}
+                        style={isActiveLink("/video-studio","/category",) ? activeStyle : {}}
                       >
                         <img
                           style={{ height: "20px", width: "20px" }}
@@ -194,12 +202,13 @@ function Sidebar({ children }) {
                 </li>
                 <li>
                   <div>
+                  <Link legacyBehavior href="/image-studio" passHref>
                     <a className="flex items-center  pt-1">
                       <div
                         className={`flex items-center rounded-xl p-3 w-full ${
-                          isActiveLink("/image-studio") ? "bg-[#FFFFFF0D] font-bold" : ""
+                          isActiveLink("/image-studio","/image-category",) ? "bg-[#FFFFFF0D] font-bold" : ""
                         }`}
-                        style={isActiveLink("/image-studio") ? activeStyle : {}}
+                        style={isActiveLink("/image-studio","/image-category",) ? activeStyle : {}}
                       >
                         <img
                           style={{ height: "20px", width: "20px" }}
@@ -208,71 +217,22 @@ function Sidebar({ children }) {
                         />{" "}
                         &nbsp;
                         <span className="text-sm text-black pl-2">Image Studio</span>
-                        <sup
-                          style={{
-                            marginLeft: "4px",
-                            contentVisibility: "auto",
-                            background: "linear-gradient(96.61deg, #FFA0FF 4.52%, #653EFF 102.26%)",
-                            right: "0px",
-                            padding: " 8px",
-                            borderRadius: " 10px",
-                            fontSize: "8px",
-                            fontWeight: 700,
-                            color: "rgb(255, 255, 255)",
-                            textAlign: "center",
-                            height: "max-content",
-                          }}
-                        >
-                          Coming Soon
-                        </sup>
+                     
                       </div>
                     </a>
-                  </div>
-                </li>
-                <li>
-                  <div>
-                    {/* <Link legacyBehavior href="/image-studio" passHref>
-                    <div className="flex items-center  pt-1">
-                      <div className={`flex items-center rounded-xl p-3 w-full`}>
-                        <img
-                          style={{ height: "20px", width: "20px" }}
-                          src="/images/icons/image.svg"
-                          className="text-black"
-                        />{" "}
-                        &nbsp;
-                        <span className="text-sm text-black pl-2">Image Studio</span>
-                        <sup
-                          style={{
-                            marginLeft: "4px",
-                            contentVisibility: "auto",
-                            background: "linear-gradient(96.61deg, #FFA0FF 4.52%, #653EFF 102.26%)",
-                            right: "0px",
-                            padding: " 8px",
-                            borderRadius: " 10px",
-                            fontSize: "8px",
-                            fontWeight: 700,
-                            color: "rgb(255, 255, 255)",
-                            textAlign: "center",
-                            height: "max-content",
-                          }}
-                        >
-                          Coming Soon
-                        </sup>
-                      </div>
-                    </div>
-                    </Link> */}
+                    </Link>
                   </div>
                 </li>
               </ul>
               <ul>
                 <li>
-                  <Link href="/my-video" passHref legacyBehavior>
+                  <Link href="/my-library" passHref legacyBehavior>
                     <div className="flex items-center   cursor-pointer">
                       <div
                         className={`flex items-center rounded-xl p-3 w-full ${
-                          isActiveLink("/my-video") ? "bg-[#FFFFFF0D] font-bold" : ""
+                          isActiveLink("/my-library") ? "bg-[#FFFFFF0D] font-bold" : ""
                         }`}
-                        style={isActiveLink("/my-video") ? activeStyle : {}}
+                        style={isActiveLink("/my-library") ? activeStyle : {}}
                       >
                         <span className="text-black">
                           <svg
@@ -284,7 +244,7 @@ function Sidebar({ children }) {
                             <path d="M17 10.5V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-3.5l4 4v-11l-4 4z" />
                           </svg>
                         </span>
-                        <span className="text-sm text-black pl-2">My Video</span>
+                        <span className="text-sm text-black pl-2">My Library</span>
                       </div>
                     </div>
                   </Link>
@@ -294,7 +254,7 @@ function Sidebar({ children }) {
 
             <div className="">
               <h2 className=" text-black text-base font-semibold px-4 mb-2">
-                Subscription and Billings
+                Profile
               </h2>
               <ul>
                 <li>
@@ -318,6 +278,31 @@ function Sidebar({ children }) {
                           src="/images/icons/subscription.svg"
                         />
                         <span className="text-sm text-black pl-2">Manage Subscription</span>
+                      </div>
+                    </a>
+                  </Link>
+                </li>
+                <li>
+                  <Link legacyBehavior href="/usage" passHref>
+                    <a className="flex items-center  py-2">
+                      <div
+                        onClick={() =>
+                          sendEvent({
+                            event: "Usage",
+                            email: userData?.email,
+                            name: userData?.name,
+                          })
+                        }
+                        className={`flex items-center rounded-xl p-3 w-full ${
+                          isActiveLink("/usage") ? "bg-[#FFFFFF0D] font-bold" : ""
+                        }`}
+                        style={isActiveLink("/usage") ? activeStyle : {}}
+                      >
+                        <img
+                          style={{ height: "20px", width: "20px" }}
+                          src="/images/icons/usage.svg"
+                        />
+                        <span className="text-sm text-black pl-2">Usage</span>
                       </div>
                     </a>
                   </Link>

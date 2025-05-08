@@ -73,3 +73,26 @@ export const quotes = [
   "AI is cooking something amazing for you 🍿",
   "Generating your story, frame by frame...",
 ];
+
+export const allPromptSamples = [
+  "A serene sunrise over the Himalayas with birds flying in a formation",
+  "A futuristic city skyline with flying cars at dusk in vibrant colors",
+  "A jungle scene where a tiger moves through dense fog",
+  "A knight riding a robotic horse in a neon-lit battlefield",
+  "A peaceful beach at sunset with gentle waves and palm trees",
+  "A cozy cabin in the snowy mountains with smoke from the chimney",
+  "A space station orbiting Saturn with astronauts floating outside",
+  "An enchanted forest with glowing mushrooms and fairies",
+  "A bustling Moroccan market at night lit by lanterns",
+  "A giant whale flying through the sky over a desert",
+  "A cyberpunk alley with holographic signs and rain",
+  "A tranquil Japanese garden with koi ponds and cherry blossoms",
+  "A retro diner in the 1950s full of neon lights and jukeboxes",
+  "An underwater city made of glass with sea creatures swimming by",
+  "A festival with fireworks and lanterns lighting the sky",
+  "A dragon flying over a castle at twilight",
+  "An astronaut walking on a frozen alien planet",
+  "A medieval marketplace buzzing with traders and music",
+  "A tropical rainforest waterfall with parrots flying above",
+  "A library floating in the sky with magical books flying around",
+];

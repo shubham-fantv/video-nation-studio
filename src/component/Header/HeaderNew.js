@@ -34,8 +34,8 @@ const LogOutNavItem = [
     newTag: true,
   },
   {
-    path: "/my-video",
-    title: " My Video",
+    path: "/my-library",
+    title: " My Library",
     icon: "🎵 ",
     newTag: false,
   },

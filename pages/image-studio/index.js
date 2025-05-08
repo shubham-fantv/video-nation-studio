@@ -89,28 +89,32 @@ const index = () => {
       </div>
       <div className="mt-12">
         {/* <SectionCards data={homeFeedData?.section1} /> */}
-        <div className="flex justify-between items-center mb-4">
-          <div>
-            <p variant="h5" className="font-semibold text-2xl text-[#1E1E1E]">
-              {homeFeedData?.title || "Categories"}
-            </p>
-            <p variant="body2" className="text-normal pt-2 text-[#1E1E1EB2] text-base">
-              {homeFeedData?.subtitle || "Pick a category to discover purpose-built templates"}
-            </p>
-          </div>
-        </div>
+        {homeFeedData?.results?.length > 0 && (
+  <>
+    <div className="flex justify-between items-center mb-4">
+      <div>
+        <p className="font-semibold text-2xl text-[#1E1E1E]">
+          {homeFeedData?.title || "Categories"}
+        </p>
+        <p className="text-normal pt-2 text-[#1E1E1EB2] text-base">
+          {homeFeedData?.subtitle || "Pick a category to discover purpose-built templates"}
+        </p>
+      </div>
+    </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {homeFeedData?.results?.map((card) => (
-            <CardComponent key={card.id} data={card} redirect={`/image-category/${card?.slug}`} />
-          ))}
-        </div>
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {homeFeedData.results.map((card) => (
+        <CardComponent key={card.id} data={card} redirect={`/image-category/${card?.slug}`} />
+      ))}
+    </div>
+  </>
+)}
       </div>
       <div className="mt-12">
         <div className="w-full">
           <CommunityCreatedContent
-            title="Use a Template"
-            subTitle="Remix with our content created by our community"
+            title="Use an image template"
+            subTitle="Use templates created by our community and add your personal touch"
             data={templates}
             isTabEnabled
           />
