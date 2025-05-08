@@ -114,7 +114,7 @@ const index = () => {
           icon: "success",
           show: true,
           title: "Success",
-          text: "Image generation is in progress",
+          text: "Image generation is completed",
           showCancelButton: true,
           confirmButtonText: "Go to My Library",
           cancelButtonText: "Cancel",
@@ -292,13 +292,13 @@ const index = () => {
               ))}
             </select>
           </button>
+          <div className="flex-1 hidden md:block"></div>
           <button
             onClick={generateMagicPrompt}
             className="flex items-center gap-2 rounded-md bg-[#FFF] px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all hover:bg-gray-100"
           >
             🪄 Magic Prompt
           </button>
-          <div className="flex-1 hidden md:block"></div>
 
           <button
             onClick={() => handleGenerateImage()}

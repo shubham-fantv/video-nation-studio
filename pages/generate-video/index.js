@@ -114,9 +114,9 @@ const index = () => {
           icon: "success",
           show: true,
           title: "Success",
-          text: "Video generation is in progress",
+          text: "Video generation done",
           showCancelButton: true,
-          confirmButtonText: "Go to My Video",
+          confirmButtonText: "Go to My Library",
           cancelButtonText: "Cancel",
           allowOutsideClick: false, // Optional: prevent dismiss by clicking outside
           allowEscapeKey: false, // Optional: prevent ESC close
