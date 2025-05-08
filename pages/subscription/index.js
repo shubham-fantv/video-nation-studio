@@ -91,26 +91,33 @@ const PricingPlans = () => {
       <h1 className="text-[32px] font-bold mb-2">Plans That Fit Your Needs</h1>
       <p className="text-xl mb-4 text-[#1E1E1EB2]">VideoNation Creator Studio</p>
 
-      {/* 🔄 Toggle Switch */}
-      <div className="flex mb-8 bg-gray-200 rounded-full p-1">
-        <button
-          onClick={() => setBillingCycle("monthly")}
-          className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-            billingCycle === "monthly" ? "bg-[#1E1E1E] text-white" : "text-gray-700"
-          }`}
-        >
-          Monthly
-        </button>
-        <button
-          onClick={() => setBillingCycle("yearly")}
-          className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-            billingCycle === "yearly" ? "bg-[#1E1E1E] text-white" : "text-gray-700"
-          }`}
-        >
-          Yearly
-        </button>
-      </div>
+{/* 🔄 Toggle Switch */}
+<div className="flex mb-8 bg-gray-200 rounded-full p-1 relative">
+  <button
+    onClick={() => setBillingCycle("monthly")}
+    className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+      billingCycle === "monthly" ? "bg-[#1E1E1E] text-white" : "text-gray-700"
+    }`}
+  >
+    Monthly
+  </button>
 
+  <div className="relative">
+    <button
+      onClick={() => setBillingCycle("yearly")}
+      className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+        billingCycle === "yearly" ? "bg-[#1E1E1E] text-white" : "text-gray-700"
+      }`}
+    >
+      Yearly
+    </button>
+
+    {/* -20% OFF badge */}
+    <span className="absolute -top-2 -right-6 bg-red-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
+      -20%
+    </span>
+  </div>
+</div>
       <div className="relative w-full px-4">
         {/* Optional: Display badge only if at least one plan is highlighted */}
         {filteredPlans.findIndex((plan) => plan.isHighlighted) >= 0 && (
@@ -142,9 +149,20 @@ const PricingPlans = () => {
               <h2 className="text-2xl font-bold mb-2">{plan.planName}</h2>
 
               <div className="mb-8">
-                <span className="text-xl cursor-pointer" onClick={() => handleChoosePlan(plan)}>
-                  ${plan.cost}/{billingCycle === "monthly" ? "month" : "year"}
-                </span>
+                   <span>
+                    ${billingCycle === "yearly"
+                      ? (
+                          <>
+                            {(plan.cost / 12).toFixed(2)}/month{" "}
+                            <span className="text-gray-500 text-sm">
+                              (<s>${plan.actual_cost.toFixed(2)}</s>)
+                            </span>
+                          </>
+                        )
+                      : (
+                          <>{(plan.cost).toFixed(2)}/month</>
+                        )}
+                  </span>
                 {plan.billedType && (
                   <p className="text-sm text-gray-400">Billed {plan.billedType}</p>
                 )}
