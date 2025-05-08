@@ -14,6 +14,16 @@ const VideoGrid = ({ data, data1 }) => {
 
   const [mediaType, setMediaType] = useState("video");
 
+    // Sync with URL query (e.g., ?tab=image)
+    useEffect(() => {
+      if (router.isReady) {
+        const tabParam = router.query.tab;
+        if (tabParam === "image" || tabParam === "video") {
+          setMediaType(tabParam);
+        }
+      }
+    }, [router.isReady, router.query.tab]);
+    
   useEffect(() => {
     setMyVideo(myVideo);
     setMyImage(myImage);

@@ -47,7 +47,7 @@ const index = () => {
           {category?.description || " VideoNation Creator Studio"}
         </p>
         <Link
-          href={"/generate-video"}
+          href={"/generate-image"}
           passHref
           className="flex items-center justify-center w-full mt-4"
         >

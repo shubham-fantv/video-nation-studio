@@ -144,7 +144,7 @@ const index = () => {
   );
 
   const handleConfirm = () => {
-    router.push("/my-library");
+    router.push("/my-library?tab=image");
   };
 
   const handleGenerateImage = () => {
@@ -247,7 +247,7 @@ const index = () => {
         {/* Buttons & Toggle */}
         <div className="flex  flex-wrap items-center gap-3">
           <label className="flex items-center gap-2 rounded-md bg-[#FFF] px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all cursor-pointer">
-            + Add image
+            + Ref image
             <input
               type="file"
               accept="image/*"
@@ -257,7 +257,7 @@ const index = () => {
             />
           </label>
 
-          {/* Caption Toggle */}
+          {/* Caption Toggle 
           <button
             onClick={() => setCaptionEnabled(!captionEnabled)}
             className="flex items-center gap-2 rounded-md bg-[#FFF] px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all"
@@ -275,6 +275,7 @@ const index = () => {
             </div>
             Caption
           </button>
+           Caption Toggle */}
           <button className="flex items-center gap-2 rounded-md bg-[#FFF] px-4 py-2 text-sm text-[1E1E1E] shadow-md transition-all">
             {/* <span className="w-4 h-3 border border-black rounded-sm"></span> */}
             <span
