@@ -83,7 +83,6 @@ const LoginAndSignup = ({ open, handleModalClose }) => {
               decoding="async"
             />
           </div>
-
           <p className="text-white text-center text-2xl font-semibold  mt-6 ">
             Welcome to VideoNation{" "}
           </p>
@@ -96,15 +95,14 @@ const LoginAndSignup = ({ open, handleModalClose }) => {
               <span>Sign in with Google</span>
             </div>
           </button>
-
           <div>
             <span className="text-white text-sm">
               By signing up, you agree to our{" "}
-              <a href="/" className="text-[#FFA0FF]">
+              <a href="/terms" target="_blank" className="text-[#FFA0FF]">
                 Terms
               </a>{" "}
               and{" "}
-              <a href="/" className="text-[#FFA0FF]">
+              <a href="/privacy" target="_blank" className="text-[#FFA0FF]">
                 Privacy Policy
               </a>
             </span>

@@ -44,7 +44,7 @@ const index = () => {
     list
       .sort(() => 0.5 - Math.random()) // Shuffle
       .slice(0, count); // Pick first 3
-  
+
   const [samplePrompts, setSamplePrompts] = useState([]);
 
   const { sendEvent } = useGTM();
@@ -57,10 +57,9 @@ const index = () => {
     "An astronaut relaxing on a tropical alien beach",
     // Add more here...
   ];
-  
+
   const generateMagicPrompt = () => {
-    const randomPrompt =
-      magicPrompts[Math.floor(Math.random() * magicPrompts.length)];
+    const randomPrompt = magicPrompts[Math.floor(Math.random() * magicPrompts.length)];
     setPrompt(randomPrompt);
   };
 
@@ -213,7 +212,7 @@ const index = () => {
           AI-Powered Video Creation. Just Type & Generate
         </h1>
         <p className="text-[#1E1E1EB2] pt-2 text-base font-normal text-center">
-          Transform words into cinematic visuals—effortless, fast, and stunning.
+          Transform words into cinematic visuals—effortless, fast, and stunning
         </p>
       </div>
       <div className="flex mt-8 w-full flex-col gap-4 rounded-lg bg-[#F5F5F5] p-4 shadow-md">
@@ -273,8 +272,8 @@ const index = () => {
               ))}
             </select>
           </button>
-              {/* Caption Toggle */}
-            <button
+          {/* Caption Toggle */}
+          <button
             onClick={() => setCaptionEnabled(!captionEnabled)}
             className="flex items-center gap-2 rounded-md bg-[#FFF] px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all"
           >
@@ -308,7 +307,7 @@ const index = () => {
               ></div>
             </div>
             Voiceover
-          </button>         
+          </button>
           <div className="flex-1 hidden md:block"></div>
           <button
             onClick={generateMagicPrompt}
