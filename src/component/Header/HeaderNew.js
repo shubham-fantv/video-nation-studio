@@ -49,9 +49,18 @@ const HeaderNew = ({ app }) => {
 
   const currentPath = router.pathname;
 
-  // Function to check if a link is active
-  const isActiveLink = (path) => {
-    return currentPath === path;
+
+  const isActiveLink = (...paths) => {
+    const exactMatch = paths.find((path) => router.pathname === path);
+    if (exactMatch) return true;
+  
+    // If no exact match, fall back to the longest prefix match (most specific)
+    const matchedPrefix = paths
+      .filter((path) => path !== "/")
+      .sort((a, b) => b.length - a.length) // prioritize longer (more specific) paths
+      .find((path) => router.pathname.startsWith(path));
+  
+    return matchedPrefix ? router.pathname.startsWith(matchedPrefix) : false;
   };
   const { sendEvent } = useGTM();
   const [isPopupVisible, setIsPopupVisible] = useState({
@@ -136,6 +145,7 @@ const HeaderNew = ({ app }) => {
         <Box className="">
           {userData?.credits > 0 ? (
             <div>
+              <CLink href={"/usage"}>
               <button
                 style={{
                   border: "1px solid #262626",
@@ -162,6 +172,7 @@ const HeaderNew = ({ app }) => {
                 />
                 {userData?.credits} Credits
               </button>
+              </CLink>
             </div>
           ) : (
             <CLink href={"/subscription"}>
@@ -288,7 +299,7 @@ const HeaderNew = ({ app }) => {
           <div className="flex hidden md:flex">
             <div
               className={`text-black text-base font-medium m-auto ${
-                isActiveLink("/video-studio") ? "underline underline-offset-8" : ""
+                isActiveLink("/video-studio","/category") ? "underline underline-offset-8" : ""
               }`}
             >
               <CLink href="/video-studio">
@@ -322,7 +333,8 @@ const HeaderNew = ({ app }) => {
           <Box className="flex hidden md:flex">
             {userData?.credits > 0 ? (
               <div>
-                <button
+              <CLink href={"/usage"}>
+              <button
                   style={{
                     border: "1px solid #262626",
                     borderRadius: "12px",
@@ -348,6 +360,7 @@ const HeaderNew = ({ app }) => {
                   />
                   {userData?.credits} Credits
                 </button>
+                </CLink>
               </div>
             ) : (
               <CLink href={"/subscription"}>

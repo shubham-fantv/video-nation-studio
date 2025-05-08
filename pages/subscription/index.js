@@ -118,51 +118,64 @@ const PricingPlans = () => {
       </div>
 
       <div className="relative w-full px-4">
-        {/* Blue Circle Badge */}
-        {plans.findIndex((plan) => plan.isHighlighted) >= 0 && (
-          <div
-            className="absolute z-10"
-            style={{ top: "-25px", left: "50%", transform: "translateX(-135px)" }}
-          ></div>
+  {/* Optional: Display badge only if at least one plan is highlighted */}
+  {filteredPlans.findIndex((plan) => plan.isHighlighted) >= 0 && (
+    <div
+      className="absolute z-10"
+      style={{ top: "-25px", left: "50%", transform: "translateX(-135px)" }}
+    >
+      {/* Optional decorative badge */}
+    </div>
+  )}
+
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    {filteredPlans?.map((plan, index) => (
+      <div
+        key={index}
+        className={`rounded-lg p-8 flex flex-col relative transition-all ${
+          plan.isHighlighted
+            ? "bg-[#FFFFFF0D] text-black border-2 border-blue-400 shadow-lg"
+            : "bg-[#FFFFFF0D] text-black border border-[#FFFFFF26] shadow"
+        }`}
+      >
+        {/* Optional “Most Popular” badge */}
+        {plan.isHighlighted && (
+          <div className="absolute top-[-15px] right-[-10px] bg-amber-400 text-black text-xs font-bold px-2 py-1 rounded shadow-md">
+            Most Popular
+          </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredPlans?.map((plan, index) => (
-            <div
-              key={index}
-              className={`bg-[#FFFFFF0D] rounded-lg p-8 flex flex-col relative ${
-                plan.isHighlighted ? "z-0" : ""
-              }`}
-              style={{ border: "1px solid #FFFFFF26", boxShadow: "1px 4px 4px 3px #00000040" }}
-            >
-              <h2 className="text-2xl font-bold mb-2">{plan.planName}</h2>
-              <div className="mb-8">
-                <span className="text-xl">${plan.cost}/{billingCycle === "monthly" ? "month" : "year"}</span>
-                {plan.billedType && (
-                  <p className="text-sm text-gray-400">Billed {plan.billedType}</p>
-                )}
-              </div>
+        <h2 className="text-2xl font-bold mb-2">{plan.planName}</h2>
 
-              <button
-                onClick={() => handleChoosePlan(plan)}
-                className={`py-2 px-2 rounded-md mb-4 font-medium bg-[#1E1E1E] text-white`}
-              >
-                Choose Plan
-              </button>
-
-              <ul className="space-y-2">
-                {plan?.benefits?.map((feature, featureIndex) => (
-                  <li key={featureIndex} className="flex items-start">
-                    <span className="mr-2 ">•</span>
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+        <div className="mb-8">
+          <span className="text-xl">
+            ${plan.cost}/{billingCycle === "monthly" ? "month" : "year"}
+          </span>
+          {plan.billedType && (
+            <p className="text-sm text-gray-400">Billed {plan.billedType}</p>
+          )}
         </div>
+
+        <button
+          onClick={() => handleChoosePlan(plan)}
+          className="py-2 px-2 rounded-md mb-4 font-medium bg-[#1E1E1E] text-white hover:brightness-110"
+        >
+          Choose Plan
+        </button>
+
+        <ul className="space-y-2">
+          {plan?.benefits?.map((feature, featureIndex) => (
+            <li key={featureIndex} className="flex items-start">
+              <span className="mr-2">•</span>
+              <span>{feature}</span>
+            </li>
+          ))}
+        </ul>
       </div>
-    </div>
+    ))}
+  </div>
+</div>
+      </div>
   );
 };
 

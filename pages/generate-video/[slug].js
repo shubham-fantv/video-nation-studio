@@ -828,7 +828,6 @@ const Index = ({ masterData, template, slug }) => {
               <video
                 src={template?.videoUrl}
                 muted
-                autoPlay
                 poster={template?.imageUrl}
                 playsInline
                 controls

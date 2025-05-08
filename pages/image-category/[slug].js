@@ -2,35 +2,37 @@ import { Button } from "@mui/material";
 import React, { useState } from "react";
 import SectionCards from "../../src/component/SectionCards";
 import Link from "next/link";
+import CommunityCreatedContent from "../../src/component/imageCommunityCreatedContent";
+import { useQuery } from "react-query";
 import fetcher from "../../src/dataProvider";
 import { FANTV_API_URL } from "../../src/constant/constants";
-import { useQuery } from "react-query";
-import CardComponent from "../../src/component/CardComponent";
-import CommunityCreatedContent from "../../src/component/imageCommunityCreatedContent";
+import { useRouter } from "next/router";
 
 const index = () => {
-  const [homeFeedData, setHomeFeedData] = useState([]);
+  const [templates, setTemplates] = useState([]);
+  const [category, setCategory] = useState([]);
 
+  const router = useRouter();
   useQuery(
-    `${FANTV_API_URL}/api/v1/image_categories`,
-    () => fetcher.get(`${FANTV_API_URL}/api/v1/image_categories?limit=50`),
+    `${FANTV_API_URL}/api/v1/image_templates?limit=30`,
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/image_templates/category/${router.query.slug}`),
     {
+      enabled: !!router.query.slug,
       refetchOnMount: "always",
       onSuccess: ({ data }) => {
-        setHomeFeedData(data);
+        setTemplates(data.results);
       },
     }
   );
 
-  const [templates, setTemplates] = useState([]);
-
   useQuery(
-    `${FANTV_API_URL}/api/v1/image_templates?limit=50`,
-    () => fetcher.get(`${FANTV_API_URL}/api/v1/image_templates?limit=50`),
+    `${FANTV_API_URL}/api/v1/image_categories/${router.query.slug}`,
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/image_categories/${router.query.slug}`),
     {
+      enabled: !!router.query.slug,
       refetchOnMount: "always",
       onSuccess: ({ data }) => {
-        setTemplates(data.results);
+        setCategory(data[0]);
       },
     }
   );
@@ -39,15 +41,15 @@ const index = () => {
     <div>
       <div className="justify-center m-auto">
         <h1 className="text-black text-[32px] font-semibold text-center leading-[38px]">
-          Image Studio
+          {category?.title || " Video Studio"}
         </h1>
-        {/* <p className="text-gray-700 pt-2 text-base font-normal text-center">
-          VideoNation Creator Studio
-        </p> */}
+        <p className="text-gray-700 pt-2 text-base font-normal text-center">
+          {category?.description || " VideoNation Creator Studio"}
+        </p>
         <Link
-          href={"/generate-image"}
+          href={"/generate-video"}
           passHref
-          className="flex items-center justify-center w-full mt-6"
+          className="flex items-center justify-center w-full mt-4"
         >
           <div
             className="flex w-full items-center rounded-full border-2 border-gray-500 bg-white "
@@ -59,7 +61,7 @@ const index = () => {
             <input
               type="text"
               readOnly
-              placeholder="Enter your prompt to create a AI image"
+              placeholder={`Enter your prompt to create AI image on ${category.title}`}
               className="w-full rounded-full px-4 py-4 text-gray-700 placeholder-gray-400 focus:outline-none"
             />
             <div>
@@ -88,31 +90,13 @@ const index = () => {
         </Link>
       </div>
       <div className="mt-12">
-        {/* <SectionCards data={homeFeedData?.section1} /> */}
-        <div className="flex justify-between items-center mb-4">
-          <div>
-            <p variant="h5" className="font-semibold text-2xl text-[#1E1E1E]">
-              {homeFeedData?.title || "Categories"}
-            </p>
-            <p variant="body2" className="text-normal pt-2 text-[#1E1E1EB2] text-base">
-              {homeFeedData?.subtitle || "Pick a category to discover purpose-built templates"}
-            </p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {homeFeedData?.results?.map((card) => (
-            <CardComponent key={card.id} data={card} redirect={`/image-category/${card?.slug}`} />
-          ))}
-        </div>
-      </div>
-      <div className="mt-12">
         <div className="w-full">
           <CommunityCreatedContent
-            title="Use a Template"
-            subTitle="Remix with our content created by our community"
+            activeSlug={router?.query?.slug}
+            title="Use ready made templates"
+            subTitle="Use pre-defined templates created by our community and add your vision"
             data={templates}
-            isTabEnabled
+            page="Category"
           />
         </div>
       </div>
