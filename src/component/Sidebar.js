@@ -117,13 +117,13 @@ function Sidebar({ children }) {
   const isActiveLink = (...paths) => {
     const exactMatch = paths.find((path) => router.pathname === path);
     if (exactMatch) return true;
-  
+
     // If no exact match, fall back to the longest prefix match (most specific)
     const matchedPrefix = paths
       .filter((path) => path !== "/")
       .sort((a, b) => b.length - a.length) // prioritize longer (more specific) paths
       .find((path) => router.pathname.startsWith(path));
-  
+
     return matchedPrefix ? router.pathname.startsWith(matchedPrefix) : false;
   };
 
@@ -185,9 +185,11 @@ function Sidebar({ children }) {
                     <a className="flex items-center  pt-1">
                       <div
                         className={`flex items-center rounded-xl p-3 w-full ${
-                          isActiveLink("/video-studio","/category",) ? "bg-[#FFFFFF0D] font-bold" : ""
+                          isActiveLink("/video-studio", "/category")
+                            ? "bg-[#FFFFFF0D] font-bold"
+                            : ""
                         }`}
-                        style={isActiveLink("/video-studio","/category",) ? activeStyle : {}}
+                        style={isActiveLink("/video-studio", "/category") ? activeStyle : {}}
                       >
                         <img
                           style={{ height: "20px", width: "20px" }}
@@ -202,13 +204,14 @@ function Sidebar({ children }) {
                 </li>
                 <li>
                   <div>
-                  <Link legacyBehavior href="/image-studio" passHref>
                     <a className="flex items-center  pt-1">
                       <div
                         className={`flex items-center rounded-xl p-3 w-full ${
-                          isActiveLink("/image-studio","/image-category",) ? "bg-[#FFFFFF0D] font-bold" : ""
+                          isActiveLink("/image-studio", "/image-category")
+                            ? "bg-[#FFFFFF0D] font-bold"
+                            : ""
                         }`}
-                        style={isActiveLink("/image-studio","/image-category",) ? activeStyle : {}}
+                        style={isActiveLink("/image-studio", "/image-category") ? activeStyle : {}}
                       >
                         <img
                           style={{ height: "20px", width: "20px" }}
@@ -217,10 +220,25 @@ function Sidebar({ children }) {
                         />{" "}
                         &nbsp;
                         <span className="text-sm text-black pl-2">Image Studio</span>
-                     
+                        <sup
+                          style={{
+                            marginLeft: "4px",
+                            contentVisibility: "auto",
+                            background: "linear-gradient(96.61deg, #FFA0FF 4.52%, #653EFF 102.26%)",
+                            right: "0px",
+                            padding: " 8px",
+                            borderRadius: " 10px",
+                            fontSize: "8px",
+                            fontWeight: 700,
+                            color: "rgb(255, 255, 255)",
+                            textAlign: "center",
+                            height: "max-content",
+                          }}
+                        >
+                          coming Soon
+                        </sup>
                       </div>
                     </a>
-                    </Link>
                   </div>
                 </li>
               </ul>
@@ -253,9 +271,7 @@ function Sidebar({ children }) {
             </div>
 
             <div className="">
-              <h2 className=" text-black text-base font-semibold px-4 mb-2">
-                Profile
-              </h2>
+              <h2 className=" text-black text-base font-semibold px-4 mb-2">Profile</h2>
               <ul>
                 <li>
                   <Link legacyBehavior href="/subscription" passHref>
