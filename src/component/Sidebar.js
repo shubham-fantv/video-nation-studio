@@ -241,7 +241,46 @@ function Sidebar({ children }) {
                     </a>
                   </div>
                 </li>
-              </ul>
+                <li>
+                  <div>
+                    <a className="flex items-center  pt-1">
+                      <div
+                        className={`flex items-center rounded-xl p-3 w-full ${
+                          isActiveLink("/avatar-studio","/generate-avatar")
+                            ? "bg-[#FFFFFF0D] font-bold"
+                            : ""
+                        }`}
+                        style={isActiveLink("/avatar-studio","/generate-avatar") ? activeStyle : {}}
+                      >
+                        <img
+                          style={{ height: "20px", width: "20px" }}
+                          src="/images/icons/video.svg"
+                          className="text-black"
+                        />{" "}
+                        &nbsp;
+                        <span className="text-sm text-black pl-2">Avatar</span>
+                        <sup
+                          style={{
+                            marginLeft: "4px",
+                            contentVisibility: "auto",
+                            background: "linear-gradient(96.61deg, #FFA0FF 4.52%, #653EFF 102.26%)",
+                            right: "0px",
+                            padding: " 8px",
+                            borderRadius: " 10px",
+                            fontSize: "8px",
+                            fontWeight: 700,
+                            color: "rgb(255, 255, 255)",
+                            textAlign: "center",
+                            height: "max-content",
+                          }}
+                        >
+                          coming Soon
+                        </sup>
+                      </div>
+                    </a>
+                  </div>
+                </li>
+               </ul>
               <ul>
                 <li>
                   <Link href="/my-library" passHref legacyBehavior>
