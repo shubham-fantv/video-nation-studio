@@ -7,26 +7,41 @@ import { FANTV_API_URL } from "../../src/constant/constants";
 import { useQuery } from "react-query";
 import CardComponent from "../../src/component/CardComponent";
 import CommunityCreatedContent from "../../src/component/CommunityCreatedContent";
+import { PlusCircle } from "lucide-react";
+import { useRouter } from "next/router";
+
 
 const index = () => {
-  const [homeFeedData, setHomeFeedData] = useState([]);
+  const [avatarData, setAvatarData] = useState([]);
+  const router = useRouter();
 
   useQuery(
-    `${FANTV_API_URL}/api/v1/categories`,
-    () => fetcher.get(`${FANTV_API_URL}/api/v1/categories?limit=50`),
+    `${FANTV_API_URL}/api/v1/ai-avatar`,
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/ai-avatar?limit=50`),
     {
       refetchOnMount: "always",
       onSuccess: ({ data }) => {
-        setHomeFeedData(data);
+        setAvatarData(data);
       },
     }
   );
 
   const [templates, setTemplates] = useState([]);
 
+  const avatars = [
+    {
+      id: 1,
+      title: "Fashion Influencer",
+      image:
+        "https://dynamic.heygen.ai/tr:h-720,c-at_max/image/b49d593feca543d68bc7074ee2c75bee/original",
+      looks: "1 look"
+    },
+    // Add more avatars here
+  ];
+
   useQuery(
-    `${FANTV_API_URL}/api/v1/templates?limit=50`,
-    () => fetcher.get(`${FANTV_API_URL}/api/v1/templates?limit=50`),
+    `${FANTV_API_URL}/api/v1/avatar_templates?limit=50`,
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/avatar_templates?limit=50`),
     {
       refetchOnMount: "always",
       onSuccess: ({ data }) => {
@@ -39,13 +54,13 @@ const index = () => {
     <div>
       <div className="justify-center m-auto">
         <h1 className="text-black text-[32px] font-semibold text-center leading-[38px]">
-          Image Studio
+          Avatar Studio
         </h1>
         {/* <p className="text-gray-700 pt-2 text-base font-normal text-center">
           VideoNation Creator Studio
         </p> */}
         <Link
-          href={"/generate-image"}
+          href={"/generate-avatar"}
           passHref
           className="flex items-center justify-center w-full mt-6"
         >
@@ -59,7 +74,7 @@ const index = () => {
             <input
               type="text"
               readOnly
-              placeholder="Enter your prompt to create a AI image"
+              placeholder="Enter your prompt to create a AI avatar"
               className="w-full rounded-full px-4 py-4 text-gray-700 placeholder-gray-400 focus:outline-none"
             />
             <div>
@@ -92,16 +107,58 @@ const index = () => {
         <div className="flex justify-between items-center mb-4">
           <div>
             <p variant="h5" className="font-semibold text-2xl text-[#1E1E1E]">
-              {homeFeedData?.title || "Categories"}
-            </p>
-            <p variant="body2" className="text-normal pt-2 text-[#1E1E1EB2] text-base">
-              {homeFeedData?.subtitle || "Pick a category to discover purpose-built templates"}
+              What do you want to build
             </p>
           </div>
         </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-6">
+      {/* Create New Avatar Card */}
+      <div
+        className="min-h-[150px] border-2 border-dashed border-gray-400 flex flex-col items-center justify-center rounded-xl cursor-pointer hover:bg-gray-100 transition"
+        style={{
+            backgroundImage: "url('/images/photo-avatar-bg.jpg')", // 📷 background
+              backgroundColor: "#FDE68A", // light gray-blue as fallback
+          }}
+          onClick={() => router.push("/generate-photo-avatar")}
+      >
+        <PlusCircle className="text-gray-500 w-8 h-8 mb-2" />
+        <div className="text-gray-700 font-medium">Create Photo Avatar</div>
+      </div>
+        {/* Create New Avatar Card */}
+        <div
+        className="min-h-[150px] border-2 border-dashed border-gray-400 flex flex-col items-center justify-center rounded-xl cursor-pointer hover:bg-gray-100 transition"
+        style={{
+            backgroundImage: "url('/images/ai-avatar-bg.jpg')", // 🤖 background
+            backgroundColor: "EDF2F7", // soft yellow as fallback
+          }}
+          onClick={() => router.push("/generate-avatar")}
+      >
+        <PlusCircle className="text-gray-500 w-8 h-8 mb-2" />
+        <div className="text-gray-700 font-medium">Create AI Avatar</div>
+      </div>
+
+      {/* Avatar Cards */}
+      {avatars.map((avatar) => (
+        <div
+          key={avatar.id}
+          className="rounded-xl overflow-hidden shadow hover:shadow-md transition cursor-pointer"
+        >
+          <img
+            src={avatar.image}
+            alt={avatar.title}
+            className="w-full h-48 object-cover"
+          />
+          <div className="p-3 space-y-1">
+            <div className="text-base font-semibold text-gray-800">{avatar.title}</div>
+            <div className="text-sm text-gray-500">{avatar.looks}</div>
+
+          </div>
+        </div>
+      ))}
+    </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {homeFeedData?.results?.map((card) => (
+          {avatarData?.results?.map((card) => (
             <CardComponent key={card.id} data={card} redirect={`/category/${card?.slug}`} />
           ))}
         </div>
@@ -109,8 +166,8 @@ const index = () => {
       <div className="mt-12">
         <div className="w-full">
           <CommunityCreatedContent
-            title="Use a Template"
-            subTitle="Remix with our content created by our community"
+            title="Use Public Avatars"
+            subTitle="Use avatars generated by our content and personlize them"
             data={templates}
             isTabEnabled
           />

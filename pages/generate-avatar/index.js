@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import SectionCards from "../../src/component/SectionCards";
-import CommunityCreatedContent from "../../src/component/CommunityCreatedContent";
+import CommunityCreatedContent from "../../src/component/imageCommunityCreatedContent";
 import HowToCreate from "../../src/component/HowToCreate";
 import { useMutation, useQuery } from "react-query";
 import fetcher from "../../src/dataProvider";
@@ -9,7 +9,7 @@ import { API_BASE_URL, FANTV_API_URL } from "../../src/constant/constants";
 import axios from "axios";
 import Loading from "../../src/component/common/Loading/loading";
 import { quotes } from "../../src/utils/common";
-import { allPromptSamples } from "../../src/utils/common";
+import { allAvatarPromptSamples } from "../../src/utils/common";
 import { useSelector } from "react-redux";
 import LoginAndSignup from "../../src/component/feature/Login";
 import { useRouter } from "next/router";
@@ -25,20 +25,19 @@ const aspectRatioSizeMap = {
 
 const index = () => {
   const [captionEnabled, setCaptionEnabled] = useState(false);
-  const [voiceoverEnabled, setVoiceoverEnabled] = useState(false);
   const [templates, setTemplates] = useState([]);
   const [imagePreview, setImagePreview] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [prompt, setPrompt] = useState("");
   const [image, setImage] = useState("");
   const [aspectRatio, setAspectRatio] = useState("16:9");
-  const [duration, setDuration] = useState("5 sec");
   const [subTitle, setSubTitle] = useState("");
   const router = useRouter();
   const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [isPromptModalVisible, setIsPromptModalVisible] = useState(false);
+
 
   const aspectRatioData = ["16:9", "9:16", "1:1"];
-  const durationData = ["5 sec", "15 sec", "30 sec","60 sec"];
   const [isLoading, setLoading] = useState(false);
   const [swalProps, setSwalProps] = useState({});
 
@@ -49,7 +48,29 @@ const index = () => {
   
   const [samplePrompts, setSamplePrompts] = useState([]);
 
-  const { sendEvent } = useGTM();
+  const [form, setForm] = useState({
+    age: "30",
+    gender: "male",
+    ethnicity: "Indian",
+    hairColor: "black",
+    eyeColor: "brown",
+    clothing: "formal suit",
+    expression: "confident",
+    style: "cinematic portrait",
+  });
+
+
+  // Update prompt when form changes
+  useEffect(() => {
+    const { age, gender, ethnicity, hairColor, eyeColor, clothing, expression, style } = form;
+    const generated = "Enter the prompt to create an AI Avatar"; 
+    //const generated = `A ${age}-year-old ${gender} of ${ethnicity} descent with ${hairColor} hair and ${eyeColor} eyes, wearing a ${clothing} in a ${expression} expression, styled as a ${style}.`;
+    setPrompt(generated);
+  }, [form]);
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const magicPrompts = [
     "A dragon soaring over snow-covered mountains at dusk",
@@ -65,6 +86,8 @@ const index = () => {
       magicPrompts[Math.floor(Math.random() * magicPrompts.length)];
     setPrompt(randomPrompt);
   };
+  
+  const { sendEvent } = useGTM();
 
   const { isLoggedIn, userData } = useSelector((state) => state.user);
   useQuery(
@@ -105,8 +128,8 @@ const index = () => {
     setImagePreview(null);
   };
 
-  const { mutate: generateVideoApi } = useMutation(
-    (obj) => fetcher.post(`${API_BASE_URL}/api/v1/ai-video`, obj),
+  const { mutate: generateImageApi } = useMutation(
+    (obj) => fetcher.post(`${API_BASE_URL}/api/v1/ai-image`, obj),
     {
       onSuccess: (response) => {
         setImagePreview(null);
@@ -116,7 +139,7 @@ const index = () => {
           icon: "success",
           show: true,
           title: "Success",
-          text: "Video generation done",
+          text: "Image generation is completed",
           showCancelButton: true,
           confirmButtonText: "Go to My Library",
           cancelButtonText: "Cancel",
@@ -126,11 +149,14 @@ const index = () => {
       },
       onError: (error) => {
         setLoading(false);
-
+      
         const defaultMessage = "Something went wrong. Please try again later.";
-
-        const message = error?.response?.data?.message || error?.message || defaultMessage;
-
+      
+        const message =
+          error?.response?.data?.message ||
+          error?.message ||
+          defaultMessage;
+      
         setSwalProps({
           icon: "error",
           show: true,
@@ -143,10 +169,10 @@ const index = () => {
   );
 
   const handleConfirm = () => {
-    router.push("/my-library");
+    router.push("/my-library?tab=image");
   };
 
-  const handleGenerateVideo = () => {
+  const handleGenerateImage = () => {
     if (isLoggedIn) {
       if (!prompt.trim()) {
         alert("Please enter a prompt!");
@@ -158,33 +184,26 @@ const index = () => {
         return;
       }
 
-      const creditsUsed = 20*parseInt((duration.replace("sec", "").trim()/5),10);
-
       const requestBody = {
         prompt,
         imageInput: image ? [image] : [],
-        creditsUsed: creditsUsed,
+        creditsUsed: 1,
         aspectRatio: aspectRatio,
-        duration: duration,
         caption: captionEnabled,
-        voiceover: voiceoverEnabled,
         ...(image && { imageUrl: image }), // ✅ only include if `image` is truthy
       };
       setLoading(true);
 
       sendEvent({
-        event: "Generate Video",
+        event: "Generate Image",
         email: userData?.email,
         name: userData?.name,
         prompt: prompt,
         aspectRatio: aspectRatio,
-        duration: duration,
         caption: captionEnabled,
-        voiceover: voiceoverEnabled,
-        ...(image && { imageUrl: image }), // ✅ only include if `image` is truthy
       });
 
-      generateVideoApi(requestBody);
+      generateImageApi(requestBody);
     } else {
       setIsPopupVisible(true);
     }
@@ -202,7 +221,7 @@ const index = () => {
   }, []);
 
   useEffect(() => {
-    setSamplePrompts(getRandomPrompts(allPromptSamples));
+    //setSamplePrompts(getRandomPrompts(allAvatarPromptSamples));
   }, []);
 
   const textareaRef = useRef();
@@ -216,12 +235,13 @@ const index = () => {
       {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
       <div className="justify-center m-auto">
         <h1 className="text-black text-[32px] font-semibold text-center leading-[38px]">
-          AI-Powered Video Creation. Just Type & Generate
+          AI-Powered Avatar Creation
         </h1>
         <p className="text-[#1E1E1EB2] pt-2 text-base font-normal text-center">
-          Transform words into cinematic visuals—effortless, fast, and stunning.
+          
         </p>
       </div>
+
       <div className="flex mt-8 w-full flex-col gap-4 rounded-lg bg-[#F5F5F5] p-4 shadow-md">
         {/* Text Area */}
         <textarea
@@ -262,6 +282,7 @@ const index = () => {
               disabled={uploading}
             />
           </label>
+
           <button className="flex items-center gap-2 rounded-md bg-[#FFF] px-4 py-2 text-sm text-[1E1E1E] shadow-md transition-all">
             {/* <span className="w-4 h-3 border border-black rounded-sm"></span> */}
             <span
@@ -279,84 +300,35 @@ const index = () => {
               ))}
             </select>
           </button>
-          {/* Duration Toggle */}
-          <button className="flex items-center gap-2 rounded-md bg-[#FFF] px-4 py-2 text-sm text-[1E1E1E] shadow-md transition-all">
-            {/* <span className="w-4 h-3 border border-black rounded-sm"></span> */}
-            <select
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
-              className="bg-[#FFF]"
-            >
-              {durationData?.map((item) => (
-                <option key={item}>{item}</option>
-              ))}
-            </select>
-          </button>
-              {/* Caption Toggle */}
-            <button
-            onClick={() => setCaptionEnabled(!captionEnabled)}
-            className="flex items-center gap-2 rounded-md bg-[#FFF] px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all"
-          >
-            <div
-              className={`w-6 h-4 flex items-center rounded-full p-[2px] transition-all ${
-                captionEnabled ? "bg-green-500" : "bg-gray-500"
-              }`}
-            >
-              <div
-                className={`h-3 w-3 rounded-full bg-white transition-transform ${
-                  captionEnabled ? "translate-x-2" : ""
-                }`}
-              ></div>
-            </div>
-            Caption
-          </button>
-          {/* Caption Toggle */}
-          <button
-            onClick={() => setVoiceoverEnabled(!voiceoverEnabled)}
-            className="flex items-center gap-2 rounded-md bg-[#FFF] px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all"
-          >
-            <div
-              className={`w-6 h-4 flex items-center rounded-full p-[2px] transition-all ${
-                voiceoverEnabled ? "bg-green-500" : "bg-gray-500"
-              }`}
-            >
-              <div
-                className={`h-3 w-3 rounded-full bg-white transition-transform ${
-                  voiceoverEnabled ? "translate-x-2" : ""
-                }`}
-              ></div>
-            </div>
-            Voiceover
-          </button>         
           <div className="flex-1 hidden md:block"></div>
           <button
-            onClick={generateMagicPrompt}
-            className="flex items-center gap-2 rounded-md bg-[#FFF] px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all hover:bg-gray-100"
-          >
-            🪄 Magic Prompt
-          </button>
+  onClick={() => setIsPromptModalVisible(true)}
+  className="flex items-center gap-2 rounded-md bg-[#FFF] px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all hover:bg-gray-100"
+>
+  🪄 Create Avatar Prompt
+</button>
+
           <button
-            onClick={() => handleGenerateVideo()}
+            onClick={() => handleGenerateImage()}
             className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-2 text-white shadow-md transition-all hover:brightness-110"
           >
             ✨ Generate
           </button>
         </div>
+        
       </div>
-      <div className="flex flex-wrap gap-2 mt-4 overflow-auto">
-        {samplePrompts.map((sample, idx) => (
-          <button
-            key={idx}
-            onClick={() => setPrompt(sample)}
-            className="w-[360px] h-[75px] rounded-full bg-[#F5F5F5] px-5 py-4 text-sm text-[#1E1E1E] shadow-sm hover:bg-gray-200 transition-all"
-          >
-            {sample}
-          </button>
-        ))}
-      </div>
-      <div className="mt-8">
-        <HowToCreate />
-      </div>
+       <div className="flex flex-wrap gap-2 mt-4 overflow-auto">
+          {samplePrompts.map((sample, idx) => (
+            <button
+              key={idx}
+              onClick={() => setPrompt(sample)}
+              className="w-[360px] h-[75px] rounded-full bg-[#F5F5F5] px-5 py-4 text-sm text-[#1E1E1E] shadow-sm hover:bg-gray-200 transition-all"
+            >
+              {sample}
+            </button>
+          ))}
+        </div>
+
       {templates.length > 0 && (
         <div className="mt-12">
           <div className="w-full">
@@ -373,6 +345,100 @@ const index = () => {
         />
       )}
       <SweetAlert2 {...swalProps} onConfirm={handleConfirm} />
+    
+      {isPromptModalVisible && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+    <div className="bg-white w-full max-w-5xl rounded-xl p-6 relative">
+      <button
+        onClick={() => setIsPromptModalVisible(false)}
+        className="absolute top-4 right-4 text-gray-500 hover:text-black text-lg"
+      >
+        ✕
+      </button>
+
+      <h2 className="text-xl font-semibold mb-6">Create Avatar Prompt</h2>
+
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-sm text-gray-700 font-medium mb-4">
+        {[
+          ["Age", "age", "number"],
+          ["Gender", "gender", "select"],
+          ["Ethnicity", "ethnicity", "text"],
+          ["Hair Color", "hairColor", "text"],
+          ["Eye Color", "eyeColor", "text"],
+          ["Clothing", "clothing", "text"],
+          ["Expression", "expression", "text"],
+          ["Avatar Style", "style", "text"],
+        ].map(([label, name, type]) => (
+          <div key={name} className="flex flex-col">
+            <label htmlFor={name}>{label}</label>
+            {type === "select" ? (
+              <select
+                name={name}
+                value={form[name]}
+                onChange={handleChange}
+                className="border p-2 rounded-md"
+              >
+                <option value="male">male</option>
+                <option value="female">female</option>
+                <option value="non-binary">non-binary</option>
+              </select>
+            ) : (
+              <input
+                type={type}
+                name={name}
+                value={form[name]}
+                onChange={handleChange}
+                className="border p-2 rounded-md"
+              />
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div className="flex justify-end gap-3">
+        <button
+          onClick={() => setIsPromptModalVisible(false)}
+          className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={() => {
+            const {
+                age,
+                gender,
+                ethnicity,
+                hairColor,
+                eyeColor,
+                clothing,
+                expression,
+                style,
+              } = form;
+              
+              const promptParts = [
+                age ? `${age}-year-old` : "",
+                gender,
+                ethnicity ? `of ${ethnicity} descent` : "",
+                hairColor || eyeColor ? `with ${hairColor ? hairColor + " hair" : ""}${hairColor && eyeColor ? " and " : ""}${eyeColor ? eyeColor + " eyes" : ""}` : "",
+                clothing ? `wearing a ${clothing}` : "",
+                expression ? `in a ${expression} expression` : "",
+                style ? `styled as a ${style}` : "",
+              ];
+              
+              const generated = promptParts.filter(Boolean).join(", ") + ".";
+              setPrompt(generated.trim());
+              setIsPromptModalVisible(false);
+          }}
+          className="px-4 py-2 bg-black text-white rounded-md"
+        >
+          Use Prompt
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+    
+    
     </div>
   );
 };

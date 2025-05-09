@@ -96,3 +96,9 @@ export const allPromptSamples = [
   "A tropical rainforest waterfall with parrots flying above",
   "A library floating in the sky with magical books flying around",
 ];
+
+export const allAvatarPromptSamples = [
+  "An old hispanic man wearing a sweater vest sitting in a chair with a book in his hand. Outside on the patio. ",
+  "A beautiful fit hispanic woman in workout clothes on a rooftop gym at sunrise. ",
+  "A hispanic man in a high-tech setup surrounded by colorful LED lights. ",
+];
