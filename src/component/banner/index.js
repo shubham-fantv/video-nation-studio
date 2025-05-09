@@ -258,7 +258,7 @@ function Banner() {
           ) : (
             <span>
               Transform your ideas into stunning
-              <br /> videos in seconds.
+              <br /> videos in seconds
             </span>
           )}
         </Typography>
@@ -269,7 +269,7 @@ function Banner() {
           }}
           className="text-white "
         >
-          Beautiful. Fast. Custom.
+          Create, Customize & Captivate.
         </Typography>
 
         <CLink href={"/generate-video"}>
