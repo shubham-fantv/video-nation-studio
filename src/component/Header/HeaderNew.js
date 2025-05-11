@@ -28,7 +28,7 @@ const LogOutNavItem = [
     newTag: false,
   },
   {
-    path: "/",
+    path: "/generate-image",
     title: " Image Studio",
     icon: "🎵 ",
     newTag: true,
@@ -267,7 +267,7 @@ const HeaderNew = ({ app }) => {
                 <Box className="fan__TigerMobileLogo">
                   <img
                     src={"/images/logo.svg"}
-                    alt="mobile FanTV logo"
+                    alt="mobile videonation logo"
                     loading="eager"
                     decoding="async"
                   />
@@ -276,7 +276,7 @@ const HeaderNew = ({ app }) => {
                 <Box className="fan__tigerDekstopLogo">
                   <img
                     src={"/images/logo.svg"}
-                    alt="FanTV Logo"
+                    alt="videonation Logo"
                     width={150}
                     loading="eager"
                     decoding="async"
@@ -295,27 +295,15 @@ const HeaderNew = ({ app }) => {
                 <div>Video studio</div>
               </CLink>
             </div>
-            <div className={`text-black flex ml-10 text-base font-medium m-auto`}>
+            <div className={`text-black flex ml-10 text-base font-medium m-auto ${
+                isActiveLink("/image-studio") ? "underline underline-offset-8" : ""
+              }`}>
               <div>
+              <CLink href="/generate-image">
                 <div>Image studio</div>
+                </CLink>
               </div>
-              <sup
-                style={{
-                  marginLeft: "10px",
-                  contentVisibility: "auto",
-                  background: "linear-gradient(96.61deg, #FFA0FF 4.52%, #653EFF 102.26%)",
-                  right: "0px",
-                  padding: " 8px",
-                  borderRadius: " 10px",
-                  fontSize: "8px",
-                  fontWeight: 700,
-                  color: "rgb(255, 255, 255)",
-                  textAlign: "center",
-                  height: "max-content",
-                }}
-              >
-                coming Soon
-              </sup>
+          
             </div>
           </div>
 

@@ -1,7 +1,8 @@
 import { Button } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import SectionCards from "../../src/component/SectionCards";
 import Link from "next/link";
+import axios from "axios";
 import fetcher from "../../src/dataProvider";
 import { useMutation } from "react-query";
 import { API_BASE_URL, FANTV_API_URL } from "../../src/constant/constants";
@@ -21,14 +22,77 @@ const index = (data) => {
   const [prompt, setPrompt] = useState("");
   const { isLoggedIn, userData } = useSelector((state) => state.user);
   const [image, setImage] = useState("");
+  const [imagePreviews, setImagePreviews] = useState([]);
   const [myAvatar, setMyAvatar] = useState(data);
   const { sendEvent } = useGTM();
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [subTitle, setSubTitle] = useState("");
+  const [files, setFiles] = useState([]);
+  const inputRef = useRef(null);
 
   const [swalProps, setSwalProps] = useState({});
   const [isLoading, setLoading] = useState(false);
   const [isPromptModalVisible, setIsPromptModalVisible] = useState(false);
+  const [isPromptPhotoModalVisible, setIsPromptPhotoModalVisible] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const MAX_IMAGES = 12;
+  const MAX_SIZE_MB = 5;
+  
+  const handleImageUpload = async (event) => {
+    const files = Array.from(event.target.files);
+    
+    if (!files.length) return;
+    // Combine with existing and check total
+    const totalFiles = imagePreviews.length + files.length;
+    if (totalFiles > MAX_IMAGES) {
+        alert(`You can only upload up to ${MAX_IMAGES} images.`);
+        return;
+    }
+  
+    setUploading(true);
+    try {
+      for (const file of files) {
+        if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+            alert(`"${file.name}" exceeds 2MB limit and was skipped.`);
+            continue;
+          }
+
+        const formData = new FormData();
+        formData.append("file", file);
+  
+        const response = await axios.post("https://upload.artistfirst.in/upload", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+  
+        const uploadedUrl = response?.data?.data?.[0]?.url;
+  
+        if (uploadedUrl) {
+          setImagePreviews((prev) => [
+            ...prev,
+            {
+              file,
+              url: uploadedUrl,
+              localPreview: URL.createObjectURL(file), // for display until uploaded image loads
+            },
+          ]);
+          setFiles((prev) => [...prev, uploadedUrl]); // ✅ Store uploaded URLs separately
+        }
+      }
+    } catch (error) {
+      console.error("Upload failed", error);
+    } finally {
+      setUploading(false);
+    }
+  };
+  
+  const handleRemoveImage = (url) => {
+    setImagePreviews((prev) => prev.filter((img) => img.url !== url));
+    setFiles((prev) => prev.filter((f) => f !== url)); // ✅ Also remove from files
+  };
+  
+  const handleImageChange = (e) => {
+    handleImageUpload(e);
+  };
 
   useEffect(() => {
     const pickRandomQuote = () => {
@@ -44,13 +108,15 @@ const index = (data) => {
   const [form, setForm] = useState({
     name:"John",
     age: "30",
-    gender: "Female",
+    gender: "female",
     ethnicity: "Caucasian",
     hairColor: "Blonde",
     eyeColor: "Brown",
     clothing: "Dress",
     expression: "Smiling",
     style: "Cinematic portrait",
+    orientation: "portrait",
+    pose: "upper body",
   });
 
   const handleChange = (e) => {
@@ -71,7 +137,6 @@ const index = (data) => {
   useEffect(() => {
     setMyAvatar(data || []);
   }, [data]);
-
 
   const { mutate: generateAvatarApi } = useMutation(
     (obj) => fetcher.post(`${API_BASE_URL}/api/v1/ai-avatar`, obj),
@@ -152,6 +217,78 @@ const index = (data) => {
     }
   };
 
+  const { mutate: generatePhotoAvatarApi } = useMutation(
+    (obj) => fetcher.post(`${API_BASE_URL}/api/v1/ai-avatar/photo-avatar`, obj),
+    {
+      onSuccess: (response) => {
+        setPrompt("");
+        setLoading(false);
+        setSwalProps({
+          icon: "success",
+          show: true,
+          title: "Success",
+          text: "Photo Avatar generation is completed",
+          showCancelButton: true,
+          confirmButtonText: "Ok",
+          cancelButtonText: "Cancel",
+          allowOutsideClick: false, // Optional: prevent dismiss by clicking outside
+          allowEscapeKey: false, // Optional: prevent ESC close
+        });
+      },
+      onError: (error) => {
+        setLoading(false);
+      
+        const defaultMessage = "Something went wrong. Please try again later.";
+      
+        const message =
+          error?.response?.data?.message ||
+          error?.message ||
+          defaultMessage;
+      
+        setSwalProps({
+          icon: "error",
+          show: true,
+          title: "Error",
+          text: message,
+          confirmButtonText: "OK",
+        });
+      },
+    }
+  );
+
+  const handleGeneratePhotoAvatar = () => {
+    if (isLoggedIn) {
+
+      if (userData.credits <= 0) {
+        router.push("/subscription");
+        return;
+      }
+
+      const requestBody = {
+        prompt:"",
+        name:"Photo Avatar1",
+        gender:"female",
+        imageInput: files ? files : [],
+        imageUrl:"",
+        creditsUsed: 1,
+        aspectRatio: "9:16",
+      };
+      setLoading(true);
+
+      sendEvent({
+        event: "Generate Photo Avatar",
+        email: userData?.email,
+        name: userData?.name,
+        prompt: prompt,
+        aspectRatio: "9:16",
+      });
+
+      generatePhotoAvatarApi(requestBody);
+    } else {
+      setIsPopupVisible(true);
+    }
+  };
+
   return (
     <div>
        {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
@@ -161,7 +298,7 @@ const index = (data) => {
         </h1>
         {/* <p className="text-gray-700 pt-2 text-base font-normal text-center">
           VideoNation Creator Studio
-        </p> */}
+        </p> 
         <Link
           href={"/generate-avatar"}
           passHref
@@ -203,44 +340,85 @@ const index = (data) => {
               </button>
             </div>
           </div>
-        </Link>
+        </Link>*/}
       </div>
+      
       <div className="mt-12">
         {/* <SectionCards data={homeFeedData?.section1} /> */}
-        <div className="flex justify-between items-center mb-4">
+        
+  
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+
+        {/* Custom Photo Avatar Card */}
+        <div
+            className="flex justify-between items-center p-6 bg-[#F5F3FF] border border-[#A78BFA] rounded-xl hover:bg-[#EDE9FE] transition"
+        >
+            {/* Left: Icon and Text */}
+            <div className="flex flex-col gap-4 max-w-[60%]">
+            <button onClick={() => setIsPromptPhotoModalVisible(true)}          >
+            <div className="flex items-center gap-2 text-[#7C3AED]">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                    d="M3 7l1.664-1.664A2 2 0 016.414 5h11.172a2 2 0 011.414.586L21 7m-18 0h18M4 7v10a2 2 0 002 2h12a2 2 0 002-2V7"
+                />
+                </svg>
+                <span className="font-semibold text-lg text-[#4C1D95]">Custom Photo Avatar</span>
+            </div>
+            </button>
+            <p className="text-sm text-gray-700">
+                Use existing photos to create a new avatar and multiple looks.
+            </p>
+            
+            </div>
+            
+            {/* Right: Preview Images */}
+            <div className="flex gap-2">
+            <img src="https://video-assets.fantv.world/c4981d44-d282-4ae8-98b6-2a10bbd81fd7.jpg" className="w-16 h-16 rounded-md object-cover" />
+            <img src="https://video-assets.fantv.world/c4981d44-d282-4ae8-98b6-2a10bbd81fd7.jpg" className="w-16 h-16 rounded-md object-cover" />
+            </div>
+        </div>
+
+        {/* Generate Avatar Card */}
+        <div
+            className="flex justify-between items-center p-6 bg-[#F0F9FF] border border-[#7DD3FC] rounded-xl hover:bg-[#E0F2FE] transition"
+        >
+            {/* Left: Icon and Text */}
+            <div className="flex flex-col gap-4 max-w-[60%]">
+            <button onClick={() => setIsPromptModalVisible(true)}          >
+            <div className="flex items-center gap-2 text-[#0EA5E9]">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                    d="M11 17l-5-5m0 0l5-5m-5 5h12" />
+                </svg>
+                <span className="font-semibold text-lg text-[#0369A1]">Generate AI Avatar</span>
+            </div>
+            </button>
+            <p className="text-sm text-gray-700">
+                Create an AI avatar by describing its appearance and attributes with text prompts.
+            </p>
+            </div>
+
+            {/* Right: Prompt Preview */}
+            <div className="flex gap-2 relative">
+            <img src="https://video-assets.fantv.world/19c54a54-9384-4c0e-8fa1-50db9765b4bc.jpg" className="w-16 h-16 rounded-md object-cover" />
+            <img src="https://video-assets.fantv.world/19c54a54-9384-4c0e-8fa1-50db9765b4bc.jpg" className="w-16 h-16 rounded-md object-cover" />
+            <div className="absolute bottom-1 left-1 bg-white text-xs px-2 py-0.5 rounded shadow">
+                
+            </div>
+            </div>
+        </div>
+        </div>
+        <div className="flex justify-between items-center mt-4">
           <div>
             <p variant="h5" className="font-semibold text-2xl text-[#1E1E1E]">
               My Avatars
             </p>
           </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-4 lg:grid-cols-6 gap-4 p-6">
-      {/* Create New Avatar Card */}
-      <div
-        className="h-150px border-2 border-dashed border-gray-400 flex flex-col items-center justify-center rounded-xl cursor-pointer hover:bg-gray-100 transition"
-        style={{
-            //backgroundImage: "url('/images/photo-avatar-bg.jpg')", // 📷 background
-              backgroundColor: "#FDE68A", // light gray-blue as fallback
-          }}
-          onClick={() => setIsPromptModalVisible(true)}
- 
-      >
-        <PlusCircle className="text-gray-500 w-8 h-8 mb-2" />
-        <div className="text-gray-700 font-medium">Photo Avatar</div>
-      </div>
-        {/* Create New Avatar Card */}
-        <div
-        className="h-150px border-2 border-dashed border-gray-400 flex flex-col items-center justify-center rounded-xl cursor-pointer hover:bg-gray-100 transition"
-        style={{
-           // backgroundImage: "url('/images/ai-avatar-bg.jpg')", // 🤖 background
-            backgroundColor: "EDF2F7", // soft yellow as fallback
-          }}
-          onClick={() => setIsPromptModalVisible(true)}
-      >
-        <PlusCircle className="text-gray-500 w-8 h-8 mb-2" />
-        <div className="text-gray-700 font-medium">AI Avatar</div>
-      </div>
 
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-6">
       {/* Avatar Cards */}
       {myAvatar.data.length > 0 ? (
             myAvatar.data.map((avatar) => (
@@ -251,7 +429,7 @@ const index = (data) => {
                 <img
                     src={avatar.imageUrl}
                     alt={avatar.name}
-                    className="w-full h-36 object-cover"
+                    className="w-full h-48 object-cover"
                 />
                 <div className="p-2 space-y-1">
                     <div className="text-base font-semibold text-gray-800">{avatar.name}</div>
@@ -301,7 +479,7 @@ const index = (data) => {
       {/* LEFT: Form Fields */}
       <div>
         <h2 className="text-xl font-semibold mb-6">Create New AI Avatar</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700 font-medium mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700 font-medium mb-2">
           {[
             ["Name", "name", "text"],
             ["Age", "age", "number"],
@@ -311,7 +489,9 @@ const index = (data) => {
             ["Eye Color", "eyeColor", "text"],
             ["Clothing", "clothing", "text"],
             ["Expression", "expression", "text"],
-            ["Avatar Style", "style", "text"],
+            ["Style", "style", "text"],
+            ["Orientation", "orientation", "text"],
+            ["Pose", "pose", "text"],
           ].map(([label, name, type]) => (
             <div key={name} className="flex flex-col">
               <label className="mb-1" htmlFor={name}>{label}</label>
@@ -358,6 +538,8 @@ const index = (data) => {
                 clothing,
                 expression,
                 style,
+                orientation,
+                pose,
               } = form;
 
               const promptParts = [
@@ -372,6 +554,8 @@ const index = (data) => {
                 clothing ? `wearing a ${clothing}` : "",
                 expression ? `in a ${expression} expression` : "",
                 style ? `styled as a ${style}` : "",
+                orientation ? `in a ${orientation} mode` : "",
+                pose ? `showing ${pose}` : "",
               ];
 
               const generated = promptParts.filter(Boolean).join(", ") + ".";
@@ -390,11 +574,166 @@ const index = (data) => {
       {/* RIGHT: Image */}
       <div className="flex items-center justify-center">
         <img
-          src="https://video-assets.fantv.world/acd9dcb5-3552-4292-a58a-18009dc5098c.jpg"
+          src="https://video-assets.fantv.world/19c54a54-9384-4c0e-8fa1-50db9765b4bc.jpg"
           alt="Prompt Preview"
-          className="rounded-lg w-full h-auto object-cover"
+          className="rounded-lg w-[50%] h-auto object-cover"
         />
       </div>
+    </div>
+  </div>
+)}
+{isPromptPhotoModalVisible && (
+
+  <div className="fixed mt-20 inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+  <div className="overflow-y-auto max-h-[calc(90vh-3rem)] pr-2">
+    <div className="bg-white w-full max-w-5xl rounded-xl p-6 relative grid grid-cols-1 md:grid-cols-2 gap-6 relative overflow-hidden max-h-[80vh]">
+  
+    {/* Close Button */}
+      <button
+        onClick={() => setIsPromptPhotoModalVisible(false)}
+        className="absolute top-4 right-4 text-gray-500 hover:text-black text-xl font-bold"
+      >
+        ✕
+      </button>
+      {/* Title */}
+      <h2 className="text-xl font-semibold text-center mb-6">Upload Photos of Your Avatar</h2>
+      <p className="text-center text-sm text-gray-600 mb-6">
+        Upload photos to create multiple looks for your avatar
+      </p>
+
+      {/* Upload Box */}
+      <div>
+      <div className="h-200px border-2 border-dashed border-purple-300 bg-purple-50 rounded-xl p-8 text-center cursor-pointer hover:bg-purple-100 transition mb-4">
+
+             <div className="flex flex-col items-center gap-2">
+          <div className="text-purple-500">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h10a4 4 0 004-4V8a4 4 0 00-4-4H7a4 4 0 00-4 4v7z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10l6.586-6.586a2 2 0 012.828 0L21 12" />
+            </svg>
+          </div>
+          <p className="text-sm text-gray-600">Select upto 12 photos to upload</p>
+          <p className="text-xs text-gray-500 mb-2">Upload PNG, JPG, HEIC, or WebP file up to 5MB each</p>
+           {/* Image Preview */}
+    
+
+
+        {/* Image Preview */}
+
+        {imagePreviews && (
+        <div className="grid grid-cols-4 sm:grid-cols-4 gap-4 mb-6">
+            {imagePreviews.map(({ url, localPreview }, idx) => (
+            <div key={idx} className="relative group">
+                <img
+                src={localPreview || url}
+                className="w-full h-16 object-cover rounded-md"
+                alt="preview"
+                />
+                <button
+                onClick={() => handleRemoveImage(url)}
+                className="absolute top-0 right-0 bg-red-600 text-black rounded-full w-6 h-6 flex items-center justify-center"
+                >
+                ✕
+                </button>
+            </div>
+            ))}
+        </div>
+        )}
+          
+          <input
+              type="file"
+              multiple
+              accept="image/*"
+              className="hidden"
+              ref={inputRef}
+              onChange={handleImageChange}
+              disabled={uploading}
+            />
+         
+        <button
+        onClick={() => {
+            if (imagePreviews.length >= MAX_IMAGES) {
+            alert("Maximum 12 images allowed.");
+            return;
+            }
+            inputRef.current.click();
+        }}
+        disabled={uploading}
+        className="bg-purple-500 text-white px-4 py-2 rounded-md text-sm hover:bg-purple-600"
+        >
+        {uploading ? "Uploading..." : "Select Photos"}
+        </button>
+        </div>
+        
+      </div>
+            {/* Action Buttons */}
+        <div className="flex justify-center mt-2 gap-3">
+        <button
+          onClick={() => setIsPromptPhotoModalVisible(false)}
+          className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={() => {
+            handleGeneratePhotoAvatar();
+            setIsPromptPhotoModalVisible(false);
+            setLoading(true);
+        }}
+          className="px-4 py-2 text-white bg-purple-500 rounded-md hover:bg-purple-600"
+        >
+          Generate Avatar
+        </button>
+      </div>
+      </div>
+
+      {/* Photo Requirements */}
+      <div className="space-y-6">
+        {/* Good Photos */}
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-green-600 font-semibold">✔ Good Photos</span>
+          </div>
+          <p className="text-sm text-gray-600 mb-2">
+            Recent photos of yourself (just you), showing a mix of close-ups and full-body shots, with different angles,
+            expressions (smiling, neutral, serious), and a variety of outfits. Make sure they are high-resolution and reflect your current appearance.
+          </p>
+          <div className="flex gap-2 overflow-x-auto">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <img
+                key={i}
+                src={`/images/good${i}.jpg`}
+                className="w-20 h-28 rounded-md object-cover border border-green-500"
+                alt="good photo"
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Bad Photos */}
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-red-600 font-semibold">✖ Bad Photos</span>
+          </div>
+          <p className="text-sm text-gray-600 mb-2">
+            No group photos, hats, sunglasses, pets, heavy filters, low-resolution images, or screenshots.
+            Avoid photos that are too old, overly edited, or don’t represent how you currently look.
+          </p>
+          <div className="flex gap-2 overflow-x-auto">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <img
+                key={i}
+                src={`/images/bad${i}.jpg`}
+                className="w-20 h-28 rounded-md object-cover border border-red-500"
+                alt="bad photo"
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+
+    </div>
     </div>
   </div>
 )}
