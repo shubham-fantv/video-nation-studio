@@ -198,7 +198,7 @@ const index = (data) => {
         name:name,
         gender:gender,
         creditsUsed: 1,
-        aspectRatio: "9:16",
+        aspectRatio: "1:1",
         ...(image && { imageUrl: image }), // ✅ only include if `image` is truthy
       };
       setLoading(true);
@@ -208,7 +208,7 @@ const index = (data) => {
         email: userData?.email,
         name: userData?.name,
         prompt: prompt,
-        aspectRatio: "9:16",
+        aspectRatio: "1:1",
       });
 
       generateAvatarApi(requestBody);
@@ -259,19 +259,29 @@ const index = (data) => {
   const handleGeneratePhotoAvatar = () => {
     if (isLoggedIn) {
 
+        let nameInput = name;
+
+        if (!nameInput.trim()) {
+            nameInput = typeof window !== "undefined" ? window.prompt("Enter avatar name:") : null;
+          if (!nameInput || !nameInput.trim()) {
+            alert("Upload cancelled. Name is required.");
+            return;
+          }
+        }
+
       if (userData.credits <= 0) {
         router.push("/subscription");
         return;
       }
 
       const requestBody = {
-        prompt:"",
-        name:"Photo Avatar1",
+        prompt:"give a upper body image of the person",
+        name:nameInput,
         gender:"female",
-        imageInput: files ? files : [],
-        imageUrl:"",
         creditsUsed: 1,
-        aspectRatio: "9:16",
+        aspectRatio: "1:1",
+        ...(image && { imageUrl: image }), // ✅ only include if `image` is truthy
+        imageInput: files ? files : [],
       };
       setLoading(true);
 
@@ -280,7 +290,7 @@ const index = (data) => {
         email: userData?.email,
         name: userData?.name,
         prompt: prompt,
-        aspectRatio: "9:16",
+        aspectRatio: "1:1",
       });
 
       generatePhotoAvatarApi(requestBody);
@@ -427,7 +437,7 @@ const index = (data) => {
                 className="rounded-xl overflow-hidden shadow hover:shadow-md transition cursor-pointer"
                 >
                 <img
-                    src={avatar.imageUrl}
+                    src={avatar.finalImageUrl}
                     alt={avatar.name}
                     className="w-full h-48 object-cover"
                 />
@@ -585,8 +595,8 @@ const index = (data) => {
 {isPromptPhotoModalVisible && (
 
   <div className="fixed mt-20 inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-  <div className="overflow-y-auto max-h-[calc(90vh-3rem)] pr-2">
-    <div className="bg-white w-full max-w-5xl rounded-xl p-6 relative grid grid-cols-1 md:grid-cols-2 gap-6 relative overflow-hidden max-h-[80vh]">
+  <div className="overflow-y-auto max-h-[calc(90vh-1rem)] pr-2">
+    <div className="bg-white w-full max-w-5xl rounded-xl p-6 relative grid grid-cols-1 md:grid-cols-2 gap-6 relative overflow-hidden max-h-[85vh]">
   
     {/* Close Button */}
       <button
@@ -596,14 +606,14 @@ const index = (data) => {
         ✕
       </button>
       {/* Title */}
-      <h2 className="text-xl font-semibold text-center mb-6">Upload Photos of Your Avatar</h2>
-      <p className="text-center text-sm text-gray-600 mb-6">
+      <h2 className="text-xl font-semibold text-center mb-4">Upload Photos of Your Avatar</h2>
+      <p className="text-center text-sm text-gray-600 mb-4">
         Upload photos to create multiple looks for your avatar
       </p>
 
       {/* Upload Box */}
       <div>
-      <div className="h-200px border-2 border-dashed border-purple-300 bg-purple-50 rounded-xl p-8 text-center cursor-pointer hover:bg-purple-100 transition mb-4">
+      <div className="h-200px border-2 border-dashed border-purple-300 bg-purple-50 rounded-xl p-8 text-center cursor-pointer hover:bg-purple-100 transition mb-2">
 
              <div className="flex flex-col items-center gap-2">
           <div className="text-purple-500">
