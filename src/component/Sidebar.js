@@ -185,11 +185,15 @@ function Sidebar({ children }) {
                     <a className="flex items-center  pt-1">
                       <div
                         className={`flex items-center rounded-xl p-3 w-full ${
-                          isActiveLink("/video-studio", "/category","/generate-video")
+                          isActiveLink("/video-studio", "/category", "/generate-video")
                             ? "bg-[#FFFFFF0D] font-bold"
                             : ""
                         }`}
-                        style={isActiveLink("/video-studio", "/category","/generate-video") ? activeStyle : {}}
+                        style={
+                          isActiveLink("/video-studio", "/category", "/generate-video")
+                            ? activeStyle
+                            : {}
+                        }
                       >
                         <img
                           style={{ height: "20px", width: "20px" }}
@@ -204,70 +208,77 @@ function Sidebar({ children }) {
                 </li>
                 <li>
                   <div>
-                  <Link legacyBehavior href="/generate-image" passHref>
-                    <a className="flex items-center  pt-1">
-                      <div
-                        className={`flex items-center rounded-xl p-3 w-full ${
-                          isActiveLink("/image-studio", "/image-category","/generate-image")
-                            ? "bg-[#FFFFFF0D] font-bold"
-                            : ""
-                        }`}
-                        style={isActiveLink("/image-studio", "/image-category","/generate-image") ? activeStyle : {}}
-                      >
-                        <img
-                          style={{ height: "20px", width: "20px" }}
-                          src="/images/icons/video.svg"
-                          className="text-black"
-                        />{" "}
-                        &nbsp;
-                        <span className="text-sm text-black pl-2">Image Studio</span>
-                      </div>
-                    </a>
+                    <Link legacyBehavior href="/generate-image" passHref>
+                      <a className="flex items-center  pt-1">
+                        <div
+                          className={`flex items-center rounded-xl p-3 w-full ${
+                            isActiveLink("/image-studio", "/image-category", "/generate-image")
+                              ? "bg-[#FFFFFF0D] font-bold"
+                              : ""
+                          }`}
+                          style={
+                            isActiveLink("/image-studio", "/image-category", "/generate-image")
+                              ? activeStyle
+                              : {}
+                          }
+                        >
+                          <img
+                            style={{ height: "20px", width: "20px" }}
+                            src="/images/icons/video.svg"
+                            className="text-black"
+                          />{" "}
+                          &nbsp;
+                          <span className="text-sm text-black pl-2">Image Studio</span>
+                        </div>
+                      </a>
                     </Link>
                   </div>
                 </li>
                 <li>
                   <div>
-                  <Link legacyBehavior href="/avatar-studio" passHref>
-                    <a className="flex items-center  pt-1">
-                      <div
-                        className={`flex items-center rounded-xl p-3 w-full ${
-                          isActiveLink("/avatar-studio","/generate-avatar")
-                            ? "bg-[#FFFFFF0D] font-bold"
-                            : ""
-                        }`}
-                        style={isActiveLink("/avatar-studio","/generate-avatar") ? activeStyle : {}}
-                      >
-                        <img
-                          style={{ height: "20px", width: "20px" }}
-                          src="/images/icons/video.svg"
-                          className="text-black"
-                        />{" "}
-                        &nbsp;
-                        <span className="text-sm text-black pl-2">Avatar</span>
-                        <sup
-                          style={{
-                            marginLeft: "4px",
-                            contentVisibility: "auto",
-                            background: "linear-gradient(96.61deg, #FFA0FF 4.52%, #653EFF 102.26%)",
-                            right: "0px",
-                            padding: " 8px",
-                            borderRadius: " 10px",
-                            fontSize: "8px",
-                            fontWeight: 700,
-                            color: "rgb(255, 255, 255)",
-                            textAlign: "center",
-                            height: "max-content",
-                          }}
+                    <div>
+                      <a className="flex items-center  pt-1">
+                        <div
+                          className={`flex items-center rounded-xl p-3 w-full ${
+                            isActiveLink("/avatar-studio", "/generate-avatar")
+                              ? "bg-[#FFFFFF0D] font-bold"
+                              : ""
+                          }`}
+                          style={
+                            isActiveLink("/avatar-studio", "/generate-avatar") ? activeStyle : {}
+                          }
                         >
-                          coming Soon
-                        </sup>
-                      </div>
-                    </a>
-                    </Link>
+                          <img
+                            style={{ height: "20px", width: "20px" }}
+                            src="/images/icons/video.svg"
+                            className="text-black"
+                          />{" "}
+                          &nbsp;
+                          <span className="text-sm text-black pl-2">Avatar</span>
+                          <sup
+                            style={{
+                              marginLeft: "4px",
+                              contentVisibility: "auto",
+                              background:
+                                "linear-gradient(96.61deg, #FFA0FF 4.52%, #653EFF 102.26%)",
+                              right: "0px",
+                              padding: " 8px",
+                              borderRadius: " 10px",
+                              fontSize: "8px",
+                              fontWeight: 700,
+                              color: "rgb(255, 255, 255)",
+                              textAlign: "center",
+                              height: "max-content",
+                            }}
+                          >
+                            coming Soon
+                          </sup>
+                        </div>
+                      </a>
+                    </div>
                   </div>
                 </li>
-               </ul>
+              </ul>
               <ul>
                 <li>
                   <Link href="/my-library" passHref legacyBehavior>
