@@ -327,13 +327,14 @@ const index = () => {
             </div>
             Voiceover
           </button>
-          <div className="flex-1 hidden md:block"></div>
-          <button
+          <div className="flex-1 hidden md:block text-sm"></div>
+          {/* <button
             onClick={generateMagicPrompt}
             className="flex items-center gap-2 rounded-md bg-[#FFF] px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all hover:bg-gray-100"
           >
             🪄 Magic Prompt
-          </button>
+          </button> */}
+          <div className="text-sm">Credits : 20</div>
           <button
             onClick={() => handleGenerateVideo()}
             className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-2 text-white shadow-md transition-all hover:brightness-110"
