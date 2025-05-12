@@ -149,7 +149,7 @@ export async function getServerSideProps(ctx) {
   try {
     const [videoRes, imageRes] = await Promise.all([
       fetcher.get(
-        `${FANTV_API_URL}/api/v1/ai-video?page=1&limit=100`,
+        `${FANTV_API_URL}/api/v1/ai-video?page=1&limit=200`,
         {
           headers: {
             ...(!!authToken && { Authorization: `Bearer ${authToken}` }),
@@ -158,7 +158,7 @@ export async function getServerSideProps(ctx) {
         "default"
       ),
       fetcher.get(
-        `${FANTV_API_URL}/api/v1/ai-image?page=1&limit=100`,
+        `${FANTV_API_URL}/api/v1/ai-image?page=1&limit=200`,
         {
           headers: {
             ...(!!authToken && { Authorization: `Bearer ${authToken}` }),

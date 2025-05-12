@@ -322,12 +322,12 @@ const index = () => {
           ))}
         </div>
       <div className="mt-8">
-        <HowToCreate />
+ 
       </div>
       {templates.length > 0 && (
         <div className="mt-12">
           <div className="w-full">
-            <CommunityCreatedContent data={templates} isTabEnabled />
+           
           </div>
         </div>
       )}
