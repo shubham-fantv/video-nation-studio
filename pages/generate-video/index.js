@@ -32,6 +32,7 @@ const index = () => {
   const [prompt, setPrompt] = useState("");
   const [image, setImage] = useState("");
   const [aspectRatio, setAspectRatio] = useState("16:9");
+  const [credits, setCredits] = useState(20);
   const [duration, setDuration] = useState("5 sec");
   const [subTitle, setSubTitle] = useState("");
   const router = useRouter();
@@ -283,7 +284,7 @@ const index = () => {
             {/* <span className="w-4 h-3 border border-black rounded-sm"></span> */}
             <select
               value={duration}
-              onChange={(e) => setDuration(e.target.value)}
+              onChange={(e) => {setDuration(e.target.value);setCredits(20*parseInt((e.target.value.replace("sec", "").trim()/5),10))}}
               className="bg-[#FFF]"
             >
               {durationData?.map((item) => (
@@ -334,7 +335,7 @@ const index = () => {
           >
             🪄 Magic Prompt
           </button> */}
-          <div className="text-sm">Credits : 20</div>
+          <div className="text-sm">Credits : {credits}</div>
           <button
             onClick={() => handleGenerateVideo()}
             className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-2 text-white shadow-md transition-all hover:brightness-110"
