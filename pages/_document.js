@@ -24,27 +24,27 @@ class MyDocument extends Document {
           <link rel="preload" as="video" href="/video/bgVideo.webm" type="video/webm" />
           <link rel="preload" as="video" href="/video/tokenAnimation.webm" type="video/webm" />
 
-          <meta name="name" content="MakeMySong - Create Music songs using AI" />
-          <meta name="description" content="MakeMySong - Create Music songs using AI" />
-          {/* <meta
+          <meta name="name" content="VideoNation - Create cinematic videos using AI" />
+          <meta name="description" content="VideoNation - Create cinematic videos using AI across multiple categories - realistic, anime, cartoon, ghibli, etc and multiple industry use cases." />
+          {<meta
             name='image'
-            content='https://assets.artistfirst.in/uploads/1736488883453-OGImageNew.png'
-          /> */}
+            content='http://localhost:3000/images/logo.svg'
+          />}
           <meta property="og:url" content={process.env.NEXT_PUBLIC_WEB_URL} />
           <meta property="og:type" content="website" />
-          <meta property="og:title" content="MakeMySong - Create Music songs using AI" />
-          <meta property="og:description" content="MakeMySong - Create Music songs using AI" />
-          {/* <meta
+          <meta property="og:title" content="VideoNation - Create cinematic videos using AI" />
+          <meta property="og:description" content="VideoNation - Create cinematic videos using AI across multiple categories - realistic, anime, cartoon, ghibli, etc and multiple industry use cases." />
+          {<meta
             property='og:image'
-            content='https://assets.artistfirst.in/uploads/1736488883453-OGImageNew.png'
-          /> */}
+            content='http://localhost:3000/images/logo.svg'
+          />}
           <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:title" content="MakeMySong - Create Music songs using AI" />
-          <meta name="twitter:description" content="MakeMySong - Create Music songs using AI" />
-          {/* <meta
+          <meta name="twitter:title" content="VideoNation - Create cinematic videos using AI" />
+          <meta name="twitter:description" content="VideoNation - Create cinematic videos using AI across multiple categories - realistic, anime, cartoon, ghibli, etc and multiple industry use cases." />
+          {<meta
             name='twitter:image'
-            content='https://assets.artistfirst.in/uploads/1736488883453-OGImageNew.png'
-          /> */}
+            content='http://localhost:3000/images/logo.svg'
+          />}
         </Head>
         <body>
           <noscript>
