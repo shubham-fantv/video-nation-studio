@@ -107,6 +107,7 @@ const index = () => {
     (obj) => fetcher.post(`${API_BASE_URL}/api/v1/ai-image`, obj),
     {
       onSuccess: (response) => {
+        //alert(JSON.stringify(response, null, 2));
         setImagePreview(null);
         setPrompt("");
         setLoading(false);
@@ -144,6 +145,7 @@ const index = () => {
   );
 
   const handleConfirm = () => {
+    //console.log(response.data);
     router.push("/my-library?tab=image");
   };
 
@@ -161,12 +163,13 @@ const index = () => {
 
       const requestBody = {
         prompt,
-        imageInput: image ? [image] : [],
+        imageInput: image ? [encodeURI(image)] : [],
         creditsUsed: 1,
         aspectRatio: aspectRatio,
         caption: captionEnabled,
-        ...(image && { imageUrl: image }), // ✅ only include if `image` is truthy
+        ...(image && { imageUrl: encodeURI(image) })  // ✅ encode URL with spaces
       };
+
       setLoading(true);
 
       sendEvent({

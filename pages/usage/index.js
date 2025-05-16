@@ -106,7 +106,7 @@ export async function getServerSideProps(ctx) {
 
   const authToken = cookie["aToken"];
   const data = await fetcher.get(
-    `${FANTV_API_URL}/api/v1/ai-video?page=1&limit=100`,
+    `${FANTV_API_URL}/api/v1/ai-video?page=1&limit=200`,
     {
       headers: {
         ...(!!authToken && { Authorization: `Bearer ${authToken}` }),
@@ -116,7 +116,7 @@ export async function getServerSideProps(ctx) {
   );
 
   const data1 = await fetcher.get(
-    `${FANTV_API_URL}/api/v1/ai-image?page=1&limit=100`,
+    `${FANTV_API_URL}/api/v1/ai-image?page=1&limit=200`,
     {
       headers: {
         ...(!!authToken && { Authorization: `Bearer ${authToken}` }),

@@ -160,6 +160,7 @@ const index = () => {
 
       const creditsUsed = 20*parseInt((duration.replace("sec", "").trim()/5),10);
 
+      
       const requestBody = {
         prompt,
         imageInput: image ? [image] : [],
@@ -168,7 +169,7 @@ const index = () => {
         duration: duration,
         caption: captionEnabled,
         voiceover: voiceoverEnabled,
-        ...(image && { imageUrl: image }), // ✅ only include if `image` is truthy
+        ...(image && { imageUrl: encodeURI(image) })  // ✅ encode URL with spaces
       };
       setLoading(true);
 

@@ -1,19 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const AvatarDropdown = () => {
+const AvatarDropdown = ({ data = [], onSelect }) => {
+
   const [isOpen, setIsOpen] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState("Not Selected");
   const dropdownRef = useRef(null);
 
-  const avatars = [
-    // { id: "create", name: "Create", image: null },
-    { id: "dream", name: "Dream", image: "/images/avatar/avatar1.png" },
-    { id: "luke", name: "Luke", image: "/images/avatar/avatar2.png" },
-    { id: "alex", name: "Alex", image: "/images/avatar/avatar3.png" },
-    { id: "kate", name: "Kate", image: "/images/avatar/avatar1.png" },
-    { id: "pablo", name: "Pablo", image: "/images/avatar/avatar2.png" },
-    { id: "kate", name: "Kate", image: "/images/avatar/avatar1.png" },
-  ];
+  const avatars = data; 
+  // [
+  //   // { id: "create", name: "Create", image: null },
+  //   // { id: "dream", name: "Dream", image: "/images/avatar/avatar1.png" },
+  //   // { id: "luke", name: "Luke", image: "/images/avatar/avatar2.png" },
+  //   // { id: "alex", name: "Alex", image: "/images/avatar/avatar3.png" },
+  //   // { id: "kate", name: "Kate", image: "/images/avatar/avatar1.png" },
+  //   // { id: "pablo", name: "Pablo", image: "/images/avatar/avatar2.png" },
+  //   // { id: "kate", name: "Kate", image: "/images/avatar/avatar1.png" },
+  // ];
 
   // Handle outside clicks
   useEffect(() => {
@@ -34,9 +36,22 @@ const AvatarDropdown = () => {
 
   const toggleDropdown = () => setIsOpen(!isOpen);
 
-  const handleSelectAvatar = (name) => {
-    setSelectedAvatar(name);
+  const handleSelectAvatar = (avatar) => {
+    console.log("__________________________");
+    console.log("selectedAvatar",selectedAvatar);
+
+console.log("selected",selected);
+console.log("avatar",avatar);
+    if (selected == avatar) {
+      setSelectedAvatar("Not Selected");
+      onSelect?.("Not Selected"); // ✅ call parent callback
+     } else {
+      setSelectedAvatar(avatar.name);
+      onSelect?.(avatar); // ✅ call parent callback
+    };
+
     setIsOpen(false);
+    
   };
 
   // Find the selected avatar
@@ -54,9 +69,11 @@ const AvatarDropdown = () => {
           className="h-[48px] w-full flex items-center justify-between w-full rounded-md bg-[#F5F5F5] text-[#1E1E1EB2] border-0  px-2 py-1.5 mr-1     focus:outline-none"
         >
           <div className="flex items-center ">
-            <div className="w-[32px] h-[32px] rounded-full mr-2  overflow-hidden ">
-              {selected?.image ? (
-                <img src={selected.image} alt={selected.name} className="object-cover" />
+          <div className={`w-[32px] h-[32px] rounded-full mr-2 overflow-hidden border-2 ${
+                  selectedAvatar?.name === "Not Selected" ? "border-orange-500" : "border-transparent"
+                }`}>
+              {selected?.imageUrl ? (
+                <img src={selected.imageUrl} alt={selected.name} className="object-cover w-full h-full" />
               ) : null}
             </div>
             <span className="text-sm">{selectedAvatar}</span>
@@ -83,18 +100,18 @@ const AvatarDropdown = () => {
             <div className="grid grid-cols-3 gap-6">
               {avatars.map((avatar) => (
                 <div
-                  key={avatar.id}
+                  key={avatar._id}
                   className="flex flex-col items-center cursor-pointer"
-                  onClick={() => handleSelectAvatar(avatar.name)}
+                  onClick={() => handleSelectAvatar(avatar)}
                 >
                   <div
-                    className={`w-[49px] h-[49px] rounded-full overflow-hidden ${
-                      avatar.id === "create" ? "bg-black" : "bg-purple-300"
-                    } mb-2`}
+                    className={`w-[49px] h-[49px] rounded-full overflow-hidden mb-2 border-2 ${
+                      selected?._id === avatar._id ? "border-orange-500" : "border-transparent"
+                    } ${avatar.name === "Create"  ? "bg-blue-100" : "bg-blue-100"}`}
                   >
-                    {avatar.image ? (
+                    {avatar.imageUrl ? (
                       <img
-                        src={avatar.image}
+                        src={avatar.imageUrl}
                         alt={avatar.name}
                         className="w-full h-full object-cover"
                       />

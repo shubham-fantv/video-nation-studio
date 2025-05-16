@@ -199,7 +199,7 @@ const index = (data) => {
         gender:gender,
         creditsUsed: 1,
         aspectRatio: "1:1",
-        ...(image && { imageUrl: image }), // ✅ only include if `image` is truthy
+        ...(image && { imageUrl: encodeURI(image) })  // ✅ encode URL with spaces
       };
       setLoading(true);
 
@@ -275,10 +275,10 @@ const index = (data) => {
       }
 
       const requestBody = {
-        prompt:"give a upper body image of the person",
+        prompt:"Give a upper body image of the person",
         name:nameInput,
         gender:"female",
-        creditsUsed: 1,
+        creditsUsed: 10,
         aspectRatio: "1:1",
         ...(image && { imageUrl: image }), // ✅ only include if `image` is truthy
         imageInput: files ? files : [],
@@ -432,19 +432,33 @@ const index = (data) => {
       {/* Avatar Cards */}
       {myAvatar.data.length > 0 ? (
             myAvatar.data.map((avatar) => (
-                <div
-                key={avatar._id}
-                className="rounded-xl overflow-hidden shadow hover:shadow-md transition cursor-pointer"
-                >
+              <div
+              key={avatar._id}
+              className="relative rounded-xl overflow-hidden shadow hover:shadow-md transition cursor-pointer"
+            >
+              {avatar.imageUrl ? (
                 <img
-                    src={avatar.finalImageUrl}
-                    alt={avatar.name}
-                    className="w-full h-48 object-cover"
+                  src={avatar.imageUrl}
+                  alt={avatar.name}
+                  className="w-full h-48 object-cover"
                 />
-                <div className="p-2 space-y-1">
-                    <div className="text-base font-semibold text-gray-800">{avatar.name}</div>
+              ) : (
+                <div className="w-full h-48 bg-black flex items-center justify-center">
+                  <p className="text-white text-lg font-medium">Processing...</p>
                 </div>
+              )}
+            
+              {/* Optional overlay for status other than 'completed' */}
+              {avatar?.status !== "completed" && avatar.imageUrl && (
+                <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center rounded-xl">
+                  <p className="text-white font-medium text-lg">{avatar?.status}</p>
                 </div>
+              )}
+            
+              <div className="p-2 space-y-1">
+                <div className="text-base font-semibold text-gray-800">{avatar.name}</div>
+              </div>
+            </div>
             ))
             ) : (
             <div className="text-gray-500 text-sm">No avatars found.</div>
