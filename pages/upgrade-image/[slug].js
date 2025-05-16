@@ -96,8 +96,8 @@ const fileInputRef = useRef(null);
         setPrompt("");
         setLoading(false);
         //console.log("I AM HERE", response?.data._id);
-        router.reload();
-        router.replace(`/upgrade-image/enhance?id=${response?.data._id}`);
+        router.replace(`/upgrade-image/enhance?id=${response?.data._id}`,undefined, { scroll: false });
+        //router.reload();
       },
       onError: (error) => {
         setLoading(false);
@@ -141,16 +141,16 @@ const fileInputRef = useRef(null);
 
     const requestBody = {
       prompt : "enhance this image",
-      imageInput: imageUrl ? [encodeURI(imageUrl)] : [],
+      imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
       creditsUsed: 1,
       aspectRatio: aspectRatio,
-      ...(imageUrl && { imageUrl: encodeURI(imageUrl) }),  // ✅ encode URL with spaces
+      ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }),  // ✅ encode URL with spaces
       tool : slug,
     };
 
-    console.log(requestBody);
+    //console.log(requestBody);
     setLoading(true)
-    alert(JSON.stringify(requestBody, null, 2));
+    //alert(JSON.stringify(requestBody, null, 2));
 
     generateImageApi(requestBody);
   };
@@ -189,7 +189,7 @@ const fileInputRef = useRef(null);
         console.log("I AM inside Image Id", id);
         const fetchData = async () => {
         setLoading(true);
-        setImageLoading(true);
+        //setImageLoading(true);
 
         try {
         const res = await fetcher.get(
@@ -203,15 +203,9 @@ const fileInputRef = useRef(null);
         );
 
         const data = res?.data;
-        //console.log("IAM HERE", data);
-        setTemplate(data);
-        setAvatar(data.avatarId);
-        setVoice(data.voiceId || "Default");
-        setCaptionEnabled(data.caption);
-        setPrompt(data.prompt);
         setImageUrl(data.imageUrl);
         setImagePreview(data.imageUrl);
-        setImage(`${data.finalImageUrl}?t=${Date.now()}`);
+        setImage(data.finalImageUrl);
         } catch (e) {
         console.error(e);
         } finally {
@@ -223,7 +217,7 @@ const fileInputRef = useRef(null);
 
         fetchData();
         }
-  }, [slug]);
+  }, [slug,id]);
 
   const handleDownloadImage = async () => {
     if (!image) return;
@@ -297,7 +291,7 @@ const fileInputRef = useRef(null);
               className="w-full h-full object-contain"
             />
           ) : (
-            <p className="text-sm text-gray-500">+ Add image</p>
+            <p className="text-sm text-gray-500"></p>
           )}
         </div>
       </div>

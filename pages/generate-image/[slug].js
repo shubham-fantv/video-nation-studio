@@ -95,7 +95,7 @@ const Index = ({ masterData }) => {
         setLoading(false);
         //console.log("I AM HERE", response?.data._id);
         //router.push("/my-library?tab=image");
-        router.replace(`/generate-image/${response?.data._id}`);
+        router.replace(`/generate-image/${response?.data._id}`,undefined, { scroll: false });
       },
       onError: (error) => {
         setLoading(false);
@@ -130,15 +130,15 @@ const Index = ({ masterData }) => {
 
     const requestBody = {
       prompt,
-      imageInput: imageUrl ? [encodeURI(imageUrl)] : [],
+      imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
       creditsUsed: 1,
       aspectRatio: aspectRatio,
-      ...(imageUrl && { imageUrl: encodeURI(imageUrl) })  // ✅ encode URL with spaces
+      ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) })  // ✅ encode URL with spaces
     };
 
     //console.log(requestBody);
     setLoading(true)
-    //alert(JSON.stringify(requestBody, null, 2));
+    alert(JSON.stringify(requestBody, null, 2));
 
     generateImageApi(requestBody);
   };
@@ -190,7 +190,7 @@ const Index = ({ masterData }) => {
       setPrompt(data.prompt);
       setImageUrl(data.imageUrl);
       setImagePreview(data.imageUrl);
-      setImage(`${data.finalImageUrl}?t=${Date.now()}`);
+      setImage(data.finalImageUrl);
     } catch (e) {
       console.error(e);
     } finally {

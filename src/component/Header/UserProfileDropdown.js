@@ -28,8 +28,8 @@ const UserProfileDropdown = () => {
         className="flex items-center space-x-2 rounded-xl h-[40px]  p-1 md:p-2 shadow-sm hover:bg-gray-50 transition-colors"
       >
         <Image
-          source={{ uri: userData?.profilePicture || "/images/icons/user.png" }}
-          alt="User avatar"
+          source="/images/icons/user.png"
+          alt={userData.name}
           className="h-8 w-8 rounded-full object-cover"
           onError={(e) => (e.currentTarget.src = "/images/icons/user.png")}
         />
