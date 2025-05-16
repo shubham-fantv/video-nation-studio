@@ -37,7 +37,7 @@ const index = (data) => {
   const [uploading, setUploading] = useState(false);
   const MAX_IMAGES = 12;
   const MAX_SIZE_MB = 5;
-  
+  console.log("data",data);
   const handleImageUpload = async (event) => {
     const files = Array.from(event.target.files);
     
@@ -48,7 +48,8 @@ const index = (data) => {
         alert(`You can only upload up to ${MAX_IMAGES} images.`);
         return;
     }
-  
+
+    
     setUploading(true);
     try {
       for (const file of files) {
@@ -436,21 +437,21 @@ const index = (data) => {
               key={avatar._id}
               className="relative rounded-xl overflow-hidden shadow hover:shadow-md transition cursor-pointer"
             >
-              {avatar.imageUrl ? (
+              {avatar.finalImageUrl != "" ? (
                 <img
-                  src={avatar.imageUrl}
+                  src={avatar.finalImageUrl}
                   alt={avatar.name}
                   className="w-full h-48 object-cover"
                 />
               ) : (
                 <div className="w-full h-48 bg-black flex items-center justify-center">
-                  <p className="text-white text-lg font-medium">Processing...</p>
+                  <p className="text-white text-lg font-medium"></p>
                 </div>
               )}
             
               {/* Optional overlay for status other than 'completed' */}
-              {avatar?.status !== "completed" && avatar.imageUrl && (
-                <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center rounded-xl">
+              {avatar?.status == "processing" && (
+                <div className="absolute h-48 inset-0 bg-black bg-opacity-70 flex items-center justify-center rounded-xl">
                   <p className="text-white font-medium text-lg">{avatar?.status}</p>
                 </div>
               )}

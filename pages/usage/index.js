@@ -15,6 +15,21 @@ const VideoGrid = ({ data, data1 }) => {
   const [mediaType, setMediaType] = useState("video");
   const [mergedContent, setMergedContent] = useState([]);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
+
+  // Compute paginated slice
+  const paginatedContent = mergedContent.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const totalPages = Math.ceil(mergedContent.length / itemsPerPage);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [mergedContent]);
+  
   useEffect(() => {
     setMyVideo(myVideo);
     setMyImage(myImage);
@@ -61,8 +76,8 @@ const VideoGrid = ({ data, data1 }) => {
     </tr>
   </thead>
   <tbody>
-    {mergedContent.length > 0 ? (
-      mergedContent.map((item, index) => (
+    {paginatedContent.length > 0 ? (
+      paginatedContent.map((item, index) => (
         <tr
                 key={index}
                 className={`border-t border-gray-200 ${item.status === "completed" ? "hover:bg-gray-50 cursor-pointer" : "cursor-not-allowed opacity-60"}`}
@@ -95,6 +110,37 @@ const VideoGrid = ({ data, data1 }) => {
     )}
   </tbody>
 </table>
+{totalPages > 1 && (
+  <div className="flex justify-center items-center gap-2 mt-6 flex-wrap">
+    <button
+      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+      disabled={currentPage === 1}
+      className="px-3 py-1 border rounded disabled:opacity-50"
+    >
+      Prev
+    </button>
+
+    {Array.from({ length: totalPages }, (_, i) => (
+      <button
+        key={i}
+        onClick={() => setCurrentPage(i + 1)}
+        className={`px-3 py-1 border rounded ${
+          currentPage === i + 1 ? "bg-black text-white" : ""
+        }`}
+      >
+        {i + 1}
+      </button>
+    ))}
+
+    <button
+      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+      disabled={currentPage === totalPages}
+      className="px-3 py-1 border rounded disabled:opacity-50"
+    >
+      Next
+    </button>
+  </div>
+)}
       </div>
   );
 };
@@ -106,7 +152,7 @@ export async function getServerSideProps(ctx) {
 
   const authToken = cookie["aToken"];
   const data = await fetcher.get(
-    `${FANTV_API_URL}/api/v1/ai-video?page=1&limit=200`,
+    `${FANTV_API_URL}/api/v1/ai-video?page=1&limit=500`,
     {
       headers: {
         ...(!!authToken && { Authorization: `Bearer ${authToken}` }),
@@ -116,7 +162,7 @@ export async function getServerSideProps(ctx) {
   );
 
   const data1 = await fetcher.get(
-    `${FANTV_API_URL}/api/v1/ai-image?page=1&limit=200`,
+    `${FANTV_API_URL}/api/v1/ai-image?page=1&limit=500`,
     {
       headers: {
         ...(!!authToken && { Authorization: `Bearer ${authToken}` }),

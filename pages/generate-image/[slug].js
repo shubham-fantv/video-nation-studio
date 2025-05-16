@@ -164,7 +164,7 @@ const Index = ({ masterData }) => {
     if (!slug) return;
 
     let updatedSlug = slug;
-    if (slug == "new")updatedSlug = "681c60acd91d98841219f837";
+    if (slug == "new") updatedSlug = "681c60acd91d98841219f837";
 
     const fetchData = async () => {
       setLoading(true);

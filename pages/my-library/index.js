@@ -10,8 +10,23 @@ const VideoGrid = ({ data, data1 }) => {
   const [myVideo, setMyVideo] = useState(data);
   const [myImage, setMyImage] = useState(data1);
   const router = useRouter();
+  
+  const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 20;
+    const [mediaType, setMediaType] = useState("video");
 
-  const [mediaType, setMediaType] = useState("video");
+
+    const currentMedia = mediaType === "video" ? [...myVideo].reverse() : [...myImage].reverse();
+    const totalPages = Math.ceil(currentMedia.length / itemsPerPage);
+
+    const paginatedMedia = currentMedia.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+    );
+
+  useEffect(() => {
+    setCurrentPage(1); // Reset page on media type change
+  }, [mediaType]);
 
   // Sync with URL query (e.g., ?tab=image)
   useEffect(() => {
@@ -19,6 +34,8 @@ const VideoGrid = ({ data, data1 }) => {
       const tabParam = router.query.tab;
       if (tabParam === "image" || tabParam === "video") {
         setMediaType(tabParam);
+         setCurrentPage(1);
+        
       }
     }
   }, [router.isReady, router.query.tab]);
@@ -34,8 +51,9 @@ const VideoGrid = ({ data, data1 }) => {
   }, [data, data1]);
 
   return (
-    <div className=" min-h-screen w-full p-6">
+    <div className="min-h-screen w-full p-6">
       <h1 className="text-black text-3xl font-bold text-center mb-8">My Library</h1>
+  
       {/* 🔄 Toggle Switch */}
       <div className="flex mb-8 w-[200px] bg-gray-200 rounded-full p-1">
         <button
@@ -55,90 +73,92 @@ const VideoGrid = ({ data, data1 }) => {
           Image
         </button>
       </div>
-      {mediaType === "video" ? (
-        <div className="mt-2 min-h-[50vh]" style={{ maxWidth: "1120px" }}>
-          <div>
-            <div className="columns-1 sm:columns-2 lg:columns-4 gap-4">
-              {myVideo.length > 0 ? (
-                [...myVideo].reverse().map((video, index) => (
-                  <div
-                    key={index}
-                    onClick={() => router.push(`/generate-video/${video?._id || video?.id}`)}
-                    className="mb-6 break-inside-avoid rounded-xl transition-transform relative cursor-pointer"
-                  >
-                    <div className="relative">
-                      <video
-                        src={video?.finalVideoUrl}
-                        muted
-                        loop
-                        playsInline
-                        controls
-                        onMouseEnter={(e) => e.target.play()}
-                        onMouseLeave={(e) => e.target.pause()}
-                        onEnded={(e) => e.target.play()}
-                        className="w-full min-h-[150px] object-cover rounded-xl"
-                      />
-                      {video?.status !== "completed" && (
-                        <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center rounded-xl">
-                          <p className="text-white font-medium text-lg">{video?.status}</p>
-                        </div>
-                      )}
-                    </div>
-                    <div className="pt-1 flex justify-between items-center">
-                      <h3 className="text-black text-sm truncate">&nbsp;{video?.prompt}</h3>
-                    </div>
-                    <h3 className="text-black text-sm truncate">
-                      &nbsp;{moment(video?.created_at).format("MMMM D, YYYY, h:mm A")}
-                    </h3>
-                  </div>
-                ))
+  
+      <div className="columns-1 sm:columns-2 lg:columns-4 gap-4">
+        {paginatedMedia.map((item, index) => (
+          <div
+            key={index}
+            onClick={() =>
+              router.push(
+                mediaType === "video"
+                  ? `/generate-video/${item?._id || item?.id}`
+                  : `/generate-image/${item?._id || item?.id}`
+              )
+            }
+            className="w-[250px] mb-6 break-inside-avoid rounded-xl transition-transform relative cursor-pointer"
+          >
+            <div className="relative">
+              {mediaType === "video" ? (
+                <video
+                  src={item?.finalVideoUrl}
+                  muted
+                  loop
+                  playsInline
+                  controls
+                  onMouseEnter={(e) => e.target.play()}
+                  onMouseLeave={(e) => e.target.pause()}
+                  onEnded={(e) => e.target.play()}
+                  className="w-full min-h-[150px] object-cover rounded-xl"
+                />
               ) : (
-                <div className="pl-2">No Video Generated</div>
+                <img
+                  src={item?.finalImageUrl}
+                  alt={item?.prompt || "Generated Image"}
+                  className="w-full min-h-[150px] object-cover rounded-xl"
+                />
+              )}
+  
+              {item?.status !== "completed" && (
+                <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center rounded-xl">
+                  <p className="text-white font-medium text-lg">{item?.status}</p>
+                </div>
               )}
             </div>
-          </div>
-        </div>
-      ) : (
-        <div className="mt-2 min-h-[50vh]" style={{ maxWidth: "1120px" }}>
-          <div>
-            <div className="columns-1 sm:columns-2 lg:columns-4 gap-4">
-              {myImage.length > 0 ? (
-                [...myImage].reverse().map((image, index) => (
-                  <div
-                    key={index}
-                    onClick={() => router.push(`/generate-image/${image?._id || image?.id}`)}
-                    className="mb-6 break-inside-avoid rounded-xl transition-transform relative cursor-pointer"
-                  >
-                    <div className="relative">
-                      <img
-                        src={image?.finalImageUrl}
-                        alt={image?.prompt || "Generated Image"}
-                        className="w-full min-h-[150px] object-cover rounded-xl"
-                      />
-                      {image?.status !== "completed" && (
-                        <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center rounded-xl">
-                          <p className="text-white font-medium text-lg">{image?.status}</p>
-                        </div>
-                      )}
-                    </div>
-                    <div className="pt-1 flex justify-between items-center">
-                      <h3 className="text-black text-sm truncate">&nbsp;{image?.prompt}</h3>
-                    </div>
-                    <h3 className="text-black text-sm truncate">
-                      &nbsp;{moment(image?.created_at).format("MMMM D, YYYY, h:mm A")}
-                    </h3>
-                  </div>
-                ))
-              ) : (
-                <div className="pl-2">No image generated</div>
-              )}
+            <div className="pt-1 flex justify-between items-center">
+              <h3 className="text-black text-sm truncate">&nbsp;{item?.prompt}</h3>
             </div>
+            <h3 className="text-black text-sm truncate">
+              &nbsp;{moment(item?.created_at).format("MMMM D, YYYY, h:mm A")}
+            </h3>
           </div>
+        ))}
+      </div>
+  
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-2 mt-6 flex-wrap">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="px-3 py-1 border rounded disabled:opacity-50"
+          >
+            Prev
+          </button>
+  
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentPage(i + 1)}
+              className={`px-3 py-1 border rounded ${
+                currentPage === i + 1 ? "bg-black text-white" : ""
+              }`}
+            >
+              {i + 1}
+            </button>
+          ))}
+  
+          <button
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className="px-3 py-1 border rounded disabled:opacity-50"
+          >
+            Next
+          </button>
         </div>
       )}
     </div>
-  );
-};
+  );  
+}
 
 export default VideoGrid;
 
@@ -149,7 +169,7 @@ export async function getServerSideProps(ctx) {
   try {
     const [videoRes, imageRes] = await Promise.all([
       fetcher.get(
-        `${FANTV_API_URL}/api/v1/ai-video?page=1&limit=200`,
+        `${FANTV_API_URL}/api/v1/ai-video?page=1&limit=500`,
         {
           headers: {
             ...(!!authToken && { Authorization: `Bearer ${authToken}` }),
@@ -158,7 +178,7 @@ export async function getServerSideProps(ctx) {
         "default"
       ),
       fetcher.get(
-        `${FANTV_API_URL}/api/v1/ai-image?page=1&limit=200`,
+        `${FANTV_API_URL}/api/v1/ai-image?page=1&limit=500`,
         {
           headers: {
             ...(!!authToken && { Authorization: `Bearer ${authToken}` }),
