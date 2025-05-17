@@ -51,7 +51,7 @@ const PricingPlans = () => {
     const updateCountdown = () => {
       const now = new Date();
       const startDate = new Date(userSubscriptionData.startDate);
-      const promoEndsAt = new Date((startDate.getTime()) + 37 * 24 * 60 * 60 * 1000);
+      const promoEndsAt = new Date((startDate.getTime()) + 3 * 24 * 60 * 60 * 1000);
 
       const diff = promoEndsAt - now;
       
