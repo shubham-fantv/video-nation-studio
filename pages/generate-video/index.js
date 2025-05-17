@@ -32,26 +32,26 @@ const index = () => {
     {
       name: "Laura",
       value: "6ZeRQ71MhGGmKDjCiFRa",
-      sampleUrl: "https://elevenlabs.io/app/voice-library?voiceId=6ZeRQ71MhGGmKDjCiFRa",
+      sampleUrl: "https://assets.artistfirst.in/uploads/1747488017829-voice_preview_laura%20-%20narrative.mp3",
     },
     {
       name: "John",
       value: "c4NIULtANlpduSDihsKJ",
-      sampleUrl: "https://elevenlabs.io/app/voice-library?voiceId=c4NIULtANlpduSDihsKJ",
+      sampleUrl: "https://assets.artistfirst.in/uploads/1747488078180-voice_preview_john_storyteller.mp3",
     },
     {
       name: "Clara",
       value: "8LVfoRdkh4zgjr8v5ObE",
-      sampleUrl: "https://elevenlabs.io/app/voice-library?voiceId=8LVfoRdkh4zgjr8v5ObE",
+      sampleUrl: "https://assets.artistfirst.in/uploads/1747488113955-voice_preview_clarastoryteller.mp3",
     },    {
       name: "Monika",
       value: "2bNrEsM0omyhLiEyOwqY",
-      sampleUrl: "https://elevenlabs.io/app/voice-library?voiceId=2bNrEsM0omyhLiEyOwqY",
+      sampleUrl: "https://assets.artistfirst.in/uploads/1747488171032-voice_preview_monika%20sogam-friendly%20customer%20care%20agent.mp3",
     },
     {
       name: "Arjun",
       value: "dxhwlBCxCrnzRlP4wDeE",
-      sampleUrl: "https://elevenlabs.io/app/voice-library?voiceId=dxhwlBCxCrnzRlP4wDeE",
+      sampleUrl: "https://assets.artistfirst.in/uploads/1747488220089-voice_preview_arjun.mp3",
     },
   ];
 
