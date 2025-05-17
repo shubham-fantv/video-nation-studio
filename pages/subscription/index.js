@@ -50,6 +50,7 @@ const PricingPlans = () => {
   useEffect(() => {
     const updateCountdown = () => {
       const now = new Date();
+      //console.log(userSubscriptionData);
       const startDate = new Date(userSubscriptionData.startDate);
       const promoEndsAt = new Date((startDate.getTime()) + 3 * 24 * 60 * 60 * 1000);
 
@@ -158,76 +159,98 @@ const PricingPlans = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredPlans?.map((plan, index) => (
-            <div
-              key={index}
-              className={`rounded-lg p-8 flex flex-col relative transition-all ${
-                plan.isHighlighted
-                  ? "bg-[#FFFFFF0D] text-black border-2 border-blue-400 shadow-xl"
-                  : "bg-[#FFFFFF0D] text-black border border-[#FFFFFF26] shadow-xl"
-              }`}
-            >
-              {/* Optional “Most Popular” badge */}
-              {plan.isHighlighted && (
-                <div className="absolute top-[-15px] right-[-10px] bg-amber-400 text-black text-xs font-bold px-2 py-1 rounded shadow-md">
-                  Most Popular
-                </div>
-              )}
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+  {filteredPlans?.map((plan, index) => {
+    const isCurrentPlan = userSubscriptionData?.subscriptionPlanId._id === plan._id;
 
-              <h2 className="text-2xl font-bold mb-2">{plan.planName}</h2>
+    return (
+      <div
+        key={index}
+        className={`rounded-lg p-8 flex flex-col relative transition-all ${
+          isCurrentPlan
+            ? "bg-green-100 text-black border-2 border-green-200 shadow-xl" // ✅ light green
+            : plan.isHighlighted
+              ? "bg-blue-100 text-black border-2 border-blue-200 shadow-xl" // ✅ light green
+              : "bg-[#F5F5F5] text-black border border-gray-400 shadow-xl"     // ✅ medium gray
+        }`}
+      >
+        {/* ✅ “Your Plan” badge */}
+        {isCurrentPlan && (
+          <div className="absolute top-[-15px] left-[-10px] bg-gray-700 text-white text-xs font-bold px-2 py-1 rounded shadow-md z-10">
+            Your Plan
+          </div>
+        )}
+        {/* Optional “Most Popular” badge */}
+        {plan.isHighlighted && (
+          <div className="absolute top-[-15px] right-[-10px] bg-amber-400 text-black text-xs font-bold px-2 py-1 rounded shadow-md">
+            Most Popular
+          </div>
+        )}
 
-              <div className="mb-8">
-                <span>
-                  $
-                  {billingCycle === "yearly" ? (
-                    <>
-                    <span className="text-2xl font-bold">
-                        {isNewCustomer ? (plan.cost * discount /12).toFixed(2) : (plan.cost /12).toFixed(2)}/month
-                      </span>
-                      <span className="text-gray-500 text-sm  ml-2">
-                        (<s>${plan.actual_cost.toFixed(2)}</s>)
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <span className="text-2xl font-bold">
-                        {isNewCustomer ? (plan.cost * discount).toFixed(2) : plan.cost.toFixed(2)}/month
-                      </span>
-                      {isNewCustomer && (
-                        <span className="text-sm text-gray-500 ml-2">
-                          <s>(${plan.cost.toFixed(2)})</s>
-                        </span>
-                      )}
-                    </>
-                  )}
+        <h2 className="text-2xl font-bold mb-2">{plan.planName}</h2>
+
+        <div className="mb-8">
+          <span>
+            $
+            {billingCycle === "yearly" ? (
+              <>
+                <span className="text-2xl font-bold">
+                  {isNewCustomer ? (plan.cost * discount / 12).toFixed(2) : (plan.cost / 12).toFixed(2)}/month
                 </span>
-                {isNewCustomer && timeLeft !== "Expired" && (
-                    <div className="text-sm font-medium text-green-600 mt-2">
-                      ⏰ {discount*100}% OFF ends in: <span className="font-mono">{timeLeft}</span>
-                    </div>
-                  )}
-                {plan.billedType && (
-                  <p className="text-sm text-gray-400 mt-2">Billed {plan.billedType}</p>
+                <span className="text-gray-500 text-sm ml-2">
+                  (<s>${plan.actual_cost.toFixed(2)}</s>)
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="text-2xl font-bold">
+                  {isNewCustomer ? (plan.cost * discount).toFixed(2) : plan.cost.toFixed(2)}/month
+                </span>
+                {isNewCustomer && (
+                  <span className="text-sm text-gray-500 ml-2">
+                    <s>(${plan.cost.toFixed(2)})</s>
+                  </span>
                 )}
-              </div>
-              <button
-                onClick={() => handleChoosePlan(plan)}
-                className="py-2 px-2 rounded-md mb-4 font-medium bg-[#1E1E1E] text-white hover:brightness-110"
-              >
-                Choose Plan
-              </button>
-              <ul className="space-y-2">
-                {plan?.benefits?.map((feature, featureIndex) => (
-                  <li key={featureIndex} className="flex items-start">
-                    <span className="mr-2">•</span>
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
+              </>
+            )}
+          </span>
+
+          {isNewCustomer && timeLeft !== "Expired" && (
+            <div className="text-sm font-medium text-green-600 mt-2">
+              ⏰ {discount * 100}% OFF ends in: <span className="font-mono">{timeLeft}</span>
             </div>
-          ))}
+          )}
+
+          {plan.billedType && (
+            <p className="text-sm text-gray-700 mt-2">Billed {plan.billedType}</p>
+          )}
         </div>
+
+        {/* ✅ Button: Current or Upgrade */}
+        <button
+          disabled={isCurrentPlan}
+          onClick={() => !isCurrentPlan && handleChoosePlan(plan)}
+          className={`py-2 px-2 rounded-md mb-4 font-medium transition ${
+            isCurrentPlan
+              ? "bg-gray-400 text-white cursor-not-allowed"
+              : "bg-[#1E1E1E] text-white hover:brightness-110"
+          }`}
+        >
+          {isCurrentPlan ? "Current Plan" : "Upgrade"}
+        </button>
+
+        <ul className="space-y-2">
+          {plan?.benefits?.map((feature, featureIndex) => (
+            <li key={featureIndex} className="flex items-start">
+              <span className="mr-2">•</span>
+              <span>{feature}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  })}
+</div>
       </div>
       {isPopupVisible && (
         <LoginAndSignup

@@ -18,31 +18,37 @@ const Index = ({ masterData }) => {
         title: "Enhance Image Quality",
         description: "Use AI to improve resolution, clarity, and sharpness of your images.",
         prompt: "enhance this image",
+        imageModel : 1,
     },
     "background-remove": {
         title: "Remove the backgroud",
         description: "Use AI to improve resolution, clarity, and sharpness of your images.",
         prompt: "enhance this image",
+        imageModel : 1,
     },
     "change-outfit": {
         title: "Enhance Image Quality",
         description: "Use AI to improve resolution, clarity, and sharpness of your images.",
         prompt: "enhance this image",
+        imageModel : 2,
     },
     "ai-deblur": {
         title: "Enhance Image Quality",
         description: "Use AI to improve resolution, clarity, and sharpness of your images.",
         prompt: "enhance this image",
+        imageModel : 1,
     },
     "ai-face-swap": {
         title: "Cartoonize Your Image",
         description: "Transform your photo into a cartoon-style artwork.",
         prompt: "cartoonize this image",
+        imageModel : 2,
     },
     upscale: {
         title: "Upscale Image",
         description: "Increase image resolution using AI without losing quality.",
         prompt: "upscale this image",
+        imageModel : 1,
     },
     // Add more slug configs as needed...
     };
@@ -56,8 +62,14 @@ const Index = ({ masterData }) => {
   const [prompt, setPrompt] = useState("");
   const router = useRouter();
   const [imagePreview, setImagePreview] = useState("");
+  
+  const [imagePreview2, setImagePreview2] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [imageUrl2, setImageUrl2] = useState("");
   const [uploading, setUploading] = useState(false);
+
+  const [imageModel, setImageModel] = useState(1);
+  const [uploading2, setUploading2] = useState(false);
   const [imageLoading, setImageLoading] = useState(false);
   
   const [image, setImage] = useState("");  
@@ -94,6 +106,43 @@ const fileInputRef = useRef(null);
     "16:9": "w-4 h-3",
   };
 
+  const handleImageUpload2 = async (event, faceIndex) => {
+    const file = event.target.files[0];
+    if (!file) return;
+  
+    const formData = new FormData();
+    formData.append("file", file);
+  
+    if (faceIndex === 1) setUploading(true);
+    else setUploading2(true);
+  
+    try {
+      const response = await axios.post("https://upload.artistfirst.in/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+  
+      const imageUrl = response?.data?.data?.[0]?.url;
+      const preview = URL.createObjectURL(file);
+  
+      if (faceIndex === 1) {
+        setImagePreview(preview);
+        setImageUrl(imageUrl);
+        // store imageUrl1 if needed
+      } else {
+        setImagePreview2(preview);
+        setImageUrl2(imageUrl);
+        // store imageUrl2 if needed
+      }
+    } catch (error) {
+      console.error("Upload failed", error);
+    } finally {
+      if (faceIndex === 1) setUploading(false);
+      else setUploading2(false);
+    }
+  };
+  
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -117,6 +166,12 @@ const fileInputRef = useRef(null);
     }
   };
 
+  const handleRemoveImage2 = (faceIndex) => {
+    if (faceIndex === 1) {setImagePreview("");setImageUrl(null);}
+    else {setImagePreview2("");setImageUrl2(null);}
+  };
+  
+
   const handleRemoveImage = () => {
     setImageUrl(null);
     setImagePreview(null);
@@ -129,10 +184,12 @@ const fileInputRef = useRef(null);
         //console.log("I AM HERE", response?.data);
         setImagePreview(null);
         setImageUrl(null);
+        setImagePreview2(null);
+        setImageUrl2(null);
         setPrompt("");
         setLoading(false);
         //console.log("I AM HERE", response?.data._id);
-        router.replace(`/upgrade-image/enhance?id=${response?.data._id}`,undefined, { scroll: false });
+        router.replace(`/upgrade-image/${tool}?id=${response?.data._id}`,undefined, { scroll: false });
         //router.reload();
       },
       onError: (error) => {
@@ -181,6 +238,7 @@ const fileInputRef = useRef(null);
       creditsUsed: 1,
       aspectRatio: aspectRatio,
       ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }),  // ✅ encode URL with spaces
+      ...(imageUrl2 && { imageUrl2: encodeURI(decodeURI(imageUrl2)) }),  // ✅ encode URL with spaces
       tool : slug,
     };
 
@@ -223,6 +281,7 @@ const fileInputRef = useRef(null);
       setPrompt(config.prompt);
       setPopUpTitle(config.title);
       setPopUpDescription(config.description);
+      setImageModel(config.imageModel);
     } else {
       console.warn(`No config found for slug: ${slug}`);
     }
@@ -377,7 +436,101 @@ const fileInputRef = useRef(null);
     </div>
   </div>
 </div>
-      {showUploadPopup && (
+{showUploadPopup && imageModel == 2 && (
+  <div className="mt-30 fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center px-4">
+    <div className="bg-white w-full max-w-2xl rounded-xl shadow-lg overflow-hidden">
+      {/* Header */}
+      <div className="flex justify-between items-center px-6 py-4 border-b">
+        <h2 className="text-xl font-semibold">{popUpTitle}</h2>
+        <button onClick={onCancel} className="text-black text-xl font-bold">&times;</button>
+      </div>
+
+      {/* Body */}
+      <div className="px-6 py-6">
+        <p className="text-gray-600 mb-6">{popUpDescription}</p>
+
+        {/* Dual Upload Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Face 1 */}
+          <div>
+            <label className="border border-dashed border-gray-300 bg-gray-100 hover:bg-gray-200 transition cursor-pointer rounded-lg h-48 flex flex-col justify-center items-center text-center">
+              {uploading ? (
+                <div>Uploading...</div>
+              ) : imagePreview ? (
+                <div className="relative">
+                  <img src={imagePreview} alt="Face 1" className="w-full h-[150px] object-cover rounded-md" />
+                  <button
+                    onClick={() => handleRemoveImage2(1)}
+                    className="absolute top-0 right-0 bg-white text-white rounded-full w-4 h-4 flex items-center justify-center"
+                  >
+                    <img src="/images/close.svg" />
+                  </button>
+                </div>
+              ) : (
+                <h3>Upload Face 1</h3>
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => handleImageUpload2(e, 1)}
+                disabled={uploading}
+              />
+            </label>
+          </div>
+
+          {/* Face 2 */}
+          <div>
+            <label className="border border-dashed border-gray-300 bg-gray-100 hover:bg-gray-200 transition cursor-pointer rounded-lg h-48 flex flex-col justify-center items-center text-center">
+              {uploading2 ? (
+                <div>Uploading...</div>
+              ) : imagePreview2 ? (
+                <div className="relative">
+                  <img src={imagePreview2} alt="Face 2" className="w-full h-[150px] object-cover rounded-md" />
+                  <button
+                    onClick={() => handleRemoveImage2(2)}
+                    className="absolute top-0 right-0 bg-white text-white rounded-full w-4 h-4 flex items-center justify-center"
+                  >
+                    <img src="/images/close.svg" />
+                  </button>
+                </div>
+              ) : (
+                <h3>Upload Face 2</h3>
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => handleImageUpload2(e, 2)}
+                disabled={uploading2}
+              />
+            </label>
+          </div>
+        </div>
+
+        {/* Continue Button */}
+        {imagePreview && imagePreview2 && (
+          <div className="mt-6 text-center flex justify-center gap-4">
+            <button
+              onClick={onClose}
+              className="px-6 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
+            >
+              Continue
+            </button>
+            <button
+              onClick={onCancel}
+              className="px-6 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
+            >
+              Cancel
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+)}
+
+{showUploadPopup && imageModel == 1 && (
             <div className="mt-30 fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center px-4">
             <div className="bg-white w-full max-w-2xl rounded-xl shadow-lg overflow-hidden">
             {/* Header */}
@@ -397,29 +550,21 @@ const fileInputRef = useRef(null);
 
                 <label className="border border-dashed border-gray-300 bg-gray-100 hover:bg-gray-200 transition cursor-pointer rounded-lg h-48 flex flex-col justify-center items-center text-center">
             
-            {uploading ? (
-               <div>Uploading...</div>
-             ) : (
-               <>
-                 {imagePreview ? (
-                   <div className="relative">
-                     <img
-                       src={imagePreview}
-                       alt="Uploaded"
-                       className="w-full h-[150px] object-fit rounded-md"
-                     />
-                     <button
-                       onClick={handleRemoveImage}
-                       className="absolute top-0 right-0 bg-white text-white rounded-full w-4 h-4 flex items-center justify-center"
-                     >
-                       <img src="/images/close.svg" />
-                     </button>
-                   </div>
-                 ) : (
-                   <h3>Click to Upload</h3>
-                 )}
-               </>
-             )}
+                {uploading ? (
+                <div>Uploading...</div>
+              ) : imagePreview ? (
+                <div className="relative">
+                  <img src={imagePreview} alt="Face 1" className="w-full h-[150px] object-cover rounded-md" />
+                  <button
+                    onClick={() => handleRemoveImage()}
+                    className="absolute top-0 right-0 bg-white text-white rounded-full w-4 h-4 flex items-center justify-center"
+                  >
+                    <img src="/images/close.svg" />
+                  </button>
+                </div>
+              ) : (
+                <h3>Upload Picture</h3>
+              )}
 
              <input
                type="file"
@@ -451,6 +596,7 @@ const fileInputRef = useRef(null);
             </div>
             </div>
     )}
+
       <SweetAlert2 {...swalProps} onConfirm={handleConfirm} />
     </div>
   );

@@ -107,8 +107,8 @@ const index = (data) => {
   }, []);
 
   const [form, setForm] = useState({
-    name:"John",
-    age: "30",
+    name:"Gabriela",
+    age: "22",
     gender: "female",
     ethnicity: "Caucasian",
     hairColor: "Blonde",
@@ -368,12 +368,7 @@ const index = (data) => {
             <div className="flex flex-col gap-4 max-w-[60%]">
             <button onClick={() => setIsPromptPhotoModalVisible(true)}          >
             <div className="flex items-center gap-2 text-[#7C3AED]">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                    d="M3 7l1.664-1.664A2 2 0 016.414 5h11.172a2 2 0 011.414.586L21 7m-18 0h18M4 7v10a2 2 0 002 2h12a2 2 0 002-2V7"
-                />
-                </svg>
+           
                 <span className="font-semibold text-lg text-[#4C1D95]">Custom Photo Avatar</span>
             </div>
             </button>
@@ -385,8 +380,8 @@ const index = (data) => {
             
             {/* Right: Preview Images */}
             <div className="flex gap-2">
-            <img src="https://video-assets.fantv.world/c4981d44-d282-4ae8-98b6-2a10bbd81fd7.jpg" className="w-16 h-16 rounded-md object-cover" />
-            <img src="https://video-assets.fantv.world/c4981d44-d282-4ae8-98b6-2a10bbd81fd7.jpg" className="w-16 h-16 rounded-md object-cover" />
+            <img src="https://assets.artistfirst.in/uploads/1747384169838-Custom_Avatar_Icon_1.jpg" className="w-16 h-16 rounded-md object-cover" />
+            <img src="https://assets.artistfirst.in/uploads/1747396344929-Custom_Avatar_Icon_2.webp" className="w-16 h-16 rounded-md object-cover" />
             </div>
         </div>
 
@@ -398,11 +393,6 @@ const index = (data) => {
             <div className="flex flex-col gap-4 max-w-[60%]">
             <button onClick={() => setIsPromptModalVisible(true)}          >
             <div className="flex items-center gap-2 text-[#0EA5E9]">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                    d="M11 17l-5-5m0 0l5-5m-5 5h12" />
-                </svg>
                 <span className="font-semibold text-lg text-[#0369A1]">Generate AI Avatar</span>
             </div>
             </button>
@@ -413,8 +403,8 @@ const index = (data) => {
 
             {/* Right: Prompt Preview */}
             <div className="flex gap-2 relative">
-            <img src="https://video-assets.fantv.world/19c54a54-9384-4c0e-8fa1-50db9765b4bc.jpg" className="w-16 h-16 rounded-md object-cover" />
-            <img src="https://video-assets.fantv.world/19c54a54-9384-4c0e-8fa1-50db9765b4bc.jpg" className="w-16 h-16 rounded-md object-cover" />
+            <img src="https://assets.artistfirst.in/uploads/1747396715517-AI_Avatar_Icon_1.jpg" className="w-16 h-16 rounded-md object-cover" />
+            <img src="https://assets.artistfirst.in/uploads/1747396744633-AI_Avatar_Icon_2.webp" className="w-16 h-16 rounded-md object-cover" />
             <div className="absolute bottom-1 left-1 bg-white text-xs px-2 py-0.5 rounded shadow">
                 
             </div>
@@ -724,14 +714,36 @@ const index = (data) => {
             expressions (smiling, neutral, serious), and a variety of outfits. Make sure they are high-resolution and reflect your current appearance.
           </p>
           <div className="flex gap-2 overflow-x-auto">
-            {[1, 2, 3, 4, 5].map((i) => (
               <img
-                key={i}
-                src={`/images/good${i}.jpg`}
+                key={1}
+                src={`https://assets.artistfirst.in/uploads/1747396154317-Good_Avatar_1.webp`}
                 className="w-20 h-28 rounded-md object-cover border border-green-500"
                 alt="good photo"
               />
-            ))}
+              <img
+                key={2}
+                src={`https://assets.artistfirst.in/uploads/1747396178612-Good_Avatar_2.webp`}
+                className="w-20 h-28 rounded-md object-cover border border-green-500"
+                alt="good photo"
+              />
+              <img
+                key={3}
+                src={`https://assets.artistfirst.in/uploads/1747396196125-Good_Avatar_3.webp`}
+                className="w-20 h-28 rounded-md object-cover border border-green-500"
+                alt="good photo"
+              />
+              <img
+                key={4}
+                src={`https://assets.artistfirst.in/uploads/1747396217107-Good_Avatar_4.webp`}
+                className="w-20 h-28 rounded-md object-cover border border-green-500"
+                alt="good photo"
+              />
+              <img
+                key={5}
+                src={`https://assets.artistfirst.in/uploads/1747396229542-Good_Avatar_5.webp`}
+                className="w-20 h-28 rounded-md object-cover border border-green-500"
+                alt="good photo"
+              />
           </div>
         </div>
 
@@ -745,14 +757,37 @@ const index = (data) => {
             Avoid photos that are too old, overly edited, or don’t represent how you currently look.
           </p>
           <div className="flex gap-2 overflow-x-auto">
-            {[1, 2, 3, 4, 5].map((i) => (
               <img
-                key={i}
-                src={`/images/bad${i}.jpg`}
+                key={1}
+                src={`https://assets.artistfirst.in/uploads/1747383366222-Bad_Avatar_1.webp`}
                 className="w-20 h-28 rounded-md object-cover border border-red-500"
                 alt="bad photo"
               />
-            ))}
+              <img
+                key={2}
+                src={`https://assets.artistfirst.in/uploads/1747395752777-Bad_Avatar_2.jpg`}
+                className="w-20 h-28 rounded-md object-cover border border-red-500"
+                alt="bad photo"
+              />
+              <img
+                key={3}
+                src={`https://assets.artistfirst.in/uploads/1747395778037-Bad_Avatar_3.jpg`}
+                className="w-20 h-28 rounded-md object-cover border border-red-500"
+                alt="bad photo"
+              />
+              <img
+                key={4}
+                src={`https://assets.artistfirst.in/uploads/1747395795794-Bad_Avatar_4.webp`}
+                className="w-20 h-28 rounded-md object-cover border border-red-500"
+                alt="bad photo"
+              />
+              <img
+                key={5}
+                src={`https://assets.artistfirst.in/uploads/1747395814436-Bad_Avatar_5.webp`}
+                className="w-20 h-28 rounded-md object-cover border border-red-500"
+                alt="bad photo"
+              />
+           
           </div>
         </div>
       </div>
