@@ -161,7 +161,9 @@ const PricingPlans = () => {
 
 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
   {filteredPlans?.map((plan, index) => {
-    const isCurrentPlan = userSubscriptionData?.subscriptionPlanId._id === plan._id;
+
+    const isCurrentPlan = !!userSubscriptionData &&
+    userSubscriptionData.subscriptionPlanId?._id === plan._id;
 
     return (
       <div
