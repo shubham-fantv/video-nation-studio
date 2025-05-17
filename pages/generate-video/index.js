@@ -200,7 +200,7 @@ const index = () => {
         aspectRatio: aspectRatio,
         duration: duration,
         caption: captionEnabled,
-        voiceId: selectedVoice,
+        ...(selectedVoice && { voiceId: selectedVoice}),  // ✅ selectedVoice
         voiceover: voiceoverEnabled,
         ...(image && { imageUrl: encodeURI(image) })  // ✅ encode URL with spaces
       };
