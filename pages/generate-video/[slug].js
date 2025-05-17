@@ -1,447 +1,4 @@
-// import React, { useEffect, useState } from "react";
-// import AvatarDropdown from "../../src/component/common/AvatarDropdown";
-// import { useRouter } from "next/router";
-// import { useMutation, useQuery } from "react-query";
-// import { FANTV_API_URL } from "../../src/constant/constants";
-// import fetcher from "../../src/dataProvider";
-// import axios from "axios";
-// import Loading from "../../src/component/common/Loading/loading";
-// import { quotes } from "../../src/utils/common";
-// import { parseCookies } from "nookies";
-
-// const Index = ({ masterData, template }) => {
-//   const [aspectRatio, setAspectRatio] = useState("16:9");
-//   const [avatar, setAvatar] = useState("Luke");
-//   const [voice, setVoice] = useState("Default");
-//   const [visibility, setVisibility] = useState("Public");
-//   const [captionEnabled, setCaptionEnabled] = useState(true);
-//   const [prompt, setPrompt] = useState(template?.prompt);
-//   const router = useRouter();
-//   const [imagePreview, setImagePreview] = useState(template?.imageUrl);
-//   const [uploading, setUploading] = useState(false);
-//   const [image, setImage] = useState(template?.imageUrl);
-
-//   const [subTitle, setSubTitle] = useState("");
-//   const [isLoading, setLoading] = useState(false);
-
-//   const handleImageUpload = async (event) => {
-//     const file = event.target.files[0];
-//     if (!file) return;
-
-//     setUploading(true);
-//     const formData = new FormData();
-//     formData.append("file", file);
-
-//     try {
-//       const response = await axios.post("https://upload.artistfirst.in/upload", formData, {
-//         headers: {
-//           "Content-Type": "multipart/form-data",
-//         },
-//       });
-//       setImage(response?.data?.data?.[0]?.url);
-//       setImagePreview(URL.createObjectURL(file));
-//     } catch (error) {
-//       console.error("Upload failed", error);
-//     } finally {
-//       setUploading(false);
-//     }
-//   };
-
-//   const handleRemoveImage = () => {
-//     setImagePreview(null);
-//   };
-
-//   const { mutate: generateVideoApi } = useMutation(
-//     (obj) => fetcher.post(`${FANTV_API_URL}/api/v1/ai-video`, obj),
-//     {
-//       onSuccess: (response) => {
-//         setImagePreview(null);
-//         setPrompt("");
-//         alert(" Success => video generation started");
-//         setLoading(false);
-//       },
-//       onError: (error) => {
-//         setLoading(false);
-//         alert(error.response.data.message);
-//       },
-//     }
-//   );
-
-//   const handleEdit = () => {
-//     console.log(template);
-//     router.push(`/edit-video/${template?._id}`);
-//   };
-
-//   const handleGenerateVideo = () => {
-//     if (!prompt.trim()) {
-//       alert("Please enter a prompt!");
-//       return;
-//     }
-
-//     const requestBody = {
-//       prompt,
-//       imageInput: image ? [image] : [],
-//       creditsUsed: 20,
-//       aspectRatio: aspectRatio,
-//       caption: captionEnabled,
-//     };
-//     setLoading(true);
-//     generateVideoApi(requestBody);
-//   };
-
-//   useEffect(() => {
-//     const pickRandomQuote = () => {
-//       const randomIndex = Math.floor(Math.random() * quotes.length);
-//       setSubTitle(quotes[randomIndex]);
-//     };
-//     pickRandomQuote();
-//     const interval = setInterval(pickRandomQuote, 5000);
-
-//     return () => clearInterval(interval);
-//   }, []);
-
-//   const handleDownloadVideo = async () => {
-//     if (!template?.videoUrl) return;
-
-//     try {
-//       const response = await fetch(template.videoUrl);
-//       const blob = await response.blob();
-//       const url = URL.createObjectURL(blob);
-
-//       const link = document.createElement("a");
-//       link.href = url;
-//       link.download = "video.mp4";
-//       document.body.appendChild(link);
-//       link.click();
-//       document.body.removeChild(link);
-
-//       URL.revokeObjectURL(url);
-//     } catch (error) {
-//       console.error("Failed to download video:", error);
-//     }
-//   };
-//   return (
-//     <div className="flex text-black gap-8">
-//       {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
-//       <div className="w-64 bg-[#FFFFFF0D] p-4">
-//         <div className="">
-//           <button
-//             onClick={() => router.back()}
-//             className="flex items-center text-sm mb-4 text-black"
-//           >
-//             <svg
-//               xmlns="http://www.w3.org/2000/svg"
-//               className="h-5 w-5 mr-2"
-//               viewBox="0 0 20 20"
-//               fill="currentColor"
-//             >
-//               <path
-//                 fillRule="evenodd"
-//                 d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-//                 clipRule="evenodd"
-//               />
-//             </svg>
-//             Back
-//           </button>
-
-//           {/* <h2 className="text-lg font-medium mb-4">Settings</h2> */}
-
-//           <div className="mb-6">
-//             <div className="flex justify-between">
-//               <h3 className="text-sm font-medium mb-2">Prompt</h3>
-//               <div className="flex items-center justify-between mb-4">
-//                 <label className="relative inline-flex items-center cursor-pointer">
-//                   <input
-//                     type="checkbox"
-//                     checked={captionEnabled}
-//                     onChange={() => setCaptionEnabled(!captionEnabled)}
-//                     className="sr-only peer"
-//                   />
-//                   <div className="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"></div>
-//                 </label>
-//                 <span className="text-sm font-medium pl-2">Caption</span>
-//               </div>
-//             </div>
-
-//             <div className="bg-[#F5F5F5] rounded-lg p-3 flex justify-between items-start">
-//               <textarea
-//                 className="w-full rounded-md bg-transparent  text-sm text-[#1E1E1EB2] text-normal placeholder-gray-500 focus:outline-none"
-//                 placeholder="Enter your prompt..."
-//                 rows={5}
-//                 value={prompt}
-//                 onChange={(e) => setPrompt(e.target.value)}
-//               ></textarea>
-//               {/* <p className="text-sm text-gray-300">{prompt}</p> */}
-//             </div>
-//           </div>
-
-//           <div className="mb-6">
-//             <h3 className="text-sm font-medium mb-2">Add Image</h3>
-//             <label className="bg-[#F5F5F5] rounded-lg w-[72px] h-[50px] flex items-center justify-center cursor-pointer">
-//               {uploading ? (
-//                 <div>Uploading...</div>
-//               ) : (
-//                 <>
-//                   {imagePreview ? (
-//                     <div className="relative">
-//                       <img
-//                         src={imagePreview}
-//                         alt="Uploaded"
-//                         className="w-full h-[50px] object-fit rounded-md"
-//                       />
-//                       <button
-//                         onClick={handleRemoveImage}
-//                         className="absolute top-0 right-0 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center"
-//                       >
-//                         ✖
-//                       </button>
-//                     </div>
-//                   ) : (
-//                     <img src="/images/icons/plus.svg" />
-//                   )}
-//                 </>
-//               )}
-
-//               <input
-//                 type="file"
-//                 accept="image/*"
-//                 className="hidden"
-//                 onChange={handleImageUpload}
-//                 disabled={uploading}
-//               />
-//             </label>
-//           </div>
-
-//           <div className="mb-4">
-//             <h3 className="text-sm font-medium mb-2">Aspect Ratio</h3>
-//             <div className="relative">
-//               <select
-//                 value={aspectRatio}
-//                 onChange={(e) => setAspectRatio(e.target.value)}
-//                 className=" h-[48px] block w-full rounded-md bg-[#F5F5F5] border-0 py-2 pl-3 pr-10 text-[#1E1E1EB2] focus:ring-0 sm:text-sm appearance-none" // Add appearance-none
-//               >
-//                 {masterData?.aspectRatios?.map((item) => (
-//                   <option key={item}>{item}</option>
-//                 ))}
-//               </select>
-//               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-//                 <svg
-//                   xmlns="http://www.w3.org/2000/svg"
-//                   className="h-5 w-5 text-gray-400"
-//                   viewBox="0 0 20 20"
-//                   fill="currentColor"
-//                 >
-//                   <path
-//                     fillRule="evenodd"
-//                     d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-//                     clipRule="evenodd"
-//                   />
-//                 </svg>
-//               </div>
-//             </div>
-//           </div>
-//           {template?.avatar && (
-//             <div className="mb-4">
-//               <AvatarDropdown data={masterData?.avatars} />
-//             </div>
-//           )}
-
-//           {template?.voice && (
-//             <div className="mb-4">
-//               <h3 className="text-sm font-medium mb-2">AI Voice</h3>
-//               <div className="relative ">
-//                 <select
-//                   value={voice}
-//                   onChange={(e) => setVoice(e.target._id)}
-//                   className=" h-[48px] block w-full rounded-md bg-[#343434] border-0 py-2 pl-10 pr-10 text-white focus:ring-0 sm:text-sm appearance-none"
-//                 >
-//                   {masterData?.voices?.map((item) => (
-//                     <option key={item._id}>{item?.name}</option>
-//                   ))}
-//                 </select>
-//                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-//                   <div className="h-6 w-6 rounded-full bg-gray-600 flex items-center justify-center">
-//                     <svg
-//                       xmlns="http://www.w3.org/2000/svg"
-//                       className="h-4 w-4 text-white"
-//                       viewBox="0 0 20 20"
-//                       fill="currentColor"
-//                     >
-//                       <path
-//                         fillRule="evenodd"
-//                         d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z"
-//                         clipRule="evenodd"
-//                       />
-//                     </svg>
-//                   </div>
-//                 </div>
-//                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-//                   <svg
-//                     xmlns="http://www.w3.org/2000/svg"
-//                     className="h-5 w-5 text-gray-400"
-//                     viewBox="0 0 20 20"
-//                     fill="currentColor"
-//                   >
-//                     <path
-//                       fillRule="evenodd"
-//                       d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-//                       clipRule="evenodd"
-//                     />
-//                   </svg>
-//                 </div>
-//               </div>
-//             </div>
-//           )}
-
-//           {template?.visibility && (
-//             <div className="mb-4">
-//               <h3 className="text-sm font-medium mb-2">Visibility</h3>
-//               <div className="relative">
-//                 <select
-//                   value={visibility}
-//                   onChange={(e) => setVisibility(e.target.value)}
-//                   className=" h-[48px] block w-full rounded-md bg-[#343434] border-0 py-2 pl-10 pr-10 text-white focus:ring-0 sm:text-sm appearance-none"
-//                 >
-//                   {masterData?.visibilityOptions?.map((item) => (
-//                     <option key={item}>{item}</option>
-//                   ))}
-//                 </select>
-//                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-//                   <div className="h-6 w-6 rounded-full bg-gray-600 flex items-center justify-center">
-//                     <svg
-//                       xmlns="http://www.w3.org/2000/svg"
-//                       className="h-4 w-4 text-white"
-//                       viewBox="0 0 20 20"
-//                       fill="currentColor"
-//                     >
-//                       <path
-//                         fillRule="evenodd"
-//                         d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z"
-//                         clipRule="evenodd"
-//                       />
-//                     </svg>
-//                   </div>
-//                 </div>
-//                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-//                   <svg
-//                     xmlns="http://www.w3.org/2000/svg"
-//                     className="h-5 w-5 text-gray-400"
-//                     viewBox="0 0 20 20"
-//                     fill="currentColor"
-//                   >
-//                     <path
-//                       fillRule="evenodd"
-//                       d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-//                       clipRule="evenodd"
-//                     />
-//                   </svg>
-//                 </div>
-//               </div>
-//             </div>
-//           )}
-
-//           <div className="flex items-center justify-center  gap-4 mt-2 ">
-//             <button
-//               onClick={handleGenerateVideo}
-//               className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-3 text-white shadow-md transition-all hover:brightness-110"
-//             >
-//               ✨ Generate
-//             </button>
-//           </div>
-//         </div>
-//       </div>
-
-//       <div className="flex-1 flex flex-col items-center p-8 bg-[#F5F5F5] px-[80px] py-[80px] ">
-//         <div className="w-full">
-//           <div className="bg-[#FFFFFF0D] rounded-lg aspect-video flex items-center justify-center mb-4 m-auto max-h-[450px]">
-//             <div className="text-gray-500 ">
-//               <video
-//                 src={template?.videoUrl}
-//                 muted
-//                 autoPlay
-//                 poster={template?.imageUrl}
-//                 playsInline
-//                 controls
-//                 // onMouseEnter={(e) => e.target.play()}
-//                 // onMouseLeave={(e) => e.target.pause()}
-//                 // onEnded={(e) => e.target.play()}
-//                 className="w-full h-full object-contain rounded-xl max-h-[450px]"
-//               />
-//               {/* <img src="/images/video-play.png " className="h-[150px] w-[150px]" /> */}
-//             </div>
-//           </div>
-
-//           <div className="flex items-center justify-center  gap-4 mt-2">
-//             <button
-//               onClick={handleDownloadVideo}
-//               className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-3 text-white shadow-md transition-all hover:brightness-110"
-//             >
-//               ✨ Download
-//             </button>
-//             <button
-//               onClick={handleEdit}
-//               className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-3 text-white shadow-md transition-all hover:brightness-110"
-//             >
-//               Edit
-//             </button>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Index;
-
-// export async function getServerSideProps(ctx) {
-//   const cookie = parseCookies(ctx);
-
-//   const authToken = cookie["aToken"];
-
-//   try {
-//     const {
-//       params: { slug },
-//     } = ctx;
-
-//     var [masterData, template] = await Promise.all([
-//       fetcher.get(
-//         `${FANTV_API_URL}/api/v1/homefeed/metadata`,
-//         {
-//           headers: {
-//             ...(!!authToken && { Authorization: `Bearer ${authToken}` }),
-//           },
-//         },
-//         "default"
-//       ),
-//       fetcher.get(
-//         `${FANTV_API_URL}/api/v1/templates/${slug}`,
-//         {
-//           headers: {
-//             ...(!!authToken && { Authorization: `Bearer ${authToken}` }),
-//           },
-//         },
-//         "default"
-//       ),
-//     ]);
-//     return {
-//       props: {
-//         masterData: masterData?.data || [],
-//         template: template?.data || [],
-//         slug,
-//         withSideBar: false,
-//       },
-//     };
-//   } catch (err) {
-//     console.log("error occures in while getting data==>", err);
-//     return {
-//       props: {
-//         withSideBar: false,
-//       },
-//     };
-//   }
-// }
-
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import AvatarDropdown from "../../src/component/common/AvatarDropdown";
 import { useRouter } from "next/router";
 import { useMutation, useQuery } from "react-query";
@@ -453,24 +10,96 @@ import { quotes } from "../../src/utils/common";
 import { parseCookies } from "nookies";
 import { useSelector } from "react-redux";
 import useGTM from "../../src/hooks/useGTM";
+import SweetAlert2 from "react-sweetalert2";
 
-const Index = ({ masterData, template, slug }) => {
-  const [aspectRatio, setAspectRatio] = useState(template?.aspectRatio);
-  const [avatar, setAvatar] = useState(template?.avatarId);
-  const [voice, setVoice] = useState(template?.voiceId || "Default");
+const Index = ({ masterData }) => {
+    const [selectedVoice, setSelectedVoice] = useState(null);
+    const [isPlaying, setIsPlaying] = useState(null);
+    const [showVoiceDropdown, setShowVoiceDropdown] = useState(false);
+    const [credits, setCredits] = useState(20);
+    const audioRef = useRef(null); // reference for controlling audio
+    const voiceOptions = [
+        {
+        name: "Laura",
+        value: "6ZeRQ71MhGGmKDjCiFRa",
+        sampleUrl: "https://assets.artistfirst.in/uploads/1747488017829-voice_preview_laura%20-%20narrative.mp3",
+        },
+        {
+        name: "John",
+        value: "c4NIULtANlpduSDihsKJ",
+        sampleUrl: "https://assets.artistfirst.in/uploads/1747488078180-voice_preview_john_storyteller.mp3",
+        },
+        {
+        name: "Clara",
+        value: "8LVfoRdkh4zgjr8v5ObE",
+        sampleUrl: "https://assets.artistfirst.in/uploads/1747488113955-voice_preview_clarastoryteller.mp3",
+        },    {
+        name: "Monika",
+        value: "2bNrEsM0omyhLiEyOwqY",
+        sampleUrl: "https://assets.artistfirst.in/uploads/1747488171032-voice_preview_monika%20sogam-friendly%20customer%20care%20agent.mp3",
+        },
+        {
+        name: "Arjun",
+        value: "dxhwlBCxCrnzRlP4wDeE",
+        sampleUrl: "https://assets.artistfirst.in/uploads/1747488220089-voice_preview_arjun.mp3",
+        },
+    ];
+    const [selectedCaptionStyle, setSelectedCaptionStyle] = useState(null);
+    const [showCaptionDropdown, setShowCaptionDropdown] = useState(false);
+    const captionOptions = [
+        { label: "Classic White", value: "ClassicWhite", img: "/images/caption-white.png" },
+        { label: "Yellow Border", value: "YellowBorder", img: "/images/fantasy-purple.png" },
+        { label: "Top Italic", value: "TopItalic", img: "/images/caption-previews/top_italic.png" },
+        { label: "Big Red", value: "BigRedImpact", img: "/images/caption-previews/big_red_impact.png" },
+        { label: "Fantasy Purple", value: "FantasyPurple", img: "/images/caption-previews/fantasy_purple.png" },
+    ];
+
+    const [captionEnabled, setCaptionEnabled] = useState(false);
+    const [voiceoverEnabled, setVoiceoverEnabled] = useState(false);
+  const [template, setTemplate] = useState([]);
+  const [aspectRatio, setAspectRatio] = useState("16:9");
+  const [avatar, setAvatar] = useState("");
+  const [voice, setVoice] = useState("");
   const [visibility, setVisibility] = useState("Public");
-  const [captionEnabled, setCaptionEnabled] = useState(template?.caption);
-  const [prompt, setPrompt] = useState(template?.prompt);
+  const [prompt, setPrompt] = useState("");
   const router = useRouter();
   const [imagePreview, setImagePreview] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [uploading, setUploading] = useState(false);
-  const [image, setImage] = useState(template?.imageUrl);
-  
-  const { userData } = useSelector((state) => state.user);
+  const [videoLoading, setVideoLoading] = useState(false);
+
+  const [duration, setDuration] = useState("5 sec");
+  const durationData = ["5 sec", "15 sec", "30 sec","60 sec"];
+
+  const [video, setVideo] = useState("");  
+  const [newImage, setNewImage] = useState("");
+  const [authToken, setAuthToken] = useState("");
+  const [captionStyle, setCaptionStyle] = useState("");
+  const [swalProps, setSwalProps] = useState({});
+  const { isLoggedIn, userData } = useSelector((state) => state.user);
+
   const { sendEvent } = useGTM();
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const [selectedAvatar, setSelectedAvatar] = useState(null);
+
+  const handleAvatarSelect = (avatar) => {
+    setSelectedAvatar(avatar);
+    console.log("Selected avatar:", avatar);
+  };
+
 
   const [subTitle, setSubTitle] = useState("");
   const [isLoading, setLoading] = useState(false);
+  const aspectRatioData = ["16:9", "9:16", "1:1"];
+  const { slug } = router.query;
+
+
+  const aspectRatioSizeMap = {
+    "1:1": "w-4 h-4",
+    "4:5": "w-10 h-12",
+    "9:16": "w-3 h-4",
+    "16:9": "w-4 h-3",
+  };
 
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
@@ -486,7 +115,7 @@ const Index = ({ masterData, template, slug }) => {
           "Content-Type": "multipart/form-data",
         },
       });
-      setImage(response?.data?.data?.[0]?.url);
+      setImageUrl(response?.data?.data?.[0]?.url);
       setImagePreview(URL.createObjectURL(file));
     } catch (error) {
       console.error("Upload failed", error);
@@ -496,6 +125,7 @@ const Index = ({ masterData, template, slug }) => {
   };
 
   const handleRemoveImage = () => {
+    setImageUrl(null);
     setImagePreview(null);
   };
 
@@ -503,51 +133,80 @@ const Index = ({ masterData, template, slug }) => {
     (obj) => fetcher.post(`${FANTV_API_URL}/api/v1/ai-video`, obj),
     {
       onSuccess: (response) => {
+        //console.log("I AM HERE", response?.data);
         setImagePreview(null);
+        setImageUrl(null);
         setPrompt("");
-        alert(" Success => video generation started");
         setLoading(false);
+        //console.log("I AM HERE", response?.data._id);
+        //router.push("/my-library?tab=video");
+        router.replace(`/generate-video/${response?.data._id}`,undefined, { scroll: false });
       },
       onError: (error) => {
         setLoading(false);
+        //alert("I AM HERE");
         alert(error.response.data.message);
       },
     }
   );
 
   const handleEdit = () => {
-    console.log(template);
-    router.push(`/edit-video/${template?._id}`);
+    //console.log(template);
+    router.push(`/edit-video/${slug}`);
+  };
+
+
+  const handleConfirm = () => {
+    //console.log(template);
   };
 
   const handleGenerateVideo = () => {
-    if (!prompt.trim()) {
-      alert("Please enter a prompt!");
-      return;
-    }
-    sendEvent({
-      event: "Generate Video Slug",
-      slug: slug,
-      email: userData?.email,
-      name: userData?.name,
-      prompt: prompt,
-      aspectRatio: aspectRatio,
-      caption: captionEnabled,
-    });
+    if (isLoggedIn) {
+      if (!prompt.trim()) {
+        alert("Please enter a prompt!");
+        return;
+      }
 
-    const requestBody = {
-      prompt,
-      imageInput: image ? [image] : [],
-      ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }),  // ✅ encode URL with spaces
-      creditsUsed: 20,
-      aspectRatio: aspectRatio,
-      caption: captionEnabled,
-      voiceover: voiceoverEnabled,
-      ...(selectedVoice && { voiceId: selectedVoice}),  // ✅ selectedVoice
-    };
-    console.log(requestBody);
-    setLoading(true);
-    generateVideoApi(requestBody);
+      if (userData.credits <= 0) {
+        router.push("/subscription");
+        return;
+      }
+
+      const creditsUsed = 20*parseInt((duration.replace("sec", "").trim()/5),10);
+
+      console.log("selectedVoice",selectedVoice);
+
+      const requestBody = {
+        prompt,
+        imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
+        creditsUsed: creditsUsed,
+        aspectRatio: aspectRatio,
+        duration: duration,
+        caption: captionEnabled,
+        ...(selectedVoice && { voiceId: selectedVoice}),  // ✅ selectedVoice
+        ...(selectedCaptionStyle && { captionStyle: selectedCaptionStyle}),  // ✅ selectedCaption
+        voiceover: voiceoverEnabled,
+        ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) })  // ✅ encode URL with spaces
+      };
+      setLoading(true);
+
+      sendEvent({
+        event: "Generate Video",
+        email: userData?.email,
+        name: userData?.name,
+        prompt: prompt,
+        aspectRatio: aspectRatio,
+        duration: duration,
+        caption: captionEnabled,
+        voiceover: voiceoverEnabled,
+        ...(imageUrl && { imageUrl: imageUrl }), // ✅ only include if `image` is truthy
+      });
+
+      console.log("requestBody",requestBody);
+      generateVideoApi(requestBody);
+    } else {
+      setIsPopupVisible(true);
+    }
   };
 
   useEffect(() => {
@@ -559,23 +218,78 @@ const Index = ({ masterData, template, slug }) => {
     pickRandomQuote();
     const interval = setInterval(pickRandomQuote, 5000);
   
+    const cookies = parseCookies();
+    setAuthToken(cookies.aToken); // or any key you're tracking
+
     return () => clearInterval(interval);
   }, []);
 
+  // Fetch new data on ID change
+  useEffect(() => {
+    console.log("IAM HERE", slug);
+    if (!slug) return;
+
+    let updatedSlug = slug;
+    if (slug == "new") updatedSlug = "681c60acd91d98841219f837";
+
+    const fetchData = async () => {
+      setLoading(true);
+      setVideoLoading(true);
+
+      try {
+      const res = await fetcher.get(
+        `${FANTV_API_URL}/api/v1/templates/${updatedSlug}`,
+        {
+          headers: {
+            ...(!!authToken && { Authorization: `Bearer ${authToken}` }),
+          },
+        },
+        "default"
+      );
+
+      const data = res?.data;
+      console.log("IAM HERE", data);
+      setTemplate(data);
+      setAvatar(data.avatarId);
+      setVoiceoverEnabled(data.voiceover);
+      setVoice(data.voiceId);
+      setSelectedVoice(data.voiceId);
+      setCaptionEnabled(data.caption);
+      setCaptionStyle(data.captionStyle);
+      setSelectedCaptionStyle(data.captionStyle);
+      setAspectRatio(data.aspectRatio);
+      setDuration(data.duration);
+      setPrompt(data.prompt);
+      setImageUrl(data.imageUrl);
+      setImagePreview(data.imageUrl);
+      setVideo(data.videoUrl);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      //await sleep(2000); // Wait for 1 second
+      setLoading(false);
+      //setImageLoading(false);
+    }
+    };
+
+    fetchData();
+  }, [slug]);
+
+
   const handleDownloadVideo = async () => {
-    if (!template?.videoUrl) return;
+    if (!videoUrl) return;
 
     sendEvent({
       event: "Home --> Recreate --> Download",
       email: userData?.email,
       name: userData?.name,
       video: video?._id,
-      videoUrl: template?.videoUrl,
+      videoUrl: videoUrl,
       category: activeSlug,
     });
 
     try {
-      const response = await fetch(template.videoUrl);
+      const response = await fetch(videoUrl);
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
 
@@ -591,26 +305,16 @@ const Index = ({ masterData, template, slug }) => {
       console.error("Failed to download video:", error);
     }
   };
+
   return (
     <div className="flex flex-col md:flex-row text-black md:gap-4">
       {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
-      <div className="w-full md:w-64 bg-[#FFFFFF0D] p-4">
+      <div className="w-full md:w-[25%] bg-[#FFFFFF0D] p-4">
         <div className="">
-          <div className="mb-4">
+          <div className="mb-6">
             <div className="flex justify-between flex-wrap">
               <h3 className="text-sm font-medium mb-2">Prompt</h3>
-              <div className="flex items-center justify-between mb-4">
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={captionEnabled}
-                    onChange={() => setCaptionEnabled(!captionEnabled)}
-                    className="sr-only peer"
-                  />
-                  <div className="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"></div>
-                </label>
-                <span className="text-sm font-medium pl-2">Caption</span>
-              </div>
+              
             </div>
 
             <div className="bg-[#F5F5F5] rounded-lg p-3 flex justify-between items-start">
@@ -623,11 +327,12 @@ const Index = ({ masterData, template, slug }) => {
               ></textarea>
             </div>
           </div>
-
-          <div className="mb-4">
-            <h3 className="text-sm font-medium mb-2">Add Image</h3>
-            <label className="bg-[#F5F5F5] text-xs rounded-lg w-[72px] h-[50px] flex items-center justify-center cursor-pointer">
-              {uploading ? (
+          <div className="mb-6 flex gap-x-10">
+          {/* Ref Image */}
+          <div className="w-1/2">
+            <label className="flex items-center gap-2 rounded-md bg-[#F5F5F5] px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all cursor-pointer">
+            
+             {uploading ? (
                 <div>Uploading...</div>
               ) : (
                 <>
@@ -646,7 +351,7 @@ const Index = ({ masterData, template, slug }) => {
                       </button>
                     </div>
                   ) : (
-                    <img src="/images/icons/plus.svg" />
+                    <h3>+ Add images</h3>
                   )}
                 </>
               )}
@@ -661,90 +366,183 @@ const Index = ({ masterData, template, slug }) => {
             </label>
           </div>
 
-          <div className="mb-4">
-            <h3 className="text-sm font-medium mb-2">Aspect Ratio</h3>
+          <div className="w-1/2">
             <div className="relative">
-              <select
-                value={aspectRatio}
-                onChange={(e) => setAspectRatio(e.target.value)}
-                className="h-[48px] block w-full rounded-md bg-[#F5F5F5] border-0 py-2 pl-3 pr-10 text-[#1E1E1EB2] focus:ring-0 sm:text-sm appearance-none"
-              >
-                {masterData?.aspectRatios?.map((item) => (
-                  <option key={item}>{item}</option>
-                ))}
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 text-gray-400"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+              <button className="flex items-center gap-2 rounded-md bg-[#F5F5F5] px-4 py-2 text-sm text-[1E1E1E] shadow-md transition-all">
+            {/* <span className="w-4 h-3 border border-black rounded-sm"></span> */}
+            <span
+              className={`border border-black rounded-sm ${
+                aspectRatioSizeMap[aspectRatio] || "w-4 h-3"
+              }`}
+            ></span>
+            <select
+              value={aspectRatio}
+              onChange={(e) => setAspectRatio(e.target.value)}
+              className="bg-[#F5F5F5]"
+            >
+              {aspectRatioData?.map((item) => (
+                <option key={item}>{item}</option>
+              ))}
+            </select>
+          </button>
+            </div>
+          </div>
+          </div>
+          <div className="mb-6 flex gap-x-4">
+          {/* Duration Dropdown */}
+          <div className="w-1/3">
+          <button className="flex items-center gap-2 rounded-md bg-[#F5F5F5] px-2 py-2 text-sm text-[1E1E1E] shadow-md transition-all">
+            {/* <span className="w-4 h-3 border border-black rounded-sm"></span> */}
+            <select
+              value={duration}
+              onChange={(e) => {setDuration(e.target.value);setCredits(20*parseInt((e.target.value.replace("sec", "").trim()/5),10))}}
+              className="bg-[#F5F5F5]"
+            >
+              {durationData?.map((item) => (
+                <option key={item}>{item}</option>
+              ))}
+            </select>
+          </button>
+          </div>
+          {/* VoiceOver Dropdown */}
+            <div className="relative">
+            {/* Toggle Button Styled Like Duration */}
+            <button
+              onClick={() => setShowVoiceDropdown((prev) => !prev)}
+              className="flex items-center gap-2 rounded-md bg-[#F5F5F5] px-4 py-2 text-sm text-[1E1E1E] shadow-md transition-all"
+            >
+              <span>
+                Voiceover{selectedVoice ? `: ${voiceOptions.find(v => v.value === selectedVoice)?.name}` : ""}
+              </span>
+              <span>{showVoiceDropdown ? "^" : "▼"}</span>
+            </button>
+
+            {/* Dropdown Content */}
+            {showVoiceDropdown && (
+              <div className="absolute z-10 mt-1 w-full bg-[#F5F5F5] border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                    <div
+                      className={`flex justify-between items-center px-4 py-2 cursor-pointer hover:bg-gray-100 ${
+                        selectedVoice === null ? "bg-purple-100 border-l-4 border-purple-400" : ""
+                      }`}
+                      onClick={() => {
+                        setSelectedVoice(null);
+                        setShowVoiceDropdown(false);
+                      }}
+                    >
+                      <span className="text-sm italic text-gray-500">No Voice</span>
+                    </div>
+                    {voiceOptions.map((voice) => (
+                                    <div
+                      key={voice.value}
+                      className={`flex justify-between items-center px-4 py-2 cursor-pointer transition ${
+                        selectedVoice === voice.value ? "bg-purple-100 border-l-4 border-purple-400" : "hover:bg-gray-100"
+                      }`}
+                      onClick={() => {
+                        setSelectedVoice(voice.value);
+                        setVoiceoverEnabled(true);
+                        setShowVoiceDropdown(false);
+                      }}
+                    >
+                      <span className="text-sm">{voice.name}</span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+
+                          // if clicking same voice
+                          if (isPlaying === voice.value) {
+                            audioRef.current?.pause();
+                            setIsPlaying(null);
+                          } else {
+                            if (audioRef.current) {
+                              audioRef.current.pause();
+                            }
+
+                            const newAudio = new Audio(voice.sampleUrl);
+                            newAudio.crossOrigin = "anonymous";
+                            audioRef.current = newAudio;
+                            setIsPlaying(voice.value);
+
+                            newAudio.play().catch((err) => {
+                              console.error("Playback error:", err);
+                            });
+                            newAudio.onended = () => setIsPlaying(null);
+                          }
+                        }}
+                        className="text-xs px-2 py-1 rounded bg-gray-200 hover:bg-gray-300"
+                      >
+                        {isPlaying === voice.value ? "⏸" : "▶"}
+                      </button>
+                    </div>
+                  ))}
               </div>
+            )}
+          </div>
+          
+          </div><div>          
+          {/* Caption Dropdown */}
+          <div className="mb-6 w-full relative">
+            <button
+                onClick={() => setShowCaptionDropdown((prev) => !prev)}
+                className="flex items-center gap-2 rounded-md bg-[#F5F5F5] px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all"
+            >
+                <span>
+                Caption: {selectedCaptionStyle ? selectedCaptionStyle : ""}
+                </span>
+                <span>{showCaptionDropdown ? "▲" : "▼"}</span>
+            </button>
+
+            {showCaptionDropdown && (
+                <div className="absolute z-10 mt-2 w-[240px] bg-[#F5F5F5] border border-gray-300 rounded-md shadow-lg max-h-72 overflow-auto">
+                {/* Option to unselect */}
+                <div
+                    className={`flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100 ${
+                    selectedCaptionStyle === null ? "bg-purple-100 border-l-4 border-purple-400" : ""
+                    }`}
+                    onClick={() => {
+                    setSelectedCaptionStyle(null);
+                    setShowCaptionDropdown(false);
+                    setCaptionEnabled(false);
+                    }}
+                >
+                    <span className="text-sm italic text-gray-500">No Captions</span>
+                </div>
+
+                {captionOptions.map((style) => (
+                    <div
+                    key={style.value}
+                    className={`flex justify-between items-center px-3 py-2 cursor-pointer transition ${
+                        selectedCaptionStyle === style.value
+                        ? "bg-purple-100 border-l-4 border-purple-500"
+                        : "hover:bg-gray-100"
+                    }`}
+                    onClick={() => {
+                        setSelectedCaptionStyle(style.value);
+                        setShowCaptionDropdown(false);
+                        setCaptionEnabled(true);
+                    }}
+                    > <span className="text-sm text-gray-500">{style.label}</span>
+                    {/* <img
+                        src={style.img}
+                        alt={style.label}
+                        className="h-10 w-30 object-contain rounded-md"
+                    /> */}
+                    {selectedCaptionStyle === style.value && (
+                        <span className="ml-2 text-purple-600 font-semibold">✓</span>
+                    )}
+                    </div>
+                ))}
+                </div>
+            )}
             </div>
           </div>
           {(
-            <div className="mb-4">
-              <AvatarDropdown data={masterData?.avatars} />
+            <div className="mb-6">
+                <AvatarDropdown data={masterData?.avatars} onSelect={handleAvatarSelect}  />
             </div>
           )}
 
-          {(
-            <div className="mb-4">
-              <h3 className="text-sm font-medium mb-2">AI Voice</h3>
-              <div className="relative ">
-                <select
-                  value={voice}
-                  onChange={(e) => setVoice(e.target._id)}
-                  className="h-[48px] block w-full rounded-md bg-[#F5F5F5] border-0 py-2 pl-10 pr-10 text-[#1E1E1EB2] focus:ring-0 sm:text-sm appearance-none"
-                >
-                  {masterData?.voices?.map((item) => (
-                    <option key={item._id}>{item?.name}</option>
-                  ))}
-                </select>
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <div className="h-6 w-6 rounded-full bg-gray-600 flex items-center justify-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-4 w-4 text-white"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </div>
-                </div>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 text-gray-400"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {template?.visibility && (
-            <div className="mb-4">
-              <h3 className="text-sm font-medium mb-2">Visibility</h3>
+          {visibility && (
+            <div className="mb-6">
               <div className="relative">
                 <select
                   value={visibility}
@@ -789,7 +587,8 @@ const Index = ({ masterData, template, slug }) => {
             </div>
           )}
 
-          <div className="flex items-center justify-center gap-4 mt-2 mb-4">
+<h3 className="mb-6 text-sm text-[#1E1E1EB2] text-normal">Credits : {credits}</h3>
+          <div className="flex items-center justify-center gap-4 mt-2 mb-6">
             <button
               onClick={handleGenerateVideo}
               className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
@@ -797,7 +596,6 @@ const Index = ({ masterData, template, slug }) => {
               ✨ Generate
             </button>
           </div>
-          <h3 className="text-sm text-[#1E1E1EB2] text-normal">Credits : 20</h3>
 
         </div>
       </div>
@@ -826,16 +624,18 @@ const Index = ({ masterData, template, slug }) => {
           <div className="w-full p-4 md:p-4 bg-[#F5F5F5] px-4 md:px-[30px] py-4 md:py-[30px]">
             
           <div className="bg-[#FFFFFF0D] rounded-lg aspect-video flex items-center justify-center mb-4 m-auto max-h-[300px] md:max-h-[450px]">
-            <div className="text-gray-500 w-full h-full">
-              <video
-                src={template?.videoUrl}
+          <div className="text-gray-500 w-full h-full">
+          {/* Video */}
+            {/* Video always rendered */}
+            <video
+                src={video}
                 muted
-                poster={template?.imageUrl}
+                poster={video}
                 playsInline
                 controls
                 className="w-full h-full object-contain rounded-xl max-h-[300px] md:max-h-[450px]"
               />
-            </div>
+        </div>
           </div>
 
           <div className="flex items-center justify-center flex-wrap gap-2 md:gap-4 mt-2">
@@ -854,6 +654,7 @@ const Index = ({ masterData, template, slug }) => {
           </div>
         </div>
       </div>
+      <SweetAlert2 {...swalProps} onConfirm={handleConfirm} />
     </div>
   );
 };
@@ -867,10 +668,10 @@ export async function getServerSideProps(ctx) {
 
   try {
     const {
-      params: { slug },
+      params: { slug1 },
     } = ctx;
 
-    var [masterData, template] = await Promise.all([
+    var [masterData] = await Promise.all([
       fetcher.get(
         `${FANTV_API_URL}/api/v1/homefeed/metadata`,
         {
@@ -880,22 +681,11 @@ export async function getServerSideProps(ctx) {
         },
         "default"
       ),
-      fetcher.get(
-        `${FANTV_API_URL}/api/v1/templates/${slug}`,
-        {
-          headers: {
-            ...(!!authToken && { Authorization: `Bearer ${authToken}` }),
-          },
-        },
-        "default"
-      ),
-    ]);
-    console.log("template",template?.data)
+    ]); 
+    
     return {
       props: {
         masterData: masterData?.data || [],
-        template: template?.data || [],
-        slug,
         withSideBar: false,
       },
     };

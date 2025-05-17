@@ -187,6 +187,7 @@ const Index = ({ masterData }) => {
       setAvatar(data.avatarId);
       setVoice(data.voiceId || "Default");
       setCaptionEnabled(data.caption);
+      setAspectRatio(data.aspectRatio);
       setPrompt(data.prompt);
       setImageUrl(data.imageUrl);
       setImagePreview(data.imageUrl);

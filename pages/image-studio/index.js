@@ -30,7 +30,7 @@ const index = () => {
     {
       refetchOnMount: "always",
       onSuccess: ({ data }) => {
-        setTemplates(data.results);
+        //setTemplates(data.results);
       },
     }
   );
@@ -110,7 +110,7 @@ const index = () => {
   </>
 )}
       </div>
-      <div className="mt-12">
+      {/* <div className="mt-12">
         <div className="w-full">
           <CommunityCreatedContent
             title="Use an image template"
@@ -119,7 +119,7 @@ const index = () => {
             isTabEnabled
           />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
