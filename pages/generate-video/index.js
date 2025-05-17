@@ -24,6 +24,37 @@ const aspectRatioSizeMap = {
 };
 
 const index = () => {
+  const [selectedVoice, setSelectedVoice] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(null);
+  const [showVoiceDropdown, setShowVoiceDropdown] = useState(false);
+  const audioRef = useRef(null); // reference for controlling audio
+  const voiceOptions = [
+    {
+      name: "Laura",
+      value: "6ZeRQ71MhGGmKDjCiFRa",
+      sampleUrl: "https://elevenlabs.io/app/voice-library?voiceId=6ZeRQ71MhGGmKDjCiFRa",
+    },
+    {
+      name: "John",
+      value: "c4NIULtANlpduSDihsKJ",
+      sampleUrl: "https://elevenlabs.io/app/voice-library?voiceId=c4NIULtANlpduSDihsKJ",
+    },
+    {
+      name: "Clara",
+      value: "8LVfoRdkh4zgjr8v5ObE",
+      sampleUrl: "https://elevenlabs.io/app/voice-library?voiceId=8LVfoRdkh4zgjr8v5ObE",
+    },    {
+      name: "Monika",
+      value: "2bNrEsM0omyhLiEyOwqY",
+      sampleUrl: "https://elevenlabs.io/app/voice-library?voiceId=2bNrEsM0omyhLiEyOwqY",
+    },
+    {
+      name: "Arjun",
+      value: "dxhwlBCxCrnzRlP4wDeE",
+      sampleUrl: "https://elevenlabs.io/app/voice-library?voiceId=dxhwlBCxCrnzRlP4wDeE",
+    },
+  ];
+
   const [captionEnabled, setCaptionEnabled] = useState(false);
   const [voiceoverEnabled, setVoiceoverEnabled] = useState(false);
   const [templates, setTemplates] = useState([]);
@@ -160,7 +191,8 @@ const index = () => {
 
       const creditsUsed = 20*parseInt((duration.replace("sec", "").trim()/5),10);
 
-      
+      console.log("selectedVoice",selectedVoice);
+
       const requestBody = {
         prompt,
         imageInput: image ? [image] : [],
@@ -168,6 +200,7 @@ const index = () => {
         aspectRatio: aspectRatio,
         duration: duration,
         caption: captionEnabled,
+        voiceId: selectedVoice,
         voiceover: voiceoverEnabled,
         ...(image && { imageUrl: encodeURI(image) })  // ✅ encode URL with spaces
       };
@@ -185,6 +218,7 @@ const index = () => {
         ...(image && { imageUrl: image }), // ✅ only include if `image` is truthy
       });
 
+      console.log("requestBody",requestBody);
       generateVideoApi(requestBody);
     } else {
       setIsPopupVisible(true);
@@ -280,7 +314,7 @@ const index = () => {
               ))}
             </select>
           </button>
-          {/* Duration Toggle */}
+          {/* Duration Dropdown */}
           <button className="flex items-center gap-2 rounded-md bg-[#FFF] px-4 py-2 text-sm text-[1E1E1E] shadow-md transition-all">
             {/* <span className="w-4 h-3 border border-black rounded-sm"></span> */}
             <select
@@ -311,24 +345,68 @@ const index = () => {
             </div>
             Caption
           </button>
-          {/* Caption Toggle */}
-          <button
-            onClick={() => setVoiceoverEnabled(!voiceoverEnabled)}
-            className="flex items-center gap-2 rounded-md bg-[#FFF] px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all"
-          >
-            <div
-              className={`w-6 h-4 flex items-center rounded-full p-[2px] transition-all ${
-                voiceoverEnabled ? "bg-green-500" : "bg-gray-500"
-              }`}
+          {/* Voiceover Dropdown */}
+          <div className="relative">
+            {/* Toggle Button Styled Like Duration */}
+            <button
+              onClick={() => setShowVoiceDropdown((prev) => !prev)}
+              className="flex items-center gap-2 rounded-md bg-[#FFF] px-4 py-2 text-sm text-[1E1E1E] shadow-md transition-all"
             >
-              <div
-                className={`h-3 w-3 rounded-full bg-white transition-transform ${
-                  voiceoverEnabled ? "translate-x-2" : ""
-                }`}
-              ></div>
-            </div>
-            Voiceover
-          </button>
+              <span>
+                Voiceover{selectedVoice ? `: ${voiceOptions.find(v => v.value === selectedVoice)?.name}` : ""}
+              </span>
+              <span>{showVoiceDropdown ? "^" : "▼"}</span>
+            </button>
+
+            {/* Dropdown Content */}
+            {showVoiceDropdown && (
+              <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                {voiceOptions.map((voice) => (
+                    <div
+                      key={voice.value}
+                      className={`flex justify-between items-center px-4 py-2 cursor-pointer transition ${
+                        selectedVoice === voice.value ? "bg-purple-100 border-l-4 border-purple-400" : "hover:bg-gray-100"
+                      }`}
+                      onClick={() => {
+                        setSelectedVoice(voice.value);
+                        setVoiceoverEnabled(true);
+                        setShowVoiceDropdown(false);
+                      }}
+                    >
+                      <span className="text-sm">{voice.name}</span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+
+                          // if clicking same voice
+                          if (isPlaying === voice.value) {
+                            audioRef.current?.pause();
+                            setIsPlaying(null);
+                          } else {
+                            if (audioRef.current) {
+                              audioRef.current.pause();
+                            }
+
+                            const newAudio = new Audio(voice.sampleUrl);
+                            newAudio.crossOrigin = "anonymous";
+                            audioRef.current = newAudio;
+                            setIsPlaying(voice.value);
+
+                            newAudio.play().catch((err) => {
+                              console.error("Playback error:", err);
+                            });
+                            newAudio.onended = () => setIsPlaying(null);
+                          }
+                        }}
+                        className="text-xs px-2 py-1 rounded bg-gray-200 hover:bg-gray-300"
+                      >
+                        {isPlaying === voice.value ? "⏸" : "▶"}
+                      </button>
+                    </div>
+                  ))}
+              </div>
+            )}
+          </div>
           <div className="flex-1 hidden md:block text-sm"></div>
           {/* <button
             onClick={generateMagicPrompt}
