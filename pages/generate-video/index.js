@@ -54,7 +54,16 @@ const index = () => {
       sampleUrl: "https://assets.artistfirst.in/uploads/1747488220089-voice_preview_arjun.mp3",
     },
   ];
-
+  const [selectedCaptionStyle, setSelectedCaptionStyle] = useState(null);
+  const [showCaptionDropdown, setShowCaptionDropdown] = useState(false);
+  const captionOptions = [
+    { label: "Classic White", value: "ClassicWhite", img: "/images/caption-white.png" },
+    { label: "Yellow Border", value: "YellowBorder", img: "/images/fantasy-purple.png" },
+    { label: "Top Italic", value: "TopItalic", img: "/images/caption-previews/top_italic.png" },
+    { label: "Big Red", value: "BigRedImpact", img: "/images/caption-previews/big_red_impact.png" },
+    { label: "Fantasy Purple", value: "FantasyPurple", img: "/images/caption-previews/fantasy_purple.png" },
+  ];
+  
   const [captionEnabled, setCaptionEnabled] = useState(false);
   const [voiceoverEnabled, setVoiceoverEnabled] = useState(false);
   const [templates, setTemplates] = useState([]);
@@ -201,8 +210,9 @@ const index = () => {
         duration: duration,
         caption: captionEnabled,
         ...(selectedVoice && { voiceId: selectedVoice}),  // ✅ selectedVoice
+        ...(selectedCaptionStyle && { captionStyle: selectedCaptionStyle}),  // ✅ selectedCaption
         voiceover: voiceoverEnabled,
-        ...(image && { imageUrl: encodeURI(image) })  // ✅ encode URL with spaces
+        ...(image && { imageUrl: encodeURI(decodeURI(image)) })  // ✅ encode URL with spaces
       };
       setLoading(true);
 
@@ -327,24 +337,63 @@ const index = () => {
               ))}
             </select>
           </button>
-          {/* Caption Toggle */}
-          <button
-            onClick={() => setCaptionEnabled(!captionEnabled)}
-            className="flex items-center gap-2 rounded-md bg-[#FFF] px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all"
-          >
-            <div
-              className={`w-6 h-4 flex items-center rounded-full p-[2px] transition-all ${
-                captionEnabled ? "bg-green-500" : "bg-gray-500"
-              }`}
-            >
-              <div
-                className={`h-3 w-3 rounded-full bg-white transition-transform ${
-                  captionEnabled ? "translate-x-2" : ""
-                }`}
-              ></div>
-            </div>
-            Caption
-          </button>
+          {/* Caption Dropdown */}
+            {/* Caption Style Dropdown */}
+{/* Caption Style Dropdown (Image Preview) */}
+<div className="relative">
+  <button
+    onClick={() => setShowCaptionDropdown((prev) => !prev)}
+    className="flex items-center gap-2 rounded-md bg-white px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all"
+  >
+    <span>
+      Caption {selectedCaptionStyle ? selectedCaptionStyle : ""}
+    </span>
+    <span>{showCaptionDropdown ? "▲" : "▼"}</span>
+  </button>
+
+  {showCaptionDropdown && (
+    <div className="absolute z-10 mt-2 w-[280px] bg-white border border-gray-300 rounded-md shadow-lg max-h-72 overflow-auto">
+      {/* Option to unselect */}
+      <div
+        className={`flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100 ${
+          selectedCaptionStyle === null ? "bg-purple-100 border-l-4 border-purple-400" : ""
+        }`}
+        onClick={() => {
+          setSelectedCaptionStyle(null);
+          setShowCaptionDropdown(false);
+        }}
+      >
+        <span className="text-sm italic text-gray-500">No Captions</span>
+      </div>
+
+      {captionOptions.map((style) => (
+        <div
+          key={style.value}
+          className={`flex justify-between items-center px-3 py-2 cursor-pointer transition ${
+            selectedCaptionStyle === style.value
+              ? "bg-purple-100 border-l-4 border-purple-500"
+              : "hover:bg-gray-100"
+          }`}
+          onClick={() => {
+            setSelectedCaptionStyle(style.value);
+            setShowCaptionDropdown(false);
+            setCaptionEnabled(true);
+          }}
+        > <span className="text-sm text-gray-500">{style.label}</span>
+          {/* <img
+            src={style.img}
+            alt={style.label}
+            className="h-10 w-30 object-contain rounded-md"
+          /> */}
+          {selectedCaptionStyle === style.value && (
+            <span className="ml-2 text-purple-600 font-semibold">✓</span>
+          )}
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+        
           {/* Voiceover Dropdown */}
           <div className="relative">
             {/* Toggle Button Styled Like Duration */}
@@ -361,8 +410,19 @@ const index = () => {
             {/* Dropdown Content */}
             {showVoiceDropdown && (
               <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
-                {voiceOptions.map((voice) => (
                     <div
+                      className={`flex justify-between items-center px-4 py-2 cursor-pointer hover:bg-gray-100 ${
+                        selectedVoice === null ? "bg-purple-100 border-l-4 border-purple-400" : ""
+                      }`}
+                      onClick={() => {
+                        setSelectedVoice(null);
+                        setShowVoiceDropdown(false);
+                      }}
+                    >
+                      <span className="text-sm italic text-gray-500">No Voice</span>
+                    </div>
+                    {voiceOptions.map((voice) => (
+                                    <div
                       key={voice.value}
                       className={`flex justify-between items-center px-4 py-2 cursor-pointer transition ${
                         selectedVoice === voice.value ? "bg-purple-100 border-l-4 border-purple-400" : "hover:bg-gray-100"

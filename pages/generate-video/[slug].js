@@ -538,10 +538,12 @@ const Index = ({ masterData, template, slug }) => {
     const requestBody = {
       prompt,
       imageInput: image ? [image] : [],
-      imageUrl: image ? image : "",
+      ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }),  // ✅ encode URL with spaces
       creditsUsed: 20,
       aspectRatio: aspectRatio,
       caption: captionEnabled,
+      voiceover: voiceoverEnabled,
+      ...(selectedVoice && { voiceId: selectedVoice}),  // ✅ selectedVoice
     };
     console.log(requestBody);
     setLoading(true);
