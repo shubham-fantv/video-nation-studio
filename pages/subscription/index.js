@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import fetcher from "../../src/dataProvider";
 import { useMutation, useQuery } from "react-query";
 import { FANTV_API_URL } from "../../src/constant/constants";
@@ -6,51 +6,22 @@ import { useSelector } from "react-redux";
 import useGTM from "../../src/hooks/useGTM";
 import LoginAndSignup from "../../src/component/feature/Login";
 const PricingPlans = () => {
-  const plans = [
-    {
-      name: "Free",
-      price: "$0",
-      isCurrentPlan: true,
-      buttonText: "Current Plan",
-      buttonStyle: "bg-gray-400 text-black cursor-default",
-      features: ["Lorem ipsum dolor sit", "Lorem ipsum dolor sit", "Lorem ipsum dolor sit"],
-    },
-    {
-      name: "Plus",
-      price: "$40",
-      billedMonthly: true,
-      buttonText: "Choose Plan",
-      buttonStyle: "bg-white text-black hover:bg-gray-100",
-      features: ["Lorem ipsum dolor sit", "Lorem ipsum dolor sit", "Lorem ipsum dolor sit"],
-    },
-    {
-      name: "Pro",
-      price: "$50",
-      billedMonthly: true,
-      buttonText: "Choose Plan",
-      buttonStyle: "bg-white text-black hover:bg-gray-100",
-      isHighlighted: true,
-      features: ["Lorem ipsum dolor sit", "Lorem ipsum dolor sit", "Lorem ipsum dolor sit"],
-    },
-    {
-      name: "Pro Max",
-      price: "$80",
-      billedMonthly: true,
-      buttonText: "Choose Plan",
-      buttonStyle: "bg-white text-black hover:bg-gray-100",
-      features: ["Lorem ipsum dolor sit", "Lorem ipsum dolor sit", "Lorem ipsum dolor sit"],
-    },
-  ];
   const [isPopupVisible, setIsPopupVisible] = useState(false);
 
   const [subscriptions, setSubscriptions] = useState([]);
 
   const { userData, isLoggedIn } = useSelector((state) => state.user);
   const { sendEvent } = useGTM();
-
   const [billingCycle, setBillingCycle] = useState("monthly");
 
   const filteredPlans = subscriptions?.filter((plan) => plan.billedType === billingCycle);
+
+  const [userSubscriptionData, setUserSubscriptionData] = useState([]);
+  const [isNewCustomer, setIsNewCustomer] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
+
+  const [discount, setDiscount] = useState(0);
+  const [timeLeft, setTimeLeft] = useState("");
 
   useQuery(
     `${FANTV_API_URL}/api/v1/subscription-plans`,
@@ -62,6 +33,56 @@ const PricingPlans = () => {
       },
     }
   );
+
+  useQuery(
+    `${FANTV_API_URL}/api/v1/user-subscriptions/${userData?._id || userData?.id}`,
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/user-subscriptions/${userData?._id || userData?.id}`),
+    {
+      enabled: !!(userData?._id || userData?.id),
+      refetchOnMount: "always",
+      onSuccess: ({ data }) => {
+        setUserSubscriptionData(data);
+      },
+    }
+  );
+
+
+  useEffect(() => {
+    const updateCountdown = () => {
+      const now = new Date();
+      const startDate = new Date(userSubscriptionData.startDate);
+      const promoEndsAt = new Date((startDate.getTime()) + 37 * 24 * 60 * 60 * 1000);
+
+      const diff = promoEndsAt - now;
+      
+      if (diff > 0) {
+        setIsNewCustomer(true);
+        setPromoCode("NEW50");
+        setDiscount(0.50);
+      }
+  
+      if (diff <= 0) {
+        setTimeLeft("Expired");
+        return;
+      }
+      const days = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, "0");
+      const hours = String(Math.floor((diff / (1000 * 60 * 60)) % 24)).padStart(2, "0");
+      const minutes = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, "0");
+      const seconds = String(Math.floor((diff / 1000) % 60)).padStart(2, "0");
+      
+      if (days === "00") {
+        setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
+      } else {
+        setTimeLeft(`${days}days ${hours}h`);
+      }
+    };
+  
+    const interval = setInterval(updateCountdown, 1000);
+    updateCountdown();  
+
+    return () => clearInterval(interval);
+  }, [userSubscriptionData]);
+  
 
   const { mutate: initiatePayment } = useMutation(
     (obj) => fetcher.post(`${FANTV_API_URL}/create-checkout-session`, obj),
@@ -76,8 +97,11 @@ const PricingPlans = () => {
   );
 
   const handleChoosePlan = (plan) => {
+  
+
     const requestBody = {
       subscriptionPlanId: plan._id,
+      promoCode : promoCode,
     };
     sendEvent({
       event: "Choose Plan (Initiate Checkout)",
@@ -158,27 +182,41 @@ const PricingPlans = () => {
                   $
                   {billingCycle === "yearly" ? (
                     <>
-                      {(plan.cost / 12).toFixed(2)}/month{" "}
-                      <span className="text-gray-500 text-sm">
+                    <span className="text-2xl font-bold">
+                        {isNewCustomer ? (plan.cost * discount /12).toFixed(2) : (plan.cost /12).toFixed(2)}/month
+                      </span>
+                      <span className="text-gray-500 text-sm  ml-2">
                         (<s>${plan.actual_cost.toFixed(2)}</s>)
                       </span>
                     </>
                   ) : (
-                    <>{plan.cost.toFixed(2)}/month</>
+                    <>
+                      <span className="text-2xl font-bold">
+                        {isNewCustomer ? (plan.cost * discount).toFixed(2) : plan.cost.toFixed(2)}/month
+                      </span>
+                      {isNewCustomer && (
+                        <span className="text-sm text-gray-500 ml-2">
+                          <s>(${plan.cost.toFixed(2)})</s>
+                        </span>
+                      )}
+                    </>
                   )}
                 </span>
+                {isNewCustomer && timeLeft !== "Expired" && (
+                    <div className="text-sm font-medium text-green-600 mt-2">
+                      ⏰ {discount*100}% OFF ends in: <span className="font-mono">{timeLeft}</span>
+                    </div>
+                  )}
                 {plan.billedType && (
-                  <p className="text-sm text-gray-400">Billed {plan.billedType}</p>
+                  <p className="text-sm text-gray-400 mt-2">Billed {plan.billedType}</p>
                 )}
               </div>
-
               <button
                 onClick={() => handleChoosePlan(plan)}
                 className="py-2 px-2 rounded-md mb-4 font-medium bg-[#1E1E1E] text-white hover:brightness-110"
               >
                 Choose Plan
               </button>
-
               <ul className="space-y-2">
                 {plan?.benefits?.map((feature, featureIndex) => (
                   <li key={featureIndex} className="flex items-start">

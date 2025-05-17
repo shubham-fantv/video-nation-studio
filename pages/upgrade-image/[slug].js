@@ -13,6 +13,39 @@ import useGTM from "../../src/hooks/useGTM";
 import SweetAlert2 from "react-sweetalert2";
 
 const Index = ({ masterData }) => {
+  const SLUG_CONFIG = {
+    "enhance": {
+        title: "Enhance Image Quality",
+        description: "Use AI to improve resolution, clarity, and sharpness of your images.",
+        prompt: "enhance this image",
+    },
+    "background-remove": {
+        title: "Remove the backgroud",
+        description: "Use AI to improve resolution, clarity, and sharpness of your images.",
+        prompt: "enhance this image",
+    },
+    "change-outfit": {
+        title: "Enhance Image Quality",
+        description: "Use AI to improve resolution, clarity, and sharpness of your images.",
+        prompt: "enhance this image",
+    },
+    "ai-deblur": {
+        title: "Enhance Image Quality",
+        description: "Use AI to improve resolution, clarity, and sharpness of your images.",
+        prompt: "enhance this image",
+    },
+    "ai-face-swap": {
+        title: "Cartoonize Your Image",
+        description: "Transform your photo into a cartoon-style artwork.",
+        prompt: "cartoonize this image",
+    },
+    upscale: {
+        title: "Upscale Image",
+        description: "Increase image resolution using AI without losing quality.",
+        prompt: "upscale this image",
+    },
+    // Add more slug configs as needed...
+    };
   const [template, setTemplate] = useState([]);
   const [aspectRatio, setAspectRatio] = useState("16:9");
   const [tool, setTool] = useState("");
@@ -29,6 +62,8 @@ const Index = ({ masterData }) => {
   
   const [image, setImage] = useState("");  
   const [newImage, setNewImage] = useState("");
+  const [popUpTitle, setPopUpTitle] = useState("");
+  const [popUpDescription, setPopUpDescription] = useState("");
   const [authToken, setAuthToken] = useState("");
   const [swalProps, setSwalProps] = useState({});
   const { userData } = useSelector((state) => state.user);
@@ -38,6 +73,7 @@ const Index = ({ masterData }) => {
 
   const [showUploadPopup, setShowUploadPopup] = useState(true);
 const fileInputRef = useRef(null);
+
 
 
   const handleAvatarSelect = (avatar) => {
@@ -140,7 +176,7 @@ const fileInputRef = useRef(null);
     });
 
     const requestBody = {
-      prompt : "enhance this image",
+      prompt : prompt,
       imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
       creditsUsed: 1,
       aspectRatio: aspectRatio,
@@ -178,12 +214,18 @@ const fileInputRef = useRef(null);
   // Fetch new data on ID change
   useEffect(() => {
     console.log("I AM inside useEffect", slug, "id=",id);
-    setTool(slug);
-
     if (!slug) return;
 
-    let updatedSlug = slug;
-    if (slug == "enhance") updatedSlug = id;
+    const config = SLUG_CONFIG[slug];
+
+    if (config) {
+      setTool(slug);
+      setPrompt(config.prompt);
+      setPopUpTitle(config.title);
+      setPopUpDescription(config.description);
+    } else {
+      console.warn(`No config found for slug: ${slug}`);
+    }
 
     if (id) {
         console.log("I AM inside Image Id", id);
@@ -298,7 +340,7 @@ const fileInputRef = useRef(null);
 
       {/* New Image */}
       <div className="w-full md:w-1/2 p-4">
-        <h3 className="text-sm font-medium mb-2 text-center">Enhanced Image</h3>
+        <h3 className="text-sm font-medium mb-2 text-center">New Image</h3>
         <div className="w-full h-[300px] md:h-[450px] flex items-center justify-center bg-white rounded-xl overflow-hidden relative">
           {imageLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
@@ -340,7 +382,7 @@ const fileInputRef = useRef(null);
             <div className="bg-white w-full max-w-2xl rounded-xl shadow-lg overflow-hidden">
             {/* Header */}
             <div className="flex justify-between items-center px-6 py-4 border-b">
-                <h2 className="text-xl font-semibold">Enhance Image Quality</h2>
+                <h2 className="text-xl font-semibold">{popUpTitle}</h2>
                 <button onClick={onCancel} className="text-black text-xl font-bold">&times;</button>
             </div>
 
@@ -350,7 +392,7 @@ const fileInputRef = useRef(null);
                 
                 </h3>
                 <p className="text-gray-600 mb-6">
-                Select / Upload an image and use AI to enhance its resolution, quality, and clarity
+                {popUpDescription}
                 </p>
 
                 <label className="border border-dashed border-gray-300 bg-gray-100 hover:bg-gray-200 transition cursor-pointer rounded-lg h-48 flex flex-col justify-center items-center text-center">
