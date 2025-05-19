@@ -52,34 +52,35 @@ const PricingPlans = () => {
       const now = new Date();
       //console.log(userSubscriptionData);
       //console.log(userData);
-      const startDate = new Date(userData?.created_at);
-      const promoEndsAt = new Date((startDate.getTime()) + 3 * 24 * 60 * 60 * 1000);
-      //console.log(startDate,promoEndsAt);
       setcurrentPlanPriority(userSubscriptionData?.subscriptionPlanId?.planNumber);
-
-      const diff = promoEndsAt - now;
       
-      if (diff > 0) {
-        setIsNewCustomer(true);
-        setPromoCode("NEW50");
-        setDiscount(0.50);
-      }
-  
-      if (diff <= 0) {
-        setTimeLeft("Expired");
-        return;
-      }
-      const days = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, "0");
-      const hours = String(Math.floor((diff / (1000 * 60 * 60)) % 24)).padStart(2, "0");
-      const minutes = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, "0");
-      const seconds = String(Math.floor((diff / 1000) % 60)).padStart(2, "0");
+      if (!userSubscriptionData) {
+          const startDate = new Date(userData?.created_at);
+          const promoEndsAt = new Date((startDate.getTime()) + 3 * 24 * 60 * 60 * 1000);
+          //console.log(startDate,promoEndsAt);
+          
+          const diff = promoEndsAt - now;
+          if (diff > 0 ) {
+            setIsNewCustomer(true);
+            setPromoCode("NEW50");
+            setDiscount(0.50);
+          }
       
-      if (days === "00") {
-        setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
-      } else {
-        setTimeLeft(`${days}days ${hours}h`);
-      }
-    };
+          if (diff <= 0) {
+            setTimeLeft("Expired");
+            return;
+          }
+          const days = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, "0");
+          const hours = String(Math.floor((diff / (1000 * 60 * 60)) % 24)).padStart(2, "0");
+          const minutes = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, "0");
+          const seconds = String(Math.floor((diff / 1000) % 60)).padStart(2, "0");
+          
+          if (days === "00") {
+            setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
+          } else {
+            setTimeLeft(`${days}days ${hours}h`);
+          }
+    }};
   
     const interval = setInterval(updateCountdown, 1000);
     updateCountdown();  
@@ -109,7 +110,7 @@ const PricingPlans = () => {
 
     const requestBody = {
       subscriptionPlanId: plan._id,
-      promoCode : promoCode,
+      ...(promoCode && promoCode !== "" && { promoCode }),
     };
     sendEvent({
       event: "Choose Plan (Initiate Checkout)",
