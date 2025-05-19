@@ -95,7 +95,7 @@ const PricingPlans = () => {
         window.location.href = response.url;
       },
       onError: (error) => {
-        alert(error.response.data.message);
+          alert(error.response.data.message);
       },
     }
   );
@@ -123,6 +123,7 @@ const PricingPlans = () => {
       setIsPopupVisible(true);
     }
   };
+
   return (
     <div className=" text-black min-h-screen flex flex-col items-center py-1">
       <h1 className="text-[32px] font-bold mb-2">Plans That Fit Your Needs</h1>
