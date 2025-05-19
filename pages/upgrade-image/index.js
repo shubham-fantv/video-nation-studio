@@ -112,17 +112,22 @@ const index = () => {
         setImagePreview(null);
         setPrompt("");
         setLoading(false);
-        setSwalProps({
-          icon: "success",
-          show: true,
-          title: "Success",
-          text: "Video generation done",
-          showCancelButton: true,
-          confirmButtonText: "Go to My Library",
-          cancelButtonText: "Cancel",
-          allowOutsideClick: false, // Optional: prevent dismiss by clicking outside
-          allowEscapeKey: false, // Optional: prevent ESC close
-        });
+        if (userData?.isTrialUser) {
+            localStorage.setItem("lastTrialAction", Date.now().toString());
+          }
+        //console.log("I AM HERE", response?.data._id);
+        router.replace(`/upgrade-image/${tool}?id=${response?.data._id}`,undefined, { scroll: false });
+        // setSwalProps({
+        //   icon: "success",
+        //   show: true,
+        //   title: "Success",
+        //   text: "Video generation done",
+        //   showCancelButton: true,
+        //   confirmButtonText: "Go to My Library",
+        //   cancelButtonText: "Cancel",
+        //   allowOutsideClick: false, // Optional: prevent dismiss by clicking outside
+        //   allowEscapeKey: false, // Optional: prevent ESC close
+        // });
       },
       onError: (error) => {
         setLoading(false);
@@ -143,7 +148,7 @@ const index = () => {
   );
 
   const handleConfirm = () => {
-    router.push("/my-library");
+    //router.push("/my-library");
   };
 
   const handleGenerateVideo = () => {
@@ -153,14 +158,42 @@ const index = () => {
         return;
       }
 
-      if (userData.credits <= 0) {
-        router.push("/subscription");
-        return;
-      }
-
       const creditsUsed = 20*parseInt((duration.replace("sec", "").trim()/5),10);
-
       
+    if (userData.credits <= 0 || userData.credits < 1) {
+        setSwalProps({
+          show: true,
+          title: `⏳ You only have ${userData.credits} Credits Left!`,
+          text: "Upgrade now to buy Credits, unlock HD, pro voices, and longer videos.",
+          confirmButtonText: "View Plans",
+          showCancelButton: true,
+          icon: "warning",
+          preConfirm: () => {
+            router.push("/subscription");
+          }
+        });
+        } else {
+            if (userData?.isTrialUser) {
+              const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || 0, 10);
+              const now = Date.now();
+            
+              if (now - lastActionTime < RATE_LIMIT_INTERVAL_MS) {
+                const waitTime = Math.ceil((RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60);
+                setSwalProps({
+                  show: true,
+                  title: "⏳ Please wait",
+                  text: `Free users can generate only one image every 12 hours. Try again in ${waitTime} mins. Upgrade now to unlock unlimited generation and HD quality`,
+                  icon: "info",
+                  confirmButtonText: "View Plans",
+                  showCancelButton: true,
+                  preConfirm: () => {
+                    router.push("/subscription");
+                  }
+                });
+                return;
+              }
+      }}
+
       const requestBody = {
         prompt,
         imageInput: image ? [image] : [],

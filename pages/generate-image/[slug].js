@@ -14,6 +14,9 @@ import SweetAlert2 from "react-sweetalert2";
 
 const Index = ({ masterData }) => {
   const [template, setTemplate] = useState([]);
+
+  const lastTrialAction = localStorage.getItem("lastTrialAction");
+  const RATE_LIMIT_INTERVAL_MS = 12 * 60 * 60 * 1000; // 12 hours
   const [aspectRatio, setAspectRatio] = useState("16:9");
   const [avatar, setAvatar] = useState("");
   const [voice, setVoice] = useState("");
@@ -93,6 +96,9 @@ const Index = ({ masterData }) => {
         setImageUrl(null);
         setPrompt("");
         setLoading(false);
+        if (userData?.isTrialUser) {
+          localStorage.setItem("lastTrialAction", Date.now().toString());
+        }
         //console.log("I AM HERE", response?.data._id);
         //router.push("/my-library?tab=image");
         router.replace(`/generate-image/${response?.data._id}`,undefined, { scroll: false });
@@ -117,7 +123,47 @@ const Index = ({ masterData }) => {
 
   const handleGenerateImage = () => {
   
-    console.log("selectedAvatar",selectedAvatar);
+    if (isLoggedIn) {
+      if (!prompt.trim()) {
+        alert("Please enter a prompt!");
+        return;
+      }
+
+    if (userData.credits <= 0 || userData.credits < 1) {
+      setSwalProps({
+        show: true,
+        title: `⏳ You only have ${userData.credits} Credits Left!`,
+        text: "Upgrade now to buy Credits, unlock HD, pro voices, and longer videos.",
+        confirmButtonText: "View Plans",
+        showCancelButton: true,
+        icon: "warning",
+        preConfirm: () => {
+          router.push("/subscription");
+        }
+      });
+      } else {
+          if (userData?.isTrialUser) {
+            const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || 0, 10);
+            const now = Date.now();
+          
+            if (now - lastActionTime < RATE_LIMIT_INTERVAL_MS) {
+              const waitTime = Math.ceil((RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60);
+              setSwalProps({
+                show: true,
+                title: "⏳ Please wait",
+                text: `Free users can generate only one image every 12 hours. Try again in ${waitTime} mins. Upgrade now to unlock unlimited generation and HD quality`,
+                icon: "info",
+                confirmButtonText: "View Plans",
+                showCancelButton: true,
+                preConfirm: () => {
+                  router.push("/subscription");
+                }
+              });
+              return;
+            }
+    }}
+
+    //console.log("selectedAvatar",selectedAvatar);
     sendEvent({
       event: "Generate Image Slug",
       slug: slug,
@@ -141,6 +187,9 @@ const Index = ({ masterData }) => {
     alert(JSON.stringify(requestBody, null, 2));
 
     generateImageApi(requestBody);
+  } else {
+    setIsPopupVisible(true);
+  }
   };
 
   useEffect(() => {
@@ -316,11 +365,11 @@ const Index = ({ masterData }) => {
             </div>
           </div>
           </div>
-          {(
+          {/* {(
             <div className="mb-6">
               <AvatarDropdown data={masterData?.avatars} onSelect={handleAvatarSelect}  />
             </div>
-          )}
+          )} */}
 
           {visibility && (
             <div className="mb-6">

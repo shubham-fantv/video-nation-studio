@@ -19,6 +19,7 @@ import { FANTV_API_URL } from "../../constant/constants";
 import fetcher from "../../dataProvider";
 import { setUserData } from "../../redux/slices/user";
 import useGTM from "../../hooks/useGTM";
+import SweetAlert2 from "react-sweetalert2";
 
 const LogOutNavItem = [
   {
@@ -46,6 +47,7 @@ const HeaderNew = ({ app }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [walletAnchorEl, setWalletAnchorEl] = useState(null);
   const router = useRouter();
+  const [swalProps, setSwalProps] = useState({});
 
   const currentPath = router.pathname;
 
@@ -70,6 +72,28 @@ const HeaderNew = ({ app }) => {
     setWalletAnchorEl(layoutData.isSignWalletPopupOpen);
   }, [layoutData?.isSignWalletPopupOpen]);
 
+  useEffect(() => {
+    if (!userData || userData?.credits === undefined) return;
+    const hasShownModal = localStorage.getItem("creditWarningShown");
+  
+    if (userData?.credits < 10 && !hasShownModal) {
+      setSwalProps({
+        show: true,
+        title: "⏳ You're almost out of credits!",
+        text: "Upgrade now to unlock HD, pro voices, and longer videos.",
+        confirmButtonText: "View Plans",
+        showCancelButton: true,
+        icon: "warning",
+        preConfirm: () => {
+          router.push("/subscription");
+        }
+      });
+  
+      // Mark as shown
+      localStorage.setItem("creditWarningShown", "true");
+    }
+  }, [userData?.credits]);
+
   const handleWalletClose = () => {
     setWalletAnchorEl(null);
     dispatch(setSignWalletPopupOpen(false));
@@ -79,6 +103,7 @@ const HeaderNew = ({ app }) => {
     event.stopPropagation();
     setIsPopupVisible({ login: true });
   };
+
 
   const dispatch = useDispatch();
 
@@ -136,6 +161,7 @@ const HeaderNew = ({ app }) => {
         <Box className="">
           {userData?.credits > 0 ? (
             <div>
+
               <button
                 style={{
                   border: "1px solid #262626",
@@ -308,8 +334,22 @@ const HeaderNew = ({ app }) => {
           </div>
 
           <Box className="flex hidden md:flex">
-            {userData?.credits > 0 ? (
-              <div>
+          {userData?.credits > 0 ? (
+              userData.credits < 20 ? (
+                <div className="flex items-center px-4 gap-4">
+                  <div className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium shadow">
+                    {userData.credits} Credits Left
+                  </div>
+                    <CLink href={"/subscription"}>
+                      <button
+                      className="bg-purple-600 text-white text-sm px-3 py-1 rounded-md hover:bg-purple-700 transition"
+                    >
+                      Upgrade
+                    </button>
+                    </CLink>
+                </div>
+              ) : (
+                <CLink href={"/usage"}>
                 <button
                   style={{
                     border: "1px solid #262626",
@@ -334,10 +374,10 @@ const HeaderNew = ({ app }) => {
                     }}
                     alt="star icon"
                   />
-                  {userData?.credits} Credits
+                  {userData.credits} Credits
                 </button>
-              </div>
-            ) : (
+                </CLink>
+              )) : (
               <div>
                 {!isActiveLink("/subscription") ? (
                   <CLink href={"/subscription"}>
@@ -422,6 +462,7 @@ const HeaderNew = ({ app }) => {
           />
         )}
       </Box>
+      <SweetAlert2 {...swalProps} onConfirm={() => setSwalProps({ show: false })} />
     </>
   );
 };

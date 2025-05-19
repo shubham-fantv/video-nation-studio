@@ -25,6 +25,8 @@ const aspectRatioSizeMap = {
 
 const index = () => {
   const [captionEnabled, setCaptionEnabled] = useState(false);
+  const lastTrialAction = localStorage.getItem("lastTrialAction");
+  const RATE_LIMIT_INTERVAL_MS = 12 * 60 * 60 * 1000; // 12 hours
   const [templates, setTemplates] = useState([]);
   const [imagePreview, setImagePreview] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -111,17 +113,21 @@ const index = () => {
         setImagePreview(null);
         setPrompt("");
         setLoading(false);
-        setSwalProps({
-          icon: "success",
-          show: true,
-          title: "Success",
-          text: "Image generation is completed",
-          showCancelButton: true,
-          confirmButtonText: "Go to My Library",
-          cancelButtonText: "Cancel",
-          allowOutsideClick: false, // Optional: prevent dismiss by clicking outside
-          allowEscapeKey: false, // Optional: prevent ESC close
-        });
+        if (userData?.isTrialUser) {
+          localStorage.setItem("lastTrialAction", Date.now().toString());
+        }
+        router.replace(`/generate-image/${response?.data._id}`,undefined, { scroll: false });
+        // setSwalProps({
+        //   icon: "success",
+        //   show: true,
+        //   title: "Success",
+        //   text: "Image generation is completed",
+        //   showCancelButton: true,
+        //   confirmButtonText: "Go to My Library",
+        //   cancelButtonText: "Cancel",
+        //   allowOutsideClick: false, // Optional: prevent dismiss by clicking outside
+        //   allowEscapeKey: false, // Optional: prevent ESC close
+        // });
       },
       onError: (error) => {
         setLoading(false);
@@ -146,7 +152,7 @@ const index = () => {
 
   const handleConfirm = () => {
     //console.log(response.data);
-    router.push("/my-library?tab=image");
+    //router.push("/my-library?tab=image");
   };
 
   const handleGenerateImage = () => {
@@ -156,10 +162,39 @@ const index = () => {
         return;
       }
 
-      if (userData.credits <= 0) {
-        router.push("/subscription");
-        return;
-      }
+      if (userData.credits <= 0 || userData.credits < 1) {
+        setSwalProps({
+          show: true,
+          title: `⏳ You only have ${userData.credits} Credits Left!`,
+          text: "Upgrade now to buy Credits, unlock HD, pro voices, and longer videos.",
+          confirmButtonText: "View Plans",
+          showCancelButton: true,
+          icon: "warning",
+          preConfirm: () => {
+            router.push("/subscription");
+          }
+        });
+        } else {
+            if (userData?.isTrialUser) {
+              const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || 0, 10);
+              const now = Date.now();
+            
+              if (now - lastActionTime < RATE_LIMIT_INTERVAL_MS) {
+                const waitTime = Math.ceil((RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60);
+                setSwalProps({
+                  show: true,
+                  title: "⏳ Please wait",
+                  text: `Free users can generate only one image every 12 hours. Try again in ${waitTime} mins. Upgrade now to unlock unlimited generation and HD quality`,
+                  icon: "info",
+                  confirmButtonText: "View Plans",
+                  showCancelButton: true,
+                  preConfirm: () => {
+                    router.push("/subscription");
+                  }
+                });
+                return;
+              }
+      }}
 
       const requestBody = {
         prompt,

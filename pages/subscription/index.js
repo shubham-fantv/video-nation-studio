@@ -7,7 +7,6 @@ import useGTM from "../../src/hooks/useGTM";
 import LoginAndSignup from "../../src/component/feature/Login";
 const PricingPlans = () => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
-
   const [subscriptions, setSubscriptions] = useState([]);
 
   const { userData, isLoggedIn } = useSelector((state) => state.user);
@@ -20,6 +19,7 @@ const PricingPlans = () => {
   const [isNewCustomer, setIsNewCustomer] = useState(false);
   const [promoCode, setPromoCode] = useState("");
 
+  const [currentPlanPriority, setcurrentPlanPriority] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [timeLeft, setTimeLeft] = useState("");
 
@@ -51,8 +51,11 @@ const PricingPlans = () => {
     const updateCountdown = () => {
       const now = new Date();
       //console.log(userSubscriptionData);
-      const startDate = new Date(userSubscriptionData.startDate);
+      //console.log(userData);
+      const startDate = new Date(userData?.created_at);
       const promoEndsAt = new Date((startDate.getTime()) + 3 * 24 * 60 * 60 * 1000);
+      //console.log(startDate,promoEndsAt);
+      setcurrentPlanPriority(userSubscriptionData?.subscriptionPlanId?.planNumber);
 
       const diff = promoEndsAt - now;
       
@@ -99,6 +102,10 @@ const PricingPlans = () => {
 
   const handleChoosePlan = (plan) => {
   
+    // if (isDowngrade) {
+    //   const confirm = window.confirm("Are you sure you want to downgrade? Your existing features may be limited.");
+    //   if (!confirm) return;
+    // }
 
     const requestBody = {
       subscriptionPlanId: plan._id,
@@ -160,10 +167,17 @@ const PricingPlans = () => {
         )}
 
 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-  {filteredPlans?.map((plan, index) => {
 
-    const isCurrentPlan = !!userSubscriptionData &&
-    userSubscriptionData.subscriptionPlanId?._id === plan._id;
+    {filteredPlans?.map((plan, index) => {
+
+    const isCurrentPlan = !!userSubscriptionData && userSubscriptionData.subscriptionPlanId?._id === plan._id;
+
+    const isUpgrade = plan.planNumber > currentPlanPriority;
+    const isDowngrade = plan.planNumber < currentPlanPriority;
+    //setIsDowngrade(plan.planNumber < currentPlanPriority);
+
+    // console.log("currentPlanPriority",currentPlanPriority);
+    // console.log("isUpgrade",isUpgrade);
 
     return (
       <div
@@ -228,18 +242,31 @@ const PricingPlans = () => {
           )}
         </div>
 
-        {/* ✅ Button: Current or Upgrade */}
-        <button
-          disabled={isCurrentPlan}
-          onClick={() => !isCurrentPlan && handleChoosePlan(plan)}
-          className={`py-2 px-2 rounded-md mb-4 font-medium transition ${
-            isCurrentPlan
-              ? "bg-gray-400 text-white cursor-not-allowed"
-              : "bg-[#1E1E1E] text-white hover:brightness-110"
-          }`}
-        >
-          {isCurrentPlan ? "Current Plan" : "Upgrade"}
-        </button>
+        {isCurrentPlan ? (
+          <button
+            disabled
+            className="py-2 px-2 rounded-md mb-4 font-medium bg-gray-400 text-white cursor-not-allowed"
+          >
+            Current Plan
+          </button>
+        ) : (
+          <button
+            onClick={() => handleChoosePlan(plan)}
+            className={`py-2 px-2 rounded-md mb-4 font-medium ${
+              !userSubscriptionData?.subscriptionPlanId
+                ? "bg-blue-600" // new user default
+                : isUpgrade
+                ? "bg-[#1E1E1E]"
+                : "bg-yellow-600"
+            } text-white hover:brightness-110`}
+          >
+            {!userSubscriptionData?.subscriptionPlanId
+              ? "Choose Plan"
+              : isUpgrade
+              ? "Upgrade"
+              : "Downgrade"}
+          </button>
+        )}
 
         <ul className="space-y-2">
           {plan?.benefits?.map((feature, featureIndex) => (

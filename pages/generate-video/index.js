@@ -25,6 +25,8 @@ const aspectRatioSizeMap = {
 
 const index = () => {
   const [selectedVoice, setSelectedVoice] = useState(null);
+  const lastTrialAction = localStorage.getItem("lastTrialAction");
+  const RATE_LIMIT_INTERVAL_MS = 12 * 60 * 60 * 1000; // 12 hours
   const [isPlaying, setIsPlaying] = useState(null);
   const [showVoiceDropdown, setShowVoiceDropdown] = useState(false);
   const audioRef = useRef(null); // reference for controlling audio
@@ -70,6 +72,7 @@ const index = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [prompt, setPrompt] = useState("");
+  const [finalVideo, setFinalVideo] = useState("");
   const [image, setImage] = useState("");
   const [aspectRatio, setAspectRatio] = useState("16:9");
   const [credits, setCredits] = useState(20);
@@ -149,20 +152,26 @@ const index = () => {
     (obj) => fetcher.post(`${API_BASE_URL}/api/v1/ai-video`, obj),
     {
       onSuccess: (response) => {
+        //console.log(response);
         setImagePreview(null);
         setPrompt("");
+        setFinalVideo(response?.data._id);
         setLoading(false);
-        setSwalProps({
-          icon: "success",
-          show: true,
-          title: "Success",
-          text: "Video generation done",
-          showCancelButton: true,
-          confirmButtonText: "Go to My Library",
-          cancelButtonText: "Cancel",
-          allowOutsideClick: false, // Optional: prevent dismiss by clicking outside
-          allowEscapeKey: false, // Optional: prevent ESC close
-        });
+        if (userData?.isTrialUser) {
+          localStorage.setItem("lastTrialAction", Date.now().toString());
+        }
+        router.push(`/generate-video/${response?.data._id}`,undefined, { scroll: false });
+        // setSwalProps({
+        //   icon: "success",
+        //   show: true,
+        //   title: "Success",
+        //   text: "Video generation done",
+        //   showCancelButton: true,
+        //   confirmButtonText: "Go to My Library",
+        //   cancelButtonText: "Cancel",
+        //   allowOutsideClick: false, // Optional: prevent dismiss by clicking outside
+        //   allowEscapeKey: false, // Optional: prevent ESC close
+        // });
       },
       onError: (error) => {
         setLoading(false);
@@ -183,7 +192,9 @@ const index = () => {
   );
 
   const handleConfirm = () => {
-    router.push("/my-library");
+  //  router.push("/my-library");
+
+    router.push(`/generate-video/${finalVideo}`,undefined, { scroll: false });
   };
 
   const handleGenerateVideo = () => {
@@ -192,15 +203,49 @@ const index = () => {
         alert("Please enter a prompt!");
         return;
       }
-
-      if (userData.credits <= 0) {
-        router.push("/subscription");
-        return;
+    
+    const creditsUsed = 20*parseInt((duration.replace("sec", "").trim()/5),10);
+    
+    if (userData.credits <= 0 || userData.credits < creditsUsed) {
+          setSwalProps({
+            show: true,
+            title: `⏳ You only have ${userData.credits} Credits Left!`,
+            text: "Upgrade now to buy Credits, unlock HD, pro voices, and longer videos.",
+            confirmButtonText: "View Plans",
+            showCancelButton: true,
+            icon: "warning",
+            preConfirm: () => {
+              router.push("/subscription");
+            }
+          });
+          } else {
+              console.log("TRIAL", userData?.isTrialUser);
+              if (userData?.isTrialUser) {
+                console.log("I AM TRIAL USER");
+                const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || 0, 10);
+                const now = Date.now();
+                console.log("lastActionTime",lastActionTime);
+                console.log("lastTrialAction",lastTrialAction);
+                console.log(now - lastActionTime);
+              
+                if (now - lastActionTime < RATE_LIMIT_INTERVAL_MS) {
+                  const waitTime = Math.ceil((RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60);
+                  setSwalProps({
+                    show: true,
+                    title: "⏳ Please wait",
+                    text: `Free users can generate only one video every 12 hours. Try again in ${waitTime} min. Upgrade Now to get Unlimited generations and HD quality.`,
+                    confirmButtonText: "View Plans",
+                    showCancelButton: true,
+                    icon: "info",
+                    preConfirm: () => {
+                      router.push("/subscription");
+                    }
+                  });
+                  return;
+                }
+        }
       }
-
-      const creditsUsed = 20*parseInt((duration.replace("sec", "").trim()/5),10);
-
-      console.log("selectedVoice",selectedVoice);
+      //console.log("selectedVoice",selectedVoice);
 
       const requestBody = {
         prompt,
@@ -228,7 +273,7 @@ const index = () => {
         ...(image && { imageUrl: image }), // ✅ only include if `image` is truthy
       });
 
-      console.log("requestBody",requestBody);
+      //console.log("requestBody",requestBody);
       generateVideoApi(requestBody);
     } else {
       setIsPopupVisible(true);
@@ -372,27 +417,27 @@ const index = () => {
           className={`flex justify-between items-center px-3 py-2 cursor-pointer transition ${
             selectedCaptionStyle === style.value
               ? "bg-purple-100 border-l-4 border-purple-500"
-              : "hover:bg-gray-100"
-          }`}
-          onClick={() => {
-            setSelectedCaptionStyle(style.value);
-            setShowCaptionDropdown(false);
-            setCaptionEnabled(true);
-          }}
-        > <span className="text-sm text-gray-500">{style.label}</span>
-          {/* <img
-            src={style.img}
-            alt={style.label}
-            className="h-10 w-30 object-contain rounded-md"
-          /> */}
-          {selectedCaptionStyle === style.value && (
-            <span className="ml-2 text-purple-600 font-semibold">✓</span>
-          )}
-        </div>
-      ))}
-    </div>
-  )}
-</div>
+                        : "hover:bg-gray-100"
+                    }`}
+                    onClick={() => {
+                      setSelectedCaptionStyle(style.value);
+                      setShowCaptionDropdown(false);
+                      setCaptionEnabled(true);
+                    }}
+                  > <span className="text-sm text-gray-500">{style.label}</span>
+                    {/* <img
+                      src={style.img}
+                      alt={style.label}
+                      className="h-10 w-30 object-contain rounded-md"
+                    /> */}
+                    {selectedCaptionStyle === style.value && (
+                      <span className="ml-2 text-purple-600 font-semibold">✓</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+            </div>
         
           {/* Voiceover Dropdown */}
           <div className="relative">
@@ -481,7 +526,8 @@ const index = () => {
           >
             ✨ Generate
           </button>
-        </div>
+         
+        </div> 
       </div>
       <div className="flex flex-wrap gap-2 mt-4 overflow-auto">
         {samplePrompts.map((sample, idx) => (

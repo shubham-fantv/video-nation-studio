@@ -1,14 +1,49 @@
 import { Box, Typography } from "@mui/material";
-import { default as React } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CLink from "../src/component/CLink";
 import CardComponent from "../src/component/CardComponent";
 import CommunityCreatedContent from "../src/component/CommunityCreatedContent";
 import Banner from "../src/component/banner";
 import { FANTV_API_URL } from "../src/constant/constants";
+import LoginAndSignup from "../src/component/feature/Login";
 import fetcher from "../src/dataProvider";
 import { parseCookies } from "nookies";
+import { useSelector } from "react-redux";
+import SweetAlert2 from "react-sweetalert2";
 
 const Index = ({ homeFeed }) => {
+
+  const [swalProps, setSwalProps] = useState({});
+  const [isPopupVisible, setIsPopupVisible] = useState({
+    login: false,
+  });
+  const { isLoggedIn, userData } = useSelector((state) => state.user);
+
+  const handleConfirm = () => {
+    //console.log(template);
+  };
+
+  const handleLoginPopupClose = () => {
+    setIsPopupVisible({ login: false });
+  };
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setSwalProps({
+        show: true,
+        title: "⏳ Sign Up Now",
+        text: `Sign up Now to get 50 Free Credits.`,
+        confirmButtonText: "Sign Up",
+        showCancelButton: true,
+        icon: "info",
+        preConfirm: () => {
+          setIsPopupVisible({ login: true });
+        }
+      });
+    }
+    //console.log("homeFeed",JSON.stringify(homeFeed));
+  }, []);
+
   return (
     <div>
       <Box className="min-h-screen text-black bg-[#FFF]">
@@ -54,7 +89,16 @@ const Index = ({ homeFeed }) => {
             </div>
           </div>
         </Box>
+        {isPopupVisible.login && (
+          <LoginAndSignup
+            callBackName={"uniqueCommunity"}
+            open={isPopupVisible.login}
+            handleModalClose={handleLoginPopupClose}
+          />
+        )}
       </Box>
+        
+      <SweetAlert2 {...swalProps} onConfirm={handleConfirm} />
     </div>
   );
 };

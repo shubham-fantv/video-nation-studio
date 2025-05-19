@@ -53,6 +53,8 @@ const Index = ({ masterData }) => {
     // Add more slug configs as needed...
     };
   const [template, setTemplate] = useState([]);
+  const lastTrialAction = localStorage.getItem("lastTrialAction");
+  const RATE_LIMIT_INTERVAL_MS = 12 * 60 * 60 * 1000; // 12 hours
   const [aspectRatio, setAspectRatio] = useState("16:9");
   const [tool, setTool] = useState("");
   const [avatar, setAvatar] = useState("");
@@ -78,10 +80,10 @@ const Index = ({ masterData }) => {
   const [popUpDescription, setPopUpDescription] = useState("");
   const [authToken, setAuthToken] = useState("");
   const [swalProps, setSwalProps] = useState({});
-  const { userData } = useSelector((state) => state.user);
   const { sendEvent } = useGTM();
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const [selectedAvatar, setSelectedAvatar] = useState(null);
+  const { isLoggedIn, userData } = useSelector((state) => state.user);
 
   const [showUploadPopup, setShowUploadPopup] = useState(true);
 const fileInputRef = useRef(null);
@@ -188,6 +190,9 @@ const fileInputRef = useRef(null);
         setImageUrl2(null);
         setPrompt("");
         setLoading(false);
+        if (userData?.isTrialUser) {
+            localStorage.setItem("lastTrialAction", Date.now().toString());
+          }
         //console.log("I AM HERE", response?.data._id);
         router.replace(`/upgrade-image/${tool}?id=${response?.data._id}`,undefined, { scroll: false });
         //router.reload();
@@ -222,7 +227,49 @@ const fileInputRef = useRef(null);
   };
 
   const handleUpgradeImage = () => {
+    if (isLoggedIn) {
+        if (!prompt.trim()) {
+          alert("Please enter a prompt!");
+          return;
+        }
   
+    if (userData.credits <= 0 || userData.credits < 1) {
+        setSwalProps({
+          show: true,
+          title: `⏳ You only have ${userData.credits} Credits Left!`,
+          text: "Upgrade now to buy Credits, unlock HD, pro voices, and longer videos.",
+          confirmButtonText: "View Plans",
+          showCancelButton: true,
+          icon: "warning",
+          preConfirm: () => {
+            router.push("/subscription");
+          }
+        });
+        } else {
+            if (userData?.isTrialUser) {
+              const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || 0, 10);
+              const now = Date.now();
+            
+              if (now - lastActionTime < RATE_LIMIT_INTERVAL_MS) {
+                const waitTime = Math.ceil((RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60);
+                setSwalProps({
+                  show: true,
+                  title: "⏳ Please wait",
+                  text: `Free users can generate only one image every 12 hours. Try again in ${waitTime} mins. Upgrade now to unlock unlimited generation and HD quality`,
+                  icon: "info",
+                  confirmButtonText: "View Plans",
+                  showCancelButton: true,
+                  preConfirm: () => {
+                    router.push("/subscription");
+                  },
+                  preDeny: () => {
+                    router.push("/image-studio");
+                  },
+                });
+                return;
+              }
+      }}
+
     sendEvent({
       event: "Upgrade Image Slug",
       slug: slug,
@@ -247,6 +294,9 @@ const fileInputRef = useRef(null);
     //alert(JSON.stringify(requestBody, null, 2));
 
     generateImageApi(requestBody);
+} else {
+    setIsPopupVisible(true);
+  }
   };
 
   useEffect(() => {
