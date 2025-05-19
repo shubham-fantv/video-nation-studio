@@ -170,16 +170,16 @@ const PricingPlans = () => {
 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
     {filteredPlans?.map((plan, index) => {
-
     const isCurrentPlan = !!userSubscriptionData && userSubscriptionData.subscriptionPlanId?._id === plan._id;
 
-    const isUpgrade = plan.planNumber > currentPlanPriority;
-    const isDowngrade = plan.planNumber < currentPlanPriority;
-    //setIsDowngrade(plan.planNumber < currentPlanPriority);
+    let isUpgrade = false;
+    let isDowngrade = false;
 
-    // console.log("currentPlanPriority",currentPlanPriority);
-    // console.log("isUpgrade",isUpgrade);
-
+    if (!userData?.isTrialUser && userSubscriptionData?.subscriptionPlanId) {
+      isUpgrade = plan.planNumber > currentPlanPriority;
+      isDowngrade = plan.planNumber < currentPlanPriority;
+    }
+    
     return (
       <div
         key={index}
@@ -243,31 +243,31 @@ const PricingPlans = () => {
           )}
         </div>
 
-        {isCurrentPlan ? (
-          <button
-            disabled
-            className="py-2 px-2 rounded-md mb-4 font-medium bg-gray-400 text-white cursor-not-allowed"
-          >
-            Current Plan
-          </button>
-        ) : (
-          <button
-            onClick={() => handleChoosePlan(plan)}
-            className={`py-2 px-2 rounded-md mb-4 font-medium ${
-              !userSubscriptionData?.subscriptionPlanId
-                ? "bg-blue-600" // new user default
+        {(isCurrentPlan && !userData?.isTrialUser) ? (
+            <button
+              disabled
+              className="py-2 px-2 rounded-md mb-4 font-medium bg-gray-400 text-white cursor-not-allowed"
+            >
+              Current Plan
+            </button>
+          ) : (
+            <button
+              onClick={() => handleChoosePlan(plan)}
+              className={`py-2 px-2 rounded-md mb-4 font-medium ${
+                !userSubscriptionData?.subscriptionPlanId || userData?.isTrialUser
+                  ? "bg-blue-600" // new/trial user default
+                  : isUpgrade
+                  ? "bg-[#1E1E1E]"
+                  : "bg-yellow-600"
+              } text-white hover:brightness-110`}
+            >
+              {!userSubscriptionData?.subscriptionPlanId || userData?.isTrialUser
+                ? "Choose Plan"
                 : isUpgrade
-                ? "bg-[#1E1E1E]"
-                : "bg-yellow-600"
-            } text-white hover:brightness-110`}
-          >
-            {!userSubscriptionData?.subscriptionPlanId
-              ? "Choose Plan"
-              : isUpgrade
-              ? "Upgrade"
-              : "Downgrade"}
-          </button>
-        )}
+                ? "Upgrade"
+                : "Downgrade"}
+            </button>
+          )}
 
         <ul className="space-y-2">
           {plan?.benefits?.map((feature, featureIndex) => (
