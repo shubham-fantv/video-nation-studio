@@ -77,7 +77,7 @@ const HeaderNew = ({ app }) => {
     const hasShownModal = localStorage.getItem("creditWarningShown");
   
     if (userData?.credits < 10 && !hasShownModal) {
-      setSwalProps({
+      setSwalProps({        
         show: true,
         title: "⏳ You're almost out of credits!",
         text: "Upgrade now to unlock HD, pro voices, and longer videos.",

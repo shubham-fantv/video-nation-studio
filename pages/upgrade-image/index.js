@@ -137,6 +137,7 @@ const index = () => {
         const message = error?.response?.data?.message || error?.message || defaultMessage;
 
         setSwalProps({
+            key: Date.now(), // or use a counter
           icon: "error",
           show: true,
           title: "Error",
@@ -162,6 +163,7 @@ const index = () => {
       
     if (userData.credits <= 0 || userData.credits < 1) {
         setSwalProps({
+            key: Date.now(), // or use a counter 
           show: true,
           title: `⏳ You only have ${userData.credits} Credits Left!`,
           text: "Upgrade now to buy Credits, unlock HD, pro voices, and longer videos.",
@@ -180,6 +182,7 @@ const index = () => {
               if (now - lastActionTime < RATE_LIMIT_INTERVAL_MS) {
                 const waitTime = Math.ceil((RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60);
                 setSwalProps({
+                    key: Date.now(), // or use a counter 
                   show: true,
                   title: "⏳ Please wait",
                   text: `Free users can generate only one image every 12 hours. Try again in ${waitTime} mins. Upgrade now to unlock unlimited generation and HD quality`,
@@ -192,7 +195,7 @@ const index = () => {
                 });
                 return;
               }
-      }}
+      } else {
 
       const requestBody = {
         prompt,
@@ -219,6 +222,7 @@ const index = () => {
       });
 
       generateVideoApi(requestBody);
+    }}
     } else {
       setIsPopupVisible(true);
     }
@@ -407,7 +411,7 @@ const index = () => {
           handleModalClose={() => setIsPopupVisible(false)}
         />
       )}
-      <SweetAlert2 {...swalProps} onConfirm={handleConfirm} />
+      <SweetAlert2 {...swalProps} onConfirm={(handleConfirm) => setSwalProps({ show: false })} />
     </div>
   );
 };

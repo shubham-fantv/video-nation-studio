@@ -80,6 +80,7 @@ const index = () => {
   const [subTitle, setSubTitle] = useState("");
   const router = useRouter();
   const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [progressPercentage, setProgressPercentage] = useState(0);
 
   const aspectRatioData = ["16:9", "9:16", "1:1"];
   const durationData = ["5 sec", "15 sec", "30 sec","60 sec"];
@@ -181,6 +182,7 @@ const index = () => {
         const message = error?.response?.data?.message || error?.message || defaultMessage;
 
         setSwalProps({
+          key: Date.now(), // or use a counter
           icon: "error",
           show: true,
           title: "Error",
@@ -198,6 +200,7 @@ const index = () => {
   };
 
   const handleGenerateVideo = () => {
+   
     if (isLoggedIn) {
       if (!prompt.trim()) {
         alert("Please enter a prompt!");
@@ -208,6 +211,7 @@ const index = () => {
     
     if (userData.credits <= 0 || userData.credits < creditsUsed) {
           setSwalProps({
+            key: Date.now(), // or use a counter
             show: true,
             title: `⏳ You only have ${userData.credits} Credits Left!`,
             text: "Upgrade now to buy Credits, unlock HD, pro voices, and longer videos.",
@@ -219,18 +223,14 @@ const index = () => {
             }
           });
           } else {
-              console.log("TRIAL", userData?.isTrialUser);
               if (userData?.isTrialUser) {
-                console.log("I AM TRIAL USER");
                 const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || 0, 10);
                 const now = Date.now();
-                console.log("lastActionTime",lastActionTime);
-                console.log("lastTrialAction",lastTrialAction);
-                console.log(now - lastActionTime);
               
                 if (now - lastActionTime < RATE_LIMIT_INTERVAL_MS) {
                   const waitTime = Math.ceil((RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60);
                   setSwalProps({
+                    key: Date.now(), // or use a counter
                     show: true,
                     title: "⏳ Please wait",
                     text: `Free users can generate only one video every 12 hours. Try again in ${waitTime} min. Upgrade Now to get Unlimited generations and HD quality.`,
@@ -243,8 +243,7 @@ const index = () => {
                   });
                   return;
                 }
-        }
-      }
+        } else {
       //console.log("selectedVoice",selectedVoice);
 
       const requestBody = {
@@ -275,21 +274,55 @@ const index = () => {
 
       //console.log("requestBody",requestBody);
       generateVideoApi(requestBody);
+      }
+    }
     } else {
       setIsPopupVisible(true);
     }
   };
 
   useEffect(() => {
+    if (!isLoading) return;
+
+    let quoteInterval;
+    let progressInterval;
+
     const pickRandomQuote = () => {
       const randomIndex = Math.floor(Math.random() * quotes.length);
       setSubTitle(quotes[randomIndex]);
     };
+    // Initial call
     pickRandomQuote();
-    const interval = setInterval(pickRandomQuote, 5000);
+    setProgressPercentage(0);
 
-    return () => clearInterval(interval);
-  }, []);
+    // Change quote every 5 seconds
+    quoteInterval = setInterval(() => {
+      pickRandomQuote();
+    }, 5000);
+
+    // Simulate progress over ~3 minutes 
+    const totalDuration = 180000; // 3 minutes
+    const updateInterval = 2000; // every 2 seconds
+    let elapsed = 0;
+
+    progressInterval = setInterval(() => {
+      elapsed += updateInterval;
+      const progressRatio = elapsed / totalDuration;
+
+      const easedProgress = Math.min(
+        Math.floor(100 * Math.pow(progressRatio, 2.5)), // exponent controls acceleration
+        99
+      );
+  
+      const progress = Math.min(Math.floor((elapsed / totalDuration) * 100), 99); // max 99%
+      setProgressPercentage(easedProgress);
+    }, updateInterval);
+
+    return () => {
+      clearInterval(quoteInterval);
+      clearInterval(progressInterval);
+    };
+  }, [isLoading]);
 
   useEffect(() => {
     setSamplePrompts(getRandomPrompts(allPromptSamples));
@@ -303,7 +336,7 @@ const index = () => {
 
   return (
     <div>
-      {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
+      {isLoading && <Loading title={`Generating your video... (${progressPercentage}%)`} subTitle={subTitle} />}
       <div className="justify-center m-auto">
         <h1 className="text-black text-[32px] font-semibold text-center leading-[38px]">
           AI-Powered Video Creation. Just Type & Generate
@@ -558,8 +591,9 @@ const index = () => {
           handleModalClose={() => setIsPopupVisible(false)}
         />
       )}
-      <SweetAlert2 {...swalProps} onConfirm={handleConfirm} />
-    </div>
+      <SweetAlert2 {...swalProps} onConfirm={(handleConfirm) => setSwalProps({ show: false })} />
+
+      </div>
   );
 };
 

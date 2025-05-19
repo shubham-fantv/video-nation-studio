@@ -17,38 +17,90 @@ const Index = ({ masterData }) => {
     "enhance": {
         title: "Enhance Image Quality",
         description: "Use AI to improve resolution, clarity, and sharpness of your images.",
-        prompt: "enhance this image",
+        prompt: "Enhance Image Quality",
         imageModel : 1,
+        fileCaption1 : "Upload Picture",
+        fileCaption2 : "",
     },
     "background-remove": {
         title: "Remove the backgroud",
         description: "Use AI to improve resolution, clarity, and sharpness of your images.",
-        prompt: "enhance this image",
+        prompt: "Remove the backgroud",
         imageModel : 1,
+        fileCaption1 : "Upload Picture",
+        fileCaption2 : "",
     },
     "change-outfit": {
-        title: "Enhance Image Quality",
+        title: "Cloth Swap",
         description: "Use AI to improve resolution, clarity, and sharpness of your images.",
-        prompt: "enhance this image",
+        prompt: "Cloth Swap",
         imageModel : 2,
+        fileCaption1 : "Upload Picture",
+        fileCaption2 : "Upload Cloth",
     },
     "ai-deblur": {
-        title: "Enhance Image Quality",
+        title: "AI Deblur",
         description: "Use AI to improve resolution, clarity, and sharpness of your images.",
-        prompt: "enhance this image",
+        prompt: "AI Deblur",
         imageModel : 1,
+        fileCaption1 : "Upload Picture",
+        fileCaption2 : "",
     },
     "ai-face-swap": {
-        title: "Cartoonize Your Image",
+        title: "Face Swap",
         description: "Transform your photo into a cartoon-style artwork.",
-        prompt: "cartoonize this image",
+        prompt: "Face Swap",
         imageModel : 2,
+        fileCaption1 : "Upload Face 1",
+        fileCaption2 : "Upload Face 2",
     },
-    upscale: {
-        title: "Upscale Image",
+    "cyberpunk-photo": {
+        title: "Cyberpunk Style Image",
         description: "Increase image resolution using AI without losing quality.",
-        prompt: "upscale this image",
+        prompt: "Cyberpunk Style Image",
         imageModel : 1,
+        fileCaption1 : "Upload Picture",
+        fileCaption2 : "",
+    },
+    "ghibli-photo": {
+        title: "Ghibli Art Photo",
+        description: "Increase image resolution using AI without losing quality.",
+        prompt: "Ghibli Art Photo",
+        imageModel : 1,
+        fileCaption1 : "Upload Picture",
+        fileCaption2 : "",
+    },
+    "anime-photo": {
+        title: "Anime Style Art",
+        description: "Increase image resolution using AI without losing quality.",
+        prompt: "Anime Style Art",
+        imageModel : 1,
+        fileCaption1 : "Upload Picture",
+        fileCaption2 : "",
+    },
+    "cartoon-photo": {
+        title: "Cartoonize Your Image",
+        description: "Increase image resolution using AI without losing quality.",
+        prompt: "Cartoonize Your Image",
+        imageModel : 1,
+        fileCaption1 : "Upload Picture",
+        fileCaption2 : "",
+    },
+    "product-ad": {
+        title: "Product Placement Ad",
+        description: "Increase image resolution using AI without losing quality.",
+        prompt: "Product Placement Ad",
+        imageModel : 2,
+        fileCaption1 : "Upload Picture",
+        fileCaption2 : "Upload Product",
+    },
+    "album-art": {
+        title: "Create Album Art",
+        description: "Increase image resolution using AI without losing quality.",
+        prompt: "Create Album Art",
+        imageModel : 1,
+        fileCaption1 : "Upload Picture",
+        fileCaption2 : "",
     },
     // Add more slug configs as needed...
     };
@@ -78,6 +130,8 @@ const Index = ({ masterData }) => {
   const [newImage, setNewImage] = useState("");
   const [popUpTitle, setPopUpTitle] = useState("");
   const [popUpDescription, setPopUpDescription] = useState("");
+  const [fileCaption1, setFileCaption1] = useState("");
+  const [fileCaption2, setFileCaption2] = useState("");
   const [authToken, setAuthToken] = useState("");
   const [swalProps, setSwalProps] = useState({});
   const { sendEvent } = useGTM();
@@ -92,7 +146,7 @@ const fileInputRef = useRef(null);
 
   const handleAvatarSelect = (avatar) => {
     setSelectedAvatar(avatar);
-    console.log("Selected avatar:", avatar);
+    //console.log("Selected avatar:", avatar);
   };
 
 
@@ -199,15 +253,28 @@ const fileInputRef = useRef(null);
       },
       onError: (error) => {
         setLoading(false);
-        //alert("I AM HERE");
-        alert(error.response.data.message);
+        const defaultMessage = "Something went wrong. Please try again later.";
+      
+        const message =
+          error?.response?.data?.message ||
+          error?.message ||
+          defaultMessage;
+      
+        setSwalProps({
+            key: Date.now(), // or use a counter
+          icon: "error",
+          show: true,
+          title: "Error",
+          text: message,
+          confirmButtonText: "OK",
+        });
       },
     }
   );
 
   const handleEdit = () => {
     //console.log(template);
-    router.push(`/edit-image/${slug}`);
+    //router.push(`/edit-image/${slug}`);
   };
 
 
@@ -235,6 +302,7 @@ const fileInputRef = useRef(null);
   
     if (userData.credits <= 0 || userData.credits < 1) {
         setSwalProps({
+          key: Date.now(), // or use a counter  
           show: true,
           title: `⏳ You only have ${userData.credits} Credits Left!`,
           text: "Upgrade now to buy Credits, unlock HD, pro voices, and longer videos.",
@@ -253,6 +321,7 @@ const fileInputRef = useRef(null);
               if (now - lastActionTime < RATE_LIMIT_INTERVAL_MS) {
                 const waitTime = Math.ceil((RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60);
                 setSwalProps({
+                  key: Date.now(), // or use a counter  
                   show: true,
                   title: "⏳ Please wait",
                   text: `Free users can generate only one image every 12 hours. Try again in ${waitTime} mins. Upgrade now to unlock unlimited generation and HD quality`,
@@ -268,7 +337,7 @@ const fileInputRef = useRef(null);
                 });
                 return;
               }
-      }}
+      } else {
 
     sendEvent({
       event: "Upgrade Image Slug",
@@ -294,13 +363,14 @@ const fileInputRef = useRef(null);
     //alert(JSON.stringify(requestBody, null, 2));
 
     generateImageApi(requestBody);
+ }}
 } else {
     setIsPopupVisible(true);
   }
   };
 
   useEffect(() => {
-    console.log("I am in useEffect blank ",slug, "id=",id);
+    //console.log("I am in useEffect blank ",slug, "id=",id);
     if (id ? setShowUploadPopup(false) : setShowUploadPopup(true));
 
     const pickRandomQuote = () => {
@@ -321,7 +391,7 @@ const fileInputRef = useRef(null);
   
   // Fetch new data on ID change
   useEffect(() => {
-    console.log("I AM inside useEffect", slug, "id=",id);
+    //console.log("I AM inside useEffect", slug, "id=",id);
     if (!slug) return;
 
     const config = SLUG_CONFIG[slug];
@@ -331,13 +401,14 @@ const fileInputRef = useRef(null);
       setPrompt(config.prompt);
       setPopUpTitle(config.title);
       setPopUpDescription(config.description);
+      setFileCaption1(config.fileCaption1);
+      setFileCaption2(config.fileCaption2);
       setImageModel(config.imageModel);
     } else {
       console.warn(`No config found for slug: ${slug}`);
     }
 
     if (id) {
-        console.log("I AM inside Image Id", id);
         const fetchData = async () => {
         setLoading(true);
         //setImageLoading(true);
@@ -508,7 +579,7 @@ const fileInputRef = useRef(null);
                 <div>Uploading...</div>
               ) : imagePreview ? (
                 <div className="relative">
-                  <img src={imagePreview} alt="Face 1" className="w-full h-[150px] object-cover rounded-md" />
+                  <img src={imagePreview} alt="Picture 1" className="w-full h-[150px] object-cover rounded-md" />
                   <button
                     onClick={() => handleRemoveImage2(1)}
                     className="absolute top-0 right-0 bg-white text-white rounded-full w-4 h-4 flex items-center justify-center"
@@ -517,7 +588,7 @@ const fileInputRef = useRef(null);
                   </button>
                 </div>
               ) : (
-                <h3>Upload Face 1</h3>
+                <h3>{fileCaption1}</h3>
               )}
               <input
                 type="file"
@@ -536,7 +607,7 @@ const fileInputRef = useRef(null);
                 <div>Uploading...</div>
               ) : imagePreview2 ? (
                 <div className="relative">
-                  <img src={imagePreview2} alt="Face 2" className="w-full h-[150px] object-cover rounded-md" />
+                  <img src={imagePreview2} alt="Picture 2" className="w-full h-[150px] object-cover rounded-md" />
                   <button
                     onClick={() => handleRemoveImage2(2)}
                     className="absolute top-0 right-0 bg-white text-white rounded-full w-4 h-4 flex items-center justify-center"
@@ -545,7 +616,7 @@ const fileInputRef = useRef(null);
                   </button>
                 </div>
               ) : (
-                <h3>Upload Face 2</h3>
+                <h3>{fileCaption2}</h3>
               )}
               <input
                 type="file"
@@ -613,7 +684,7 @@ const fileInputRef = useRef(null);
                   </button>
                 </div>
               ) : (
-                <h3>Upload Picture</h3>
+                <h3>{fileCaption1}</h3>
               )}
 
              <input
@@ -647,7 +718,7 @@ const fileInputRef = useRef(null);
             </div>
     )}
 
-      <SweetAlert2 {...swalProps} onConfirm={handleConfirm} />
+    <SweetAlert2 {...swalProps} onConfirm={(handleConfirm) => setSwalProps({ show: false })} />
     </div>
   );
 };

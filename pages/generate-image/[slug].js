@@ -33,7 +33,7 @@ const Index = ({ masterData }) => {
   const [newImage, setNewImage] = useState("");
   const [authToken, setAuthToken] = useState("");
   const [swalProps, setSwalProps] = useState({});
-  const { userData } = useSelector((state) => state.user);
+  const { isLoggedIn, userData } = useSelector((state) => state.user);
   const { sendEvent } = useGTM();
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const [selectedAvatar, setSelectedAvatar] = useState(null);
@@ -104,16 +104,28 @@ const Index = ({ masterData }) => {
         router.replace(`/generate-image/${response?.data._id}`,undefined, { scroll: false });
       },
       onError: (error) => {
-        setLoading(false);
-        //alert("I AM HERE");
-        alert(error.response.data.message);
+        setLoading(false);const defaultMessage = "Something went wrong. Please try again later.";
+      
+        const message =
+          error?.response?.data?.message ||
+          error?.message ||
+          defaultMessage;
+      
+        setSwalProps({
+          key: Date.now(), // or use a counter
+          icon: "error",
+          show: true,
+          title: "Error",
+          text: message,
+          confirmButtonText: "OK",
+        });
       },
     }
   );
 
   const handleEdit = () => {
     //console.log(template);
-    router.push(`/edit-image/${slug}`);
+    //router.push(`/edit-image/${slug}`);
   };
 
 
@@ -131,6 +143,7 @@ const Index = ({ masterData }) => {
 
     if (userData.credits <= 0 || userData.credits < 1) {
       setSwalProps({
+        key: Date.now(), // or use a counter
         show: true,
         title: `⏳ You only have ${userData.credits} Credits Left!`,
         text: "Upgrade now to buy Credits, unlock HD, pro voices, and longer videos.",
@@ -149,6 +162,7 @@ const Index = ({ masterData }) => {
             if (now - lastActionTime < RATE_LIMIT_INTERVAL_MS) {
               const waitTime = Math.ceil((RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60);
               setSwalProps({
+                key: Date.now(), // or use a counter
                 show: true,
                 title: "⏳ Please wait",
                 text: `Free users can generate only one image every 12 hours. Try again in ${waitTime} mins. Upgrade now to unlock unlimited generation and HD quality`,
@@ -161,7 +175,7 @@ const Index = ({ masterData }) => {
               });
               return;
             }
-    }}
+    } else {
 
     //console.log("selectedAvatar",selectedAvatar);
     sendEvent({
@@ -187,6 +201,8 @@ const Index = ({ masterData }) => {
     alert(JSON.stringify(requestBody, null, 2));
 
     generateImageApi(requestBody);
+  }
+}
   } else {
     setIsPopupVisible(true);
   }
@@ -492,7 +508,8 @@ const Index = ({ masterData }) => {
           </div>
         </div>
       </div>
-      <SweetAlert2 {...swalProps} onConfirm={handleConfirm} />
+      <SweetAlert2 {...swalProps} onConfirm={(handleConfirm) => setSwalProps({ show: false })} />
+
     </div>
   );
 };

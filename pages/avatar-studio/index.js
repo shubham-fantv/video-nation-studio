@@ -37,7 +37,7 @@ const index = (data) => {
   const [uploading, setUploading] = useState(false);
   const MAX_IMAGES = 12;
   const MAX_SIZE_MB = 5;
-  console.log("data",data);
+//  console.log("data",data);
   const handleImageUpload = async (event) => {
     const files = Array.from(event.target.files);
     

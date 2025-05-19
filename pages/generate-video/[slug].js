@@ -70,6 +70,7 @@ const Index = ({ masterData }) => {
   const [uploading, setUploading] = useState(false);
   const [videoLoading, setVideoLoading] = useState(false);
 
+  const [progressPercentage, setProgressPercentage] = useState(0);
   const [duration, setDuration] = useState("5 sec");
   const durationData = ["5 sec", "15 sec", "30 sec","60 sec"];
 
@@ -86,7 +87,7 @@ const Index = ({ masterData }) => {
 
   const handleAvatarSelect = (avatar) => {
     setSelectedAvatar(avatar);
-    console.log("Selected avatar:", avatar);
+    //console.log("Selected avatar:", avatar);
   };
 
 
@@ -148,16 +149,28 @@ const Index = ({ masterData }) => {
         router.replace(`/generate-video/${response?.data._id}`,undefined, { scroll: false });
       },
       onError: (error) => {
-        setLoading(false);
-        //alert("I AM HERE");
-        alert(error.response.data.message);
+        setLoading(false);const defaultMessage = "Something went wrong. Please try again later.";
+      
+        const message =
+          error?.response?.data?.message ||
+          error?.message ||
+          defaultMessage;
+      
+        setSwalProps({
+            key: Date.now(), // or use a counter
+          icon: "error",
+          show: true,
+          title: "Error",
+          text: message,
+          confirmButtonText: "OK",
+        });
       },
     }
   );
 
   const handleEdit = () => {
     //console.log(template);
-    router.push(`/edit-video/${slug}`);
+    //router.push(`/edit-video/${slug}`);
   };
 
 
@@ -175,6 +188,7 @@ const Index = ({ masterData }) => {
       const creditsUsed = 20*parseInt((duration.replace("sec", "").trim()/5),10);
       if (userData.credits <= 0 || userData.credits < creditsUsed) {
         setSwalProps({
+          key: Date.now(), // or use a counter
           show: true,
           title: `⏳ You only have ${userData.credits} Credits Left!`,
           text: "Upgrade now to buy Credits, unlock HD, pro voices, and longer videos.",
@@ -193,9 +207,10 @@ const Index = ({ masterData }) => {
               if (now - lastActionTime < RATE_LIMIT_INTERVAL_MS) {
                 const waitTime = Math.ceil((RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60);
                 setSwalProps({
+                  key: Date.now(), // or use a counter
                   show: true,
                   title: "⏳ Please wait",
-                  text: `Free users can generate only one image every 12 hours. Try again in ${waitTime} mins. Upgrade now to unlock unlimited generation and HD quality`,
+                  text: `Free users can generate only one video every 12 hours. Try again in ${waitTime} mins. Upgrade now to unlock unlimited generation and HD quality`,
                   icon: "info",
                   confirmButtonText: "View Plans",
                   showCancelButton: true,
@@ -205,9 +220,8 @@ const Index = ({ masterData }) => {
                 });
                 return;
               }
-      }}
-
-      console.log("selectedVoice",selectedVoice);
+      } else {
+         // console.log("selectedVoice",selectedVoice);
 
       const requestBody = {
         prompt,
@@ -235,31 +249,60 @@ const Index = ({ masterData }) => {
         ...(imageUrl && { imageUrl: imageUrl }), // ✅ only include if `image` is truthy
       });
 
-      console.log("requestBody",requestBody);
+      //console.log("requestBody",requestBody);
       generateVideoApi(requestBody);
+      }
+    }
     } else {
       setIsPopupVisible(true);
     }
   };
-
   useEffect(() => {
-    
+    if (!isLoading) return;
+
+    let quoteInterval;
+    let progressInterval;
+
     const pickRandomQuote = () => {
       const randomIndex = Math.floor(Math.random() * quotes.length);
       setSubTitle(quotes[randomIndex]);
     };
+    // Initial call
     pickRandomQuote();
-    const interval = setInterval(pickRandomQuote, 5000);
-  
-    const cookies = parseCookies();
-    setAuthToken(cookies.aToken); // or any key you're tracking
+    setProgressPercentage(0);
 
-    return () => clearInterval(interval);
-  }, []);
+    // Change quote every 5 seconds
+    quoteInterval = setInterval(() => {
+      pickRandomQuote();
+    }, 5000);
+
+    // Simulate progress over ~3 minutes 
+    const totalDuration = 180000; // 3 minutes
+    const updateInterval = 2000; // every 2 seconds
+    let elapsed = 0;
+
+    progressInterval = setInterval(() => {
+      elapsed += updateInterval;
+      const progressRatio = elapsed / totalDuration;
+
+      const easedProgress = Math.min(
+        Math.floor(100 * Math.pow(progressRatio, 2.5)), // exponent controls acceleration
+        99
+      );
+  
+      const progress = Math.min(Math.floor((elapsed / totalDuration) * 100), 99); // max 99%
+      setProgressPercentage(easedProgress);
+    }, updateInterval);
+
+    return () => {
+      clearInterval(quoteInterval);
+      clearInterval(progressInterval);
+    };
+  }, [isLoading]);
 
   // Fetch new data on ID change
   useEffect(() => {
-    console.log("IAM HERE", slug);
+    //console.log("IAM HERE", slug);
     if (!slug) return;
 
     let updatedSlug = slug;
@@ -281,7 +324,6 @@ const Index = ({ masterData }) => {
       );
 
       const data = res?.data;
-      console.log("IAM HERE", data);
       setTemplate(data);
       setAvatar(data.avatarId);
       setVoiceoverEnabled(data.voiceover);
@@ -341,7 +383,7 @@ const Index = ({ masterData }) => {
 
   return (
     <div className="flex flex-col md:flex-row text-black md:gap-4">
-      {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
+      {isLoading && <Loading title={`Generating your video... (${progressPercentage}%)`} subTitle={subTitle} />}
       <div className="w-full md:w-[25%] bg-[#FFFFFF0D] p-4">
         <div className="">
           <div className="mb-6">
@@ -692,7 +734,8 @@ const Index = ({ masterData }) => {
           </div>
         </div>
       </div>
-      <SweetAlert2 {...swalProps} onConfirm={handleConfirm} />
+      <SweetAlert2 {...swalProps} onConfirm={(handleConfirm) => setSwalProps({ show: false })} />
+
     </div>
   );
 };
