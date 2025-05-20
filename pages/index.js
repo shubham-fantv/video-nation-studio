@@ -12,7 +12,6 @@ import { useSelector } from "react-redux";
 import SweetAlert2 from "react-sweetalert2";
 
 const Index = ({ homeFeed }) => {
-
   const [swalProps, setSwalProps] = useState({});
   const [isPopupVisible, setIsPopupVisible] = useState({
     login: false,
@@ -38,7 +37,7 @@ const Index = ({ homeFeed }) => {
         icon: "info",
         preConfirm: () => {
           setIsPopupVisible({ login: true });
-        }
+        },
       });
     }
     //console.log("homeFeed",JSON.stringify(homeFeed));
@@ -61,7 +60,7 @@ const Index = ({ homeFeed }) => {
           </Box>
 
           <Box className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            {homeFeed?.section1?.data?.splice(0, 4)?.map((card) => (
+            {homeFeed?.section1?.data?.map((card) => (
               <CardComponent key={card.id} data={card} redirect={`/category/${card?.slug}`} />
             ))}
           </Box>
@@ -97,7 +96,7 @@ const Index = ({ homeFeed }) => {
           />
         )}
       </Box>
-        
+
       <SweetAlert2 {...swalProps} onConfirm={handleConfirm} />
     </div>
   );
