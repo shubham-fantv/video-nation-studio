@@ -20,7 +20,6 @@ const index = () => {
       });
     } else {
     }
-    router.push("/");
   };
 
   useEffect(() => {
@@ -37,6 +36,20 @@ const index = () => {
           <img src="/images/paymentdone.png" className="h-40 mb-5 ml-4" />
           Payment Success
         </div>
+      </div>
+      <div className="flex pt-3 justify-center align-center text-2xl text-black">
+        <button
+          size="small"
+          className="mt-6 py-2 px-4 rounded-xl text-sm font-regular normal-case flex bg-[#1E1E1E]  text-[#FFFFFF] "
+          onClick={() => router.push("/")}
+        >
+          Go to Home
+          <img
+            src="/images/video-ai/arrowRight.svg"
+            style={{ height: "20px", width: "20px", marginLeft: "6px" }}
+            className="text-white"
+          />
+        </button>
       </div>
     </div>
   );

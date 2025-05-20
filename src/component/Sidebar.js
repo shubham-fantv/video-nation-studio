@@ -142,6 +142,7 @@ function Sidebar({ children }) {
       router.back();
     }
   };
+
   return (
     <Box sx={styles.wrapper}>
       <Box sx={styles.sidebar}>
