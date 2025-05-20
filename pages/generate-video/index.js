@@ -586,7 +586,21 @@ const index = () => {
           >
             🪄 Magic Prompt
           </button> */}
-          <div className="text-sm">Credits : {credits}</div>
+          <div className="text-sm">Credits : {credits}
+          {Math.floor(userData.credits / credits) < 6 && (
+              <div className="text-center">
+                <small
+                  className={
+                    Math.floor(userData.credits / credits) < 2 
+                      ? "text-red-600 font-semibold"
+                      : "text-black"
+                  }
+                >
+                  {Math.max(1, Math.floor(userData.credits / credits))} video{Math.floor(userData.credits / credits) === 1 ? "" : "s"} left
+                </small>
+              </div>
+            )}
+        </div>
           <button
             onClick={() => handleGenerateVideo()}
             className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-2 text-white shadow-md transition-all hover:brightness-110"

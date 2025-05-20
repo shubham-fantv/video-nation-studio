@@ -461,6 +461,21 @@ const Index = ({ masterData }) => {
           )}
 
 <h3 className="mb-6 text-sm text-[#1E1E1EB2] text-normal">Credits : 1</h3>
+
+{Math.floor(userData.credits) < 6 && (
+              <div className="text-center">
+                <small
+                  className={
+                    Math.floor(userData.credits) < 2 
+                      ? "text-red-600 font-semibold"
+                      : "text-black"
+                  }
+                >
+                  {Math.max(1, Math.floor(userData.credits))} image{Math.floor(userData.credits) === 1 ? "" : "s"} left
+                </small>
+              </div>
+            )}
+            
           <div className="flex items-center justify-center gap-4 mt-2 mb-6">
             <button
               onClick={handleGenerateImage}
