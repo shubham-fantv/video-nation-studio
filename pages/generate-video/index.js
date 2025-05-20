@@ -29,6 +29,8 @@ const index = () => {
   const RATE_LIMIT_INTERVAL_MS = 12 * 60 * 60 * 1000; // 12 hours
   const [isPlaying, setIsPlaying] = useState(null);
   const [showVoiceDropdown, setShowVoiceDropdown] = useState(false);
+  const quoteIndexRef = useRef(0);
+
   const audioRef = useRef(null); // reference for controlling audio
   const voiceOptions = [
     {
@@ -317,17 +319,20 @@ const index = () => {
     let progressInterval;
 
     const pickRandomQuote = () => {
-      const randomIndex = Math.floor(Math.random() * quotes.length);
-      setSubTitle(quotes[randomIndex]);
+      setSubTitle(quotes[quoteIndexRef.current]);
+      quoteIndexRef.current = (quoteIndexRef.current + 1) % quotes.length; // cycle
+
+      // const randomIndex = Math.floor(Math.random() * quotes.length);
+      // setSubTitle(quotes[randomIndex]);
     };
     // Initial call
     pickRandomQuote();
     setProgressPercentage(0);
 
-    // Change quote every 5 seconds
+    // Change quote every 15 seconds
     quoteInterval = setInterval(() => {
       pickRandomQuote();
-    }, 5000);
+    }, 15000);
 
     // Simulate progress over ~3 minutes 
     const totalDuration = 180000; // 3 minutes

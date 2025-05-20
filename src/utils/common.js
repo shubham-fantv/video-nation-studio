@@ -65,13 +65,16 @@ export const getDriveImageUrl = (driveUrl) => {
 };
 
 export const quotes = [
+  "Initializing creativity engine... 🚀",
   "Crafting your vision with AI magic ✨",
+  "Analyzing your prompt and imagining the scenes...",
+  "Designing the visuals... frame by frame 🎬",
   "Turning imagination into pixels...",
-  "Almost there, your masterpiece is coming...",
-  "The future is being generated...",
-  "Rendering creativity in progress...",
-  "AI is cooking something amazing for you 🍿",
-  "Generating your story, frame by frame...",
+  "Bringing your story to life with cinematic flair 🎥",
+  "Infusing voice, captions, and atmosphere...",
+  "Polishing the visuals for a stunning finish 🧠💫",
+  "Almost there — your masterpiece is rendering...",
+  "Final touches in progress. Get ready to be amazed!",
 ];
 
 export const allPromptSamples = [
