@@ -200,7 +200,6 @@ const index = () => {
   };
 
   const handleGenerateVideo = () => {
-   
     if (isLoggedIn) {
       if (!prompt.trim()) {
         alert("Please enter a prompt!");
@@ -210,6 +209,7 @@ const index = () => {
     const creditsUsed = 20*parseInt((duration.replace("sec", "").trim()/5),10);
     
     if (userData.credits <= 0 || userData.credits < creditsUsed) {
+      
           setSwalProps({
             key: Date.now(), // or use a counter
             show: true,
@@ -224,10 +224,10 @@ const index = () => {
           });
           } else {
               if (userData?.isTrialUser) {
-                const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || 0, 10);
                 const now = Date.now();
-              
-                if (now - lastActionTime < RATE_LIMIT_INTERVAL_MS) {
+                const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || now, 10);
+            
+                if ((now - lastActionTime) > 0 && (now - lastActionTime) < RATE_LIMIT_INTERVAL_MS) {
                   const waitTime = Math.ceil((RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60);
                   setSwalProps({
                     key: Date.now(), // or use a counter
@@ -242,10 +242,39 @@ const index = () => {
                     }
                   });
                   return;
-                }
+                } else {
+                  //console.log("selectedVoice",selectedVoice);
+                  const requestBody = {
+                    prompt,
+                    imageInput: image ? [image] : [],
+                    creditsUsed: creditsUsed,
+                    aspectRatio: aspectRatio,
+                    duration: duration,
+                    caption: captionEnabled,
+                    ...(selectedVoice && { voiceId: selectedVoice}),  // ✅ selectedVoice
+                    ...(selectedCaptionStyle && { captionStyle: selectedCaptionStyle}),  // ✅ selectedCaption
+                    voiceover: voiceoverEnabled,
+                    ...(image && { imageUrl: encodeURI(decodeURI(image)) })  // ✅ encode URL with spaces
+                  };
+                  setLoading(true);
+            
+                  sendEvent({
+                    event: "Generate Video",
+                    email: userData?.email,
+                    name: userData?.name,
+                    prompt: prompt,
+                    aspectRatio: aspectRatio,
+                    duration: duration,
+                    caption: captionEnabled,
+                    voiceover: voiceoverEnabled,
+                    ...(image && { imageUrl: image }), // ✅ only include if `image` is truthy
+                  });
+            
+                  //console.log("requestBody",requestBody);
+                  generateVideoApi(requestBody);
+                }            
         } else {
       //console.log("selectedVoice",selectedVoice);
-
       const requestBody = {
         prompt,
         imageInput: image ? [image] : [],

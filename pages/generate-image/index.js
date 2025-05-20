@@ -26,7 +26,7 @@ const aspectRatioSizeMap = {
 const index = () => {
   const [captionEnabled, setCaptionEnabled] = useState(false);
   const lastTrialAction = localStorage.getItem("lastTrialAction");
-  const RATE_LIMIT_INTERVAL_MS = 12 * 60 * 60 * 1000; // 12 hours
+  const RATE_LIMIT_INTERVAL_MS = 1 * 1000; // 1 sec for Image 
   const [templates, setTemplates] = useState([]);
   const [imagePreview, setImagePreview] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -178,10 +178,10 @@ const index = () => {
         });
         } else {
             if (userData?.isTrialUser) {
-              const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || 0, 10);
               const now = Date.now();
+              const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || now, 10);
             
-              if (now - lastActionTime < RATE_LIMIT_INTERVAL_MS) {
+              if ((now - lastActionTime) > 0 && (now - lastActionTime) < RATE_LIMIT_INTERVAL_MS) {
                 const waitTime = Math.ceil((RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60);
                 setSwalProps({
                   key: Date.now(), // or use a counter
@@ -196,6 +196,28 @@ const index = () => {
                   }
                 });
                 return;
+              } else {
+                const requestBody = {
+                  prompt,
+                  imageInput: image ? [encodeURI(image)] : [],
+                  creditsUsed: 1,
+                  aspectRatio: aspectRatio,
+                  caption: captionEnabled,
+                  ...(image && { imageUrl: encodeURI(image) })  // ✅ encode URL with spaces
+                };
+          
+                setLoading(true);
+          
+                sendEvent({
+                  event: "Generate Image",
+                  email: userData?.email,
+                  name: userData?.name,
+                  prompt: prompt,
+                  aspectRatio: aspectRatio,
+                  caption: captionEnabled,
+                });
+          
+                generateImageApi(requestBody);
               }
       } else {
 

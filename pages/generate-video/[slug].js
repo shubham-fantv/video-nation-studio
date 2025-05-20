@@ -201,25 +201,56 @@ const Index = ({ masterData }) => {
         });
         } else {
             if (userData?.isTrialUser) {
-              const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || 0, 10);
+              
               const now = Date.now();
-            
-              if (now - lastActionTime < RATE_LIMIT_INTERVAL_MS) {
+              const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || now, 10);
+
+              if ((now - lastActionTime) > 0 && (now - lastActionTime) < RATE_LIMIT_INTERVAL_MS) {
                 const waitTime = Math.ceil((RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60);
                 setSwalProps({
                   key: Date.now(), // or use a counter
                   show: true,
                   title: "⏳ Please wait",
-                  text: `Free users can generate only one video every 12 hours. Try again in ${waitTime} mins. Upgrade now to unlock unlimited generation and HD quality`,
-                  icon: "info",
+                  text: `Free users can generate only one video every 12 hours. Try again in ${waitTime} min. Upgrade Now to get Unlimited generations and HD quality.`,
                   confirmButtonText: "View Plans",
                   showCancelButton: true,
+                  icon: "info",
                   preConfirm: () => {
                     router.push("/subscription");
                   }
                 });
                 return;
-              }
+              } else {
+                //console.log("selectedVoice",selectedVoice);
+                const requestBody = {
+                    prompt,
+                    imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
+                    creditsUsed: creditsUsed,
+                    aspectRatio: aspectRatio,
+                    duration: duration,
+                    caption: captionEnabled,
+                    ...(selectedVoice && { voiceId: selectedVoice}),  // ✅ selectedVoice
+                    ...(selectedCaptionStyle && { captionStyle: selectedCaptionStyle}),  // ✅ selectedCaption
+                    voiceover: voiceoverEnabled,
+                    ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) })  // ✅ encode URL with spaces
+                  };
+                  setLoading(true);
+            
+                  sendEvent({
+                    event: "Generate Video",
+                    email: userData?.email,
+                    name: userData?.name,
+                    prompt: prompt,
+                    aspectRatio: aspectRatio,
+                    duration: duration,
+                    caption: captionEnabled,
+                    voiceover: voiceoverEnabled,
+                    ...(imageUrl && { imageUrl: imageUrl }), // ✅ only include if `image` is truthy
+                  });
+            
+                  //console.log("requestBody",requestBody);
+                  generateVideoApi(requestBody);
+              } 
       } else {
          // console.log("selectedVoice",selectedVoice);
 

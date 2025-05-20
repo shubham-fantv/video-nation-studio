@@ -16,7 +16,7 @@ const Index = ({ masterData }) => {
   const [template, setTemplate] = useState([]);
 
   const lastTrialAction = localStorage.getItem("lastTrialAction");
-  const RATE_LIMIT_INTERVAL_MS = 12 * 60 * 60 * 1000; // 12 hours
+  const RATE_LIMIT_INTERVAL_MS = 1 * 1000; // 12 hours
   const [aspectRatio, setAspectRatio] = useState("16:9");
   const [avatar, setAvatar] = useState("");
   const [voice, setVoice] = useState("");
@@ -156,10 +156,11 @@ const Index = ({ masterData }) => {
       });
       } else {
           if (userData?.isTrialUser) {
-            const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || 0, 10);
+            
             const now = Date.now();
-          
-            if (now - lastActionTime < RATE_LIMIT_INTERVAL_MS) {
+            const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || now, 10);
+
+            if ((now - lastActionTime) > 0 && (now - lastActionTime) < RATE_LIMIT_INTERVAL_MS) {
               const waitTime = Math.ceil((RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60);
               setSwalProps({
                 key: Date.now(), // or use a counter
@@ -174,6 +175,31 @@ const Index = ({ masterData }) => {
                 }
               });
               return;
+            } else {
+                  //console.log("selectedAvatar",selectedAvatar);
+                sendEvent({
+                  event: "Generate Image Slug",
+                  slug: slug,
+                  email: userData?.email,
+                  name: userData?.name,
+                  prompt: prompt,
+                  aspectRatio: aspectRatio
+                });
+
+
+                const requestBody = {
+                  prompt,
+                  imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
+                  creditsUsed: 1,
+                  aspectRatio: aspectRatio,
+                  ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) })  // ✅ encode URL with spaces
+                };
+
+                //console.log(requestBody);
+                setLoading(true)
+                alert(JSON.stringify(requestBody, null, 2));
+
+                generateImageApi(requestBody);
             }
     } else {
 

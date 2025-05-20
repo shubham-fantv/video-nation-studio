@@ -50,11 +50,11 @@ const PricingPlans = () => {
   useEffect(() => {
     const updateCountdown = () => {
       const now = new Date();
-      //console.log(userSubscriptionData);
-      //console.log(userData);
+      console.log(userSubscriptionData);
+      console.log(userData);
       setcurrentPlanPriority(userSubscriptionData?.subscriptionPlanId?.planNumber);
       
-      if (!userSubscriptionData) {
+      if (!userSubscriptionData || userSubscriptionData.length === 0) {
           const startDate = new Date(userData?.created_at);
           const promoEndsAt = new Date((startDate.getTime()) + 3 * 24 * 60 * 60 * 1000);
           //console.log(startDate,promoEndsAt);
