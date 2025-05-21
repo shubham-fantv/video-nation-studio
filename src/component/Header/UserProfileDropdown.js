@@ -2,12 +2,10 @@ import React, { useState } from "react";
 import { ChevronDown, LogOut, User, Mail } from "lucide-react";
 import { useSelector } from "react-redux";
 import logout from "../../utils/logout";
-import Image from "next/image";
 
 const UserProfileDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  //   const {useData}= useSelector(state)
   const { userData } = useSelector((state) => state.user);
 
   const toggleDropdown = () => {
@@ -27,11 +25,13 @@ const UserProfileDropdown = () => {
         style={{ border: "1px solid #262626" }}
         className="flex items-center space-x-2 rounded-xl h-[40px]  p-1 md:p-2 shadow-sm hover:bg-gray-50 transition-colors"
       >
-        <Image
-          source="/images/icons/user.png"
-          alt={userData.name}
+        <img
+          src={userData?.profilePicture}
+          alt={userData?.name || "User"}
           className="h-8 w-8 rounded-full object-cover"
-          onError={(e) => (e.currentTarget.src = "/images/icons/user.png")}
+          onError={(e) => {
+            e.currentTarget.src = "/images/icons/user.png";
+          }}
         />
         <span className="font-medium text-gray-700 truncate">{userData.name}</span>
         <ChevronDown

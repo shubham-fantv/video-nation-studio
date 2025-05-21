@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 import SweetAlert2 from "react-sweetalert2";
 import ShimmerCategories from "../src/component/common/ShimmerCategories";
 
-const Index = ({ homeFeed }) => {
+const Index = () => {
   const [swalProps, setSwalProps] = useState({});
   const [isPopupVisible, setIsPopupVisible] = useState({
     login: false,
@@ -79,7 +79,7 @@ const Index = ({ homeFeed }) => {
           ) : (
             <Box className="grid grid-cols-1 md:grid-cols-4 gap-4">
               {homeFeedData?.section1?.data?.slice(0, 4).map((card) => (
-                <CardComponent key={card.id} data={card} redirect={`/category/${card?.slug}`} />
+                <CardComponent key={card?._id} data={card} redirect={`/category/${card?.slug}`} />
               ))}
             </Box>
           )}
@@ -109,7 +109,7 @@ const Index = ({ homeFeed }) => {
 
           <Box className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {homeFeedData?.section2?.data?.slice(0, 4).map((card) => (
-              <CardComponent key={card.id} data={card} redirect={`/category/${card?.slug}`} />
+              <CardComponent key={card?._id} data={card} redirect={`/category/${card?.slug}`} />
             ))}
           </Box>
 
