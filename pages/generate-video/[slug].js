@@ -13,53 +13,62 @@ import useGTM from "../../src/hooks/useGTM";
 import SweetAlert2 from "react-sweetalert2";
 
 const Index = ({ masterData }) => {
-    const [selectedVoice, setSelectedVoice] = useState(null);
-    const [isPlaying, setIsPlaying] = useState(null);
-    const lastTrialAction = localStorage.getItem("lastTrialAction");
-    const RATE_LIMIT_INTERVAL_MS = 12 * 60 * 60 * 1000; // 12 hours
-    const [showVoiceDropdown, setShowVoiceDropdown] = useState(false);
-    const [credits, setCredits] = useState(20);
-    const audioRef = useRef(null); // reference for controlling audio
-    const quoteIndexRef = useRef(0);
+  const [selectedVoice, setSelectedVoice] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(null);
+  const lastTrialAction = localStorage.getItem("lastTrialAction");
+  const RATE_LIMIT_INTERVAL_MS = 12 * 60 * 60 * 1000; // 12 hours
+  const [showVoiceDropdown, setShowVoiceDropdown] = useState(false);
+  const [credits, setCredits] = useState(20);
+  const audioRef = useRef(null); // reference for controlling audio
+  const quoteIndexRef = useRef(0);
 
-    const voiceOptions = [
-        {
-        name: "Laura",
-        value: "6ZeRQ71MhGGmKDjCiFRa",
-        sampleUrl: "https://assets.artistfirst.in/uploads/1747488017829-voice_preview_laura%20-%20narrative.mp3",
-        },
-        {
-        name: "John",
-        value: "c4NIULtANlpduSDihsKJ",
-        sampleUrl: "https://assets.artistfirst.in/uploads/1747488078180-voice_preview_john_storyteller.mp3",
-        },
-        {
-        name: "Clara",
-        value: "8LVfoRdkh4zgjr8v5ObE",
-        sampleUrl: "https://assets.artistfirst.in/uploads/1747488113955-voice_preview_clarastoryteller.mp3",
-        },    {
-        name: "Monika",
-        value: "2bNrEsM0omyhLiEyOwqY",
-        sampleUrl: "https://assets.artistfirst.in/uploads/1747488171032-voice_preview_monika%20sogam-friendly%20customer%20care%20agent.mp3",
-        },
-        {
-        name: "Arjun",
-        value: "dxhwlBCxCrnzRlP4wDeE",
-        sampleUrl: "https://assets.artistfirst.in/uploads/1747488220089-voice_preview_arjun.mp3",
-        },
-    ];
-    const [selectedCaptionStyle, setSelectedCaptionStyle] = useState(null);
-    const [showCaptionDropdown, setShowCaptionDropdown] = useState(false);
-    const captionOptions = [
-        { label: "Classic White", value: "ClassicWhite", img: "/images/caption-white.png" },
-        { label: "Yellow Border", value: "YellowBorder", img: "/images/fantasy-purple.png" },
-        { label: "Top Italic", value: "TopItalic", img: "/images/caption-previews/top_italic.png" },
-        { label: "Big Red", value: "BigRedImpact", img: "/images/caption-previews/big_red_impact.png" },
-        { label: "Fantasy Purple", value: "FantasyPurple", img: "/images/caption-previews/fantasy_purple.png" },
-    ];
+  const voiceOptions = [
+    {
+      name: "Laura",
+      value: "6ZeRQ71MhGGmKDjCiFRa",
+      sampleUrl:
+        "https://assets.artistfirst.in/uploads/1747488017829-voice_preview_laura%20-%20narrative.mp3",
+    },
+    {
+      name: "John",
+      value: "c4NIULtANlpduSDihsKJ",
+      sampleUrl:
+        "https://assets.artistfirst.in/uploads/1747488078180-voice_preview_john_storyteller.mp3",
+    },
+    {
+      name: "Clara",
+      value: "8LVfoRdkh4zgjr8v5ObE",
+      sampleUrl:
+        "https://assets.artistfirst.in/uploads/1747488113955-voice_preview_clarastoryteller.mp3",
+    },
+    {
+      name: "Monika",
+      value: "2bNrEsM0omyhLiEyOwqY",
+      sampleUrl:
+        "https://assets.artistfirst.in/uploads/1747488171032-voice_preview_monika%20sogam-friendly%20customer%20care%20agent.mp3",
+    },
+    {
+      name: "Arjun",
+      value: "dxhwlBCxCrnzRlP4wDeE",
+      sampleUrl: "https://assets.artistfirst.in/uploads/1747488220089-voice_preview_arjun.mp3",
+    },
+  ];
+  const [selectedCaptionStyle, setSelectedCaptionStyle] = useState(null);
+  const [showCaptionDropdown, setShowCaptionDropdown] = useState(false);
+  const captionOptions = [
+    { label: "Classic White", value: "ClassicWhite", img: "/images/caption-white.png" },
+    { label: "Yellow Border", value: "YellowBorder", img: "/images/fantasy-purple.png" },
+    { label: "Top Italic", value: "TopItalic", img: "/images/caption-previews/top_italic.png" },
+    { label: "Big Red", value: "BigRedImpact", img: "/images/caption-previews/big_red_impact.png" },
+    {
+      label: "Fantasy Purple",
+      value: "FantasyPurple",
+      img: "/images/caption-previews/fantasy_purple.png",
+    },
+  ];
 
-    const [captionEnabled, setCaptionEnabled] = useState(false);
-    const [voiceoverEnabled, setVoiceoverEnabled] = useState(false);
+  const [captionEnabled, setCaptionEnabled] = useState(false);
+  const [voiceoverEnabled, setVoiceoverEnabled] = useState(false);
   const [template, setTemplate] = useState([]);
   const [aspectRatio, setAspectRatio] = useState("16:9");
   const [avatar, setAvatar] = useState("");
@@ -74,9 +83,9 @@ const Index = ({ masterData }) => {
 
   const [progressPercentage, setProgressPercentage] = useState(0);
   const [duration, setDuration] = useState("5 sec");
-  const durationData = ["5 sec", "15 sec", "30 sec","60 sec"];
+  const durationData = ["5 sec", "15 sec", "30 sec", "60 sec"];
 
-  const [video, setVideo] = useState("");  
+  const [video, setVideo] = useState("");
   const [newImage, setNewImage] = useState("");
   const [authToken, setAuthToken] = useState("");
   const [captionStyle, setCaptionStyle] = useState("");
@@ -92,12 +101,10 @@ const Index = ({ masterData }) => {
     //console.log("Selected avatar:", avatar);
   };
 
-
   const [subTitle, setSubTitle] = useState("");
   const [isLoading, setLoading] = useState(false);
   const aspectRatioData = ["16:9", "9:16", "1:1"];
   const { slug } = router.query;
-
 
   const aspectRatioSizeMap = {
     "1:1": "w-4 h-4",
@@ -144,22 +151,20 @@ const Index = ({ masterData }) => {
         setPrompt("");
         setLoading(false);
         if (userData?.isTrialUser) {
-            localStorage.setItem("lastTrialAction", Date.now().toString());
-          }
+          localStorage.setItem("lastTrialAction", Date.now().toString());
+        }
         //console.log("I AM HERE", response?.data._id);
         //router.push("/my-library?tab=video");
-        router.replace(`/generate-video/${response?.data._id}`,undefined, { scroll: false });
+        router.replace(`/generate-video/${response?.data._id}`, undefined, { scroll: false });
       },
       onError: (error) => {
-        setLoading(false);const defaultMessage = "Something went wrong. Please try again later.";
-      
-        const message =
-          error?.response?.data?.message ||
-          error?.message ||
-          defaultMessage;
-      
+        setLoading(false);
+        const defaultMessage = "Something went wrong. Please try again later.";
+
+        const message = error?.response?.data?.message || error?.message || defaultMessage;
+
         setSwalProps({
-            key: Date.now(), // or use a counter
+          key: Date.now(), // or use a counter
           icon: "error",
           show: true,
           title: "Error",
@@ -175,7 +180,6 @@ const Index = ({ masterData }) => {
     //router.push(`/edit-video/${slug}`);
   };
 
-
   const handleConfirm = () => {
     //console.log(template);
   };
@@ -187,7 +191,7 @@ const Index = ({ masterData }) => {
         return;
       }
 
-      const creditsUsed = 20*parseInt((duration.replace("sec", "").trim()/5),10);
+      const creditsUsed = 20 * parseInt(duration.replace("sec", "").trim() / 5, 10);
       if (userData.credits <= 0 || userData.credits < creditsUsed) {
         setSwalProps({
           key: Date.now(), // or use a counter
@@ -199,93 +203,94 @@ const Index = ({ masterData }) => {
           icon: "warning",
           preConfirm: () => {
             router.push("/subscription");
-          }
+          },
         });
-        } else {
-            if (userData?.isTrialUser) {
-              
-              const now = Date.now();
-              const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || now, 10);
-
-              if ((now - lastActionTime) > 0 && (now - lastActionTime) < RATE_LIMIT_INTERVAL_MS) {
-                const waitTime = Math.ceil((RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60);
-                setSwalProps({
-                  key: Date.now(), // or use a counter
-                  show: true,
-                  title: "⏳ Please wait",
-                  text: `Free users can generate only one video every 12 hours. Try again in ${waitTime} min. Upgrade Now to get Unlimited generations and HD quality.`,
-                  confirmButtonText: "View Plans",
-                  showCancelButton: true,
-                  icon: "info",
-                  preConfirm: () => {
-                    router.push("/subscription");
-                  }
-                });
-                return;
-              } else {
-                //console.log("selectedVoice",selectedVoice);
-                const requestBody = {
-                    prompt,
-                    imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
-                    creditsUsed: creditsUsed,
-                    aspectRatio: aspectRatio,
-                    duration: duration,
-                    caption: captionEnabled,
-                    ...(selectedVoice && { voiceId: selectedVoice}),  // ✅ selectedVoice
-                    ...(selectedCaptionStyle && { captionStyle: selectedCaptionStyle}),  // ✅ selectedCaption
-                    voiceover: voiceoverEnabled,
-                    ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) })  // ✅ encode URL with spaces
-                  };
-                  setLoading(true);
-            
-                  sendEvent({
-                    event: "Generate Video",
-                    email: userData?.email,
-                    name: userData?.name,
-                    prompt: prompt,
-                    aspectRatio: aspectRatio,
-                    duration: duration,
-                    caption: captionEnabled,
-                    voiceover: voiceoverEnabled,
-                    ...(imageUrl && { imageUrl: imageUrl }), // ✅ only include if `image` is truthy
-                  });
-            
-                  //console.log("requestBody",requestBody);
-                  generateVideoApi(requestBody);
-              } 
       } else {
-         // console.log("selectedVoice",selectedVoice);
+        if (userData?.isTrialUser) {
+          const now = Date.now();
+          const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || now, 10);
 
-      const requestBody = {
-        prompt,
-        imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
-        creditsUsed: creditsUsed,
-        aspectRatio: aspectRatio,
-        duration: duration,
-        caption: captionEnabled,
-        ...(selectedVoice && { voiceId: selectedVoice}),  // ✅ selectedVoice
-        ...(selectedCaptionStyle && { captionStyle: selectedCaptionStyle}),  // ✅ selectedCaption
-        voiceover: voiceoverEnabled,
-        ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) })  // ✅ encode URL with spaces
-      };
-      setLoading(true);
+          if (now - lastActionTime > 0 && now - lastActionTime < RATE_LIMIT_INTERVAL_MS) {
+            const waitTime = Math.ceil(
+              (RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60
+            );
+            setSwalProps({
+              key: Date.now(), // or use a counter
+              show: true,
+              title: "⏳ Please wait",
+              text: `Free users can generate only one video every 12 hours. Try again in ${waitTime} min. Upgrade Now to get Unlimited generations and HD quality.`,
+              confirmButtonText: "View Plans",
+              showCancelButton: true,
+              icon: "info",
+              preConfirm: () => {
+                router.push("/subscription");
+              },
+            });
+            return;
+          } else {
+            //console.log("selectedVoice",selectedVoice);
+            const requestBody = {
+              prompt,
+              imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
+              creditsUsed: creditsUsed,
+              aspectRatio: aspectRatio,
+              duration: duration,
+              caption: captionEnabled,
+              ...(selectedVoice && { voiceId: selectedVoice }), // ✅ selectedVoice
+              ...(selectedCaptionStyle && { captionStyle: selectedCaptionStyle }), // ✅ selectedCaption
+              voiceover: voiceoverEnabled,
+              ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }), // ✅ encode URL with spaces
+            };
+            setLoading(true);
 
-      sendEvent({
-        event: "Generate Video",
-        email: userData?.email,
-        name: userData?.name,
-        prompt: prompt,
-        aspectRatio: aspectRatio,
-        duration: duration,
-        caption: captionEnabled,
-        voiceover: voiceoverEnabled,
-        ...(imageUrl && { imageUrl: imageUrl }), // ✅ only include if `image` is truthy
-      });
+            sendEvent({
+              event: "Generate Video",
+              email: userData?.email,
+              name: userData?.name,
+              prompt: prompt,
+              aspectRatio: aspectRatio,
+              duration: duration,
+              caption: captionEnabled,
+              voiceover: voiceoverEnabled,
+              ...(imageUrl && { imageUrl: imageUrl }), // ✅ only include if `image` is truthy
+            });
 
-      //console.log("requestBody",requestBody);
-      generateVideoApi(requestBody);
+            //console.log("requestBody",requestBody);
+            generateVideoApi(requestBody);
+          }
+        } else {
+          // console.log("selectedVoice",selectedVoice);
+
+          const requestBody = {
+            prompt,
+            imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
+            creditsUsed: creditsUsed,
+            aspectRatio: aspectRatio,
+            duration: duration,
+            caption: captionEnabled,
+            ...(selectedVoice && { voiceId: selectedVoice }), // ✅ selectedVoice
+            ...(selectedCaptionStyle && { captionStyle: selectedCaptionStyle }), // ✅ selectedCaption
+            voiceover: voiceoverEnabled,
+            ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }), // ✅ encode URL with spaces
+          };
+          setLoading(true);
+
+          sendEvent({
+            event: "Generate Video",
+            email: userData?.email,
+            name: userData?.name,
+            prompt: prompt,
+            aspectRatio: aspectRatio,
+            duration: duration,
+            caption: captionEnabled,
+            voiceover: voiceoverEnabled,
+            ...(imageUrl && { imageUrl: imageUrl }), // ✅ only include if `image` is truthy
+          });
+
+          //console.log("requestBody",requestBody);
+          generateVideoApi(requestBody);
+        }
       }
-    }
     } else {
       setIsPopupVisible(true);
     }
@@ -295,16 +300,16 @@ const Index = ({ masterData }) => {
 
     let quoteInterval;
     let progressInterval;
-    
+
     const pickRandomQuote = () => {
-        setSubTitle(quotes[quoteIndexRef.current]);
-        quoteIndexRef.current = (quoteIndexRef.current + 1) % quotes.length; // cycle
-  
-        // const randomIndex = Math.floor(Math.random() * quotes.length);
-        // setSubTitle(quotes[randomIndex]);
-      };
-      
-      // Initial call
+      setSubTitle(quotes[quoteIndexRef.current]);
+      quoteIndexRef.current = (quoteIndexRef.current + 1) % quotes.length; // cycle
+
+      // const randomIndex = Math.floor(Math.random() * quotes.length);
+      // setSubTitle(quotes[randomIndex]);
+    };
+
+    // Initial call
     pickRandomQuote();
     setProgressPercentage(0);
 
@@ -313,7 +318,7 @@ const Index = ({ masterData }) => {
       pickRandomQuote();
     }, 15000);
 
-    // Simulate progress over ~3 minutes 
+    // Simulate progress over ~3 minutes
     const totalDuration = 180000; // 3 minutes
     const updateInterval = 2000; // every 2 seconds
     let elapsed = 0;
@@ -326,7 +331,7 @@ const Index = ({ masterData }) => {
         Math.floor(100 * Math.pow(progressRatio, 2.5)), // exponent controls acceleration
         99
       );
-  
+
       const progress = Math.min(Math.floor((elapsed / totalDuration) * 100), 99); // max 99%
       setProgressPercentage(easedProgress);
     }, updateInterval);
@@ -350,43 +355,42 @@ const Index = ({ masterData }) => {
       setVideoLoading(true);
 
       try {
-      const res = await fetcher.get(
-        `${FANTV_API_URL}/api/v1/templates/${updatedSlug}`,
-        {
-          headers: {
-            ...(!!authToken && { Authorization: `Bearer ${authToken}` }),
+        const res = await fetcher.get(
+          `${FANTV_API_URL}/api/v1/templates/${updatedSlug}`,
+          {
+            headers: {
+              ...(!!authToken && { Authorization: `Bearer ${authToken}` }),
+            },
           },
-        },
-        "default"
-      );
+          "default"
+        );
 
-      const data = res?.data;
-      setTemplate(data);
-      setAvatar(data.avatarId);
-      setVoiceoverEnabled(data.voiceover);
-      setVoice(data.voiceId);
-      setSelectedVoice(data.voiceId);
-      setCaptionEnabled(data.caption);
-      setCaptionStyle(data.captionStyle);
-      setSelectedCaptionStyle(data.captionStyle);
-      setAspectRatio(data.aspectRatio);
-      setDuration(data.duration);
-      setPrompt(data.prompt);
-      setImageUrl(data.imageUrl);
-      setImagePreview(data.imageUrl);
-      setVideo(data.videoUrl);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      //await sleep(2000); // Wait for 1 second
-      setLoading(false);
-      //setImageLoading(false);
-    }
+        const data = res?.data;
+        setTemplate(data);
+        setAvatar(data.avatarId);
+        setVoiceoverEnabled(data.voiceover);
+        setVoice(data.voiceId);
+        setSelectedVoice(data.voiceId);
+        setCaptionEnabled(data.caption);
+        setCaptionStyle(data.captionStyle);
+        setSelectedCaptionStyle(data.captionStyle);
+        setAspectRatio(data.aspectRatio);
+        setDuration(data.duration);
+        setPrompt(data.prompt);
+        setImageUrl(data.imageUrl);
+        setImagePreview(data.imageUrl);
+        setVideo(data.videoUrl);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        //await sleep(2000); // Wait for 1 second
+        setLoading(false);
+        //setImageLoading(false);
+      }
     };
 
     fetchData();
   }, [slug]);
-
 
   const handleDownloadVideo = async () => {
     if (!video) return;
@@ -420,13 +424,14 @@ const Index = ({ masterData }) => {
 
   return (
     <div className="flex flex-col md:flex-row text-black md:gap-4">
-      {isLoading && <Loading title={`Generating your video... (${progressPercentage}%)`} subTitle={subTitle} />}
+      {isLoading && (
+        <Loading title={`Generating your video... (${progressPercentage}%)`} subTitle={subTitle} />
+      )}
       <div className="w-full md:w-[25%] bg-[#FFFFFF0D] p-4">
         <div className="">
           <div className="mb-6">
             <div className="flex justify-between flex-wrap">
               <h3 className="text-sm font-medium mb-2">Prompt</h3>
-              
             </div>
 
             <div className="bg-[#F5F5F5] rounded-lg p-3 flex justify-between items-start">
@@ -440,114 +445,121 @@ const Index = ({ masterData }) => {
             </div>
           </div>
           <div className="mb-6 flex gap-x-10">
-          {/* Ref Image */}
-          <div className="w-1/2">
-            <label className="flex items-center gap-2 rounded-md bg-[#F5F5F5] px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all cursor-pointer">
-            
-             {uploading ? (
-                <div>Uploading...</div>
-              ) : (
-                <>
-                  {imagePreview ? (
-                    <div className="relative">
-                      <img
-                        src={imagePreview}
-                        alt="Uploaded"
-                        className="w-full h-[50px] object-fit rounded-md"
-                      />
-                      <button
-                        onClick={handleRemoveImage}
-                        className="absolute top-0 right-0 bg-white text-white rounded-full w-4 h-4 flex items-center justify-center"
-                      >
-                        <img src="/images/close.svg" />
-                      </button>
-                    </div>
-                  ) : (
-                    <h3>+ Add images</h3>
-                  )}
-                </>
-              )}
+            {/* Ref Image */}
+            <div className="w-1/2">
+              <label className="flex items-center gap-2 rounded-md bg-[#F5F5F5] px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all cursor-pointer">
+                {uploading ? (
+                  <div>Uploading...</div>
+                ) : (
+                  <>
+                    {imagePreview ? (
+                      <div className="relative">
+                        <img
+                          src={imagePreview}
+                          alt="Uploaded"
+                          className="w-full h-[50px] object-fit rounded-md"
+                        />
+                        <button
+                          onClick={handleRemoveImage}
+                          className="absolute top-0 right-0 bg-white text-white rounded-full w-4 h-4 flex items-center justify-center"
+                        >
+                          <img src="/images/close.svg" />
+                        </button>
+                      </div>
+                    ) : (
+                      <h3>+ Add images</h3>
+                    )}
+                  </>
+                )}
 
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleImageUpload}
-                disabled={uploading}
-              />
-            </label>
-          </div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageUpload}
+                  disabled={uploading}
+                />
+              </label>
+            </div>
 
-          <div className="w-1/2">
-            <div className="relative">
-              <button className="flex items-center gap-2 rounded-md bg-[#F5F5F5] px-4 py-2 text-sm text-[1E1E1E] shadow-md transition-all">
-            {/* <span className="w-4 h-3 border border-black rounded-sm"></span> */}
-            <span
-              className={`border border-black rounded-sm ${
-                aspectRatioSizeMap[aspectRatio] || "w-4 h-3"
-              }`}
-            ></span>
-            <select
-              value={aspectRatio}
-              onChange={(e) => setAspectRatio(e.target.value)}
-              className="bg-[#F5F5F5]"
-            >
-              {aspectRatioData?.map((item) => (
-                <option key={item}>{item}</option>
-              ))}
-            </select>
-          </button>
+            <div className="w-1/2">
+              <div className="relative">
+                <button className="flex items-center gap-2 rounded-md bg-[#F5F5F5] px-4 py-2 text-sm text-[1E1E1E] shadow-md transition-all">
+                  {/* <span className="w-4 h-3 border border-black rounded-sm"></span> */}
+                  <span
+                    className={`border border-black rounded-sm ${
+                      aspectRatioSizeMap[aspectRatio] || "w-4 h-3"
+                    }`}
+                  ></span>
+                  <select
+                    value={aspectRatio}
+                    onChange={(e) => setAspectRatio(e.target.value)}
+                    className="bg-[#F5F5F5]"
+                  >
+                    {aspectRatioData?.map((item) => (
+                      <option key={item}>{item}</option>
+                    ))}
+                  </select>
+                </button>
+              </div>
             </div>
           </div>
-          </div>
           <div className="mb-6 flex gap-x-4">
-          {/* Duration Dropdown */}
-          <div className="w-1/3">
-          <button className="flex items-center gap-2 rounded-md bg-[#F5F5F5] px-2 py-2 text-sm text-[1E1E1E] shadow-md transition-all">
-            {/* <span className="w-4 h-3 border border-black rounded-sm"></span> */}
-            <select
-              value={duration}
-              onChange={(e) => {setDuration(e.target.value);setCredits(20*parseInt((e.target.value.replace("sec", "").trim()/5),10))}}
-              className="bg-[#F5F5F5]"
-            >
-              {durationData?.map((item) => (
-                <option key={item}>{item}</option>
-              ))}
-            </select>
-          </button>
-          </div>
-          {/* VoiceOver Dropdown */}
+            {/* Duration Dropdown */}
+            <div className="w-1/3">
+              <button className="flex items-center gap-2 rounded-md bg-[#F5F5F5] px-2 py-2 text-sm text-[1E1E1E] shadow-md transition-all">
+                {/* <span className="w-4 h-3 border border-black rounded-sm"></span> */}
+                <select
+                  value={duration}
+                  onChange={(e) => {
+                    setDuration(e.target.value);
+                    setCredits(20 * parseInt(e.target.value.replace("sec", "").trim() / 5, 10));
+                  }}
+                  className="bg-[#F5F5F5]"
+                >
+                  {durationData?.map((item) => (
+                    <option key={item}>{item}</option>
+                  ))}
+                </select>
+              </button>
+            </div>
+            {/* VoiceOver Dropdown */}
             <div className="relative">
-            {/* Toggle Button Styled Like Duration */}
-            <button
-              onClick={() => setShowVoiceDropdown((prev) => !prev)}
-              className="flex items-center gap-2 rounded-md bg-[#F5F5F5] px-4 py-2 text-sm text-[1E1E1E] shadow-md transition-all"
-            >
-              <span>
-                Voiceover{selectedVoice ? `: ${voiceOptions.find(v => v.value === selectedVoice)?.name}` : ""}
-              </span>
-              <span>{showVoiceDropdown ? "^" : "▼"}</span>
-            </button>
+              {/* Toggle Button Styled Like Duration */}
+              <button
+                onClick={() => setShowVoiceDropdown((prev) => !prev)}
+                className="flex items-center gap-2 rounded-md bg-[#F5F5F5] px-4 py-2 text-sm text-[1E1E1E] shadow-md transition-all"
+              >
+                <span>
+                  Voiceover
+                  {selectedVoice
+                    ? `: ${voiceOptions.find((v) => v.value === selectedVoice)?.name}`
+                    : ""}
+                </span>
+                <span>{showVoiceDropdown ? "^" : "▼"}</span>
+              </button>
 
-            {/* Dropdown Content */}
-            {showVoiceDropdown && (
-              <div className="absolute z-10 mt-1 w-full bg-[#F5F5F5] border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+              {/* Dropdown Content */}
+              {showVoiceDropdown && (
+                <div className="absolute z-10 mt-1 w-full bg-[#F5F5F5] border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                  <div
+                    className={`flex justify-between items-center px-4 py-2 cursor-pointer hover:bg-gray-100 ${
+                      selectedVoice === null ? "bg-purple-100 border-l-4 border-purple-400" : ""
+                    }`}
+                    onClick={() => {
+                      setSelectedVoice(null);
+                      setShowVoiceDropdown(false);
+                    }}
+                  >
+                    <span className="text-sm italic text-gray-500">No Voice</span>
+                  </div>
+                  {voiceOptions.map((voice) => (
                     <div
-                      className={`flex justify-between items-center px-4 py-2 cursor-pointer hover:bg-gray-100 ${
-                        selectedVoice === null ? "bg-purple-100 border-l-4 border-purple-400" : ""
-                      }`}
-                      onClick={() => {
-                        setSelectedVoice(null);
-                        setShowVoiceDropdown(false);
-                      }}
-                    >
-                      <span className="text-sm italic text-gray-500">No Voice</span>
-                    </div>
-                    {voiceOptions.map((voice) => (
-                                    <div
                       key={voice.value}
                       className={`flex justify-between items-center px-4 py-2 cursor-pointer transition ${
-                        selectedVoice === voice.value ? "bg-purple-100 border-l-4 border-purple-400" : "hover:bg-gray-100"
+                        selectedVoice === voice.value
+                          ? "bg-purple-100 border-l-4 border-purple-400"
+                          : "hover:bg-gray-100"
                       }`}
                       onClick={() => {
                         setSelectedVoice(voice.value);
@@ -586,65 +598,67 @@ const Index = ({ masterData }) => {
                       </button>
                     </div>
                   ))}
-              </div>
-            )}
+                </div>
+              )}
+            </div>
           </div>
-          
-          </div><div>          
-          {/* Caption Dropdown */}
-          <div className="mb-6 w-full relative">
-            <button
+          <div>
+            {/* Caption Dropdown */}
+            <div className="mb-6 w-full relative">
+              <button
                 onClick={() => setShowCaptionDropdown((prev) => !prev)}
                 className="flex items-center gap-2 rounded-md bg-[#F5F5F5] px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all"
-            >
-                <span>
-                Caption: {selectedCaptionStyle ? selectedCaptionStyle : ""}
-                </span>
+              >
+                <span>Caption: {selectedCaptionStyle ? selectedCaptionStyle : ""}</span>
                 <span>{showCaptionDropdown ? "▲" : "▼"}</span>
-            </button>
+              </button>
 
-            {showCaptionDropdown && (
+              {showCaptionDropdown && (
                 <div className="absolute z-10 mt-2 w-[240px] bg-[#F5F5F5] border border-gray-300 rounded-md shadow-lg max-h-72 overflow-auto">
-                {/* Option to unselect */}
-                <div
+                  {/* Option to unselect */}
+                  <div
                     className={`flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100 ${
-                    selectedCaptionStyle === null ? "bg-purple-100 border-l-4 border-purple-400" : ""
+                      selectedCaptionStyle === null
+                        ? "bg-purple-100 border-l-4 border-purple-400"
+                        : ""
                     }`}
                     onClick={() => {
-                    setSelectedCaptionStyle(null);
-                    setShowCaptionDropdown(false);
-                    setCaptionEnabled(false);
+                      setSelectedCaptionStyle(null);
+                      setShowCaptionDropdown(false);
+                      setCaptionEnabled(false);
                     }}
-                >
+                  >
                     <span className="text-sm italic text-gray-500">No Captions</span>
-                </div>
+                  </div>
 
-                {captionOptions.map((style) => (
+                  {captionOptions.map((style) => (
                     <div
-                    key={style.value}
-                    className={`flex justify-between items-center px-3 py-2 cursor-pointer transition ${
+                      key={style.value}
+                      className={`flex justify-between items-center px-3 py-2 cursor-pointer transition ${
                         selectedCaptionStyle === style.value
-                        ? "bg-purple-100 border-l-4 border-purple-500"
-                        : "hover:bg-gray-100"
-                    }`}
-                    onClick={() => {
+                          ? "bg-purple-100 border-l-4 border-purple-500"
+                          : "hover:bg-gray-100"
+                      }`}
+                      onClick={() => {
                         setSelectedCaptionStyle(style.value);
                         setShowCaptionDropdown(false);
                         setCaptionEnabled(true);
-                    }}
-                    > <span className="text-sm text-gray-500">{style.label}</span>
-                    {/* <img
+                      }}
+                    >
+                      {" "}
+                      <span className="text-sm text-gray-500">{style.label}</span>
+                      {/* <img
                         src={style.img}
                         alt={style.label}
                         className="h-10 w-30 object-contain rounded-md"
                     /> */}
-                    {selectedCaptionStyle === style.value && (
+                      {selectedCaptionStyle === style.value && (
                         <span className="ml-2 text-purple-600 font-semibold">✓</span>
-                    )}
+                      )}
                     </div>
-                ))}
+                  ))}
                 </div>
-            )}
+              )}
             </div>
           </div>
           {/* {(
@@ -698,22 +712,23 @@ const Index = ({ masterData }) => {
               </div>
             </div>
           )}
-<div>
-<h3 className="mb-6 text-sm text-[#1E1E1EB2] text-normal">Credits : {credits}</h3>
-{Math.floor(userData.credits / credits) < 6 && (
+          <div>
+            <h3 className="mb-6 text-sm text-[#1E1E1EB2] text-normal">Credits : {credits}</h3>
+            {Math.floor(userData.credits / credits) < 6 && (
               <div className="text-center">
                 <small
                   className={
-                    Math.floor(userData.credits / credits) < 2 
+                    Math.floor(userData.credits / credits) < 2
                       ? "text-red-600 font-semibold"
                       : "text-black"
                   }
                 >
-                  {Math.max(1, Math.floor(userData.credits / credits))} video{Math.floor(userData.credits / credits) === 1 ? "" : "s"} left
+                  {Math.max(1, Math.floor(userData.credits / credits))} video
+                  {Math.floor(userData.credits / credits) === 1 ? "" : "s"} left
                 </small>
               </div>
             )}
-            </div>
+          </div>
           <div className="flex items-center justify-center gap-4 mt-2 mb-6">
             <button
               onClick={handleGenerateVideo}
@@ -722,51 +737,48 @@ const Index = ({ masterData }) => {
               ✨ Generate
             </button>
           </div>
-
         </div>
       </div>
-      
-      <div className="flex-1 flex flex-col items-center ">
-      <div className="w-full md:p-4 bg-[#F5F5F5]">
-                  <button
-                      onClick={() => router.back()}
-                      className="flex items-center text-sm mb-1 text-black"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 mr-2"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      Back
-                    </button>
-          </div>
-          <div className="w-full p-4 md:p-4 bg-[#F5F5F5] px-4 md:px-[30px] py-4 md:py-[30px]">
-            
-          <div className="bg-[#FFFFFF0D] rounded-lg aspect-video flex items-center justify-center mb-4 m-auto max-h-[300px] md:max-h-[450px]">
-          <div className="text-gray-500 w-full h-full">
-          {/* Video */}
-            {/* Video always rendered */}
-         
-            <video
-                  src={video}
-                  muted
-                  loop
-                  playsInline
-                  controls
-                  onMouseEnter={(e) => e.target.play()}
-                  onMouseLeave={(e) => e.target.pause()}
-                  onEnded={(e) => e.target.play()}
-                  className="w-full h-full object-contain rounded-xl max-h-[300px] md:max-h-[450px]"
-                />
 
+      <div className="flex-1 flex flex-col items-center ">
+        <div className="w-full md:p-4 bg-[#F5F5F5]">
+          <button
+            onClick={() => router.back()}
+            className="flex items-center text-sm mb-1 text-black"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 mr-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                clipRule="evenodd"
+              />
+            </svg>
+            Back
+          </button>
         </div>
+        <div className="w-full p-4 md:p-4 bg-[#F5F5F5] px-4 md:px-[30px] py-4 md:py-[30px]">
+          <div className="bg-[#FFFFFF0D] rounded-lg aspect-video flex items-center justify-center mb-4 m-auto max-h-[300px] md:max-h-[450px]">
+            <div className="text-gray-500 w-full h-full">
+              {/* Video */}
+              {/* Video always rendered */}
+
+              <video
+                src={video}
+                muted
+                loop
+                playsInline
+                controls
+                onMouseEnter={(e) => e.target.play()}
+                onMouseLeave={(e) => e.target.pause()}
+                onEnded={(e) => e.target.play()}
+                className="w-full h-full object-contain rounded-xl max-h-[300px] md:max-h-[450px]"
+              />
+            </div>
           </div>
 
           <div className="flex items-center justify-center flex-wrap gap-2 md:gap-4 mt-2">
@@ -786,7 +798,6 @@ const Index = ({ masterData }) => {
         </div>
       </div>
       <SweetAlert2 {...swalProps} onConfirm={(handleConfirm) => setSwalProps({ show: false })} />
-
     </div>
   );
 };
@@ -813,8 +824,8 @@ export async function getServerSideProps(ctx) {
         },
         "default"
       ),
-    ]); 
-    
+    ]);
+
     return {
       props: {
         masterData: masterData?.data || [],
