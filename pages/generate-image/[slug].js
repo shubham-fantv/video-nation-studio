@@ -38,8 +38,6 @@ const Index = ({ masterData }) => {
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const [selectedAvatar, setSelectedAvatar] = useState(null);
 
-
-
   const handleAvatarSelect = (avatar) => {
     setSelectedAvatar(avatar);
     console.log("Selected avatar:", avatar);
@@ -140,7 +138,7 @@ const toggleImageSelection = (imgUrl) => {
       },
       onError: (error) => {
         setLoading(false);const defaultMessage = "Something went wrong. Please try again later.";
-      
+        
         const message =
           error?.response?.data?.message ||
           error?.message ||
