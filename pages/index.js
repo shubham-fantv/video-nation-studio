@@ -12,6 +12,7 @@ import fetcher from "../src/dataProvider";
 import { parseCookies } from "nookies";
 import { useSelector } from "react-redux";
 import SweetAlert2 from "react-sweetalert2";
+import ShimmerCategories from "../src/component/common/ShimmerCategories";
 
 const Index = ({ homeFeed }) => {
   const [swalProps, setSwalProps] = useState({});
@@ -22,7 +23,7 @@ const Index = ({ homeFeed }) => {
 
   const [homeFeedData, setHomeFeedData] = useState([]);
 
-  useQuery(
+  const { isLoading } = useQuery(
     `${FANTV_API_URL}/api/v1/homefeed`,
     () => fetcher.get(`${FANTV_API_URL}/api/v1/homefeed?limit=50`),
     {
@@ -73,12 +74,15 @@ const Index = ({ homeFeed }) => {
               </Typography>
             </Box>
           </Box>
-
-          <Box className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {homeFeedData?.section1?.data?.slice(0, 4).map((card) => (
-              <CardComponent key={card.id} data={card} redirect={`/category/${card?.slug}`} />
-            ))}
-          </Box>
+          {isLoading ? (
+            <ShimmerCategories />
+          ) : (
+            <Box className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              {homeFeedData?.section1?.data?.slice(0, 4).map((card) => (
+                <CardComponent key={card.id} data={card} redirect={`/category/${card?.slug}`} />
+              ))}
+            </Box>
+          )}
 
           <Box className="flex justify-center mt-6">
             <CLink href="/video-studio">
@@ -104,7 +108,7 @@ const Index = ({ homeFeed }) => {
           </Box>
 
           <Box className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {homeFeedData?.section2?.data?.slice(0, 4).map((card) => (
+            {homeFeedData?.section2?.data?.slice(0, 4).map((card) => (
               <CardComponent key={card.id} data={card} redirect={`/category/${card?.slug}`} />
             ))}
           </Box>
@@ -146,4 +150,3 @@ const Index = ({ homeFeed }) => {
 };
 
 export default Index;
-

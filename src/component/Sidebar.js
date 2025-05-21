@@ -210,52 +210,52 @@ function Sidebar({ children }) {
                   </Link>
                 </li>
                 <li>
-                <Link legacyBehavior href="/image-studio" passHref>
-                      <a className="flex items-center  pt-1">
-                        <div
-                          className={`flex items-center rounded-xl p-3 w-full ${
-                            isActiveLink("/image-studio", "/image-category", "/generate-image")
-                              ? "bg-[#FFFFFF0D] font-bold"
-                              : ""
-                          }`}
-                          style={
-                            isActiveLink("/image-studio", "/image-category", "/generate-image")
-                              ? activeStyle
-                              : {}
-                          }
-                        >
-                          <img
-                            style={{ height: "20px", width: "20px" }}
-                            src="/images/icons/video.svg"
-                            className="text-black"
-                          />{" "}
-                          &nbsp;
-                          <span className="text-sm text-black pl-2">Image Studio</span>
-                        </div>
-                      </a>
+                  <Link legacyBehavior href="/image-studio" passHref>
+                    <a className="flex items-center  pt-1">
+                      <div
+                        className={`flex items-center rounded-xl p-3 w-full ${
+                          isActiveLink("/image-studio", "/image-category", "/generate-image")
+                            ? "bg-[#FFFFFF0D] font-bold"
+                            : ""
+                        }`}
+                        style={
+                          isActiveLink("/image-studio", "/image-category", "/generate-image")
+                            ? activeStyle
+                            : {}
+                        }
+                      >
+                        <img
+                          style={{ height: "20px", width: "20px" }}
+                          src="/images/icons/gallery.svg"
+                          className="text-black"
+                        />{" "}
+                        &nbsp;
+                        <span className="text-sm text-black pl-2">Image Studio</span>
+                      </div>
+                    </a>
                   </Link>
                 </li>
                 <li>
-                <Link legacyBehavior href="/avatar-studio" passHref>
-                      <a className="flex items-center  pt-1">
-                        <div
-                          className={`flex items-center rounded-xl p-3 w-full ${
-                            isActiveLink("/avatar-studio", "/generate-avatar")
-                              ? "bg-[#FFFFFF0D] font-bold"
-                              : ""
-                          }`}
-                          style={
-                            isActiveLink("/avatar-studio", "/generate-avatar") ? activeStyle : {}
-                          }
-                        >
-                          <img
-                            style={{ height: "20px", width: "20px" }}
-                            src="/images/icons/video.svg"
-                            className="text-black"
-                          />{" "}
-                          &nbsp;
-                          <span className="text-sm text-black pl-2">Avatar</span>
-                          {/* <sup
+                  <Link legacyBehavior href="/avatar-studio" passHref>
+                    <a className="flex items-center  pt-1">
+                      <div
+                        className={`flex items-center rounded-xl p-3 w-full ${
+                          isActiveLink("/avatar-studio", "/generate-avatar")
+                            ? "bg-[#FFFFFF0D] font-bold"
+                            : ""
+                        }`}
+                        style={
+                          isActiveLink("/avatar-studio", "/generate-avatar") ? activeStyle : {}
+                        }
+                      >
+                        <img
+                          style={{ height: "20px", width: "20px" }}
+                          src="/images/icons/video.svg"
+                          className="text-black"
+                        />{" "}
+                        &nbsp;
+                        <span className="text-sm text-black pl-2">Avatar</span>
+                        {/* <sup
                             style={{
                               marginLeft: "4px",
                               contentVisibility: "auto",
@@ -273,38 +273,38 @@ function Sidebar({ children }) {
                           >
                             coming Soon
                           </sup> */}
-                        </div>
-                      </a>
+                      </div>
+                    </a>
                   </Link>
                 </li>
               </ul>
               <ul>
-              {isLoggedIn && (
-                <li>
-                  <Link href="/my-library" passHref legacyBehavior>
-                    <div className="flex items-center   cursor-pointer">
-                      <div
-                        className={`flex items-center rounded-xl p-3 w-full ${
-                          isActiveLink("/my-library") ? "bg-[#FFFFFF0D] font-bold" : ""
-                        }`}
-                        style={isActiveLink("/my-library") ? activeStyle : {}}
-                      >
-                        <span className="text-black">
-                          <svg
-                            className="w-6 h-6 text-black"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                          >
-                            <path d="M17 10.5V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-3.5l4 4v-11l-4 4z" />
-                          </svg>
-                        </span>
-                        <span className="text-sm text-black pl-2">My Library</span>
+                {isLoggedIn && (
+                  <li>
+                    <Link href="/my-library" passHref legacyBehavior>
+                      <div className="flex items-center   cursor-pointer">
+                        <div
+                          className={`flex items-center rounded-xl p-3 w-full ${
+                            isActiveLink("/my-library") ? "bg-[#FFFFFF0D] font-bold" : ""
+                          }`}
+                          style={isActiveLink("/my-library") ? activeStyle : {}}
+                        >
+                          <span className="text-black">
+                            <svg
+                              className="w-6 h-6 text-black"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                            >
+                              <path d="M17 10.5V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-3.5l4 4v-11l-4 4z" />
+                            </svg>
+                          </span>
+                          <span className="text-sm text-black pl-2">My Library</span>
+                        </div>
                       </div>
-                    </div>
-                  </Link>
-                </li>
-              )}
+                    </Link>
+                  </li>
+                )}
               </ul>
             </div>
 
@@ -337,31 +337,31 @@ function Sidebar({ children }) {
                   </Link>
                 </li>
                 {isLoggedIn && (
-                <li>
-                  <Link legacyBehavior href="/usage" passHref>
-                    <a className="flex items-center  py-2">
-                      <div
-                        onClick={() =>
-                          sendEvent({
-                            event: "Usage",
-                            email: userData?.email,
-                            name: userData?.name,
-                          })
-                        }
-                        className={`flex items-center rounded-xl p-3 w-full ${
-                          isActiveLink("/usage") ? "bg-[#FFFFFF0D] font-bold" : ""
-                        }`}
-                        style={isActiveLink("/usage") ? activeStyle : {}}
-                      >
-                        <img
-                          style={{ height: "20px", width: "20px" }}
-                          src="/images/icons/usage.svg"
-                        />
-                        <span className="text-sm text-black pl-2">Usage</span>
-                      </div>
-                    </a>
-                  </Link>
-                </li>
+                  <li>
+                    <Link legacyBehavior href="/usage" passHref>
+                      <a className="flex items-center  py-2">
+                        <div
+                          onClick={() =>
+                            sendEvent({
+                              event: "Usage",
+                              email: userData?.email,
+                              name: userData?.name,
+                            })
+                          }
+                          className={`flex items-center rounded-xl p-3 w-full ${
+                            isActiveLink("/usage") ? "bg-[#FFFFFF0D] font-bold" : ""
+                          }`}
+                          style={isActiveLink("/usage") ? activeStyle : {}}
+                        >
+                          <img
+                            style={{ height: "20px", width: "20px" }}
+                            src="/images/icons/usage.svg"
+                          />
+                          <span className="text-sm text-black pl-2">Usage</span>
+                        </div>
+                      </a>
+                    </Link>
+                  </li>
                 )}
               </ul>
             </div>

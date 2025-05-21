@@ -19,6 +19,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import useGTM from "../src/hooks/useGTM";
+import ResponsiveWrapper from "../src/component/ResponsiveWrapper";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -62,9 +63,11 @@ function MyApp({ Component, pageProps, emotionCache = createEmotionCache() }) {
                 <AppSeo />
                 <SnackbarProvider>
                   <SnackBar />
-                  <Layout {...pageProps}>
-                    <Component {...pageProps} />
-                  </Layout>
+                  <ResponsiveWrapper>
+                    <Layout {...pageProps}>
+                      <Component {...pageProps} />
+                    </Layout>
+                  </ResponsiveWrapper>
                 </SnackbarProvider>
               </PageThemeProvider>
             </CacheProvider>
