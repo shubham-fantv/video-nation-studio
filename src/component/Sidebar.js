@@ -210,8 +210,7 @@ function Sidebar({ children }) {
                   </Link>
                 </li>
                 <li>
-                  <div>
-                    <Link legacyBehavior href="/generate-image" passHref>
+                <Link legacyBehavior href="/image-studio" passHref>
                       <a className="flex items-center  pt-1">
                         <div
                           className={`flex items-center rounded-xl p-3 w-full ${
@@ -234,12 +233,10 @@ function Sidebar({ children }) {
                           <span className="text-sm text-black pl-2">Image Studio</span>
                         </div>
                       </a>
-                    </Link>
-                  </div>
+                  </Link>
                 </li>
                 <li>
-                  <div>
-                    <div>
+                <Link legacyBehavior href="/avatar-studio" passHref>
                       <a className="flex items-center  pt-1">
                         <div
                           className={`flex items-center rounded-xl p-3 w-full ${
@@ -258,7 +255,7 @@ function Sidebar({ children }) {
                           />{" "}
                           &nbsp;
                           <span className="text-sm text-black pl-2">Avatar</span>
-                          <sup
+                          {/* <sup
                             style={{
                               marginLeft: "4px",
                               contentVisibility: "auto",
@@ -275,11 +272,10 @@ function Sidebar({ children }) {
                             }}
                           >
                             coming Soon
-                          </sup>
+                          </sup> */}
                         </div>
                       </a>
-                    </div>
-                  </div>
+                  </Link>
                 </li>
               </ul>
               <ul>
