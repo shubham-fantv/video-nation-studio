@@ -43,6 +43,9 @@ const index = () => {
   const [isLoading, setLoading] = useState(false);
   const [swalProps, setSwalProps] = useState({});
 
+  const lastTrialAction = localStorage.getItem("lastTrialAction");
+  const RATE_LIMIT_INTERVAL_MS = 1 * 1000; // 12 hours
+
   const getRandomPrompts = (list, count = 3) =>
     list
       .sort(() => 0.5 - Math.random()) // Shuffle
@@ -194,6 +197,33 @@ const index = () => {
                   }
                 });
                 return;
+              } else {
+
+                    const requestBody = {
+                        prompt,
+                        imageInput: image ? [image] : [],
+                        creditsUsed: creditsUsed,
+                        aspectRatio: aspectRatio,
+                        duration: duration,
+                        caption: captionEnabled,
+                        voiceover: voiceoverEnabled,
+                        ...(image && { imageUrl: encodeURI(image) })  // ✅ encode URL with spaces
+                    };
+                    setLoading(true);
+
+                    sendEvent({
+                        event: "Generate Video",
+                        email: userData?.email,
+                        name: userData?.name,
+                        prompt: prompt,
+                        aspectRatio: aspectRatio,
+                        duration: duration,
+                        caption: captionEnabled,
+                        voiceover: voiceoverEnabled,
+                        ...(image && { imageUrl: image }), // ✅ only include if `image` is truthy
+                    });
+
+                    generateVideoApi(requestBody);
               }
       } else {
 

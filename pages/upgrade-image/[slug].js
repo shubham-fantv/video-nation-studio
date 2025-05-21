@@ -106,7 +106,7 @@ const Index = ({ masterData }) => {
     };
   const [template, setTemplate] = useState([]);
   const lastTrialAction = localStorage.getItem("lastTrialAction");
-  const RATE_LIMIT_INTERVAL_MS = 12 * 60 * 60 * 1000; // 12 hours
+  const RATE_LIMIT_INTERVAL_MS = 1 * 1000; // 12 hours
   const [aspectRatio, setAspectRatio] = useState("16:9");
   const [tool, setTool] = useState("");
   const [avatar, setAvatar] = useState("");
@@ -299,7 +299,7 @@ const fileInputRef = useRef(null);
           alert("Please enter a prompt!");
           return;
         }
-  
+     
     if (userData.credits <= 0 || userData.credits < 1) {
         setSwalProps({
           key: Date.now(), // or use a counter  
@@ -315,6 +315,7 @@ const fileInputRef = useRef(null);
         });
         } else {
             if (userData?.isTrialUser) {
+               
               const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || 0, 10);
               const now = Date.now();
             
@@ -336,7 +337,34 @@ const fileInputRef = useRef(null);
                   },
                 });
                 return;
+              } else {
+                sendEvent({
+                    event: "Upgrade Image Slug",
+                    slug: slug,
+                    email: userData?.email,
+                    name: userData?.name,
+                    prompt: prompt,
+                    aspectRatio: aspectRatio
+                  });
+              
+                  const requestBody = {
+                    prompt : prompt,
+                    imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
+                    creditsUsed: 1,
+                    aspectRatio: aspectRatio,
+                    ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }),  // ✅ encode URL with spaces
+                    ...(imageUrl2 && { imageUrl2: encodeURI(decodeURI(imageUrl2)) }),  // ✅ encode URL with spaces
+                    tool : slug,
+                  };
+              
+                  //console.log(requestBody);
+                  setLoading(true)
+                  //alert(JSON.stringify(requestBody, null, 2));
+              
+                  generateImageApi(requestBody);
               }
+
+
       } else {
 
     sendEvent({
