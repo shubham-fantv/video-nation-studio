@@ -7,9 +7,8 @@ import { useRouter } from "next/router";
 import moment from "moment";
 
 const VideoGrid = ({ data, data1 }) => {
-  console.log("🚀 ~ VideoGrid ~ data:", data);
-  const [myVideo, setMyVideo] = useState(data);
-  const [myImage, setMyImage] = useState(data1);
+  const [myVideo, setMyVideo] = useState(data || []);
+  const [myImage, setMyImage] = useState(data1 || []);
   const router = useRouter();
 
   const [mediaType, setMediaType] = useState("video");
@@ -19,10 +18,10 @@ const VideoGrid = ({ data, data1 }) => {
   const itemsPerPage = 20;
 
   // Compute paginated slice
-  const paginatedContent = mergedContent.slice(
+  const paginatedContent = Array.isArray(mergedContent) ? mergedContent.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
-  );
+  ) : [];
 
   const totalPages = Math.ceil(mergedContent.length / itemsPerPage);
 
@@ -30,11 +29,6 @@ const VideoGrid = ({ data, data1 }) => {
     setCurrentPage(1);
   }, [mergedContent]);
   
-  useEffect(() => {
-    setMyVideo(myVideo);
-    setMyImage(myImage);
-  }, []);
-
   useEffect(() => {
     setMyVideo(data || []);
     setMyImage(data1 || []);
@@ -56,8 +50,8 @@ const VideoGrid = ({ data, data1 }) => {
     const sortedByDate = mergedData.sort((a, b) => {
       return new Date(b.created_at) - new Date(a.created_at); // latest first
     });
-  
-    setMergedContent(sortedByDate); // <-- new state variable for the unified list
+
+    setMergedContent(sortedByDate); // <-- new state variable for the unified list  
   }, [data, data1]);
 
   return (

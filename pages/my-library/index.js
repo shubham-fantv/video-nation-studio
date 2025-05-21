@@ -7,8 +7,8 @@ import { useRouter } from "next/router";
 import moment from "moment";
 
 const VideoGrid = ({ data, data1 }) => {
-  const [myVideo, setMyVideo] = useState(data);
-  const [myImage, setMyImage] = useState(data1);
+  const [myVideo, setMyVideo] = useState(data || []);
+  const [myImage, setMyImage] = useState(data1 || []);
   const router = useRouter();
   
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,11 +39,6 @@ const VideoGrid = ({ data, data1 }) => {
       }
     }
   }, [router.isReady, router.query.tab]);
-
-  useEffect(() => {
-    setMyVideo(myVideo);
-    setMyImage(myImage);
-  }, []);
 
   useEffect(() => {
     setMyVideo(data || []);

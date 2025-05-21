@@ -54,7 +54,7 @@ const Index = ({ masterData }) => {
         fileCaption1 : "Upload Face 1",
         fileCaption2 : "Upload Face 2",
     },
-    "cyberpunk-photo": {
+    "cyberpunk": {
         title: "Cyberpunk Style Image",
         description: "Increase image resolution using AI without losing quality.",
         prompt: "Cyberpunk Style Image",
@@ -62,7 +62,7 @@ const Index = ({ masterData }) => {
         fileCaption1 : "Upload Picture",
         fileCaption2 : "",
     },
-    "ghibli-photo": {
+    "ghibli": {
         title: "Ghibli Art Photo",
         description: "Increase image resolution using AI without losing quality.",
         prompt: "Ghibli Art Photo",
@@ -70,7 +70,7 @@ const Index = ({ masterData }) => {
         fileCaption1 : "Upload Picture",
         fileCaption2 : "",
     },
-    "anime-photo": {
+    "anime": {
         title: "Anime Style Art",
         description: "Increase image resolution using AI without losing quality.",
         prompt: "Anime Style Art",
@@ -78,7 +78,7 @@ const Index = ({ masterData }) => {
         fileCaption1 : "Upload Picture",
         fileCaption2 : "",
     },
-    "cartoon-photo": {
+    "cartoon": {
         title: "Cartoonize Your Image",
         description: "Increase image resolution using AI without losing quality.",
         prompt: "Cartoonize Your Image",
@@ -273,6 +273,7 @@ const fileInputRef = useRef(null);
   );
 
   const handleEdit = () => {
+    alert("Coming Soon");
     //console.log(template);
     //router.push(`/edit-image/${slug}`);
   };
@@ -355,6 +356,7 @@ const fileInputRef = useRef(null);
                     ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }),  // ✅ encode URL with spaces
                     ...(imageUrl2 && { imageUrl2: encodeURI(decodeURI(imageUrl2)) }),  // ✅ encode URL with spaces
                     tool : slug,
+                    style : slug,
                   };
               
                   //console.log(requestBody);
@@ -384,6 +386,7 @@ const fileInputRef = useRef(null);
       ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }),  // ✅ encode URL with spaces
       ...(imageUrl2 && { imageUrl2: encodeURI(decodeURI(imageUrl2)) }),  // ✅ encode URL with spaces
       tool : slug,
+      style : slug,
     };
 
     //console.log(requestBody);

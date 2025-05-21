@@ -38,6 +38,8 @@ const Index = ({ masterData }) => {
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const [selectedAvatar, setSelectedAvatar] = useState(null);
 
+
+
   const handleAvatarSelect = (avatar) => {
     setSelectedAvatar(avatar);
     console.log("Selected avatar:", avatar);
@@ -49,6 +51,39 @@ const Index = ({ masterData }) => {
   const aspectRatioData = ["16:9", "9:16", "1:1"];
   const { slug } = router.query;
 
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [showAllImages, setShowAllImages] = useState(false);
+
+  const allHeadshots = [
+    "https://assets.artistfirst.in/uploads/1747722518107-Urban_Sleek_Headshot_A1.jpg",
+    "https://assets.artistfirst.in/uploads/1747722596046-Sunlit_Lane_Headshot_A1.jpg",
+    "https://assets.artistfirst.in/uploads/1747722626136-Ocean_Luxe_Headshot_A1.jpg",
+    "https://assets.artistfirst.in/uploads/1747722644121-Coastal_Edge._Headshot_A1jpg.jpg",
+    "https://assets.artistfirst.in/uploads/1747722665915-Corp_Park_Headshot_A1.jpg",
+    "https://assets.artistfirst.in/uploads/1747722685634-Cruise_Deck_Headshot_A1.jpg",
+    "https://assets.artistfirst.in/uploads/1747722710694-Golden_Lane_Headshot_A1.jpg",
+    "https://assets.artistfirst.in/uploads/1747722731444-Modern_Office_Headshot_A1.jpg",
+    "https://assets.artistfirst.in/uploads/1747722749897-Cafe_Vibe_Headshot_A1.jpg",
+    "https://assets.artistfirst.in/uploads/1747722773986-Suburban_Sun_Headshot_A1.jpg",
+    "https://assets.artistfirst.in/uploads/1747722793576-Tree_Canopy_Headshot_A1.jpg",
+    "https://assets.artistfirst.in/uploads/1747722813916-Green_Belt_Headshot_A1.jpg",
+    "https://assets.artistfirst.in/uploads/1747722829388-Leafy_Tunnel_Headshot_A1.jpg",
+    "https://assets.artistfirst.in/uploads/1747722853393-Sunset_Sea_Headshot_A1.jpg",
+    "https://assets.artistfirst.in/uploads/1747722901407-City_Canopy_Headshot_A1.jpg",
+    "https://assets.artistfirst.in/uploads/1747722871243-Dappled_Walk_Headshot_A1.jpg",
+    "https://assets.artistfirst.in/uploads/1747723002925-Prime_Suburb_Headshot_A1.jpg",
+    "https://assets.artistfirst.in/uploads/1747722934391-Grand_Avenue_Headshot_A1.jpg",
+    "https://assets.artistfirst.in/uploads/1747722952743-Biz_District_Headshot_A1.jpg",
+    "https://assets.artistfirst.in/uploads/1747730179106-Bright_Lane_Headshot_A1.jpg",
+  ].map((url, index) => ({ id: index + 1, url }));
+  
+const toggleImageSelection = (imgUrl) => {
+  setSelectedImages((prev) =>
+    prev.includes(imgUrl)
+      ? prev.filter((url) => url !== imgUrl)
+      : [...prev, imgUrl]
+  );
+};
 
   const aspectRatioSizeMap = {
     "1:1": "w-4 h-4",
@@ -124,6 +159,7 @@ const Index = ({ masterData }) => {
   );
 
   const handleEdit = () => {
+    alert("Coming Soon");
     //console.log(template);
     //router.push(`/edit-image/${slug}`);
   };
@@ -192,7 +228,8 @@ const Index = ({ masterData }) => {
                   imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
                   creditsUsed: 1,
                   aspectRatio: aspectRatio,
-                  ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) })  // ✅ encode URL with spaces
+                  ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }),  // ✅ encode URL with spaces
+                  selectedImages, // Array of URLs
                 };
 
                 //console.log(requestBody);
@@ -219,7 +256,8 @@ const Index = ({ masterData }) => {
       imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
       creditsUsed: 1,
       aspectRatio: aspectRatio,
-      ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) })  // ✅ encode URL with spaces
+      ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }),  // ✅ encode URL with spaces
+      selectedImages, // Array of URLs
     };
 
     //console.log(requestBody);
@@ -328,12 +366,41 @@ const Index = ({ masterData }) => {
       {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
       <div className="w-full md:w-[25%] bg-[#FFFFFF0D] p-4">
         <div className="">
+          {slug === "headshot" ? ( 
           <div className="mb-6">
-            <div className="flex justify-between flex-wrap">
-              <h3 className="text-sm font-medium mb-2">Prompt</h3>
-              
+            <h3 className="text-sm font-medium mb-2">Select Headshots</h3>
+            <div className="grid grid-cols-4 gap-3">
+              {(showAllImages ? allHeadshots : allHeadshots.slice(0, 8)).map((img) => (
+                <div
+                  key={img.id}
+                  className={`cursor-pointer border-2 rounded-lg overflow-hidden transition ${
+                    selectedImages.includes(img.url) ? "border-purple-500" : "border-transparent"
+                  }`}
+                  onClick={() => toggleImageSelection(img.url)}
+                >
+                  <img
+                    src={img.url}
+                    alt={`Headshot ${img.id}`}
+                    className="w-full h-20 object-cover"
+                  />
+                </div>
+              ))}
             </div>
 
+            {allHeadshots.length > 8 && (
+              <button
+                onClick={() => setShowAllImages((prev) => !prev)}
+                className="mt-3 text-sm text-blue-600 hover:underline"
+              >
+                {showAllImages ? "Show Less" : "Show More"}
+              </button>
+            )}
+          </div>
+          ) : (
+            <div className="mb-6">
+            <div className="flex justify-between flex-wrap">
+              <h3 className="text-sm font-medium mb-2">Prompt</h3>
+            </div>
             <div className="bg-[#F5F5F5] rounded-lg p-3 flex justify-between items-start">
               <textarea
                 className="w-full rounded-md bg-transparent text-sm text-[#1E1E1EB2] text-normal placeholder-gray-500 focus:outline-none"
@@ -344,6 +411,7 @@ const Index = ({ masterData }) => {
               ></textarea>
             </div>
           </div>
+        )}
           <div className="mb-6 flex gap-x-10">
           {/* Ref Image */}
           <div className="w-1/2">
@@ -407,11 +475,12 @@ const Index = ({ masterData }) => {
             </div>
           </div>
           </div>
-          {/* {(
+        
+          {(
             <div className="mb-6">
               <AvatarDropdown data={masterData?.avatars} onSelect={handleAvatarSelect}  />
             </div>
-          )} */}
+          )}
 
           {visibility && (
             <div className="mb-6">
@@ -559,7 +628,6 @@ export default Index;
 
 export async function getServerSideProps(ctx) {
   const cookie = parseCookies(ctx);
-
   const authToken = cookie["aToken"];
 
   try {

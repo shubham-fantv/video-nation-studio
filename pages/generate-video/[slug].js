@@ -171,7 +171,7 @@ const Index = ({ masterData }) => {
   );
 
   const handleEdit = () => {
-    //console.log(template);
+    alert("Coming Soon");
     //router.push(`/edit-video/${slug}`);
   };
 
@@ -389,19 +389,19 @@ const Index = ({ masterData }) => {
 
 
   const handleDownloadVideo = async () => {
-    if (!videoUrl) return;
+    if (!video) return;
 
     sendEvent({
       event: "Home --> Recreate --> Download",
       email: userData?.email,
       name: userData?.name,
       video: video?._id,
-      videoUrl: videoUrl,
-      category: activeSlug,
+      videoUrl: video,
+      category: slug,
     });
 
     try {
-      const response = await fetch(videoUrl);
+      const response = await fetch(video);
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
 

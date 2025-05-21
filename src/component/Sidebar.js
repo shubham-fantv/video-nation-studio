@@ -109,11 +109,13 @@ import { useRouter } from "next/router";
 import styles from "./styles";
 import useGTM from "../hooks/useGTM";
 import { useSelector } from "react-redux";
+import { useEffect, useState, useRef } from "react";
 
 function Sidebar({ children }) {
   const router = useRouter();
   const currentPath = router.pathname;
 
+  const { isLoggedIn } = useSelector((state) => state.user);
   const isActiveLink = (...paths) => {
     const exactMatch = paths.find((path) => router.pathname === path);
     if (exactMatch) return true;
@@ -281,6 +283,7 @@ function Sidebar({ children }) {
                 </li>
               </ul>
               <ul>
+              {isLoggedIn && (
                 <li>
                   <Link href="/my-library" passHref legacyBehavior>
                     <div className="flex items-center   cursor-pointer">
@@ -305,6 +308,7 @@ function Sidebar({ children }) {
                     </div>
                   </Link>
                 </li>
+              )}
               </ul>
             </div>
 
@@ -336,6 +340,7 @@ function Sidebar({ children }) {
                     </a>
                   </Link>
                 </li>
+                {isLoggedIn && (
                 <li>
                   <Link legacyBehavior href="/usage" passHref>
                     <a className="flex items-center  py-2">
@@ -361,6 +366,7 @@ function Sidebar({ children }) {
                     </a>
                   </Link>
                 </li>
+                )}
               </ul>
             </div>
           </aside>
