@@ -6,6 +6,7 @@ import fetcher from "../dataProvider";
 import useIsMobile from "../hooks/useIsMobile";
 import { useSelector } from "react-redux";
 import useGTM from "../hooks/useGTM";
+import LoginAndSignup from "./feature/Login";
 
 const CommunityCreatedContent = ({
   title = "Community Created Content",
@@ -16,10 +17,11 @@ const CommunityCreatedContent = ({
   page = "",
 }) => {
   const [activeTab, setActiveTab] = useState(activeSlug);
-
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
+  console.log("🚀 ~ isPopupVisible:", isPopupVisible);
   const [templateData, setTemplateData] = useState(data);
 
-  const { userData } = useSelector((state) => state.user);
+  const { isLoggedIn, userData } = useSelector((state) => state.user);
   const { sendEvent } = useGTM();
 
   const router = useRouter();
@@ -128,14 +130,18 @@ const CommunityCreatedContent = ({
   const isMobile = useIsMobile();
 
   const handleNavigate = (video) => {
-    sendEvent({
-      event: page == "Category?" ? "Home --> Explore --> Recreate" : "Home --> Recreate",
-      email: userData?.email,
-      name: userData?.name,
-      video: video?._id,
-      category: activeSlug,
-    });
-    router.push(`/generate-video/${video?._id}`);
+    if (!isLoggedIn) {
+      setIsPopupVisible(true);
+    } else {
+      sendEvent({
+        event: page == "Category?" ? "Home --> Explore --> Recreate" : "Home --> Recreate",
+        email: userData?.email,
+        name: userData?.name,
+        video: video?._id,
+        category: activeSlug,
+      });
+      router.push(`/generate-video/${video?._id}`);
+    }
   };
 
   return (
@@ -291,6 +297,13 @@ const CommunityCreatedContent = ({
           </div>
         </div>
       </div>
+      {isPopupVisible && (
+        <LoginAndSignup
+          callBackName={"uniqueCommunity"}
+          open={isPopupVisible}
+          handleModalClose={() => setIsPopupVisible(false)}
+        />
+      )}
     </div>
   );
 };
