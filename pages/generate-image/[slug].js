@@ -232,7 +232,7 @@ const toggleImageSelection = (imgUrl) => {
 
                 //console.log(requestBody);
                 setLoading(true)
-                alert(JSON.stringify(requestBody, null, 2));
+                // alert(JSON.stringify(requestBody, null, 2));
 
                 generateImageApi(requestBody);
             }
@@ -255,12 +255,12 @@ const toggleImageSelection = (imgUrl) => {
       creditsUsed: 1,
       aspectRatio: aspectRatio,
       ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }),  // ✅ encode URL with spaces
-      selectedImages, // Array of URLs
+      // selectedImages, // Array of URLs
     };
 
     //console.log(requestBody);
     setLoading(true)
-    alert(JSON.stringify(requestBody, null, 2));
+    // alert(JSON.stringify(requestBody, null, 2));
 
     generateImageApi(requestBody);
   }
