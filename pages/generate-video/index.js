@@ -36,21 +36,26 @@ const index = () => {
     {
       name: "Laura",
       value: "6ZeRQ71MhGGmKDjCiFRa",
-      sampleUrl: "https://assets.artistfirst.in/uploads/1747488017829-voice_preview_laura%20-%20narrative.mp3",
+      sampleUrl:
+        "https://assets.artistfirst.in/uploads/1747488017829-voice_preview_laura%20-%20narrative.mp3",
     },
     {
       name: "John",
       value: "c4NIULtANlpduSDihsKJ",
-      sampleUrl: "https://assets.artistfirst.in/uploads/1747488078180-voice_preview_john_storyteller.mp3",
+      sampleUrl:
+        "https://assets.artistfirst.in/uploads/1747488078180-voice_preview_john_storyteller.mp3",
     },
     {
       name: "Clara",
       value: "8LVfoRdkh4zgjr8v5ObE",
-      sampleUrl: "https://assets.artistfirst.in/uploads/1747488113955-voice_preview_clarastoryteller.mp3",
-    },    {
+      sampleUrl:
+        "https://assets.artistfirst.in/uploads/1747488113955-voice_preview_clarastoryteller.mp3",
+    },
+    {
       name: "Monika",
       value: "2bNrEsM0omyhLiEyOwqY",
-      sampleUrl: "https://assets.artistfirst.in/uploads/1747488171032-voice_preview_monika%20sogam-friendly%20customer%20care%20agent.mp3",
+      sampleUrl:
+        "https://assets.artistfirst.in/uploads/1747488171032-voice_preview_monika%20sogam-friendly%20customer%20care%20agent.mp3",
     },
     {
       name: "Arjun",
@@ -65,9 +70,13 @@ const index = () => {
     { label: "Yellow Border", value: "YellowBorder", img: "/images/fantasy-purple.png" },
     { label: "Top Italic", value: "TopItalic", img: "/images/caption-previews/top_italic.png" },
     { label: "Big Red", value: "BigRedImpact", img: "/images/caption-previews/big_red_impact.png" },
-    { label: "Fantasy Purple", value: "FantasyPurple", img: "/images/caption-previews/fantasy_purple.png" },
+    {
+      label: "Fantasy Purple",
+      value: "FantasyPurple",
+      img: "/images/caption-previews/fantasy_purple.png",
+    },
   ];
-  
+
   const [captionEnabled, setCaptionEnabled] = useState(false);
   const [voiceoverEnabled, setVoiceoverEnabled] = useState(false);
   const [templates, setTemplates] = useState([]);
@@ -155,7 +164,6 @@ const index = () => {
     (obj) => fetcher.post(`${API_BASE_URL}/api/v1/ai-video`, obj),
     {
       onSuccess: (response) => {
-        //console.log(response);
         setImagePreview(null);
         setPrompt("");
         setFinalVideo(response?.data._id);
@@ -163,7 +171,21 @@ const index = () => {
         if (userData?.isTrialUser) {
           localStorage.setItem("lastTrialAction", Date.now().toString());
         }
-        router.push(`/generate-video/${response?.data._id}`,undefined, { scroll: false });
+
+        sendEvent({
+          event: "asset_generated",
+          aspectRatio: aspectRatio,
+          duration: duration,
+          credits_used: credits,
+          caption: captionEnabled,
+          voiceover: voiceoverEnabled,
+          button_text: "Generate",
+          page_name: "Generate Video",
+          interaction_type: "Standard Button",
+          type: "video",
+          url: response?.data?.finalVideoUrl,
+        });
+        router.push(`/generate-video/${response?.data._id}`, undefined, { scroll: false });
         // setSwalProps({
         //   icon: "success",
         //   show: true,
@@ -196,9 +218,9 @@ const index = () => {
   );
 
   const handleConfirm = () => {
-  //  router.push("/my-library");
+    //  router.push("/my-library");
 
-    router.push(`/generate-video/${finalVideo}`,undefined, { scroll: false });
+    router.push(`/generate-video/${finalVideo}`, undefined, { scroll: false });
   };
 
   const handleGenerateVideo = () => {
@@ -207,112 +229,116 @@ const index = () => {
         alert("Please enter a prompt!");
         return;
       }
-    
-    const creditsUsed = 20*parseInt((duration.replace("sec", "").trim()/5),10);
-    
-    if (userData.credits <= 0 || userData.credits < creditsUsed) {
-      
-          setSwalProps({
-            key: Date.now(), // or use a counter
-            show: true,
-            title: `⏳ You only have ${userData.credits} Credits Left!`,
-            text: "Upgrade now to buy Credits, unlock HD, pro voices, and longer videos.",
-            confirmButtonText: "View Plans",
-            showCancelButton: true,
-            icon: "warning",
-            preConfirm: () => {
-              router.push("/subscription");
-            }
-          });
+
+      const creditsUsed = 20 * parseInt(duration.replace("sec", "").trim() / 5, 10);
+
+      if (userData.credits <= 0 || userData.credits < creditsUsed) {
+        setSwalProps({
+          key: Date.now(), // or use a counter
+          show: true,
+          title: `⏳ You only have ${userData.credits} Credits Left!`,
+          text: "Upgrade now to buy Credits, unlock HD, pro voices, and longer videos.",
+          confirmButtonText: "View Plans",
+          showCancelButton: true,
+          icon: "warning",
+          preConfirm: () => {
+            router.push("/subscription");
+          },
+        });
+      } else {
+        if (userData?.isTrialUser) {
+          const now = Date.now();
+          const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || now, 10);
+
+          if (now - lastActionTime > 0 && now - lastActionTime < RATE_LIMIT_INTERVAL_MS) {
+            const waitTime = Math.ceil(
+              (RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60
+            );
+            setSwalProps({
+              key: Date.now(), // or use a counter
+              show: true,
+              title: "⏳ Please wait",
+              text: `Free users can generate only one video every 12 hours. Try again in ${waitTime} min. Upgrade Now to get Unlimited generations and HD quality.`,
+              confirmButtonText: "View Plans",
+              showCancelButton: true,
+              icon: "info",
+              preConfirm: () => {
+                router.push("/subscription");
+              },
+            });
+            return;
           } else {
-              if (userData?.isTrialUser) {
-                const now = Date.now();
-                const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || now, 10);
-            
-                if ((now - lastActionTime) > 0 && (now - lastActionTime) < RATE_LIMIT_INTERVAL_MS) {
-                  const waitTime = Math.ceil((RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60);
-                  setSwalProps({
-                    key: Date.now(), // or use a counter
-                    show: true,
-                    title: "⏳ Please wait",
-                    text: `Free users can generate only one video every 12 hours. Try again in ${waitTime} min. Upgrade Now to get Unlimited generations and HD quality.`,
-                    confirmButtonText: "View Plans",
-                    showCancelButton: true,
-                    icon: "info",
-                    preConfirm: () => {
-                      router.push("/subscription");
-                    }
-                  });
-                  return;
-                } else {
-                  //console.log("selectedVoice",selectedVoice);
-                  const requestBody = {
-                    prompt,
-                    imageInput: image ? [image] : [],
-                    creditsUsed: creditsUsed,
-                    aspectRatio: aspectRatio,
-                    duration: duration,
-                    caption: captionEnabled,
-                    ...(selectedVoice && { voiceId: selectedVoice}),  // ✅ selectedVoice
-                    ...(selectedCaptionStyle && { captionStyle: selectedCaptionStyle}),  // ✅ selectedCaption
-                    voiceover: voiceoverEnabled,
-                    ...(image && { imageUrl: encodeURI(decodeURI(image)) })  // ✅ encode URL with spaces
-                  };
-                  setLoading(true);
-            
-                  sendEvent({
-                    event: "Generate Video",
-                    email: userData?.email,
-                    name: userData?.name,
-                    prompt: prompt,
-                    aspectRatio: aspectRatio,
-                    duration: duration,
-                    caption: captionEnabled,
-                    voiceover: voiceoverEnabled,
-                    ...(image && { imageUrl: image }), // ✅ only include if `image` is truthy
-                  });
-                  if (userData?.isTrialUser) {
-                     localStorage.setItem("lastTrialAction", Date.now().toString());
-                   } 
-                  //console.log("requestBody",requestBody);
-                  generateVideoApi(requestBody);
-                }            
+            //console.log("selectedVoice",selectedVoice);
+            const requestBody = {
+              prompt,
+              imageInput: image ? [image] : [],
+              creditsUsed: creditsUsed,
+              aspectRatio: aspectRatio,
+              duration: duration,
+              caption: captionEnabled,
+              ...(selectedVoice && { voiceId: selectedVoice }), // ✅ selectedVoice
+              ...(selectedCaptionStyle && { captionStyle: selectedCaptionStyle }), // ✅ selectedCaption
+              voiceover: voiceoverEnabled,
+              ...(image && { imageUrl: encodeURI(decodeURI(image)) }), // ✅ encode URL with spaces
+            };
+            setLoading(true);
+
+            sendEvent({
+              event: "button_clicked",
+              email: userData?.email,
+              name: userData?.name,
+              prompt: prompt,
+              aspectRatio: aspectRatio,
+              duration: duration,
+              caption: captionEnabled,
+              voiceover: voiceoverEnabled,
+              button_text: "Generate",
+              page_name: "Generate Video",
+              interaction_type: "Standard Button",
+              ...(image && { imageUrl: image }), // ✅ only include if `image` is truthy
+            });
+            if (userData?.isTrialUser) {
+              localStorage.setItem("lastTrialAction", Date.now().toString());
+            }
+            //console.log("requestBody",requestBody);
+            generateVideoApi(requestBody);
+          }
         } else {
-      //console.log("selectedVoice",selectedVoice);
-      const requestBody = {
-        prompt,
-        imageInput: image ? [image] : [],
-        creditsUsed: creditsUsed,
-        aspectRatio: aspectRatio,
-        duration: duration,
-        caption: captionEnabled,
-        ...(selectedVoice && { voiceId: selectedVoice}),  // ✅ selectedVoice
-        ...(selectedCaptionStyle && { captionStyle: selectedCaptionStyle}),  // ✅ selectedCaption
-        voiceover: voiceoverEnabled,
-        ...(image && { imageUrl: encodeURI(decodeURI(image)) })  // ✅ encode URL with spaces
-      };
-      setLoading(true);
+          //console.log("selectedVoice",selectedVoice);
+          const requestBody = {
+            prompt,
+            imageInput: image ? [image] : [],
+            creditsUsed: creditsUsed,
+            aspectRatio: aspectRatio,
+            duration: duration,
+            caption: captionEnabled,
+            ...(selectedVoice && { voiceId: selectedVoice }), // ✅ selectedVoice
+            ...(selectedCaptionStyle && { captionStyle: selectedCaptionStyle }), // ✅ selectedCaption
+            voiceover: voiceoverEnabled,
+            ...(image && { imageUrl: encodeURI(decodeURI(image)) }), // ✅ encode URL with spaces
+          };
+          setLoading(true);
 
-      sendEvent({
-        event: "Generate Video",
-        email: userData?.email,
-        name: userData?.name,
-        prompt: prompt,
-        aspectRatio: aspectRatio,
-        duration: duration,
-        caption: captionEnabled,
-        voiceover: voiceoverEnabled,
-        ...(image && { imageUrl: image }), // ✅ only include if `image` is truthy
-      });
+          sendEvent({
+            event: "Generate Video",
+            email: userData?.email,
+            name: userData?.name,
+            prompt: prompt,
+            aspectRatio: aspectRatio,
+            duration: duration,
+            caption: captionEnabled,
+            voiceover: voiceoverEnabled,
+            ...(image && { imageUrl: image }), // ✅ only include if `image` is truthy
+          });
 
-      //console.log("requestBody",requestBody);
+          //console.log("requestBody",requestBody);
 
-      if (userData?.isTrialUser) {
-          localStorage.setItem("lastTrialAction", Date.now().toString());
+          if (userData?.isTrialUser) {
+            localStorage.setItem("lastTrialAction", Date.now().toString());
+          }
+          generateVideoApi(requestBody);
         }
-      generateVideoApi(requestBody);
       }
-    }
     } else {
       setIsPopupVisible(true);
     }
@@ -340,7 +366,7 @@ const index = () => {
       pickRandomQuote();
     }, 15000);
 
-    // Simulate progress over ~3 minutes 
+    // Simulate progress over ~3 minutes
     const totalDuration = 180000; // 3 minutes
     const updateInterval = 2000; // every 2 seconds
     let elapsed = 0;
@@ -353,7 +379,7 @@ const index = () => {
         Math.floor(100 * Math.pow(progressRatio, 2.5)), // exponent controls acceleration
         99
       );
-  
+
       const progress = Math.min(Math.floor((elapsed / totalDuration) * 100), 99); // max 99%
       setProgressPercentage(easedProgress);
     }, updateInterval);
@@ -376,7 +402,9 @@ const index = () => {
 
   return (
     <div>
-      {isLoading && <Loading title={`Generating your video... (${progressPercentage}%)`} subTitle={subTitle} />}
+      {isLoading && (
+        <Loading title={`Generating your video... (${progressPercentage}%)`} subTitle={subTitle} />
+      )}
       <div className="justify-center m-auto">
         <h1 className="text-black text-[32px] font-semibold text-center leading-[38px]">
           AI-Powered Video Creation. Just Type & Generate
@@ -447,7 +475,10 @@ const index = () => {
             {/* <span className="w-4 h-3 border border-black rounded-sm"></span> */}
             <select
               value={duration}
-              onChange={(e) => {setDuration(e.target.value);setCredits(20*parseInt((e.target.value.replace("sec", "").trim()/5),10))}}
+              onChange={(e) => {
+                setDuration(e.target.value);
+                setCredits(20 * parseInt(e.target.value.replace("sec", "").trim() / 5, 10));
+              }}
               className="bg-[#FFF]"
             >
               {durationData?.map((item) => (
@@ -456,40 +487,40 @@ const index = () => {
             </select>
           </button>
           {/* Caption Dropdown */}
-            {/* Caption Style Dropdown */}
-{/* Caption Style Dropdown (Image Preview) */}
-<div className="relative">
-  <button
-    onClick={() => setShowCaptionDropdown((prev) => !prev)}
-    className="flex items-center gap-2 rounded-md bg-white px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all"
-  >
-    <span>
-      Caption {selectedCaptionStyle ? selectedCaptionStyle : ""}
-    </span>
-    <span>{showCaptionDropdown ? "▲" : "▼"}</span>
-  </button>
+          {/* Caption Style Dropdown */}
+          {/* Caption Style Dropdown (Image Preview) */}
+          <div className="relative">
+            <button
+              onClick={() => setShowCaptionDropdown((prev) => !prev)}
+              className="flex items-center gap-2 rounded-md bg-white px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all"
+            >
+              <span>Caption {selectedCaptionStyle ? selectedCaptionStyle : ""}</span>
+              <span>{showCaptionDropdown ? "▲" : "▼"}</span>
+            </button>
 
-  {showCaptionDropdown && (
-    <div className="absolute z-10 mt-2 w-[280px] bg-white border border-gray-300 rounded-md shadow-lg max-h-72 overflow-auto">
-      {/* Option to unselect */}
-      <div
-        className={`flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100 ${
-          selectedCaptionStyle === null ? "bg-purple-100 border-l-4 border-purple-400" : ""
-        }`}
-        onClick={() => {
-          setSelectedCaptionStyle(null);
-          setShowCaptionDropdown(false);
-        }}
-      >
-        <span className="text-sm italic text-gray-500">No Captions</span>
-      </div>
+            {showCaptionDropdown && (
+              <div className="absolute z-10 mt-2 w-[280px] bg-white border border-gray-300 rounded-md shadow-lg max-h-72 overflow-auto">
+                {/* Option to unselect */}
+                <div
+                  className={`flex items-center px-4 py-2 cursor-pointer hover:bg-gray-100 ${
+                    selectedCaptionStyle === null
+                      ? "bg-purple-100 border-l-4 border-purple-400"
+                      : ""
+                  }`}
+                  onClick={() => {
+                    setSelectedCaptionStyle(null);
+                    setShowCaptionDropdown(false);
+                  }}
+                >
+                  <span className="text-sm italic text-gray-500">No Captions</span>
+                </div>
 
-      {captionOptions.map((style) => (
-        <div
-          key={style.value}
-          className={`flex justify-between items-center px-3 py-2 cursor-pointer transition ${
-            selectedCaptionStyle === style.value
-              ? "bg-purple-100 border-l-4 border-purple-500"
+                {captionOptions.map((style) => (
+                  <div
+                    key={style.value}
+                    className={`flex justify-between items-center px-3 py-2 cursor-pointer transition ${
+                      selectedCaptionStyle === style.value
+                        ? "bg-purple-100 border-l-4 border-purple-500"
                         : "hover:bg-gray-100"
                     }`}
                     onClick={() => {
@@ -497,7 +528,9 @@ const index = () => {
                       setShowCaptionDropdown(false);
                       setCaptionEnabled(true);
                     }}
-                  > <span className="text-sm text-gray-500">{style.label}</span>
+                  >
+                    {" "}
+                    <span className="text-sm text-gray-500">{style.label}</span>
                     {/* <img
                       src={style.img}
                       alt={style.label}
@@ -510,8 +543,8 @@ const index = () => {
                 ))}
               </div>
             )}
-            </div>
-        
+          </div>
+
           {/* Voiceover Dropdown */}
           <div className="relative">
             {/* Toggle Button Styled Like Duration */}
@@ -520,7 +553,10 @@ const index = () => {
               className="flex items-center gap-2 rounded-md bg-[#FFF] px-4 py-2 text-sm text-[1E1E1E] shadow-md transition-all"
             >
               <span>
-                Voiceover{selectedVoice ? `: ${voiceOptions.find(v => v.value === selectedVoice)?.name}` : ""}
+                Voiceover
+                {selectedVoice
+                  ? `: ${voiceOptions.find((v) => v.value === selectedVoice)?.name}`
+                  : ""}
               </span>
               <span>{showVoiceDropdown ? "^" : "▼"}</span>
             </button>
@@ -528,60 +564,62 @@ const index = () => {
             {/* Dropdown Content */}
             {showVoiceDropdown && (
               <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
-                    <div
-                      className={`flex justify-between items-center px-4 py-2 cursor-pointer hover:bg-gray-100 ${
-                        selectedVoice === null ? "bg-purple-100 border-l-4 border-purple-400" : ""
-                      }`}
-                      onClick={() => {
-                        setSelectedVoice(null);
-                        setShowVoiceDropdown(false);
-                      }}
-                    >
-                      <span className="text-sm italic text-gray-500">No Voice</span>
-                    </div>
-                    {voiceOptions.map((voice) => (
-                                    <div
-                      key={voice.value}
-                      className={`flex justify-between items-center px-4 py-2 cursor-pointer transition ${
-                        selectedVoice === voice.value ? "bg-purple-100 border-l-4 border-purple-400" : "hover:bg-gray-100"
-                      }`}
-                      onClick={() => {
-                        setSelectedVoice(voice.value);
-                        setVoiceoverEnabled(true);
-                        setShowVoiceDropdown(false);
-                      }}
-                    >
-                      <span className="text-sm">{voice.name}</span>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
+                <div
+                  className={`flex justify-between items-center px-4 py-2 cursor-pointer hover:bg-gray-100 ${
+                    selectedVoice === null ? "bg-purple-100 border-l-4 border-purple-400" : ""
+                  }`}
+                  onClick={() => {
+                    setSelectedVoice(null);
+                    setShowVoiceDropdown(false);
+                  }}
+                >
+                  <span className="text-sm italic text-gray-500">No Voice</span>
+                </div>
+                {voiceOptions.map((voice) => (
+                  <div
+                    key={voice.value}
+                    className={`flex justify-between items-center px-4 py-2 cursor-pointer transition ${
+                      selectedVoice === voice.value
+                        ? "bg-purple-100 border-l-4 border-purple-400"
+                        : "hover:bg-gray-100"
+                    }`}
+                    onClick={() => {
+                      setSelectedVoice(voice.value);
+                      setVoiceoverEnabled(true);
+                      setShowVoiceDropdown(false);
+                    }}
+                  >
+                    <span className="text-sm">{voice.name}</span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
 
-                          // if clicking same voice
-                          if (isPlaying === voice.value) {
-                            audioRef.current?.pause();
-                            setIsPlaying(null);
-                          } else {
-                            if (audioRef.current) {
-                              audioRef.current.pause();
-                            }
-
-                            const newAudio = new Audio(voice.sampleUrl);
-                            newAudio.crossOrigin = "anonymous";
-                            audioRef.current = newAudio;
-                            setIsPlaying(voice.value);
-
-                            newAudio.play().catch((err) => {
-                              console.error("Playback error:", err);
-                            });
-                            newAudio.onended = () => setIsPlaying(null);
+                        // if clicking same voice
+                        if (isPlaying === voice.value) {
+                          audioRef.current?.pause();
+                          setIsPlaying(null);
+                        } else {
+                          if (audioRef.current) {
+                            audioRef.current.pause();
                           }
-                        }}
-                        className="text-xs px-2 py-1 rounded bg-gray-200 hover:bg-gray-300"
-                      >
-                        {isPlaying === voice.value ? "⏸" : "▶"}
-                      </button>
-                    </div>
-                  ))}
+
+                          const newAudio = new Audio(voice.sampleUrl);
+                          newAudio.crossOrigin = "anonymous";
+                          audioRef.current = newAudio;
+                          setIsPlaying(voice.value);
+
+                          newAudio.play().catch((err) => {
+                            console.error("Playback error:", err);
+                          });
+                          newAudio.onended = () => setIsPlaying(null);
+                        }
+                      }}
+                      className="text-xs px-2 py-1 rounded bg-gray-200 hover:bg-gray-300"
+                    >
+                      {isPlaying === voice.value ? "⏸" : "▶"}
+                    </button>
+                  </div>
+                ))}
               </div>
             )}
           </div>
@@ -592,29 +630,30 @@ const index = () => {
           >
             🪄 Magic Prompt
           </button> */}
-          <div className="text-sm">Credits : {credits}
-          {Math.floor(userData?.credits / credits) < 6 && (
+          <div className="text-sm">
+            Credits : {credits}
+            {Math.floor(userData?.credits / credits) < 6 && (
               <div className="text-center">
                 <small
                   className={
-                    Math.floor(userData.credits / credits) < 2 
+                    Math.floor(userData.credits / credits) < 2
                       ? "text-red-600 font-semibold"
                       : "text-black"
                   }
                 >
-                  {Math.max(1, Math.floor(userData.credits / credits))} video{Math.floor(userData.credits / credits) === 1 ? "" : "s"} left
+                  {Math.max(1, Math.floor(userData.credits / credits))} video
+                  {Math.floor(userData.credits / credits) === 1 ? "" : "s"} left
                 </small>
               </div>
             )}
-        </div>
+          </div>
           <button
             onClick={() => handleGenerateVideo()}
             className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-2 text-white shadow-md transition-all hover:brightness-110"
           >
             ✨ Generate
           </button>
-         
-        </div> 
+        </div>
       </div>
       <div className="flex flex-wrap gap-2 mt-4 overflow-auto">
         {samplePrompts.map((sample, idx) => (
@@ -646,8 +685,7 @@ const index = () => {
         />
       )}
       <SweetAlert2 {...swalProps} onConfirm={(handleConfirm) => setSwalProps({ show: false })} />
-
-      </div>
+    </div>
   );
 };
 

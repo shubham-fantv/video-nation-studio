@@ -26,7 +26,7 @@ const aspectRatioSizeMap = {
 const index = () => {
   const [captionEnabled, setCaptionEnabled] = useState(false);
   const lastTrialAction = localStorage.getItem("lastTrialAction");
-  const RATE_LIMIT_INTERVAL_MS = 1 * 1000; // 1 sec for Image 
+  const RATE_LIMIT_INTERVAL_MS = 1 * 1000; // 1 sec for Image
   const [templates, setTemplates] = useState([]);
   const [imagePreview, setImagePreview] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -45,9 +45,8 @@ const index = () => {
     list
       .sort(() => 0.5 - Math.random()) // Shuffle
       .slice(0, count); // Pick first 3
-  
-  const [samplePrompts, setSamplePrompts] = useState([]);
 
+  const [samplePrompts, setSamplePrompts] = useState([]);
 
   const magicPrompts = [
     "A dragon soaring over snow-covered mountains at dusk",
@@ -57,13 +56,12 @@ const index = () => {
     "An astronaut relaxing on a tropical alien beach",
     // Add more here...
   ];
-  
+
   const generateMagicPrompt = () => {
-    const randomPrompt =
-      magicPrompts[Math.floor(Math.random() * magicPrompts.length)];
+    const randomPrompt = magicPrompts[Math.floor(Math.random() * magicPrompts.length)];
     setPrompt(randomPrompt);
   };
-  
+
   const { sendEvent } = useGTM();
 
   const { isLoggedIn, userData } = useSelector((state) => state.user);
@@ -116,7 +114,22 @@ const index = () => {
         // if (userData?.isTrialUser) {
         //   localStorage.setItem("lastTrialAction", Date.now().toString());
         // }
-        router.replace(`/generate-image/${response?.data._id}`,undefined, { scroll: false });
+
+        sendEvent({
+          event: "asset_generated",
+          aspectRatio: aspectRatio,
+          duration: duration,
+          credits_used: credits,
+          caption: captionEnabled,
+          voiceover: voiceoverEnabled,
+          button_text: "Generate",
+          page_name: "Generate Video",
+          interaction_type: "Standard Button",
+          type: "Image",
+          url: response?.data?.finalImageUrl,
+        });
+
+        router.replace(`/generate-image/${response?.data._id}`, undefined, { scroll: false });
         // setSwalProps({
         //   icon: "success",
         //   show: true,
@@ -131,14 +144,11 @@ const index = () => {
       },
       onError: (error) => {
         setLoading(false);
-      
+
         const defaultMessage = "Something went wrong. Please try again later.";
-      
-        const message =
-          error?.response?.data?.message ||
-          error?.message ||
-          defaultMessage;
-      
+
+        const message = error?.response?.data?.message || error?.message || defaultMessage;
+
         setSwalProps({
           key: Date.now(), // or use a counter
           icon: "error",
@@ -174,75 +184,80 @@ const index = () => {
           icon: "warning",
           preConfirm: () => {
             router.push("/subscription");
-          }
+          },
         });
-        } else {
-            if (userData?.isTrialUser) {
-              const now = Date.now();
-              const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || now, 10);
-            
-              if ((now - lastActionTime) > 0 && (now - lastActionTime) < RATE_LIMIT_INTERVAL_MS) {
-                const waitTime = Math.ceil((RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60);
-                setSwalProps({
-                  key: Date.now(), // or use a counter
-                  show: true,
-                  title: "⏳ Please wait",
-                  text: `Free users can generate only one image every 12 hours. Try again in ${waitTime} mins. Upgrade now to unlock unlimited generation and HD quality`,
-                  icon: "info",
-                  confirmButtonText: "View Plans",
-                  showCancelButton: true,
-                  preConfirm: () => {
-                    router.push("/subscription");
-                  }
-                });
-                return;
-              } else {
-                const requestBody = {
-                  prompt,
-                  imageInput: image ? [encodeURI(image)] : [],
-                  creditsUsed: 1,
-                  aspectRatio: aspectRatio,
-                  caption: captionEnabled,
-                  ...(image && { imageUrl: encodeURI(image) })  // ✅ encode URL with spaces
-                };
-          
-                setLoading(true);
-          
-                sendEvent({
-                  event: "Generate Image",
-                  email: userData?.email,
-                  name: userData?.name,
-                  prompt: prompt,
-                  aspectRatio: aspectRatio,
-                  caption: captionEnabled,
-                });
-          
-                generateImageApi(requestBody);
-              }
       } else {
+        if (userData?.isTrialUser) {
+          const now = Date.now();
+          const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || now, 10);
 
-      const requestBody = {
-        prompt,
-        imageInput: image ? [encodeURI(image)] : [],
-        creditsUsed: 1,
-        aspectRatio: aspectRatio,
-        caption: captionEnabled,
-        ...(image && { imageUrl: encodeURI(image) })  // ✅ encode URL with spaces
-      };
+          if (now - lastActionTime > 0 && now - lastActionTime < RATE_LIMIT_INTERVAL_MS) {
+            const waitTime = Math.ceil(
+              (RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60
+            );
+            setSwalProps({
+              key: Date.now(), // or use a counter
+              show: true,
+              title: "⏳ Please wait",
+              text: `Free users can generate only one image every 12 hours. Try again in ${waitTime} mins. Upgrade now to unlock unlimited generation and HD quality`,
+              icon: "info",
+              confirmButtonText: "View Plans",
+              showCancelButton: true,
+              preConfirm: () => {
+                router.push("/subscription");
+              },
+            });
+            return;
+          } else {
+            const requestBody = {
+              prompt,
+              imageInput: image ? [encodeURI(image)] : [],
+              creditsUsed: 1,
+              aspectRatio: aspectRatio,
+              caption: captionEnabled,
+              ...(image && { imageUrl: encodeURI(image) }), // ✅ encode URL with spaces
+            };
 
-      setLoading(true);
+            setLoading(true);
 
-      sendEvent({
-        event: "Generate Image",
-        email: userData?.email,
-        name: userData?.name,
-        prompt: prompt,
-        aspectRatio: aspectRatio,
-        caption: captionEnabled,
-      });
+            sendEvent({
+              event: "Generate Image",
+              email: userData?.email,
+              name: userData?.name,
+              prompt: prompt,
+              aspectRatio: aspectRatio,
+              caption: captionEnabled,
+            });
 
-      generateImageApi(requestBody);
-    }}
+            generateImageApi(requestBody);
+          }
+        } else {
+          const requestBody = {
+            prompt,
+            imageInput: image ? [encodeURI(image)] : [],
+            creditsUsed: 1,
+            aspectRatio: aspectRatio,
+            caption: captionEnabled,
+            ...(image && { imageUrl: encodeURI(image) }), // ✅ encode URL with spaces
+          };
+
+          setLoading(true);
+
+          sendEvent({
+            event: "button_clicked",
+            email: userData?.email,
+            name: userData?.name,
+            prompt: prompt,
+            aspectRatio: aspectRatio,
+            caption: captionEnabled,
+            button_text: "Generate",
+            page_name: "Generate Image",
+            interaction_type: "Standard Button",
+          });
+
+          generateImageApi(requestBody);
+        }
+      }
     } else {
       setIsPopupVisible(true);
     }
@@ -364,22 +379,20 @@ const index = () => {
           >
             🪄 Magic Prompt
           </button> */}
-          <div className="text-sm">Credits : 1
-
-          {Math.floor(userData?.credits) < 6 && (
+          <div className="text-sm">
+            Credits : 1
+            {Math.floor(userData?.credits) < 6 && (
               <div className="text-center">
                 <small
                   className={
-                    Math.floor(userData.credits) < 2 
-                      ? "text-red-600 font-semibold"
-                      : "text-black"
+                    Math.floor(userData.credits) < 2 ? "text-red-600 font-semibold" : "text-black"
                   }
                 >
-                  {Math.max(1, Math.floor(userData.credits))} image{Math.floor(userData.credits) === 1 ? "" : "s"} left
+                  {Math.max(1, Math.floor(userData.credits))} image
+                  {Math.floor(userData.credits) === 1 ? "" : "s"} left
                 </small>
               </div>
             )}
-            
           </div>
           <button
             onClick={() => handleGenerateImage()}
@@ -388,27 +401,22 @@ const index = () => {
             ✨ Generate
           </button>
         </div>
-        
       </div>
-       <div className="flex flex-wrap gap-2 mt-4 overflow-auto">
-          {samplePrompts.map((sample, idx) => (
-            <button
-              key={idx}
-              onClick={() => setPrompt(sample)}
-              className="w-[360px] h-[75px] rounded-full bg-[#F5F5F5] px-5 py-4 text-sm text-[#1E1E1E] shadow-sm hover:bg-gray-200 transition-all"
-            >
-              {sample}
-            </button>
-          ))}
-        </div>
-      <div className="mt-8">
- 
+      <div className="flex flex-wrap gap-2 mt-4 overflow-auto">
+        {samplePrompts.map((sample, idx) => (
+          <button
+            key={idx}
+            onClick={() => setPrompt(sample)}
+            className="w-[360px] h-[75px] rounded-full bg-[#F5F5F5] px-5 py-4 text-sm text-[#1E1E1E] shadow-sm hover:bg-gray-200 transition-all"
+          >
+            {sample}
+          </button>
+        ))}
       </div>
+      <div className="mt-8"></div>
       {templates.length > 0 && (
         <div className="mt-12">
-          <div className="w-full">
-           
-          </div>
+          <div className="w-full"></div>
         </div>
       )}
 
@@ -419,8 +427,7 @@ const index = () => {
           handleModalClose={() => setIsPopupVisible(false)}
         />
       )}
-            <SweetAlert2 {...swalProps} onConfirm={(handleConfirm) => setSwalProps({ show: false })} />
-
+      <SweetAlert2 {...swalProps} onConfirm={(handleConfirm) => setSwalProps({ show: false })} />
     </div>
   );
 };

@@ -1,3 +1,4 @@
+import { trackEvent } from "../../mixpanelClient";
 // lib/gtm.js
 export const GTM_ID = "GTM-PJRMHNSR";
 
@@ -13,4 +14,5 @@ export const event = ({ event, ...rest }) => {
     event,
     ...rest,
   });
+  trackEvent(event, { ...rest });
 };

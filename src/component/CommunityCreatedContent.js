@@ -18,7 +18,6 @@ const CommunityCreatedContent = ({
 }) => {
   const [activeTab, setActiveTab] = useState(activeSlug);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
-  console.log("🚀 ~ isPopupVisible:", isPopupVisible);
   const [templateData, setTemplateData] = useState(data);
 
   const { isLoggedIn, userData } = useSelector((state) => state.user);
