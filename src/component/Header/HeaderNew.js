@@ -29,7 +29,7 @@ const LogOutNavItem = [
     newTag: false,
   },
   {
-    path: "/generate-image",
+    path: "/image-studio",
     title: " Image Studio",
     icon: "🎵 ",
     newTag: true,
@@ -280,6 +280,7 @@ const HeaderNew = ({ app }) => {
     </Box>
   );
 
+  console.log("router.pathname", router.pathname);
   return (
     <>
       <Box sx={styles.navbar} onClick={(e) => e.stopPropagation()}>
@@ -325,7 +326,7 @@ const HeaderNew = ({ app }) => {
                 isActiveLink("/image-studio") ? "underline underline-offset-8" : ""
               }`}>
               <div>
-              <CLink href="/generate-image">
+              <CLink href="/image-studio">
                 <div>Image studio</div>
                 </CLink>
               </div>
@@ -335,7 +336,8 @@ const HeaderNew = ({ app }) => {
 
           <Box className="flex hidden md:flex">
           {userData?.credits > 0 ? (
-              userData.credits < 20 ? (
+              userData.credits < 20 && router?.pathname != "/subscription"
+ ? (
                 <div className="flex items-center px-4 gap-4">
                   <div className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium shadow">
                     {userData.credits} Credits Left

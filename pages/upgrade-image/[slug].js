@@ -16,7 +16,7 @@ const Index = ({ masterData }) => {
   const SLUG_CONFIG = {
     "enhance": {
         title: "Enhance Image Quality",
-        description: "Use AI to improve resolution, clarity, and sharpness of your images.",
+        description: "Instantly elevate your images with AI for professional clarity and vibrancy",
         prompt: "Enhance Image Quality",
         imageModel : 1,
         fileCaption1 : "Upload Picture",
@@ -24,7 +24,7 @@ const Index = ({ masterData }) => {
     },
     "background-remove": {
         title: "Remove the backgroud",
-        description: "Use AI to improve resolution, clarity, and sharpness of your images.",
+        description: "Get a clean, transparent background in seconds to perfectly isolate your subject",
         prompt: "Remove the backgroud",
         imageModel : 1,
         fileCaption1 : "Upload Picture",
@@ -32,7 +32,7 @@ const Index = ({ masterData }) => {
     },
     "change-outfit": {
         title: "Cloth Swap",
-        description: "Use AI to improve resolution, clarity, and sharpness of your images.",
+        description: "Virtually explore new fashion styles by swapping outfits",
         prompt: "Cloth Swap",
         imageModel : 2,
         fileCaption1 : "Upload Picture",
@@ -40,7 +40,7 @@ const Index = ({ masterData }) => {
     },
     "ai-deblur": {
         title: "AI Deblur",
-        description: "Use AI to improve resolution, clarity, and sharpness of your images.",
+        description: "Rescue your blurry memories and achieve crystal-clear focus",
         prompt: "AI Deblur",
         imageModel : 1,
         fileCaption1 : "Upload Picture",
@@ -48,7 +48,7 @@ const Index = ({ masterData }) => {
     },
     "ai-face-swap": {
         title: "Face Swap",
-        description: "Transform your photo into a cartoon-style artwork.",
+        description: "Seamlessly integrate faces into new images with professional-grade precision",
         prompt: "Face Swap",
         imageModel : 2,
         fileCaption1 : "Upload Face 1",
@@ -56,7 +56,7 @@ const Index = ({ masterData }) => {
     },
     "cyberpunk": {
         title: "Cyberpunk Style Image",
-        description: "Increase image resolution using AI without losing quality.",
+        description: "Immerse your images in a neon-drenched, futuristic cyberpunk world",
         prompt: "Cyberpunk Style Image",
         imageModel : 1,
         fileCaption1 : "Upload Picture",
@@ -64,7 +64,7 @@ const Index = ({ masterData }) => {
     },
     "ghibli": {
         title: "Ghibli Art Photo",
-        description: "Increase image resolution using AI without losing quality.",
+        description: "Evoke the beloved, hand-crafted aesthetic of Ghibli art from any picture",
         prompt: "Ghibli Art Photo",
         imageModel : 1,
         fileCaption1 : "Upload Picture",
@@ -72,7 +72,7 @@ const Index = ({ masterData }) => {
     },
     "anime": {
         title: "Anime Style Art",
-        description: "Increase image resolution using AI without losing quality.",
+        description: "Effortlessly generate distinct anime-style visuals",
         prompt: "Anime Style Art",
         imageModel : 1,
         fileCaption1 : "Upload Picture",
@@ -80,7 +80,7 @@ const Index = ({ masterData }) => {
     },
     "cartoon": {
         title: "Cartoonize Your Image",
-        description: "Increase image resolution using AI without losing quality.",
+        description: "Instantly 'cartoonify' your photos for a playful and artistic new look",
         prompt: "Cartoonize Your Image",
         imageModel : 1,
         fileCaption1 : "Upload Picture",
@@ -88,7 +88,7 @@ const Index = ({ masterData }) => {
     },
     "product-ad": {
         title: "Product Placement Ad",
-        description: "Increase image resolution using AI without losing quality.",
+        description: "Generate stunning, professional AI product photos that captivate customers",
         prompt: "Product Placement Ad",
         imageModel : 2,
         fileCaption1 : "Upload Picture",
@@ -96,7 +96,7 @@ const Index = ({ masterData }) => {
     },
     "album-art": {
         title: "Create Album Art",
-        description: "Increase image resolution using AI without losing quality.",
+        description: "Craft compelling album covers that capture your music's essence",
         prompt: "Create Album Art",
         imageModel : 1,
         fileCaption1 : "Upload Picture",

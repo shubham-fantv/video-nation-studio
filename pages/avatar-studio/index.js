@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 import useGTM from "../../src/hooks/useGTM";
 import SweetAlert2 from "react-sweetalert2";
 import Loading from "../../src/component/common/Loading/loading";
-
+import LoginAndSignup from "../../src/component/feature/Login/index";
 const index = (data) => {
   const [avatarData, setAvatarData] = useState([]);
   const router = useRouter();
@@ -380,8 +380,8 @@ const index = (data) => {
             
             {/* Right: Preview Images */}
             <div className="flex gap-2">
-            <img src="https://assets.artistfirst.in/uploads/1747384169838-Custom_Avatar_Icon_1.jpg" className="w-16 h-16 rounded-md object-cover" />
-            <img src="https://assets.artistfirst.in/uploads/1747396344929-Custom_Avatar_Icon_2.webp" className="w-16 h-16 rounded-md object-cover" />
+            <img src="https://assets.artistfirst.in/uploads/1747488821569-Custom_Avatar_Icon_1.jpg" className="w-16 h-16 rounded-md object-cover" />
+            <img src="https://assets.artistfirst.in/uploads/1747488851625-Custom_Avatar_Icon_2.jpg" className="w-16 h-16 rounded-md object-cover" />
             </div>
         </div>
 
@@ -403,11 +403,8 @@ const index = (data) => {
 
             {/* Right: Prompt Preview */}
             <div className="flex gap-2 relative">
-            <img src="https://assets.artistfirst.in/uploads/1747396715517-AI_Avatar_Icon_1.jpg" className="w-16 h-16 rounded-md object-cover" />
-            <img src="https://assets.artistfirst.in/uploads/1747396744633-AI_Avatar_Icon_2.webp" className="w-16 h-16 rounded-md object-cover" />
-            <div className="absolute bottom-1 left-1 bg-white text-xs px-2 py-0.5 rounded shadow">
-                
-            </div>
+            <img src="https://assets.artistfirst.in/uploads/1747489542488-Ai_Avatar_Icon_1.png" className="w-16 h-16 rounded-md object-cover" />
+            <img src="https://assets.artistfirst.in/uploads/1747489568650-AI_Avatar_Icon_2.jpg" className="w-16 h-16 rounded-md object-cover" />
             </div>
         </div>
         </div>
@@ -465,18 +462,20 @@ const index = (data) => {
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
   {avatarData?.map((card) => (
     <div key={card._id} className="space-y-4">
-      <div className="rounded-xl overflow-hidden shadow hover:shadow-md transition cursor-pointer">
-        <img
-          src={card.imageUrl}
-          alt={card.gender}
-          className="w-full h-48 object-cover"
-        />
-        <div className="p-3 space-y-1">
-          <div className="text-base font-semibold text-gray-800">{card.name}</div>
-          <div className="text-sm text-gray-500">{card.name}</div>
-        </div>
-      </div>
+  <div className="rounded-xl overflow-hidden shadow hover:shadow-md transition cursor-pointer">
+    <div className="relative w-full aspect-square"> {/* 1:1 aspect ratio */}
+      <img
+        src={card.imageUrl}
+        alt={card.gender}
+        className="w-full h-full object-cover"
+      />
     </div>
+    <div className="p-3 space-y-1">
+      <div className="text-base font-semibold text-gray-800">{card.name}</div>
+    </div>
+  </div>
+</div>
+
   ))}
 </div>
       </div>
@@ -759,7 +758,7 @@ const index = (data) => {
           <div className="flex gap-2 overflow-x-auto">
               <img
                 key={1}
-                src={`https://assets.artistfirst.in/uploads/1747383366222-Bad_Avatar_1.webp`}
+                src={`https://assets.artistfirst.in/uploads/1747915251733-Bad_Avatar_1.jpg`}
                 className="w-20 h-28 rounded-md object-cover border border-red-500"
                 alt="bad photo"
               />

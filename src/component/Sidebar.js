@@ -308,7 +308,7 @@ function Sidebar({ children }) {
               </ul>
             </div>
 
-            <div className="">
+           {isLoggedIn && <div className="">
               <h2 className=" text-black text-base font-semibold px-4 mb-2">Profile</h2>
               <ul>
                 <li>
@@ -331,7 +331,7 @@ function Sidebar({ children }) {
                           style={{ height: "20px", width: "20px" }}
                           src="/images/icons/subscription.svg"
                         />
-                        <span className="text-sm text-black pl-2">Manage Subscription</span>
+                        <span className="text-sm text-black pl-2">{userData?.isTrialUser ? "Upgrade":  "Manage Subscription"}</span>
                       </div>
                     </a>
                   </Link>
@@ -365,6 +365,7 @@ function Sidebar({ children }) {
                 )}
               </ul>
             </div>
+            }
           </aside>
         </div>
       </Box>

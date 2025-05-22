@@ -85,7 +85,7 @@ const index = () => {
   const [progressPercentage, setProgressPercentage] = useState(0);
 
   const aspectRatioData = ["16:9", "9:16", "1:1"];
-  const durationData = ["5 sec", "15 sec", "30 sec","60 sec"];
+  const durationData = ["5 sec", "15 sec"];
   const [isLoading, setLoading] = useState(false);
   const [swalProps, setSwalProps] = useState({});
 
@@ -271,7 +271,9 @@ const index = () => {
                     voiceover: voiceoverEnabled,
                     ...(image && { imageUrl: image }), // ✅ only include if `image` is truthy
                   });
-            
+                  if (userData?.isTrialUser) {
+                     localStorage.setItem("lastTrialAction", Date.now().toString());
+                   } 
                   //console.log("requestBody",requestBody);
                   generateVideoApi(requestBody);
                 }            
@@ -304,6 +306,10 @@ const index = () => {
       });
 
       //console.log("requestBody",requestBody);
+
+      if (userData?.isTrialUser) {
+          localStorage.setItem("lastTrialAction", Date.now().toString());
+        }
       generateVideoApi(requestBody);
       }
     }
@@ -587,7 +593,7 @@ const index = () => {
             🪄 Magic Prompt
           </button> */}
           <div className="text-sm">Credits : {credits}
-          {Math.floor(userData.credits / credits) < 6 && (
+          {Math.floor(userData?.credits / credits) < 6 && (
               <div className="text-center">
                 <small
                   className={

@@ -83,7 +83,7 @@ const Index = ({ masterData }) => {
 
   const [progressPercentage, setProgressPercentage] = useState(0);
   const [duration, setDuration] = useState("5 sec");
-  const durationData = ["5 sec", "15 sec", "30 sec", "60 sec"];
+  const durationData = ["5 sec", "15 sec"];
 
   const [video, setVideo] = useState("");
   const [newImage, setNewImage] = useState("");
@@ -391,6 +391,8 @@ const Index = ({ masterData }) => {
 
     fetchData();
   }, [slug]);
+
+  console.log("duration", duration);
 
   const handleDownloadVideo = async () => {
     if (!video) return;

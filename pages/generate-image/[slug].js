@@ -129,9 +129,9 @@ const toggleImageSelection = (imgUrl) => {
         setImageUrl(null);
         setPrompt("");
         setLoading(false);
-        if (userData?.isTrialUser) {
-          localStorage.setItem("lastTrialAction", Date.now().toString());
-        }
+        // if (userData?.isTrialUser) {
+        //   localStorage.setItem("lastTrialAction", Date.now().toString());
+        // }
         //console.log("I AM HERE", response?.data._id);
         //router.push("/my-library?tab=image");
         router.replace(`/generate-image/${response?.data._id}`,undefined, { scroll: false });
@@ -227,7 +227,7 @@ const toggleImageSelection = (imgUrl) => {
                   creditsUsed: 1,
                   aspectRatio: aspectRatio,
                   ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }),  // ✅ encode URL with spaces
-                  selectedImages, // Array of URLs
+                  // selectedImages, // Array of URLs
                 };
 
                 //console.log(requestBody);
@@ -529,7 +529,7 @@ const toggleImageSelection = (imgUrl) => {
 
 <h3 className="mb-6 text-sm text-[#1E1E1EB2] text-normal">Credits : 1</h3>
 
-{Math.floor(userData.credits) < 6 && (
+{Math.floor(userData?.credits) < 6 && (
               <div className="text-center">
                 <small
                   className={

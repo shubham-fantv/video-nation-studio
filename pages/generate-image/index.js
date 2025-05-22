@@ -113,9 +113,9 @@ const index = () => {
         setImagePreview(null);
         setPrompt("");
         setLoading(false);
-        if (userData?.isTrialUser) {
-          localStorage.setItem("lastTrialAction", Date.now().toString());
-        }
+        // if (userData?.isTrialUser) {
+        //   localStorage.setItem("lastTrialAction", Date.now().toString());
+        // }
         router.replace(`/generate-image/${response?.data._id}`,undefined, { scroll: false });
         // setSwalProps({
         //   icon: "success",
@@ -366,7 +366,7 @@ const index = () => {
           </button> */}
           <div className="text-sm">Credits : 1
 
-          {Math.floor(userData.credits) < 6 && (
+          {Math.floor(userData?.credits) < 6 && (
               <div className="text-center">
                 <small
                   className={
