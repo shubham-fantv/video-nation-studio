@@ -254,7 +254,7 @@ function Sidebar({ children }) {
                           className="text-black"
                         />{" "}
                         &nbsp;
-                        <span className="text-sm text-black pl-2">Avatar</span>
+                        <span className="text-sm text-black pl-2">Avatar Studio</span>
                         {/* <sup
                             style={{
                               marginLeft: "4px",

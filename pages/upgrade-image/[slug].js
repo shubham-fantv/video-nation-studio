@@ -11,7 +11,7 @@ import { parseCookies } from "nookies";
 import { useSelector } from "react-redux";
 import useGTM from "../../src/hooks/useGTM";
 import SweetAlert2 from "react-sweetalert2";
-
+import LoginAndSignup from "../../src/component/feature/Login";
 const Index = ({ masterData }) => {
   const SLUG_CONFIG = {
     "enhance": {
@@ -138,7 +138,7 @@ const Index = ({ masterData }) => {
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const [selectedAvatar, setSelectedAvatar] = useState(null);
   const { isLoggedIn, userData } = useSelector((state) => state.user);
-
+  
   const [showUploadPopup, setShowUploadPopup] = useState(true);
 const fileInputRef = useRef(null);
 
@@ -748,6 +748,14 @@ const fileInputRef = useRef(null);
             </div>
             </div>
     )}
+
+    {!isLoggedIn && (
+        <LoginAndSignup
+          callBackName={"uniqueCommunity"}
+          open={!isLoggedIn}
+          handleModalClose={() => router.replace("/")}
+        />
+      )}
 
     <SweetAlert2 {...swalProps} onConfirm={(handleConfirm) => setSwalProps({ show: false })} />
     </div>
