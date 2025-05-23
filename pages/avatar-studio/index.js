@@ -431,11 +431,13 @@ const index = (data) => {
               className="relative rounded-xl overflow-hidden shadow hover:shadow-md transition cursor-pointer"
             >
               {avatar.finalImageUrl != "" ? (
+                <div className="relative w-full aspect-square">
                 <img
                   src={avatar.finalImageUrl}
                   alt={avatar.name}
-                  className="w-full h-48 object-cover"
+                  className="w-full h-full object-cover"
                 />
+                </div>
               ) : (
                 <div className="w-full h-48 bg-black flex items-center justify-center">
                   <p className="text-white text-lg font-medium"></p>
