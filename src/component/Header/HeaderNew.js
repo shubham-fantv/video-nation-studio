@@ -381,7 +381,7 @@ const HeaderNew = ({ app }) => {
                 </CLink>
               )) : (
               <div>
-                {!isActiveLink("/subscription") ? (
+                {!isActiveLink("/subscription") && isLoggedIn ? (
                   <CLink href={"/subscription"}>
                     <button
                       style={{
