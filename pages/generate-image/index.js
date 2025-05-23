@@ -118,7 +118,7 @@ const index = () => {
         sendEvent({
           event: "asset_generated",
           aspectRatio: aspectRatio,
-          duration: duration,
+          // duration: duration,
           credits_used: credits,
           caption: captionEnabled,
           voiceover: voiceoverEnabled,
