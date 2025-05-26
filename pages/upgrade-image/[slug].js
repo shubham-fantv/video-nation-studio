@@ -272,6 +272,48 @@ const fileInputRef = useRef(null);
     }
   );
 
+
+
+  const { mutate: generateImageApiNew } = useMutation(
+    (obj) => fetcher.post(`${FANTV_API_URL}/api/v1/ai-image`, obj),
+    {
+      onSuccess: (response) => {
+        //console.log("I AM HERE", response?.data);
+        setImagePreview(null);
+        setImageUrl(null);
+        setImagePreview2(null);
+        setImageUrl2(null);
+        setPrompt("");
+        setLoading(false);
+        if (userData?.isTrialUser) {
+            localStorage.setItem("lastTrialAction", Date.now().toString());
+          }
+        //console.log("I AM HERE", response?.data._id);
+        router.replace(`/upgrade-image/${tool}?id=${response?.data._id}`,undefined, { scroll: false });
+        //router.reload();
+      },
+      onError: (error) => {
+        setLoading(false);
+        const defaultMessage = "Something went wrong. Please try again later.";
+      
+        const message =
+          error?.response?.data?.message ||
+          error?.message ||
+          defaultMessage;
+      
+        setSwalProps({
+            key: Date.now(), // or use a counter
+          icon: "error",
+          show: true,
+          title: "Error",
+          text: message,
+          confirmButtonText: "OK",
+        });
+      },
+    }
+  );
+
+
   const handleEdit = () => {
     alert("Coming Soon");
     //console.log(template);
@@ -355,15 +397,22 @@ const fileInputRef = useRef(null);
                     aspectRatio: aspectRatio,
                     ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }),  // ✅ encode URL with spaces
                     ...(imageUrl2 && { imageUrl2: encodeURI(decodeURI(imageUrl2)) }),  // ✅ encode URL with spaces
-                    tool : slug,
                     style : slug,
                   };
               
                   //console.log(requestBody);
                   setLoading(true)
                   //alert(JSON.stringify(requestBody, null, 2));
-              
-                  generateImageApi(requestBody);
+                  const animeSlugs = ["cyberpunk", "ghibli", "anime", "cartoon"];
+                  const isAnimeSlug = animeSlugs.includes(slug);
+                  if(isAnimeSlug){
+                    console.log("Calling new API for anime slug", requestBody);
+                    generateImageApiNew(requestBody);
+                  }
+                  else{
+                    requestBody.tool = slug;
+                    generateImageApi(requestBody);
+                  }
               }
 
 
