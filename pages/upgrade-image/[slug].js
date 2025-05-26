@@ -406,7 +406,7 @@ const fileInputRef = useRef(null);
                   const animeSlugs = ["cyberpunk", "ghibli", "anime", "cartoon"];
                   const isAnimeSlug = animeSlugs.includes(slug);
                   if(isAnimeSlug){
-                    console.log("Calling new API for anime slug", requestBody);
+                    // console.log("Calling new API for anime slug", requestBody);
                     generateImageApiNew(requestBody);
                   }
                   else{
