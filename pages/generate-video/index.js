@@ -636,9 +636,9 @@ const index = () => {
           </div>
           <button
             onClick={() => handleGenerateVideo()}
-            className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-2 text-white shadow-md transition-all hover:brightness-110"
+            className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-3 text-white shadow-md transition-all hover:brightness-110"
           >
-            ✨ Generate
+            ✨ Generate Image
           </button>
         </div>
       </div>
