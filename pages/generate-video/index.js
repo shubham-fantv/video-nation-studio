@@ -164,6 +164,20 @@ const index = () => {
     (obj) => fetcher.post(`${API_BASE_URL}/api/v1/ai-video`, obj),
     {
       onSuccess: (response) => {
+        sendEvent({
+          event: "asset_generated",
+          aspectRatio: aspectRatio,
+          duration: duration,
+          credits_used: credits,
+          caption: captionEnabled,
+          voiceover: voiceoverEnabled,
+          page_name: "Generate Video",
+          interaction_type: "Standard Button",
+          type: "video",
+          prompt: prompt,
+          url: response?.data?.finalVideoUrl,
+        });
+
         setImagePreview(null);
         setPrompt("");
         setFinalVideo(response?.data._id);
@@ -172,19 +186,6 @@ const index = () => {
           localStorage.setItem("lastTrialAction", Date.now().toString());
         }
 
-        sendEvent({
-          event: "asset_generated",
-          aspectRatio: aspectRatio,
-          duration: duration,
-          credits_used: credits,
-          caption: captionEnabled,
-          voiceover: voiceoverEnabled,
-          button_text: "Generate",
-          page_name: "Generate Video",
-          interaction_type: "Standard Button",
-          type: "video",
-          url: response?.data?.finalVideoUrl,
-        });
         router.push(`/generate-video/${response?.data._id}`, undefined, { scroll: false });
         // setSwalProps({
         //   icon: "success",
@@ -282,21 +283,6 @@ const index = () => {
               ...(image && { imageUrl: encodeURI(decodeURI(image)) }), // ✅ encode URL with spaces
             };
             setLoading(true);
-
-            sendEvent({
-              event: "button_clicked",
-              email: userData?.email,
-              name: userData?.name,
-              prompt: prompt,
-              aspectRatio: aspectRatio,
-              duration: duration,
-              caption: captionEnabled,
-              voiceover: voiceoverEnabled,
-              button_text: "Generate",
-              page_name: "Generate Video",
-              interaction_type: "Standard Button",
-              ...(image && { imageUrl: image }), // ✅ only include if `image` is truthy
-            });
             if (userData?.isTrialUser) {
               localStorage.setItem("lastTrialAction", Date.now().toString());
             }
@@ -319,25 +305,26 @@ const index = () => {
           };
           setLoading(true);
 
-          sendEvent({
-            event: "Generate Video",
-            email: userData?.email,
-            name: userData?.name,
-            prompt: prompt,
-            aspectRatio: aspectRatio,
-            duration: duration,
-            caption: captionEnabled,
-            voiceover: voiceoverEnabled,
-            ...(image && { imageUrl: image }), // ✅ only include if `image` is truthy
-          });
-
-          //console.log("requestBody",requestBody);
-
           if (userData?.isTrialUser) {
             localStorage.setItem("lastTrialAction", Date.now().toString());
           }
           generateVideoApi(requestBody);
         }
+        sendEvent({
+          event: "button_clicked",
+          email: userData?.email,
+          name: userData?.name,
+          prompt: prompt,
+          aspectRatio: aspectRatio,
+          duration: duration,
+          caption: captionEnabled,
+          voiceover: voiceoverEnabled,
+          button_text: "Generate",
+          page_name: "Generate Video",
+          button_id: "genvid_btn",
+          type: "video",
+          interaction_type: "Standard Button",
+        });
       }
     } else {
       setIsPopupVisible(true);

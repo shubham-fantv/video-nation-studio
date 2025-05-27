@@ -26,9 +26,10 @@ const LoginAndSignup = ({ open, handleModalClose }) => {
           })
         );
         sendEvent({
-          event: "Sign In / Login",
+          event: "signup_successful",
           email: res?.data?.user?.email,
           name: res?.data?.user?.name,
+          signup_method: "Google",
         });
         handleModalClose();
       },
@@ -41,7 +42,6 @@ const LoginAndSignup = ({ open, handleModalClose }) => {
   const login = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       const access_token = tokenResponse.access_token;
-      console.log("🚀 ~ onSuccess: ~ access_token:", access_token);
       loginGoogleApi({ access_token });
     },
     onError: (error) => console.log("Login Failed:", error),
@@ -49,6 +49,13 @@ const LoginAndSignup = ({ open, handleModalClose }) => {
     flow: "implicit",
   });
 
+  const handleLoginClick = () => {
+    sendEvent({
+      event: "signup_initiated",
+      signup_method: "Google",
+    });
+    login();
+  };
   return (
     <>
       <Modal
@@ -86,7 +93,7 @@ const LoginAndSignup = ({ open, handleModalClose }) => {
           <p className="text-white text-center text-2xl font-semibold  mt-6 ">
             Welcome to VideoNation{" "}
           </p>
-          <button style={styles.googleButton} onClick={() => login()}>
+          <button style={styles.googleButton} onClick={() => handleLoginClick()}>
             <div className="text-white flex align-center justify-center">
               <span className="h-6 w-6">
                 <img className="h-6 w-6" src="/images/icons/google.svg" />{" "}

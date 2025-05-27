@@ -242,21 +242,19 @@ const index = () => {
 
           setLoading(true);
 
-          sendEvent({
-            event: "button_clicked",
-            email: userData?.email,
-            name: userData?.name,
-            prompt: prompt,
-            aspectRatio: aspectRatio,
-            caption: captionEnabled,
-            button_text: "Generate",
-            page_name: "Generate Image",
-            interaction_type: "Standard Button",
-          });
-
           generateImageApi(requestBody);
         }
       }
+      sendEvent({
+        event: "button_clicked",
+        email: userData?.email,
+        name: userData?.name,
+        prompt: prompt,
+        aspectRatio: aspectRatio,
+        button_text: "Generate",
+        page_name: "Generate Image",
+        interaction_type: "Standard Button",
+      });
     } else {
       setIsPopupVisible(true);
     }

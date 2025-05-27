@@ -272,76 +272,82 @@ function Banner() {
           Create, Customize & Captivate.
         </Typography>
         <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-            <CLink href={"/generate-video"}>
-              <button
-                onClick={() =>
-                  sendEvent({
-                    event: "Home --> Generate",
-                    email: userData?.email,
-                    name: userData?.name,
-                  })
-                }
+          <CLink href={"/generate-video"}>
+            <button
+              onClick={() =>
+                sendEvent({
+                  event: "button_clicked",
+                  button_text: "Generate Video",
+                  page_name: "Home Page",
+                  interaction_type: "Standard Button",
+                  section_name: "Hero Banner",
+                  button_id: "hp_gen_vid_hero_btn",
+                })
+              }
+              style={{
+                background: "linear-gradient(180deg, #5A5A5A 0%, #1E1E1E 100%)",
+                border: "1px solid #FFFFFF",
+                borderRadius: "100px",
+                color: "#FFF",
+                fontSize: isMobile ? "14px" : "16px",
+                textTransform: "capitalize",
+                width: "max-content",
+                display: "flex",
+                alignItems: "center",
+                padding: isMobile ? "6px 14px" : "8px 16px",
+              }}
+            >
+              <img
+                src="/images/video-ai/star.png"
                 style={{
-                  background: "linear-gradient(180deg, #5A5A5A 0%, #1E1E1E 100%)",
-                  border: "1px solid #FFFFFF",
-                  borderRadius: "100px",
-                  color: "#FFF",
-                  fontSize: isMobile ? "14px" : "16px",
-                  textTransform: "capitalize",
-                  width: "max-content",
-                  display: "flex",
-                  alignItems: "center",
-                  padding: isMobile ? "6px 14px" : "8px 16px",
+                  height: isMobile ? "24px" : "28px",
+                  width: isMobile ? "24px" : "28px",
+                  marginRight: "6px",
                 }}
-              >
-                <img
-                  src="/images/video-ai/star.png"
-                  style={{
-                    height: isMobile ? "24px" : "28px",
-                    width: isMobile ? "24px" : "28px",
-                    marginRight: "6px",
-                  }}
-                  alt="star icon"
-                />
-                Generate Video
-              </button>
-            </CLink>
+                alt="star icon"
+              />
+              Generate Video
+            </button>
+          </CLink>
 
-            <CLink href={"/generate-image"}>
-              <button
-                onClick={() =>
-                  sendEvent({
-                    event: "Home --> Generate",
-                    email: userData?.email,
-                    name: userData?.name,
-                  })
-                }
+          <CLink href={"/generate-image"}>
+            <button
+              onClick={() =>
+                sendEvent({
+                  event: "button_clicked",
+                  button_text: "Generate Image",
+                  page_name: "Home Page",
+                  interaction_type: "Standard Button",
+                  section_name: "Hero Banner",
+                  button_id: "hp_gen_img_hero_btn",
+                })
+              }
+              style={{
+                background: "linear-gradient(180deg, #A855F7 0%, #1E1E1E 100%)",
+                border: "1px solid #FFFFFF",
+                borderRadius: "100px",
+                color: "#FFF",
+                fontSize: isMobile ? "14px" : "16px",
+                textTransform: "capitalize",
+                width: "max-content",
+                display: "flex",
+                alignItems: "center",
+                padding: isMobile ? "6px 14px" : "8px 16px",
+              }}
+            >
+              <img
+                src="/images/video-ai/star.png"
                 style={{
-                  background: "linear-gradient(180deg, #A855F7 0%, #1E1E1E 100%)",
-                  border: "1px solid #FFFFFF",
-                  borderRadius: "100px",
-                  color: "#FFF",
-                  fontSize: isMobile ? "14px" : "16px",
-                  textTransform: "capitalize",
-                  width: "max-content",
-                  display: "flex",
-                  alignItems: "center",
-                  padding: isMobile ? "6px 14px" : "8px 16px",
+                  height: isMobile ? "24px" : "28px",
+                  width: isMobile ? "24px" : "28px",
+                  marginRight: "6px",
                 }}
-              >
-                <img
-                  src="/images/video-ai/star.png"
-                  style={{
-                    height: isMobile ? "24px" : "28px",
-                    width: isMobile ? "24px" : "28px",
-                    marginRight: "6px",
-                  }}
-                  alt="star icon"
-                />
-                Generate Image
-              </button>
-            </CLink>
-          </div>
+                alt="star icon"
+              />
+              Generate Image
+            </button>
+          </CLink>
+        </div>
       </Box>
 
       <Box
