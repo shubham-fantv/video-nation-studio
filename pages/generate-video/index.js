@@ -8,7 +8,7 @@ import fetcher from "../../src/dataProvider";
 import { API_BASE_URL, FANTV_API_URL } from "../../src/constant/constants";
 import axios from "axios";
 import Loading from "../../src/component/common/Loading/loading";
-import { quotes } from "../../src/utils/common";
+import { getPageName, quotes } from "../../src/utils/common";
 import { allPromptSamples } from "../../src/utils/common";
 import { useSelector } from "react-redux";
 import LoginAndSignup from "../../src/component/feature/Login";
@@ -221,6 +221,24 @@ const index = () => {
           title: "Error",
           text: message,
           confirmButtonText: "OK",
+          preConfirm: () => {
+            sendEvent({
+              event: "button_clicked",
+              button_text: "OK",
+              page_name: "Generate Video",
+              interaction_type: "Standard button",
+              button_id: "popup_video_gen_error_btn",
+              section_name: "Popup",
+            });
+          },
+        });
+        sendEvent({
+          event: "popup_displayed",
+          popup_type: "Error",
+          popup_name: "Video Generation",
+          popup_messge_text:
+            "AI video generation service failed to respond. Please try again later",
+          page_name: "Generate Video",
         });
       },
     }
@@ -252,7 +270,22 @@ const index = () => {
           icon: "warning",
           preConfirm: () => {
             router.push("/subscription");
+            sendEvent({
+              event: "button_clicked",
+              button_text: "Ok",
+              interaction_type: "Standard button",
+              button_id: "popup_signup_btn",
+              section_name: "Popup",
+              page_name: getPageName(router?.pathname),
+            });
           },
+        });
+        sendEvent({
+          event: "popup_displayed",
+          popup_type: "Nudge",
+          popup_name: "Inssufficient Credits",
+          popup_messge_text: "Insufficient credits. Please upgrade your plan or buy more credits.",
+          page_name: getPageName(router?.pathname),
         });
       } else {
         if (userData?.isTrialUser) {
@@ -457,7 +490,17 @@ const index = () => {
             ></span>
             <select
               value={aspectRatio}
-              onChange={(e) => setAspectRatio(e.target.value)}
+              onChange={(e) => {
+                setAspectRatio(e.target.value);
+                sendEvent({
+                  event: "button_clicked",
+                  page_name: "Generate Video",
+                  interaction_type: "Dropdown Option Select",
+                  button_id: "genvid_aspect_ratio_dd_trigger",
+                  dropdown_name: "Aspect Ratio Selector",
+                  option_value: e.target.value,
+                });
+              }}
               className="bg-[#FFF]"
             >
               {aspectRatioData?.map((item) => (
@@ -473,6 +516,15 @@ const index = () => {
               onChange={(e) => {
                 setDuration(e.target.value);
                 setCredits(20 * parseInt(e.target.value.replace("sec", "").trim() / 5, 10));
+                sendEvent({
+                  event: "button_clicked",
+                  button_text: "-",
+                  page_name: "Generate Video",
+                  interaction_type: "Dropdown Option Select",
+                  button_id: "genvid_duration_dd_trigger",
+                  dropdown_name: "Duration Selector",
+                  option_value: e.target.value,
+                });
               }}
               className="bg-[#FFF]"
             >
@@ -522,6 +574,15 @@ const index = () => {
                       setSelectedCaptionStyle(style.value);
                       setShowCaptionDropdown(false);
                       setCaptionEnabled(true);
+                      sendEvent({
+                        event: "button_clicked",
+                        button_text: "Caption",
+                        page_name: "Generate Video",
+                        interaction_type: "Dropdown Option Select",
+                        button_id: "genvid_caption_dd_trigger",
+                        dropdown_name: "Caption Selector",
+                        option_value: style.value,
+                      });
                     }}
                   >
                     {" "}
@@ -582,6 +643,15 @@ const index = () => {
                       setSelectedVoice(voice.value);
                       setVoiceoverEnabled(true);
                       setShowVoiceDropdown(false);
+                      sendEvent({
+                        event: "button_clicked",
+                        button_text: "Voiceover",
+                        page_name: "Generate Video",
+                        interaction_type: "Dropdown Option Select",
+                        button_id: "genvid_voiceover_dd_trigger",
+                        dropdown_name: "Voiceover Selector",
+                        option_value: voice?.value || "No Voice",
+                      });
                     }}
                   >
                     <span className="text-sm">{voice.name}</span>
@@ -654,7 +724,16 @@ const index = () => {
         {samplePrompts.map((sample, idx) => (
           <button
             key={idx}
-            onClick={() => setPrompt(sample)}
+            onClick={() => {
+              setPrompt(sample);
+              sendEvent({
+                event: "button_clicked",
+                button_text: sample,
+                page_name: "Generate Video",
+                interaction_type: "Standard Button",
+                button_id: "genvid_sample_prompt_btn",
+              });
+            }}
             className="w-[360px] h-[75px] rounded-full bg-[#F5F5F5] px-5 py-4 text-sm text-[#1E1E1E] shadow-sm hover:bg-gray-200 transition-all"
           >
             {sample}

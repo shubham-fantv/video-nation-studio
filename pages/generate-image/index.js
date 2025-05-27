@@ -8,7 +8,7 @@ import fetcher from "../../src/dataProvider";
 import { API_BASE_URL, FANTV_API_URL } from "../../src/constant/constants";
 import axios from "axios";
 import Loading from "../../src/component/common/Loading/loading";
-import { quotes } from "../../src/utils/common";
+import { getPageName, quotes } from "../../src/utils/common";
 import { allPromptSamples } from "../../src/utils/common";
 import { useSelector } from "react-redux";
 import LoginAndSignup from "../../src/component/feature/Login";
@@ -131,7 +131,7 @@ const index = () => {
           credits_used: 1,
           caption: captionEnabled,
           button_text: "Generate",
-          page_name: "Generate Video",
+          page_name: "Generate Image",
           interaction_type: "Standard Button",
           type: "Image",
           url: response?.data?.finalImageUrl,
@@ -164,6 +164,24 @@ const index = () => {
           title: "Error",
           text: message,
           confirmButtonText: "OK",
+          preConfirm: () => {
+            sendEvent({
+              event: "button_clicked",
+              button_text: "OK",
+              page_name: "Generate Image",
+              interaction_type: "Standard button",
+              button_id: "popup_image_gen_error_btn",
+              section_name: "Popup",
+            });
+          },
+        });
+        sendEvent({
+          event: "popup_displayed",
+          popup_type: "Error",
+          popup_name: "Image Generation",
+          popup_messge_text:
+            "AI image generation service failed to respond. Please try again later",
+          page_name: "Generate Image",
         });
       },
     }
@@ -192,7 +210,22 @@ const index = () => {
           icon: "warning",
           preConfirm: () => {
             router.push("/subscription");
+            sendEvent({
+              event: "button_clicked",
+              button_text: "Ok",
+              interaction_type: "Standard button",
+              button_id: "popup_signup_btn",
+              section_name: "Popup",
+              page_name: getPageName(router?.pathname),
+            });
           },
+        });
+        sendEvent({
+          event: "popup_displayed",
+          popup_type: "Nudge",
+          popup_name: "Inssufficient Credits",
+          popup_messge_text: "Insufficient credits. Please upgrade your plan or buy more credits.",
+          page_name: getPageName(router?.pathname),
         });
       } else {
         if (userData?.isTrialUser) {

@@ -244,15 +244,12 @@ const Index = ({ masterData }) => {
             setLoading(true);
 
             sendEvent({
-              event: "Generate Video",
-              email: userData?.email,
-              name: userData?.name,
-              prompt: prompt,
-              aspectRatio: aspectRatio,
-              duration: duration,
-              caption: captionEnabled,
-              voiceover: voiceoverEnabled,
-              ...(imageUrl && { imageUrl: imageUrl }), // ✅ only include if `image` is truthy
+              event: "button_clicked",
+              button_text: "Generate",
+              page_name: "Generate Video",
+              interaction_type: "Standard Button",
+              section_name: "Sidebar",
+              button_id: "genvid_variation_generate_sb_btn",
             });
 
             //console.log("requestBody",requestBody);
@@ -276,15 +273,12 @@ const Index = ({ masterData }) => {
           setLoading(true);
 
           sendEvent({
-            event: "Generate Video",
-            email: userData?.email,
-            name: userData?.name,
-            prompt: prompt,
-            aspectRatio: aspectRatio,
-            duration: duration,
-            caption: captionEnabled,
-            voiceover: voiceoverEnabled,
-            ...(imageUrl && { imageUrl: imageUrl }), // ✅ only include if `image` is truthy
+            event: "button_clicked",
+            button_text: "Generate",
+            page_name: "Generate Video",
+            interaction_type: "Standard Button",
+            section_name: "Sidebar",
+            button_id: "genvid_variation_generate_sb_btn",
           });
 
           //console.log("requestBody",requestBody);
@@ -398,12 +392,12 @@ const Index = ({ masterData }) => {
     if (!video) return;
 
     sendEvent({
-      event: "Home --> Recreate --> Download",
-      email: userData?.email,
-      name: userData?.name,
-      video: video?._id,
-      videoUrl: video,
-      category: slug,
+      event: "button_clicked",
+      button_text: "Download",
+      page_name: "Generate Video",
+      interaction_type: "Standard Button",
+      section_name: "Sidebar",
+      button_id: "genvid_download_btn",
     });
 
     try {

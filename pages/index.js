@@ -58,7 +58,23 @@ const Index = () => {
         icon: "info",
         preConfirm: () => {
           setIsPopupVisible({ login: true });
+          sendEvent({
+            event: "button_clicked",
+            button_text: "Sign Up",
+            page_name: "Home Page",
+            interaction_type: "Standard button",
+            button_id: "popup_signup_btn",
+            section_name: "Popup",
+          });
         },
+      });
+
+      sendEvent({
+        event: "popup_displayed",
+        popup_type: "Nudge",
+        popup_name: "Sign Up Now",
+        popup_messge_text: "Sign up Now to get 50 Free Credits.",
+        page_name: "Home Page",
       });
     }
     //console.log("homeFeed",JSON.stringify(homeFeedData));
@@ -149,7 +165,20 @@ const Index = () => {
         )}
       </Box>
 
-      <SweetAlert2 {...swalProps} onConfirm={handleConfirm} />
+      <SweetAlert2
+        {...swalProps}
+        onConfirm={handleConfirm}
+        didClose={() => {
+          sendEvent({
+            event: "button_clicked",
+            button_text: "Cancel",
+            page_name: "Home Page",
+            interaction_type: "Standard button",
+            button_id: "popup_signup_canel_btn",
+            section_name: "Popup",
+          });
+        }}
+      />
     </div>
   );
 };

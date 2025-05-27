@@ -325,6 +325,7 @@ const Index = ({ masterData }) => {
 
     sendEvent({
       event: "button_clicked",
+      button_text: "Download",
       interaction_type: "Standard Button",
       button_id: "genimg_download_btn",
       page_name: "Generate Image",

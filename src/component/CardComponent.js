@@ -19,7 +19,7 @@ function CardComponent({ data, redirect }) {
           event: "card_clicked",
           card_title: data.title,
           page_name: getPageName(router?.pathname),
-          card_id: "image_use_case_card",
+          card_id: data?.categoryType == "image" ? "image_use_case_card" : "video_category_card",
           section_name: data?.categoryType + " Category",
         })
       }
@@ -62,7 +62,8 @@ function CardComponent({ data, redirect }) {
                 page_name: getPageName(router?.pathname),
                 interaction_type: "Standard Button",
                 section_name: data?.categoryType + " Category",
-                button_id: "img_cat_explore_btn",
+                button_id:
+                  data?.categoryType == "image" ? "img_cat_explore_btn" : "vs_cat_explore_btn",
               });
             }}
           >

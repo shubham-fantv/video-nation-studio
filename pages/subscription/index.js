@@ -50,8 +50,6 @@ const PricingPlans = () => {
   useEffect(() => {
     const updateCountdown = () => {
       const now = new Date();
-      console.log(userSubscriptionData);
-      console.log(userData);
       setcurrentPlanPriority(userSubscriptionData?.subscriptionPlanId?.planNumber);
 
       if (!userSubscriptionData || userSubscriptionData.length === 0) {
@@ -126,6 +124,7 @@ const PricingPlans = () => {
   const handleMonthly = () => {
     setBillingCycle("monthly");
     sendEvent({
+      event: "button_clicked",
       button_text: "Monthly",
       page_name: "Subscription",
       interaction_type: "Toggle Button",
@@ -136,6 +135,7 @@ const PricingPlans = () => {
   const handleYearly = () => {
     setBillingCycle("yearly");
     sendEvent({
+      event: "button_clicked",
       button_text: "Yearly",
       page_name: "Subscription",
       interaction_type: "Toggle Button",

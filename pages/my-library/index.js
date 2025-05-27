@@ -5,24 +5,25 @@ import fetcher from "../../src/dataProvider";
 import { parseCookies } from "nookies";
 import { useRouter } from "next/router";
 import moment from "moment";
+import useGTM from "../../src/hooks/useGTM";
 
 const VideoGrid = ({ data, data1 }) => {
   const [myVideo, setMyVideo] = useState(data || []);
   const [myImage, setMyImage] = useState(data1 || []);
   const router = useRouter();
-  
+  const { sendEvent } = useGTM();
+
   const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 20;
-    const [mediaType, setMediaType] = useState("video");
+  const itemsPerPage = 20;
+  const [mediaType, setMediaType] = useState("video");
 
+  const currentMedia = mediaType === "video" ? [...myVideo].reverse() : [...myImage].reverse();
+  const totalPages = Math.ceil(currentMedia.length / itemsPerPage);
 
-    const currentMedia = mediaType === "video" ? [...myVideo].reverse() : [...myImage].reverse();
-    const totalPages = Math.ceil(currentMedia.length / itemsPerPage);
-
-    const paginatedMedia = currentMedia.slice(
-      (currentPage - 1) * itemsPerPage,
-      currentPage * itemsPerPage
-    );
+  const paginatedMedia = currentMedia.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   useEffect(() => {
     setCurrentPage(1); // Reset page on media type change
@@ -34,8 +35,7 @@ const VideoGrid = ({ data, data1 }) => {
       const tabParam = router.query.tab;
       if (tabParam === "image" || tabParam === "video") {
         setMediaType(tabParam);
-         setCurrentPage(1);
-        
+        setCurrentPage(1);
       }
     }
   }, [router.isReady, router.query.tab]);
@@ -48,11 +48,20 @@ const VideoGrid = ({ data, data1 }) => {
   return (
     <div className="min-h-screen w-full p-6">
       <h1 className="text-black text-3xl font-bold text-center mb-8">My Library</h1>
-  
+
       {/* 🔄 Toggle Switch */}
       <div className="flex mb-8 w-[200px] bg-gray-200 rounded-full p-1">
         <button
-          onClick={() => setMediaType("video")}
+          onClick={() => {
+            setMediaType("video");
+            sendEvent({
+              event: "button_clicked",
+              button_text: "Video",
+              page_name: "My Library",
+              interaction_type: "Tab Button",
+              button_id: "lib_video_tab_btn",
+            });
+          }}
           className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
             mediaType === "video" ? "bg-[#1E1E1E] text-white" : "text-gray-700"
           }`}
@@ -60,7 +69,16 @@ const VideoGrid = ({ data, data1 }) => {
           Video
         </button>
         <button
-          onClick={() => setMediaType("image")}
+          onClick={() => {
+            setMediaType("image");
+            sendEvent({
+              event: "button_clicked",
+              button_text: "Image",
+              page_name: "My Library",
+              interaction_type: "Tab Button",
+              button_id: "lib_image_tab_btn",
+            });
+          }}
           className={`px-6 py-2 w-[300px] rounded-full text-sm font-medium transition-all ${
             mediaType === "image" ? "bg-[#1E1E1E] text-white" : "text-gray-700"
           }`}
@@ -68,7 +86,7 @@ const VideoGrid = ({ data, data1 }) => {
           Image
         </button>
       </div>
-  
+
       <div className="columns-1 sm:columns-2 lg:columns-4 gap-4">
         {paginatedMedia.map((item, index) => (
           <div
@@ -102,7 +120,7 @@ const VideoGrid = ({ data, data1 }) => {
                   className="w-full min-h-[150px] object-cover rounded-xl"
                 />
               )}
-  
+
               {item?.status !== "completed" && (
                 <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center rounded-xl">
                   <p className="text-white font-medium text-lg">{item?.status}</p>
@@ -118,7 +136,7 @@ const VideoGrid = ({ data, data1 }) => {
           </div>
         ))}
       </div>
-  
+
       {/* Pagination Controls */}
       {totalPages > 1 && (
         <div className="flex justify-center items-center gap-2 mt-6 flex-wrap">
@@ -129,7 +147,7 @@ const VideoGrid = ({ data, data1 }) => {
           >
             Prev
           </button>
-  
+
           {Array.from({ length: totalPages }, (_, i) => (
             <button
               key={i}
@@ -141,7 +159,7 @@ const VideoGrid = ({ data, data1 }) => {
               {i + 1}
             </button>
           ))}
-  
+
           <button
             onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
@@ -152,8 +170,8 @@ const VideoGrid = ({ data, data1 }) => {
         </div>
       )}
     </div>
-  );  
-}
+  );
+};
 
 export default VideoGrid;
 

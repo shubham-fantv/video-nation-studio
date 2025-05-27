@@ -159,6 +159,14 @@ const CommunityCreatedContent = ({
               className="px-4 py-1 rounded-full shrink-0"
               onClick={() => {
                 setActiveTab("all");
+                sendEvent({
+                  event: "button_clicked",
+                  button_text: "all",
+                  interaction_type: "Filter Button",
+                  section_name: "Template",
+                  category_name: "all",
+                  button_id: "vs_template_cat_filter_btn",
+                });
               }}
               style={{
                 background:
@@ -180,6 +188,14 @@ const CommunityCreatedContent = ({
                 onClick={() => {
                   setActiveTab(tab.slug);
                   scrollTabIntoView(tab.slug);
+                  sendEvent({
+                    event: "button_clicked",
+                    button_text: tab?.slug,
+                    interaction_type: "Filter Button",
+                    section_name: "Template",
+                    category_name: tab?.slug,
+                    button_id: "vs_template_cat_filter_btn",
+                  });
                 }}
                 style={{
                   background:
@@ -279,6 +295,15 @@ const CommunityCreatedContent = ({
                                 padding: "2px 8px",
                                 alignSelf: "center",
                               }}
+                              onClick={() =>
+                                sendEvent({
+                                  event: "button_clicked",
+                                  button_text: "Select",
+                                  page_name: "Video Studio",
+                                  interaction_type: "Standard Button",
+                                  button_id: "vs_template_select_btn",
+                                })
+                              }
                             >
                               <img
                                 src="/images/video-ai/star.png"

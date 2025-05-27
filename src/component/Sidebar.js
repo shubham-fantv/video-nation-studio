@@ -209,7 +209,7 @@ function Sidebar({ children }) {
                       })
                     }
                   >
-                    <a className="flex items-center  pt-1">
+                    <div className="flex items-center  pt-1">
                       <div
                         className={`flex items-center rounded-xl p-3 w-full ${
                           isActiveLink("/video-studio", "/category", "/generate-video")
@@ -230,7 +230,7 @@ function Sidebar({ children }) {
                         &nbsp;
                         <span className="text-sm text-black pl-2">Video Studio</span>
                       </div>
-                    </a>
+                    </div>
                   </CLink>
                 </li>
                 <li>
@@ -248,7 +248,7 @@ function Sidebar({ children }) {
                       })
                     }
                   >
-                    <a className="flex items-center  pt-1">
+                    <div className="flex items-center  pt-1">
                       <div
                         className={`flex items-center rounded-xl p-3 w-full ${
                           isActiveLink("/image-studio", "/image-category", "/generate-image")
@@ -269,12 +269,25 @@ function Sidebar({ children }) {
                         &nbsp;
                         <span className="text-sm text-black pl-2">Image Studio</span>
                       </div>
-                    </a>
+                    </div>
                   </CLink>
                 </li>
                 <li>
-                  <Link legacyBehavior href="/avatar-studio" passHref>
-                    <a className="flex items-center  pt-1">
+                  <Link
+                    href="/avatar-studio"
+                    handleClick={() =>
+                      sendEvent({
+                        event: "button_clicked",
+                        button_text: "Avatar Studio",
+                        interaction_type: "Sidebar Navigation",
+                        section_name: "Sidebar",
+                        navigation_group: "Studios",
+                        button_id: "sb_studio_nav_lnk",
+                        page_name: "Home Page",
+                      })
+                    }
+                  >
+                    <div className="flex items-center  pt-1">
                       <div
                         className={`flex items-center rounded-xl p-3 w-full ${
                           isActiveLink("/avatar-studio", "/generate-avatar")
@@ -311,7 +324,7 @@ function Sidebar({ children }) {
                             coming Soon
                           </sup> */}
                       </div>
-                    </a>
+                    </div>
                   </Link>
                 </li>
               </ul>
@@ -377,7 +390,7 @@ function Sidebar({ children }) {
                         })
                       }
                     >
-                      <a className="flex items-center  py-2">
+                      <div className="flex items-center  py-2">
                         <div
                           className={`flex items-center rounded-xl p-3 w-full ${
                             isActiveLink("/subscription") ? "bg-[#FFFFFF0D] font-bold" : ""
@@ -392,7 +405,7 @@ function Sidebar({ children }) {
                             {userData?.isTrialUser ? "Upgrade" : "Manage Subscription"}
                           </span>
                         </div>
-                      </a>
+                      </div>
                     </CLink>
                   </li>
                   {isLoggedIn && (
@@ -411,7 +424,7 @@ function Sidebar({ children }) {
                           })
                         }
                       >
-                        <a className="flex items-center  py-2">
+                        <div className="flex items-center  py-2">
                           <div
                             onClick={() =>
                               sendEvent({
@@ -431,7 +444,7 @@ function Sidebar({ children }) {
                             />
                             <span className="text-sm text-black pl-2">Usage</span>
                           </div>
-                        </a>
+                        </div>
                       </CLink>
                     </li>
                   )}

@@ -87,7 +87,22 @@ const HeaderNew = ({ app }) => {
         icon: "warning",
         preConfirm: () => {
           router.push("/subscription");
+          sendEvent({
+            event: "button_clicked",
+            button_text: "View Plans",
+            interaction_type: "Standard button",
+            button_id: "popup_almost_out_of_credits_plans_btn",
+            section_name: "Popup",
+            page_name: getPageName(router?.pathname),
+          });
         },
+      });
+      sendEvent({
+        event: "popup_displayed",
+        popup_type: "Nudge",
+        popup_name: "Almost out of Credits",
+        popup_messge_text: "⏳ You're almost out of credits!",
+        page_name: getPageName(router?.pathname),
       });
 
       // Mark as shown
@@ -487,7 +502,20 @@ const HeaderNew = ({ app }) => {
           />
         )}
       </Box>
-      <SweetAlert2 {...swalProps} onConfirm={() => setSwalProps({ show: false })} />
+      <SweetAlert2
+        {...swalProps}
+        onConfirm={() => setSwalProps({ show: false })}
+        didClose={() => {
+          sendEvent({
+            event: "button_clicked",
+            button_text: "Cancel",
+            page_name: getPageName(router?.pathname),
+            interaction_type: "Standard button",
+            button_id: "popup_almost_out_of_credits_cancel_btn",
+            section_name: "Popup",
+          });
+        }}
+      />
     </>
   );
 };
