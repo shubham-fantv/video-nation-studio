@@ -149,6 +149,14 @@ const index = () => {
       });
       setImage(response?.data?.data?.[0]?.url);
       setImagePreview(URL.createObjectURL(file));
+      sendEvent({
+        event: "button_clicked",
+        button_text: "Ref Image",
+        page_name: "Video Studio",
+        interaction_type: "Attachment",
+        button_id: "genvid_ref_img_btn",
+        voiceover: selectedVoice || "No Voice",
+      });
     } catch (error) {
       console.error("Upload failed", error);
     } finally {

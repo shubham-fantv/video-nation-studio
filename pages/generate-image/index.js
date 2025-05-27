@@ -92,6 +92,15 @@ const index = () => {
       });
       setImage(response?.data?.data?.[0]?.url);
       setImagePreview(URL.createObjectURL(file));
+
+      sendEvent({
+        event: "button_clicked",
+        button_text: "Ref Image",
+        page_name: "Image Studio",
+        interaction_type: "Attachment",
+        status: "uploaded",
+        button_id: "genimg_ref_img_btn",
+      });
     } catch (error) {
       console.error("Upload failed", error);
     } finally {
@@ -281,6 +290,19 @@ const index = () => {
     textareaRef.current?.focus(); // Auto-focus on mount (for testing)
   }, []);
 
+  const handleAspectRatio = (value) => {
+    setAspectRatio(value);
+    sendEvent({
+      event: "button_clicked",
+      button_text: "-",
+      page_name: "Generate Image",
+      interaction_type: "Dropdown Option Select",
+      dropdown_name: "Aspect Ratio Selector",
+      option_value: value,
+      button_id: "genimg_aspect_ratio_dd_trigger",
+    });
+  };
+
   return (
     <div>
       {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
@@ -361,7 +383,7 @@ const index = () => {
             ></span>
             <select
               value={aspectRatio}
-              onChange={(e) => setAspectRatio(e.target.value)}
+              onChange={(e) => handleAspectRatio(e.target.value)}
               className="bg-[#FFF]"
             >
               {aspectRatioData?.map((item) => (
@@ -403,7 +425,16 @@ const index = () => {
         {samplePrompts.map((sample, idx) => (
           <button
             key={idx}
-            onClick={() => setPrompt(sample)}
+            onClick={() => {
+              setPrompt(sample);
+              sendEvent({
+                event: "button_clicked",
+                button_text: sample,
+                page_name: "Generate Image",
+                interaction_type: "Standard Button",
+                button_id: "genimg_sample_prompt_btn",
+              });
+            }}
             className="w-[360px] h-[75px] rounded-full bg-[#F5F5F5] px-5 py-4 text-sm text-[#1E1E1E] shadow-sm hover:bg-gray-200 transition-all"
           >
             {sample}

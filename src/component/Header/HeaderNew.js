@@ -20,6 +20,7 @@ import fetcher from "../../dataProvider";
 import { setUserData } from "../../redux/slices/user";
 import useGTM from "../../hooks/useGTM";
 import SweetAlert2 from "react-sweetalert2";
+import { getPageName } from "../../utils/common";
 
 const LogOutNavItem = [
   {
@@ -75,9 +76,9 @@ const HeaderNew = ({ app }) => {
   useEffect(() => {
     if (!userData || userData?.credits === undefined) return;
     const hasShownModal = localStorage.getItem("creditWarningShown");
-  
+
     if (userData?.credits < 10 && !hasShownModal) {
-      setSwalProps({        
+      setSwalProps({
         show: true,
         title: "⏳ You're almost out of credits!",
         text: "Upgrade now to unlock HD, pro voices, and longer videos.",
@@ -86,9 +87,9 @@ const HeaderNew = ({ app }) => {
         icon: "warning",
         preConfirm: () => {
           router.push("/subscription");
-        }
+        },
       });
-  
+
       // Mark as shown
       localStorage.setItem("creditWarningShown", "true");
     }
@@ -103,7 +104,6 @@ const HeaderNew = ({ app }) => {
     event.stopPropagation();
     setIsPopupVisible({ login: true });
   };
-
 
   const dispatch = useDispatch();
 
@@ -161,7 +161,6 @@ const HeaderNew = ({ app }) => {
         <Box className="">
           {userData?.credits > 0 ? (
             <div>
-
               <button
                 style={{
                   border: "1px solid #262626",
@@ -207,9 +206,10 @@ const HeaderNew = ({ app }) => {
                 }}
                 onClick={() =>
                   sendEvent({
-                    event: "Upgrade Now / Manage Subscription",
-                    email: userData?.email,
-                    name: userData?.name,
+                    event: "button_clicked",
+                    button_text: "Upgrade Now",
+                    interaction_type: "Tab Button",
+                    page_name: getPageName(router?.pathname),
                   })
                 }
               >
@@ -318,68 +318,91 @@ const HeaderNew = ({ app }) => {
                 isActiveLink("/video-studio") ? "underline underline-offset-8" : ""
               }`}
             >
-              <CLink href="/video-studio">
+              <CLink
+                href="/video-studio"
+                handleClick={() =>
+                  sendEvent({
+                    event: "button_clicked",
+                    button_text: "Video Studio",
+                    interaction_type: "Tab Button",
+                    page_name: getPageName(router?.pathname),
+                    section_name: "Header",
+                    button_id: "hdr_vid_studio_nav_btn",
+                  })
+                }
+              >
                 <div>Video studio</div>
               </CLink>
             </div>
-            <div className={`text-black flex ml-10 text-base font-medium m-auto ${
+            <div
+              className={`text-black flex ml-10 text-base font-medium m-auto ${
                 isActiveLink("/image-studio") ? "underline underline-offset-8" : ""
-              }`}>
+              }`}
+            >
               <div>
-              <CLink href="/image-studio">
-                <div>Image studio</div>
+                <CLink
+                  href="/image-studio"
+                  handleClick={() =>
+                    sendEvent({
+                      event: "button_clicked",
+                      button_text: "Image Studio",
+                      interaction_type: "Tab Button",
+                      page_name: getPageName(router?.pathname),
+                      section_name: "Header",
+                      button_id: "hdr_img_studio_nav_btn",
+                    })
+                  }
+                >
+                  <div>Image studio</div>
                 </CLink>
               </div>
-          
             </div>
           </div>
 
           <Box className="flex hidden md:flex">
-          {userData?.credits > 0 ? (
-              userData.credits < 20 && router?.pathname != "/subscription"
- ? (
+            {userData?.credits > 0 ? (
+              userData.credits < 20 && router?.pathname != "/subscription" ? (
                 <div className="flex items-center px-4 gap-4">
                   <div className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium shadow">
                     {userData.credits} Credits Left
                   </div>
-                    <CLink href={"/subscription"}>
-                      <button
-                      className="bg-purple-600 text-white text-sm px-3 py-1 rounded-md hover:bg-purple-700 transition"
-                    >
+                  <CLink href={"/subscription"}>
+                    <button className="bg-purple-600 text-white text-sm px-3 py-1 rounded-md hover:bg-purple-700 transition">
                       Upgrade
                     </button>
-                    </CLink>
+                  </CLink>
                 </div>
               ) : (
                 <CLink href={"/usage"}>
-                <button
-                  style={{
-                    border: "1px solid #262626",
-                    borderRadius: "12px",
-                    color: "#000",
-                    fontSize: "14px",
-                    textTransform: "capitalize",
-                    width: "max-content",
-                    display: "flex",
-                    alignItems: "center",
-                    marginRight: "20px",
-                    height: "40px",
-                    padding: isMobile ? "6px 10px" : "4px 16px",
-                  }}
-                >
-                  <img
-                    src="/images/icons/blackStar.svg"
+                  <button
                     style={{
-                      height: isMobile ? "24px" : "28px",
-                      width: isMobile ? "24px" : "28px",
-                      marginRight: "6px",
+                      border: "1px solid #262626",
+                      borderRadius: "12px",
+                      color: "#000",
+                      fontSize: "14px",
+                      textTransform: "capitalize",
+                      width: "max-content",
+                      display: "flex",
+                      alignItems: "center",
+                      marginRight: "20px",
+                      height: "40px",
+                      padding: isMobile ? "6px 10px" : "4px 16px",
                     }}
-                    alt="star icon"
-                  />
-                  {userData.credits} Credits
-                </button>
+                  >
+                    <img
+                      src="/images/icons/blackStar.svg"
+                      style={{
+                        height: isMobile ? "24px" : "28px",
+                        width: isMobile ? "24px" : "28px",
+                        marginRight: "6px",
+                      }}
+                      alt="star icon"
+                    />
+                    {userData.credits} Credits
+                  </button>
                 </CLink>
-              )) : (
+              )
+            ) : (
               <div>
                 {!isActiveLink("/subscription") && isLoggedIn ? (
                   <CLink href={"/subscription"}>

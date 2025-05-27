@@ -28,8 +28,8 @@ const Index = ({ masterData }) => {
   const [imageUrl, setImageUrl] = useState("");
   const [uploading, setUploading] = useState(false);
   const [imageLoading, setImageLoading] = useState(false);
-  
-  const [image, setImage] = useState("");  
+
+  const [image, setImage] = useState("");
   const [newImage, setNewImage] = useState("");
   const [authToken, setAuthToken] = useState("");
   const [swalProps, setSwalProps] = useState({});
@@ -42,7 +42,6 @@ const Index = ({ masterData }) => {
     setSelectedAvatar(avatar);
     console.log("Selected avatar:", avatar);
   };
-
 
   const [subTitle, setSubTitle] = useState("");
   const [isLoading, setLoading] = useState(false);
@@ -74,14 +73,12 @@ const Index = ({ masterData }) => {
     "https://assets.artistfirst.in/uploads/1747722952743-Biz_District_Headshot_A1.jpg",
     "https://assets.artistfirst.in/uploads/1747730179106-Bright_Lane_Headshot_A1.jpg",
   ].map((url, index) => ({ id: index + 1, url }));
-  
-const toggleImageSelection = (imgUrl) => {
-  setSelectedImages((prev) =>
-    prev.includes(imgUrl)
-      ? prev.filter((url) => url !== imgUrl)
-      : [...prev, imgUrl]
-  );
-};
+
+  const toggleImageSelection = (imgUrl) => {
+    setSelectedImages((prev) =>
+      prev.includes(imgUrl) ? prev.filter((url) => url !== imgUrl) : [...prev, imgUrl]
+    );
+  };
 
   const aspectRatioSizeMap = {
     "1:1": "w-4 h-4",
@@ -105,8 +102,7 @@ const toggleImageSelection = (imgUrl) => {
         },
       });
       setImageUrl(response?.data?.data?.[0]?.url);
-      
-      
+
       setImagePreview(URL.createObjectURL(file));
     } catch (error) {
       console.error("Upload failed", error);
@@ -134,16 +130,14 @@ const toggleImageSelection = (imgUrl) => {
         // }
         //console.log("I AM HERE", response?.data._id);
         //router.push("/my-library?tab=image");
-        router.replace(`/generate-image/${response?.data._id}`,undefined, { scroll: false });
+        router.replace(`/generate-image/${response?.data._id}`, undefined, { scroll: false });
       },
       onError: (error) => {
-        setLoading(false);const defaultMessage = "Something went wrong. Please try again later.";
-        
-        const message =
-          error?.response?.data?.message ||
-          error?.message ||
-          defaultMessage;
-      
+        setLoading(false);
+        const defaultMessage = "Something went wrong. Please try again later.";
+
+        const message = error?.response?.data?.message || error?.message || defaultMessage;
+
         setSwalProps({
           key: Date.now(), // or use a counter
           icon: "error",
@@ -162,123 +156,118 @@ const toggleImageSelection = (imgUrl) => {
     //router.push(`/edit-image/${slug}`);
   };
 
-
   const handleConfirm = () => {
     //console.log(template);
   };
 
   const handleGenerateImage = () => {
-  
     if (isLoggedIn) {
       if (!prompt.trim()) {
         alert("Please enter a prompt!");
         return;
       }
 
-    if (userData.credits <= 0 || userData.credits < 1) {
-      setSwalProps({
-        key: Date.now(), // or use a counter
-        show: true,
-        title: `⏳ You only have ${userData.credits} Credits Left!`,
-        text: "Upgrade now to buy Credits, unlock HD, pro voices, and longer videos.",
-        confirmButtonText: "View Plans",
-        showCancelButton: true,
-        icon: "warning",
-        preConfirm: () => {
-          router.push("/subscription");
-        }
-      });
+      if (userData.credits <= 0 || userData.credits < 1) {
+        setSwalProps({
+          key: Date.now(), // or use a counter
+          show: true,
+          title: `⏳ You only have ${userData.credits} Credits Left!`,
+          text: "Upgrade now to buy Credits, unlock HD, pro voices, and longer videos.",
+          confirmButtonText: "View Plans",
+          showCancelButton: true,
+          icon: "warning",
+          preConfirm: () => {
+            router.push("/subscription");
+          },
+        });
       } else {
-          if (userData?.isTrialUser) {
-            
-            const now = Date.now();
-            const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || now, 10);
+        if (userData?.isTrialUser) {
+          const now = Date.now();
+          const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || now, 10);
 
-            if ((now - lastActionTime) > 0 && (now - lastActionTime) < RATE_LIMIT_INTERVAL_MS) {
-              const waitTime = Math.ceil((RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60);
-              setSwalProps({
-                key: Date.now(), // or use a counter
-                show: true,
-                title: "⏳ Please wait",
-                text: `Free users can generate only one image every 12 hours. Try again in ${waitTime} mins. Upgrade now to unlock unlimited generation and HD quality`,
-                icon: "info",
-                confirmButtonText: "View Plans",
-                showCancelButton: true,
-                preConfirm: () => {
-                  router.push("/subscription");
-                }
-              });
-              return;
-            } else {
-                  //console.log("selectedAvatar",selectedAvatar);
-                sendEvent({
-                  event: "Generate Image Slug",
-                  slug: slug,
-                  email: userData?.email,
-                  name: userData?.name,
-                  prompt: prompt,
-                  aspectRatio: aspectRatio
-                });
+          if (now - lastActionTime > 0 && now - lastActionTime < RATE_LIMIT_INTERVAL_MS) {
+            const waitTime = Math.ceil(
+              (RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60
+            );
+            setSwalProps({
+              key: Date.now(), // or use a counter
+              show: true,
+              title: "⏳ Please wait",
+              text: `Free users can generate only one image every 12 hours. Try again in ${waitTime} mins. Upgrade now to unlock unlimited generation and HD quality`,
+              icon: "info",
+              confirmButtonText: "View Plans",
+              showCancelButton: true,
+              preConfirm: () => {
+                router.push("/subscription");
+              },
+            });
+            return;
+          } else {
+            //console.log("selectedAvatar",selectedAvatar);
+            sendEvent({
+              event: "Generate Image Slug",
+              slug: slug,
+              email: userData?.email,
+              name: userData?.name,
+              prompt: prompt,
+              aspectRatio: aspectRatio,
+            });
 
+            const requestBody = {
+              prompt,
+              imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
+              creditsUsed: 1,
+              aspectRatio: aspectRatio,
+              ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }), // ✅ encode URL with spaces
+              // selectedImages, // Array of URLs
+            };
 
-                const requestBody = {
-                  prompt,
-                  imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
-                  creditsUsed: 1,
-                  aspectRatio: aspectRatio,
-                  ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }),  // ✅ encode URL with spaces
-                  // selectedImages, // Array of URLs
-                };
+            //console.log(requestBody);
+            setLoading(true);
+            // alert(JSON.stringify(requestBody, null, 2));
 
-                //console.log(requestBody);
-                setLoading(true)
-                // alert(JSON.stringify(requestBody, null, 2));
+            generateImageApi(requestBody);
+          }
+        } else {
+          //console.log("selectedAvatar",selectedAvatar);
+          sendEvent({
+            event: "Generate Image Slug",
+            slug: slug,
+            email: userData?.email,
+            name: userData?.name,
+            prompt: prompt,
+            aspectRatio: aspectRatio,
+          });
 
-                generateImageApi(requestBody);
-            }
+          const requestBody = {
+            prompt,
+            imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
+            creditsUsed: 1,
+            aspectRatio: aspectRatio,
+            ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }), // ✅ encode URL with spaces
+            // selectedImages, // Array of URLs
+          };
+
+          //console.log(requestBody);
+          setLoading(true);
+          // alert(JSON.stringify(requestBody, null, 2));
+
+          generateImageApi(requestBody);
+        }
+      }
     } else {
-
-    //console.log("selectedAvatar",selectedAvatar);
-    sendEvent({
-      event: "Generate Image Slug",
-      slug: slug,
-      email: userData?.email,
-      name: userData?.name,
-      prompt: prompt,
-      aspectRatio: aspectRatio
-    });
-
-
-    const requestBody = {
-      prompt,
-      imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
-      creditsUsed: 1,
-      aspectRatio: aspectRatio,
-      ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }),  // ✅ encode URL with spaces
-      // selectedImages, // Array of URLs
-    };
-
-    //console.log(requestBody);
-    setLoading(true)
-    // alert(JSON.stringify(requestBody, null, 2));
-
-    generateImageApi(requestBody);
-  }
-}
-  } else {
-    setIsPopupVisible(true);
-  }
+      setIsPopupVisible(true);
+    }
   };
 
   useEffect(() => {
-    
     const pickRandomQuote = () => {
       const randomIndex = Math.floor(Math.random() * quotes.length);
       setSubTitle(quotes[randomIndex]);
     };
     pickRandomQuote();
     const interval = setInterval(pickRandomQuote, 5000);
-  
+
     const cookies = parseCookies();
     setAuthToken(cookies.aToken); // or any key you're tracking
 
@@ -298,34 +287,34 @@ const toggleImageSelection = (imgUrl) => {
       setImageLoading(true);
 
       try {
-      const res = await fetcher.get(
-        `${FANTV_API_URL}/api/v1/image_templates/${updatedSlug}`,
-        {
-          headers: {
-            ...(!!authToken && { Authorization: `Bearer ${authToken}` }),
+        const res = await fetcher.get(
+          `${FANTV_API_URL}/api/v1/image_templates/${updatedSlug}`,
+          {
+            headers: {
+              ...(!!authToken && { Authorization: `Bearer ${authToken}` }),
+            },
           },
-        },
-        "default"
-      );
+          "default"
+        );
 
-      const data = res?.data;
-      //console.log("IAM HERE", data);
-      setTemplate(data);
-      setAvatar(data.avatarId);
-      setVoice(data.voiceId || "Default");
-      setCaptionEnabled(data.caption);
-      setAspectRatio(data.aspectRatio);
-      setPrompt(data.prompt);
-      setImageUrl(data.imageUrl);
-      setImagePreview(data.imageUrl);
-      setImage(data.finalImageUrl);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      //await sleep(2000); // Wait for 1 second
-      setLoading(false);
-      //setImageLoading(false);
-    }
+        const data = res?.data;
+        //console.log("IAM HERE", data);
+        setTemplate(data);
+        setAvatar(data.avatarId);
+        setVoice(data.voiceId || "Default");
+        setCaptionEnabled(data.caption);
+        setAspectRatio(data.aspectRatio);
+        setPrompt(data.prompt);
+        setImageUrl(data.imageUrl);
+        setImagePreview(data.imageUrl);
+        setImage(data.finalImageUrl);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        //await sleep(2000); // Wait for 1 second
+        setLoading(false);
+        //setImageLoading(false);
+      }
     };
 
     fetchData();
@@ -335,11 +324,10 @@ const toggleImageSelection = (imgUrl) => {
     if (!image) return;
 
     sendEvent({
-      event: "Home --> Recreate --> Download",
-      email: userData?.email,
-      name: userData?.name,
-      image: newImage,
-      imageUrl: image,
+      event: "button_clicked",
+      interaction_type: "Standard Button",
+      button_id: "genimg_download_btn",
+      page_name: "Generate Image",
     });
 
     try {
@@ -364,121 +352,120 @@ const toggleImageSelection = (imgUrl) => {
       {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
       <div className="w-full md:w-[25%] bg-[#FFFFFF0D] p-4">
         <div className="">
-          {slug === "headshot" ? ( 
-          <div className="mb-6">
-            <h3 className="text-sm font-medium mb-2">Select Headshots</h3>
-            <div className="grid grid-cols-4 gap-3">
-              {(showAllImages ? allHeadshots : allHeadshots.slice(0, 8)).map((img) => (
-                <div
-                  key={img.id}
-                  className={`cursor-pointer border-2 rounded-lg overflow-hidden transition ${
-                    selectedImages.includes(img.url) ? "border-purple-500" : "border-transparent"
-                  }`}
-                  onClick={() => toggleImageSelection(img.url)}
-                >
-                  <img
-                    src={img.url}
-                    alt={`Headshot ${img.id}`}
-                    className="w-full h-20 object-cover"
-                  />
-                </div>
-              ))}
-            </div>
+          {slug === "headshot" ? (
+            <div className="mb-6">
+              <h3 className="text-sm font-medium mb-2">Select Headshots</h3>
+              <div className="grid grid-cols-4 gap-3">
+                {(showAllImages ? allHeadshots : allHeadshots.slice(0, 8)).map((img) => (
+                  <div
+                    key={img.id}
+                    className={`cursor-pointer border-2 rounded-lg overflow-hidden transition ${
+                      selectedImages.includes(img.url) ? "border-purple-500" : "border-transparent"
+                    }`}
+                    onClick={() => toggleImageSelection(img.url)}
+                  >
+                    <img
+                      src={img.url}
+                      alt={`Headshot ${img.id}`}
+                      className="w-full h-20 object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
 
-            {allHeadshots.length > 8 && (
-              <button
-                onClick={() => setShowAllImages((prev) => !prev)}
-                className="mt-3 text-sm text-blue-600 hover:underline"
-              >
-                {showAllImages ? "Show Less" : "Show More"}
-              </button>
-            )}
-          </div>
+              {allHeadshots.length > 8 && (
+                <button
+                  onClick={() => setShowAllImages((prev) => !prev)}
+                  className="mt-3 text-sm text-blue-600 hover:underline"
+                >
+                  {showAllImages ? "Show Less" : "Show More"}
+                </button>
+              )}
+            </div>
           ) : (
             <div className="mb-6">
-            <div className="flex justify-between flex-wrap">
-              <h3 className="text-sm font-medium mb-2">Prompt</h3>
-            </div>
-            <div className="bg-[#F5F5F5] rounded-lg p-3 flex justify-between items-start">
-              <textarea
-                className="w-full rounded-md bg-transparent text-sm text-[#1E1E1EB2] text-normal placeholder-gray-500 focus:outline-none"
-                placeholder="Enter your prompt..."
-                rows={5}
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-              ></textarea>
-            </div>
-          </div>
-        )}
-          <div className="mb-6 flex gap-x-10">
-          {/* Ref Image */}
-          <div className="w-1/2">
-            <h3 className="text-sm font-medium mb-2">Ref Image</h3>
-            <label className="flex items-center gap-2 rounded-md bg-[#F5F5F5] px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all cursor-pointer">
-            
-             {uploading ? (
-                <div>Uploading...</div>
-              ) : (
-                <>
-                  {imagePreview ? (
-                    <div className="relative">
-                      <img
-                        src={imagePreview}
-                        alt="Uploaded"
-                        className="w-full h-[50px] object-fit rounded-md"
-                      />
-                      <button
-                        onClick={handleRemoveImage}
-                        className="absolute top-0 right-0 bg-white text-white rounded-full w-4 h-4 flex items-center justify-center"
-                      >
-                        <img src="/images/close.svg" />
-                      </button>
-                    </div>
-                  ) : (
-                    <h3>+ Add images</h3>
-                  )}
-                </>
-              )}
-
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleImageUpload}
-                disabled={uploading}
-              />
-            </label>
-          </div>
-
-          <div className="w-1/2">
-            <h3 className="text-sm font-medium mb-2">Aspect Ratio</h3>
-            <div className="relative">
-              <button className="flex items-center gap-2 rounded-md bg-[#F5F5F5] px-4 py-2 text-sm text-[1E1E1E] shadow-md transition-all">
-            {/* <span className="w-4 h-3 border border-black rounded-sm"></span> */}
-            <span
-              className={`border border-black rounded-sm ${
-                aspectRatioSizeMap[aspectRatio] || "w-4 h-3"
-              }`}
-            ></span>
-            <select
-              value={aspectRatio}
-              onChange={(e) => setAspectRatio(e.target.value)}
-              className="bg-[#F5F5F5]"
-            >
-              {aspectRatioData?.map((item) => (
-                <option key={item}>{item}</option>
-              ))}
-            </select>
-          </button>
-            </div>
-          </div>
-          </div>
-        
-          {(
-            <div className="mb-6">
-              <AvatarDropdown data={masterData?.avatars} onSelect={handleAvatarSelect}  />
+              <div className="flex justify-between flex-wrap">
+                <h3 className="text-sm font-medium mb-2">Prompt</h3>
+              </div>
+              <div className="bg-[#F5F5F5] rounded-lg p-3 flex justify-between items-start">
+                <textarea
+                  className="w-full rounded-md bg-transparent text-sm text-[#1E1E1EB2] text-normal placeholder-gray-500 focus:outline-none"
+                  placeholder="Enter your prompt..."
+                  rows={5}
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                ></textarea>
+              </div>
             </div>
           )}
+          <div className="mb-6 flex gap-x-10">
+            {/* Ref Image */}
+            <div className="w-1/2">
+              <h3 className="text-sm font-medium mb-2">Ref Image</h3>
+              <label className="flex items-center gap-2 rounded-md bg-[#F5F5F5] px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all cursor-pointer">
+                {uploading ? (
+                  <div>Uploading...</div>
+                ) : (
+                  <>
+                    {imagePreview ? (
+                      <div className="relative">
+                        <img
+                          src={imagePreview}
+                          alt="Uploaded"
+                          className="w-full h-[50px] object-fit rounded-md"
+                        />
+                        <button
+                          onClick={handleRemoveImage}
+                          className="absolute top-0 right-0 bg-white text-white rounded-full w-4 h-4 flex items-center justify-center"
+                        >
+                          <img src="/images/close.svg" />
+                        </button>
+                      </div>
+                    ) : (
+                      <h3>+ Add images</h3>
+                    )}
+                  </>
+                )}
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageUpload}
+                  disabled={uploading}
+                />
+              </label>
+            </div>
+
+            <div className="w-1/2">
+              <h3 className="text-sm font-medium mb-2">Aspect Ratio</h3>
+              <div className="relative">
+                <button className="flex items-center gap-2 rounded-md bg-[#F5F5F5] px-4 py-2 text-sm text-[1E1E1E] shadow-md transition-all">
+                  {/* <span className="w-4 h-3 border border-black rounded-sm"></span> */}
+                  <span
+                    className={`border border-black rounded-sm ${
+                      aspectRatioSizeMap[aspectRatio] || "w-4 h-3"
+                    }`}
+                  ></span>
+                  <select
+                    value={aspectRatio}
+                    onChange={(e) => setAspectRatio(e.target.value)}
+                    className="bg-[#F5F5F5]"
+                  >
+                    {aspectRatioData?.map((item) => (
+                      <option key={item}>{item}</option>
+                    ))}
+                  </select>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {
+            <div className="mb-6">
+              <AvatarDropdown data={masterData?.avatars} onSelect={handleAvatarSelect} />
+            </div>
+          }
 
           {visibility && (
             <div className="mb-6">
@@ -527,22 +514,21 @@ const toggleImageSelection = (imgUrl) => {
             </div>
           )}
 
-<h3 className="mb-6 text-sm text-[#1E1E1EB2] text-normal">Credits : 1</h3>
+          <h3 className="mb-6 text-sm text-[#1E1E1EB2] text-normal">Credits : 1</h3>
 
-{Math.floor(userData?.credits) < 6 && (
-              <div className="text-center">
-                <small
-                  className={
-                    Math.floor(userData.credits) < 2 
-                      ? "text-red-600 font-semibold"
-                      : "text-black"
-                  }
-                >
-                  {Math.max(1, Math.floor(userData.credits))} image{Math.floor(userData.credits) === 1 ? "" : "s"} left
-                </small>
-              </div>
-            )}
-            
+          {Math.floor(userData?.credits) < 6 && (
+            <div className="text-center">
+              <small
+                className={
+                  Math.floor(userData.credits) < 2 ? "text-red-600 font-semibold" : "text-black"
+                }
+              >
+                {Math.max(1, Math.floor(userData.credits))} image
+                {Math.floor(userData.credits) === 1 ? "" : "s"} left
+              </small>
+            </div>
+          )}
+
           <div className="flex items-center justify-center gap-4 mt-2 mb-6">
             <button
               onClick={handleGenerateImage}
@@ -551,53 +537,51 @@ const toggleImageSelection = (imgUrl) => {
               ✨ Generate
             </button>
           </div>
-
         </div>
       </div>
-      
-      <div className="flex-1 flex flex-col items-center ">
-      <div className="w-full md:p-4 bg-[#F5F5F5]">
-                  <button
-                      onClick={() => router.back()}
-                      className="flex items-center text-sm mb-1 text-black"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 mr-2"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      Back
-                    </button>
-          </div>
-          <div className="w-full p-4 md:p-4 bg-[#F5F5F5] px-4 md:px-[30px] py-4 md:py-[30px]">
-            
-          <div className="bg-[#FFFFFF0D] rounded-lg aspect-video flex items-center justify-center mb-4 m-auto max-h-[300px] md:max-h-[450px]">
-          <div className="text-gray-500 w-full h-full">
-          {/* Loader overlay */}
-            {imageLoading && (
-              <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-xl z-10">
-                <span className="text-sm text-gray-400">Loading image...</span>
-              </div>
-            )}
 
-            {/* Image always rendered */}
-            <img
-              src={image}
-              key={image}
-              alt={prompt}
-              onLoad={() => setImageLoading(false)}
-              className={`w-full h-full object-contain rounded-xl max-h-[300px] md:max-h-[450px] transition-opacity duration-500 ${
-                imageLoading ? "opacity-0" : "opacity-100"
-              }`}
-            />
+      <div className="flex-1 flex flex-col items-center ">
+        <div className="w-full md:p-4 bg-[#F5F5F5]">
+          <button
+            onClick={() => router.back()}
+            className="flex items-center text-sm mb-1 text-black"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 mr-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                clipRule="evenodd"
+              />
+            </svg>
+            Back
+          </button>
         </div>
+        <div className="w-full p-4 md:p-4 bg-[#F5F5F5] px-4 md:px-[30px] py-4 md:py-[30px]">
+          <div className="bg-[#FFFFFF0D] rounded-lg aspect-video flex items-center justify-center mb-4 m-auto max-h-[300px] md:max-h-[450px]">
+            <div className="text-gray-500 w-full h-full">
+              {/* Loader overlay */}
+              {imageLoading && (
+                <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-xl z-10">
+                  <span className="text-sm text-gray-400">Loading image...</span>
+                </div>
+              )}
+
+              {/* Image always rendered */}
+              <img
+                src={image}
+                key={image}
+                alt={prompt}
+                onLoad={() => setImageLoading(false)}
+                className={`w-full h-full object-contain rounded-xl max-h-[300px] md:max-h-[450px] transition-opacity duration-500 ${
+                  imageLoading ? "opacity-0" : "opacity-100"
+                }`}
+              />
+            </div>
           </div>
 
           <div className="flex items-center justify-center flex-wrap gap-2 md:gap-4 mt-2">
@@ -617,7 +601,6 @@ const toggleImageSelection = (imgUrl) => {
         </div>
       </div>
       <SweetAlert2 {...swalProps} onConfirm={(handleConfirm) => setSwalProps({ show: false })} />
-
     </div>
   );
 };
@@ -643,8 +626,8 @@ export async function getServerSideProps(ctx) {
         },
         "default"
       ),
-    ]); 
-    
+    ]);
+
     return {
       props: {
         masterData: masterData?.data || [],

@@ -105,3 +105,27 @@ export const allAvatarPromptSamples = [
   "A beautiful fit hispanic woman in workout clothes on a rooftop gym at sunrise. ",
   "A hispanic man in a high-tech setup surrounded by colorful LED lights. ",
 ];
+
+export const getPageName = (name) => {
+  switch (name) {
+    case "/":
+      return "Home Page";
+    case "/video-studio":
+      return "Video Studio";
+    case "/image-studio":
+      return "Image Studio";
+    case "/my-library":
+      return "My Library";
+    case "/usage":
+      return "Usage";
+    case "/subscription":
+      return "Subscription";
+    case "/generate-video":
+      return "Generate Video";
+    case "/generate-image":
+      return "Generate Image";
+
+    default:
+      return "Unknown Page";
+  }
+};

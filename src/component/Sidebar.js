@@ -110,6 +110,8 @@ import styles from "./styles";
 import useGTM from "../hooks/useGTM";
 import { useSelector } from "react-redux";
 import { useEffect, useState, useRef } from "react";
+import CLink from "./CLink";
+import { getPageName } from "../utils/common";
 
 function Sidebar({ children }) {
   const router = useRouter();
@@ -138,6 +140,15 @@ function Sidebar({ children }) {
   const { sendEvent } = useGTM();
 
   const handleBack = () => {
+    sendEvent({
+      event: "button_clicked",
+      button_text: "Back",
+      interaction_type: "Sidebar Navigation",
+      section_name: "Sidebar",
+      button_id: "sb_back_nav_lnk",
+      page_name: getPageName(router?.pathname),
+    });
+
     if (isActiveLink("/payment-success")) {
       router.push("/");
     } else {
@@ -184,7 +195,20 @@ function Sidebar({ children }) {
               <h2 className="text-black text-base font-semibold px-4 ">Studios</h2>
               <ul>
                 <li>
-                  <Link legacyBehavior href="/video-studio" passHref>
+                  <CLink
+                    route="/video-studio"
+                    handleClick={() =>
+                      sendEvent({
+                        event: "button_clicked",
+                        button_text: "Video Studio",
+                        interaction_type: "Sidebar Navigation",
+                        section_name: "Sidebar",
+                        navigation_group: "Studios",
+                        button_id: "sb_studio_nav_lnk",
+                        page_name: getPageName(router?.pathname),
+                      })
+                    }
+                  >
                     <a className="flex items-center  pt-1">
                       <div
                         className={`flex items-center rounded-xl p-3 w-full ${
@@ -207,10 +231,23 @@ function Sidebar({ children }) {
                         <span className="text-sm text-black pl-2">Video Studio</span>
                       </div>
                     </a>
-                  </Link>
+                  </CLink>
                 </li>
                 <li>
-                  <Link legacyBehavior href="/image-studio" passHref>
+                  <CLink
+                    route="/image-studio"
+                    handleClick={() =>
+                      sendEvent({
+                        event: "button_clicked",
+                        button_text: "Image Studio",
+                        interaction_type: "Sidebar Navigation",
+                        section_name: "Sidebar",
+                        navigation_group: "Studios",
+                        button_id: "sb_studio_nav_lnk",
+                        page_name: getPageName(router?.pathname),
+                      })
+                    }
+                  >
                     <a className="flex items-center  pt-1">
                       <div
                         className={`flex items-center rounded-xl p-3 w-full ${
@@ -233,7 +270,7 @@ function Sidebar({ children }) {
                         <span className="text-sm text-black pl-2">Image Studio</span>
                       </div>
                     </a>
-                  </Link>
+                  </CLink>
                 </li>
                 <li>
                   <Link legacyBehavior href="/avatar-studio" passHref>
@@ -281,7 +318,20 @@ function Sidebar({ children }) {
               <ul>
                 {isLoggedIn && (
                   <li>
-                    <Link href="/my-library" passHref legacyBehavior>
+                    <CLink
+                      route="/my-library"
+                      handleClick={() =>
+                        sendEvent({
+                          event: "button_clicked",
+                          button_text: "My Library",
+                          interaction_type: "Sidebar Navigation",
+                          section_name: "Sidebar",
+                          navigation_group: "Studios",
+                          button_id: "sb_studio_nav_lnk",
+                          page_name: getPageName(router?.pathname),
+                        })
+                      }
+                    >
                       <div className="flex items-center   cursor-pointer">
                         <div
                           className={`flex items-center rounded-xl p-3 w-full ${
@@ -302,70 +352,92 @@ function Sidebar({ children }) {
                           <span className="text-sm text-black pl-2">My Library</span>
                         </div>
                       </div>
-                    </Link>
+                    </CLink>
                   </li>
                 )}
               </ul>
             </div>
 
-           {isLoggedIn && <div className="">
-              <h2 className=" text-black text-base font-semibold px-4 mb-2">Profile</h2>
-              <ul>
-                <li>
-                  <Link legacyBehavior href="/subscription" passHref>
-                    <a className="flex items-center  py-2">
-                      <div
-                        onClick={() =>
-                          sendEvent({
-                            event: "Upgrade Now / Manage Subscription",
-                            email: userData?.email,
-                            name: userData?.name,
-                          })
-                        }
-                        className={`flex items-center rounded-xl p-3 w-full ${
-                          isActiveLink("/subscription") ? "bg-[#FFFFFF0D] font-bold" : ""
-                        }`}
-                        style={isActiveLink("/subscription") ? activeStyle : {}}
-                      >
-                        <img
-                          style={{ height: "20px", width: "20px" }}
-                          src="/images/icons/subscription.svg"
-                        />
-                        <span className="text-sm text-black pl-2">{userData?.isTrialUser ? "Upgrade":  "Manage Subscription"}</span>
-                      </div>
-                    </a>
-                  </Link>
-                </li>
-                {isLoggedIn && (
+            {isLoggedIn && (
+              <div className="">
+                <h2 className=" text-black text-base font-semibold px-4 mb-2">Profile</h2>
+                <ul>
                   <li>
-                    <Link legacyBehavior href="/usage" passHref>
+                    <CLink
+                      route="/subscription"
+                      handleClick={() =>
+                        sendEvent({
+                          event: "button_clicked",
+                          button_text: "Manage Subscription",
+                          interaction_type: "Sidebar Navigation",
+                          section_name: "Sidebar",
+                          navigation_group: "Profile",
+                          button_id: "sb_profile_nav_lnk",
+                          page_name: "Home Page",
+                        })
+                      }
+                    >
                       <a className="flex items-center  py-2">
                         <div
-                          onClick={() =>
-                            sendEvent({
-                              event: "Usage",
-                              email: userData?.email,
-                              name: userData?.name,
-                            })
-                          }
                           className={`flex items-center rounded-xl p-3 w-full ${
-                            isActiveLink("/usage") ? "bg-[#FFFFFF0D] font-bold" : ""
+                            isActiveLink("/subscription") ? "bg-[#FFFFFF0D] font-bold" : ""
                           }`}
-                          style={isActiveLink("/usage") ? activeStyle : {}}
+                          style={isActiveLink("/subscription") ? activeStyle : {}}
                         >
                           <img
                             style={{ height: "20px", width: "20px" }}
-                            src="/images/icons/usage.svg"
+                            src="/images/icons/subscription.svg"
                           />
-                          <span className="text-sm text-black pl-2">Usage</span>
+                          <span className="text-sm text-black pl-2">
+                            {userData?.isTrialUser ? "Upgrade" : "Manage Subscription"}
+                          </span>
                         </div>
                       </a>
-                    </Link>
+                    </CLink>
                   </li>
-                )}
-              </ul>
-            </div>
-            }
+                  {isLoggedIn && (
+                    <li>
+                      <CLink
+                        href="/usage"
+                        handleClick={() =>
+                          sendEvent({
+                            event: "button_clicked",
+                            button_text: "Usage",
+                            interaction_type: "Sidebar Navigation",
+                            section_name: "Sidebar",
+                            navigation_group: "Profile",
+                            button_id: "sb_profile_nav_lnk",
+                            page_name: "Home Page",
+                          })
+                        }
+                      >
+                        <a className="flex items-center  py-2">
+                          <div
+                            onClick={() =>
+                              sendEvent({
+                                event: "Usage",
+                                email: userData?.email,
+                                name: userData?.name,
+                              })
+                            }
+                            className={`flex items-center rounded-xl p-3 w-full ${
+                              isActiveLink("/usage") ? "bg-[#FFFFFF0D] font-bold" : ""
+                            }`}
+                            style={isActiveLink("/usage") ? activeStyle : {}}
+                          >
+                            <img
+                              style={{ height: "20px", width: "20px" }}
+                              src="/images/icons/usage.svg"
+                            />
+                            <span className="text-sm text-black pl-2">Usage</span>
+                          </div>
+                        </a>
+                      </CLink>
+                    </li>
+                  )}
+                </ul>
+              </div>
+            )}
           </aside>
         </div>
       </Box>

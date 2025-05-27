@@ -13,6 +13,7 @@ import { parseCookies } from "nookies";
 import { useSelector } from "react-redux";
 import SweetAlert2 from "react-sweetalert2";
 import ShimmerCategories from "../src/component/common/ShimmerCategories";
+import useGTM from "../src/hooks/useGTM";
 
 const Index = () => {
   const [swalProps, setSwalProps] = useState({});
@@ -20,7 +21,7 @@ const Index = () => {
     login: false,
   });
   const { isLoggedIn, userData } = useSelector((state) => state.user);
-
+  const { sendEvent } = useGTM();
   const [homeFeedData, setHomeFeedData] = useState([]);
 
   const { isLoading } = useQuery(
@@ -43,6 +44,10 @@ const Index = () => {
   };
 
   useEffect(() => {
+    sendEvent({
+      event: "land_on_home_page",
+    });
+
     if (!isLoggedIn) {
       setSwalProps({
         show: true,
