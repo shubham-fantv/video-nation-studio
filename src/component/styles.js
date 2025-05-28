@@ -40,8 +40,9 @@ const styles = {
     marginLeft: "270px",
     paddingRight: "32px",
     "@media(max-width:767px)": {
-      marginLeft: "15px",
-      // marginRight: "10px",
+      marginLeft: "15px !important",
+      paddingRight: "0px !important",
+      marginRight: "15px !important",
     },
   },
   contentFavtv: {

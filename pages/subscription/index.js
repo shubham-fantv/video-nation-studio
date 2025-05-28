@@ -146,7 +146,7 @@ const PricingPlans = () => {
 
   return (
     <div className=" text-black min-h-screen flex flex-col items-center py-1">
-      <h1 className="text-[32px] font-bold mb-2">Plans That Fit Your Needs</h1>
+      <h1 className="text-[32px] font-bold mb-2 text-center">Plans That Fit Your Needs</h1>
       <p className="text-xl mb-4 text-[#1E1E1EB2]">VideoNation Creator Studio</p>
 
       {/* 🔄 Toggle Switch */}

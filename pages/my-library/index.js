@@ -46,10 +46,9 @@ const VideoGrid = ({ data, data1 }) => {
   }, [data, data1]);
 
   return (
-    <div className="min-h-screen w-full p-6">
+    <div className="min-h-screen w-full md:p-6">
       <h1 className="text-black text-3xl font-bold text-center mb-8">My Library</h1>
 
-      {/* 🔄 Toggle Switch */}
       <div className="flex mb-8 w-[200px] bg-gray-200 rounded-full p-1">
         <button
           onClick={() => {
@@ -98,7 +97,7 @@ const VideoGrid = ({ data, data1 }) => {
                   : `/generate-image/${item?._id || item?.id}`
               )
             }
-            className="w-[250px] mb-6 break-inside-avoid rounded-xl transition-transform relative cursor-pointer"
+            className="w-full md:w-[250px] mb-6 break-inside-avoid rounded-xl transition-transform relative cursor-pointer"
           >
             <div className="relative">
               {mediaType === "video" ? (

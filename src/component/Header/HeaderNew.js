@@ -22,26 +22,10 @@ import useGTM from "../../hooks/useGTM";
 import SweetAlert2 from "react-sweetalert2";
 import { getPageName } from "../../utils/common";
 
-const LogOutNavItem = [
-  {
-    path: "/video-studio",
-    title: " Video Studio",
-    icon: "🎵 ",
-    newTag: false,
-  },
-  {
-    path: "/image-studio",
-    title: " Image Studio",
-    icon: "🎵 ",
-    newTag: true,
-  },
-  {
-    path: "/my-video",
-    title: " My Video",
-    icon: "🎵 ",
-    newTag: false,
-  },
-];
+const activeStyle = {
+  backgroundColor: "#FFFFFF0D",
+  border: "1px solid #3E3E3E",
+};
 
 const HeaderNew = ({ app }) => {
   const wallet = useWallet();
@@ -173,124 +157,303 @@ const HeaderNew = ({ app }) => {
         <X />
       </Box>
       <Box sx={styles.mobileScroll}>
-        <Box className="">
-          {userData?.credits > 0 ? (
-            <div>
-              <button
-                style={{
-                  border: "1px solid #262626",
-                  borderRadius: "12px",
-                  color: "#000",
-                  fontSize: "14px",
-                  textTransform: "capitalize",
-                  width: "max-content",
-                  display: "flex",
-                  alignItems: "center",
-                  marginRight: "20px",
-                  height: "40px",
-                  padding: isMobile ? "6px 10px" : "4px 16px",
-                }}
-              >
-                <img
-                  src="/images/icons/blackStar.svg"
-                  style={{
-                    height: isMobile ? "24px" : "28px",
-                    width: isMobile ? "24px" : "28px",
-                    marginRight: "6px",
-                  }}
-                  alt="star icon"
-                />
-                {userData?.credits} Credits
-              </button>
-            </div>
+        <Box onClick={(e) => e.stopPropagation()}>
+          {isLoggedIn ? (
+            <UserProfileDropdown />
           ) : (
-            <CLink href={"/subscription"}>
-              <button
-                style={{
-                  border: "1px solid #262626",
-                  borderRadius: "12px",
-                  color: "#000",
-                  fontSize: "14px",
-                  textTransform: "capitalize",
-                  width: "max-content",
-                  display: "flex",
-                  alignItems: "center",
-                  marginRight: "20px",
-                  height: "40px",
-                  padding: isMobile ? "6px 10px" : "4px 16px",
-                }}
-                onClick={() =>
-                  sendEvent({
-                    event: "button_clicked",
-                    button_text: "Upgrade Now",
-                    interaction_type: "Tab Button",
-                    page_name: getPageName(router?.pathname),
-                  })
-                }
-              >
-                <img
-                  src="/images/icons/blackStar.svg"
-                  style={{
-                    height: isMobile ? "24px" : "28px",
-                    width: isMobile ? "24px" : "28px",
-                    marginRight: "6px",
-                  }}
-                  alt="star icon"
-                />
-                Upgrade Now
-              </button>
-            </CLink>
-          )}
-        </Box>
-
-        {LogOutNavItem?.map((item, i) => (
-          <Link key={i} prefetch={false} href={item?.path} passHref>
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              paddingTop={2}
-              onClick={() => {
-                setIsMenuOpen(false);
-              }}
-            >
-              <Typography
-                variant="h6"
-                className="nav-item"
+            <Box sx={styles.btnContainer} onClick={handleWalletClick}>
+              <Button
                 sx={{
-                  color: router.pathname === item?.path ? "#000" : "#000",
+                  color: "#000000",
                   fontFamily: "Nohemi",
                   fontSize: "16px",
-                  fontWeight: 500,
-                  display: "flex",
-                  alignItems: "center",
                 }}
               >
-                <span className="text-lg">{item.icon}</span> &nbsp;
-                {item?.title}
-                {item?.newTag && (
-                  <sup
-                    style={{
-                      marginLeft: "4px",
-                      contentVisibility: "auto",
-                      background: "linear-gradient(96.61deg, #FFA0FF 4.52%, #653EFF 102.26%)",
-                      right: "0px",
-                      padding: " 8px",
-                      borderRadius: " 10px",
-                      fontSize: "8px",
-                      fontWeight: 700,
-                      color: "rgb(255, 255, 255)",
-                      textAlign: "center",
-                      height: "max-content",
-                    }}
-                  >
-                    coming Soon
-                  </sup>
-                )}
-              </Typography>
+                Sign In
+              </Button>
             </Box>
-          </Link>
-        ))}
+          )}
+        </Box>
+        <div class="w-full h-px bg-gray-300 my-4"></div>
+
+        <div className="flex h-screen">
+          <aside>
+            <ul>
+              <Link legacyBehavior href="/" passHref>
+                <li
+                  className={`mb-3 cursor-pointer rounded-xl p-3 flex items-center ${
+                    isActiveLink("/") ? "bg-[#FFFFFF0D] font-bold" : ""
+                  }`}
+                  style={isActiveLink("/") ? activeStyle : {}}
+                >
+                  <img src="/images/icons/home.svg" />
+                  <span className="text-sm text-black pl-2">Home</span>
+                </li>
+              </Link>
+            </ul>
+
+            <div className="mb-4">
+              <h2 className="text-black text-base font-semibold px-4 ">Studios</h2>
+              <ul>
+                <li>
+                  <CLink
+                    route="/video-studio"
+                    handleClick={() =>
+                      sendEvent({
+                        event: "button_clicked",
+                        button_text: "Video Studio",
+                        interaction_type: "Sidebar Navigation",
+                        section_name: "Sidebar",
+                        navigation_group: "Studios",
+                        button_id: "sb_studio_nav_lnk",
+                        page_name: getPageName(router?.pathname),
+                      })
+                    }
+                  >
+                    <div className="flex items-center  pt-1">
+                      <div
+                        className={`flex items-center rounded-xl p-3 w-full ${
+                          isActiveLink("/video-studio", "/category", "/generate-video")
+                            ? "bg-[#FFFFFF0D] font-bold"
+                            : ""
+                        }`}
+                        style={
+                          isActiveLink("/video-studio", "/category", "/generate-video")
+                            ? activeStyle
+                            : {}
+                        }
+                      >
+                        <img
+                          style={{ height: "20px", width: "20px" }}
+                          src="/images/icons/video.svg"
+                          className="text-black"
+                        />{" "}
+                        &nbsp;
+                        <span className="text-sm text-black pl-2">Video Studio</span>
+                      </div>
+                    </div>
+                  </CLink>
+                </li>
+                <li>
+                  <CLink
+                    route="/image-studio"
+                    handleClick={() =>
+                      sendEvent({
+                        event: "button_clicked",
+                        button_text: "Image Studio",
+                        interaction_type: "Sidebar Navigation",
+                        section_name: "Sidebar",
+                        navigation_group: "Studios",
+                        button_id: "sb_studio_nav_lnk",
+                        page_name: getPageName(router?.pathname),
+                      })
+                    }
+                  >
+                    <div className="flex items-center  pt-1">
+                      <div
+                        className={`flex items-center rounded-xl p-3 w-full ${
+                          isActiveLink("/image-studio", "/image-category", "/generate-image")
+                            ? "bg-[#FFFFFF0D] font-bold"
+                            : ""
+                        }`}
+                        style={
+                          isActiveLink("/image-studio", "/image-category", "/generate-image")
+                            ? activeStyle
+                            : {}
+                        }
+                      >
+                        <img
+                          style={{ height: "20px", width: "20px" }}
+                          src="/images/icons/gallery.svg"
+                          className="text-black"
+                        />{" "}
+                        &nbsp;
+                        <span className="text-sm text-black pl-2">Image Studio</span>
+                      </div>
+                    </div>
+                  </CLink>
+                </li>
+                <li>
+                  <Link
+                    href="/avatar-studio"
+                    handleClick={() =>
+                      sendEvent({
+                        event: "button_clicked",
+                        button_text: "Avatar Studio",
+                        interaction_type: "Sidebar Navigation",
+                        section_name: "Sidebar",
+                        navigation_group: "Studios",
+                        button_id: "sb_studio_nav_lnk",
+                        page_name: "Home Page",
+                      })
+                    }
+                  >
+                    <div className="flex items-center  pt-1">
+                      <div
+                        className={`flex items-center rounded-xl p-3 w-full ${
+                          isActiveLink("/avatar-studio", "/generate-avatar")
+                            ? "bg-[#FFFFFF0D] font-bold"
+                            : ""
+                        }`}
+                        style={
+                          isActiveLink("/avatar-studio", "/generate-avatar") ? activeStyle : {}
+                        }
+                      >
+                        <img
+                          style={{ height: "20px", width: "20px" }}
+                          src="/images/icons/video.svg"
+                          className="text-black"
+                        />{" "}
+                        &nbsp;
+                        <span className="text-sm text-black pl-2">Avatar Studio</span>
+                        {/* <sup
+                            style={{
+                              marginLeft: "4px",
+                              contentVisibility: "auto",
+                              background:
+                                "linear-gradient(96.61deg, #FFA0FF 4.52%, #653EFF 102.26%)",
+                              right: "0px",
+                              padding: " 8px",
+                              borderRadius: " 10px",
+                              fontSize: "8px",
+                              fontWeight: 700,
+                              color: "rgb(255, 255, 255)",
+                              textAlign: "center",
+                              height: "max-content",
+                            }}
+                          >
+                            coming Soon
+                          </sup> */}
+                      </div>
+                    </div>
+                  </Link>
+                </li>
+              </ul>
+              <ul>
+                {isLoggedIn && (
+                  <li>
+                    <CLink
+                      route="/my-library"
+                      handleClick={() =>
+                        sendEvent({
+                          event: "button_clicked",
+                          button_text: "My Library",
+                          interaction_type: "Sidebar Navigation",
+                          section_name: "Sidebar",
+                          navigation_group: "Studios",
+                          button_id: "sb_studio_nav_lnk",
+                          page_name: getPageName(router?.pathname),
+                        })
+                      }
+                    >
+                      <div className="flex items-center   cursor-pointer">
+                        <div
+                          className={`flex items-center rounded-xl p-3 w-full ${
+                            isActiveLink("/my-library") ? "bg-[#FFFFFF0D] font-bold" : ""
+                          }`}
+                          style={isActiveLink("/my-library") ? activeStyle : {}}
+                        >
+                          <span className="text-black">
+                            <svg
+                              className="w-6 h-6 text-black"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                            >
+                              <path d="M17 10.5V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-3.5l4 4v-11l-4 4z" />
+                            </svg>
+                          </span>
+                          <span className="text-sm text-black pl-2">My Library</span>
+                        </div>
+                      </div>
+                    </CLink>
+                  </li>
+                )}
+              </ul>
+            </div>
+
+            {isLoggedIn && (
+              <div className="">
+                <h2 className=" text-black text-base font-semibold px-4 mb-2">Profile</h2>
+                <ul>
+                  <li>
+                    <CLink
+                      route="/subscription"
+                      handleClick={() =>
+                        sendEvent({
+                          event: "button_clicked",
+                          button_text: "Manage Subscription",
+                          interaction_type: "Sidebar Navigation",
+                          section_name: "Sidebar",
+                          navigation_group: "Profile",
+                          button_id: "sb_profile_nav_lnk",
+                          page_name: "Home Page",
+                        })
+                      }
+                    >
+                      <div className="flex items-center  py-2">
+                        <div
+                          className={`flex items-center rounded-xl p-3 w-full ${
+                            isActiveLink("/subscription") ? "bg-[#FFFFFF0D] font-bold" : ""
+                          }`}
+                          style={isActiveLink("/subscription") ? activeStyle : {}}
+                        >
+                          <img
+                            style={{ height: "20px", width: "20px" }}
+                            src="/images/icons/subscription.svg"
+                          />
+                          <span className="text-sm text-black pl-2">
+                            {userData?.isTrialUser ? "Upgrade" : "Manage Subscription"}
+                          </span>
+                        </div>
+                      </div>
+                    </CLink>
+                  </li>
+                  {isLoggedIn && (
+                    <li>
+                      <CLink
+                        href="/usage"
+                        handleClick={() =>
+                          sendEvent({
+                            event: "button_clicked",
+                            button_text: "Usage",
+                            interaction_type: "Sidebar Navigation",
+                            section_name: "Sidebar",
+                            navigation_group: "Profile",
+                            button_id: "sb_profile_nav_lnk",
+                            page_name: "Home Page",
+                          })
+                        }
+                      >
+                        <div className="flex items-center  py-2">
+                          <div
+                            onClick={() =>
+                              sendEvent({
+                                event: "Usage",
+                                email: userData?.email,
+                                name: userData?.name,
+                              })
+                            }
+                            className={`flex items-center rounded-xl p-3 w-full ${
+                              isActiveLink("/usage") ? "bg-[#FFFFFF0D] font-bold" : ""
+                            }`}
+                            style={isActiveLink("/usage") ? activeStyle : {}}
+                          >
+                            <img
+                              style={{ height: "20px", width: "20px" }}
+                              src="/images/icons/usage.svg"
+                            />
+                            <span className="text-sm text-black pl-2">Usage</span>
+                          </div>
+                        </div>
+                      </CLink>
+                    </li>
+                  )}
+                </ul>
+              </div>
+            )}
+          </aside>
+        </div>
       </Box>
     </Box>
   );
@@ -374,7 +537,7 @@ const HeaderNew = ({ app }) => {
             </div>
           </div>
 
-          <Box className="flex hidden md:flex">
+          <Box className="flex md:flex">
             {userData?.credits > 0 ? (
               userData.credits < 20 && router?.pathname != "/subscription" ? (
                 <div className="flex items-center px-4 gap-4">
@@ -451,23 +614,25 @@ const HeaderNew = ({ app }) => {
                 ) : null}
               </div>
             )}
-            {isLoggedIn ? (
-              <UserProfileDropdown />
-            ) : (
-              <Box sx={styles.btnContainer} onClick={handleWalletClick}>
-                <Button
-                  sx={{
-                    color: "#000000",
-                    fontFamily: "Nohemi",
-                    fontSize: "16px",
-                  }}
-                >
-                  Sign In
-                </Button>
-              </Box>
-            )}
+            <span className="hidden md:flex">
+              {isLoggedIn ? (
+                <UserProfileDropdown />
+              ) : (
+                <Box sx={styles.btnContainer} onClick={handleWalletClick}>
+                  <Button
+                    sx={{
+                      color: "#000000",
+                      fontFamily: "Nohemi",
+                      fontSize: "16px",
+                    }}
+                  >
+                    Sign In
+                  </Button>
+                </Box>
+              )}
+            </span>
           </Box>
-          <span className="md:hidden">
+          {/* <span className="md:hidden">
             {isLoggedIn ? (
               <UserProfileDropdown />
             ) : (
@@ -483,7 +648,7 @@ const HeaderNew = ({ app }) => {
                 </Button>
               </Box>
             )}
-          </span>
+          </span> */}
 
           {isMobile && (
             <Box sx={styles.profileNavBar} onClick={toggleDrawer(true)}>

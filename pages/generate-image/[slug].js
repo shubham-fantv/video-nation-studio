@@ -162,10 +162,10 @@ const Index = ({ masterData }) => {
 
   const handleGenerateImage = () => {
     if (isLoggedIn) {
-      if (!prompt.trim()) {
-        alert("Please enter a prompt!");
-        return;
-      }
+      // if (!prompt.trim()) {
+      //   alert("Please enter a prompt!");
+      //   return;
+      // }
 
       if (userData.credits <= 0 || userData.credits < 1) {
         setSwalProps({

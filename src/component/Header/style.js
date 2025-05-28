@@ -461,7 +461,7 @@ const styles = {
     },
   },
   mobileScroll: {
-    height: "55vh",
+    height: "100vh",
     overflowY: "auto",
     width: "100%",
     // padding: '9px 21px 25px 0px',
