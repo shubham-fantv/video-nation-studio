@@ -11,10 +11,11 @@ import { parseCookies } from "nookies";
 import { useSelector } from "react-redux";
 import useGTM from "../../../src/hooks/useGTM";
 import SweetAlert2 from "react-sweetalert2";
-import AIAvatarSteps from "../../../src/component/HeadShot/steps";
+
 import GoodPhotos from "../../../src/component/HeadShot/GoodPhotos";
 import BadPhotos from "../../../src/component/HeadShot/BadPhotos";
 import { useRef } from "react";
+import AIAvatarSteps from "../../../src/component/HeadShot/AIAvatarSteps";
 
 const allHeadshots = [
   "https://assets.artistfirst.in/uploads/1747722518107-Urban_Sleek_Headshot_A1.jpg",
@@ -627,7 +628,7 @@ const Index = ({ masterData }) => {
         </div>
       </div>
 
-      <div className="flex-1 w-full flex flex-col px-8 items-center ">
+      <div className="flex-1 w-full flex flex-col pr-8 pl-4 items-center ">
         <h2 className="text-2xl font-semibold">Create an Aavtar</h2>
         <h3 className="pt-2">Upload photos to create multiple looks for your avatar</h3>
         <div></div>
