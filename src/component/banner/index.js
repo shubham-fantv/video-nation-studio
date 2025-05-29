@@ -291,7 +291,7 @@ function Banner() {
                 color: "#FFF",
                 fontSize: isMobile ? "14px" : "16px",
                 textTransform: "capitalize",
-                width: "max-content",
+                // width: "max-content",
                 display: "flex",
                 alignItems: "center",
                 padding: isMobile ? "6px 14px" : "8px 16px",
@@ -354,7 +354,7 @@ function Banner() {
         className="relative flex justify-center md:justify-end items-end"
         sx={{
           paddingBottom: { xs: "2rem", md: "1.5rem" },
-          paddingRight: { xs: "1rem", md: "1.5rem" },
+          paddingRight: { xs: "0.5rem", md: "1.5rem" },
           gap: { xs: "10px", md: "1rem" },
           width: "100%",
           position: { xs: "absolute", md: "relative" },
@@ -364,17 +364,16 @@ function Banner() {
       >
         <Box
           sx={{
-            width: 210 * videoScale,
+            width: 200 * videoScale,
             borderRadius: "12px",
             overflow: "hidden",
             boxShadow: "0px 4px 10px 0px #00000073",
-            // transform: isMobile ? "none" : "none",
             transformOrigin: "bottom right",
           }}
         >
           <video
             ref={(el) => (videoRefs.current[0] = el)}
-            width={210}
+            width={200}
             muted
             playsInline
             loop

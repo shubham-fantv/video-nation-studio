@@ -1,91 +1,50 @@
-import React, { useEffect, useState } from "react";
-import AvatarDropdown from "../../../src/component/common/AvatarDropdown";
+import axios from "axios";
 import { useRouter } from "next/router";
-import { useMutation, useQuery } from "react-query";
+import React, { useEffect, useState } from "react";
+import { useMutation } from "react-query";
+import { useSelector } from "react-redux";
+import SweetAlert2 from "react-sweetalert2";
+import Loading from "../../../src/component/common/Loading/loading";
 import { API_BASE_URL, FANTV_API_URL } from "../../../src/constant/constants";
 import fetcher from "../../../src/dataProvider";
-import axios from "axios";
-import Loading from "../../../src/component/common/Loading/loading";
 import { quotes } from "../../../src/utils/common";
-import { parseCookies } from "nookies";
-import { useSelector } from "react-redux";
-import useGTM from "../../../src/hooks/useGTM";
-import SweetAlert2 from "react-sweetalert2";
-
-import GoodPhotos from "../../../src/component/HeadShot/GoodPhotos";
-import BadPhotos from "../../../src/component/HeadShot/BadPhotos";
+import { useQuery } from "react-query";
 import { useRef } from "react";
 import AIAvatarSteps from "../../../src/component/HeadShot/AIAvatarSteps";
-
-const allHeadshots = [
-  "https://assets.artistfirst.in/uploads/1747722518107-Urban_Sleek_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722596046-Sunlit_Lane_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722626136-Ocean_Luxe_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722644121-Coastal_Edge._Headshot_A1jpg.jpg",
-  "https://assets.artistfirst.in/uploads/1747722665915-Corp_Park_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722685634-Cruise_Deck_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722710694-Golden_Lane_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722731444-Modern_Office_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722749897-Cafe_Vibe_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722773986-Suburban_Sun_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722793576-Tree_Canopy_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722813916-Green_Belt_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722829388-Leafy_Tunnel_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722853393-Sunset_Sea_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722901407-City_Canopy_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722813916-Green_Belt_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722871243-Dappled_Walk_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747723002925-Prime_Suburb_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722934391-Grand_Avenue_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722952743-Biz_District_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747730179106-Bright_Lane_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722731444-Modern_Office_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722749897-Cafe_Vibe_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722934391-Grand_Avenue_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722934391-Grand_Avenue_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722952743-Biz_District_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747730179106-Bright_Lane_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722731444-Modern_Office_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722749897-Cafe_Vibe_Headshot_A1.jpg",
-  "https://assets.artistfirst.in/uploads/1747722934391-Grand_Avenue_Headshot_A1.jpg",
-].map((url, index) => ({ id: index + 1, url }));
+import BadPhotos from "../../../src/component/HeadShot/BadPhotos";
+import GoodPhotos from "../../../src/component/HeadShot/GoodPhotos";
 
 const Index = () => {
-  const [aspectRatio, setAspectRatio] = useState("16:9");
-  const [prompt, setPrompt] = useState("");
   const router = useRouter();
-  const [imagePreview, setImagePreview] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
   const [uploading, setUploading] = useState(false);
-  const [imageLoading, setImageLoading] = useState(false);
 
-  const [image, setImage] = useState("");
-  const [authToken, setAuthToken] = useState("");
   const [swalProps, setSwalProps] = useState({});
   const { isLoggedIn, userData } = useSelector((state) => state.user);
-
   const [subTitle, setSubTitle] = useState("");
   const [isLoading, setLoading] = useState(false);
-  const { slug } = router.query;
-
   const [selectedImages, setSelectedImages] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const [totalFileSelected, setTotalFileSelected] = useState(0);
+  console.log("🚀 ~ Index ~ imagePreviews:", imagePreviews);
+  const [files, setFiles] = useState([]);
+  console.log("🚀 ~ Index ~ files:", files);
+  const inputRef = useRef(null);
+  const [headShotStyleData, setHeadShotStyleData] = useState([]);
 
-  const toggleImageSelection = (imgUrl) => {
-    setSelectedImages((prev) =>
-      prev.includes(imgUrl) ? prev.filter((url) => url !== imgUrl) : [...prev, imgUrl]
-    );
-  };
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [groupedData, setGroupedData] = useState({});
+  const [categoryOrder, setCategoryOrder] = useState([]);
+
+  const MAX_IMAGES = 12;
+  const MAX_SIZE_MB = 5;
 
   const { mutate: generateImageApi } = useMutation(
     (obj) => fetcher.post(`${FANTV_API_URL}/api/v1/ai-image`, obj),
     {
       onSuccess: (response) => {
-        setImagePreview(null);
-        setImageUrl(null);
-        setPrompt("");
         setLoading(false);
-
-        router.replace(`/generate-image/${response?.data._id}`, undefined, { scroll: false });
+        // router.replace(`/generate-image/${response?.data._id}`, undefined, { scroll: false });
+        router.push(`/image/headshot/${response?.data._id}`, undefined, { scroll: false });
       },
       onError: (error) => {
         setLoading(false);
@@ -103,11 +62,6 @@ const Index = () => {
     }
   );
 
-  const handleGenerateImage = () => {
-    setLoading(true);
-    handleGeneratePhotoAvatar();
-  };
-
   useEffect(() => {
     const pickRandomQuote = () => {
       const randomIndex = Math.floor(Math.random() * quotes.length);
@@ -115,64 +69,26 @@ const Index = () => {
     };
     pickRandomQuote();
     const interval = setInterval(pickRandomQuote, 5000);
-
-    const cookies = parseCookies();
-    setAuthToken(cookies.aToken); // or any key you're tracking
-
     return () => clearInterval(interval);
   }, []);
 
-  // Fetch new data on ID change
-  useEffect(() => {
-    //console.log("IAM HERE", slug);
-    if (!slug) return;
+  const { isLoading: loadingHeadShot } = useQuery(
+    `${FANTV_API_URL}/api/v1/homefeed`,
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/headshot/headshot`),
+    {
+      refetchOnMount: "always",
+      onSuccess: ({ data }) => {
+        setHeadShotStyleData(data);
+      },
+    }
+  );
 
-    let updatedSlug = slug;
-    if (slug == "new") updatedSlug = "681c60acd91d98841219f837";
-
-    const fetchData = async () => {
-      setLoading(true);
-      setImageLoading(true);
-
-      try {
-        const res = await fetcher.get(
-          `${FANTV_API_URL}/api/v1/image_templates/${updatedSlug}`,
-          {
-            headers: {
-              ...(!!authToken && { Authorization: `Bearer ${authToken}` }),
-            },
-          },
-          "default"
-        );
-
-        const data = res?.data;
-        setPrompt(data.prompt);
-        setImageUrl(data.imageUrl);
-        setImagePreview(data.imageUrl);
-        setImage(data.finalImageUrl);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [slug]);
-
-  const [imagePreviews, setImagePreviews] = useState([]);
-  const [isPopupVisible, setIsPopupVisible] = useState(false);
-  const [files, setFiles] = useState([]);
-  const inputRef = useRef(null);
-
-  const MAX_IMAGES = 12;
-  const MAX_SIZE_MB = 5;
   const handleImageUpload = async (event) => {
     const files = Array.from(event.target.files);
 
     if (!files.length) return;
-    // Combine with existing and check total
     const totalFiles = imagePreviews.length + files.length;
+    setTotalFileSelected(totalFiles);
     if (totalFiles > MAX_IMAGES) {
       alert(`You can only upload up to ${MAX_IMAGES} images.`);
       return;
@@ -223,21 +139,16 @@ const Index = () => {
     handleImageUpload(e);
   };
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
-
-  const mainImages = allHeadshots.slice(0, 6);
-  const relatedImages = allHeadshots.slice(selectedIndex * 4, selectedIndex * 4 + 5);
-
   const { mutate: generatePhotoAvatarApi } = useMutation(
     (obj) => fetcher.post(`${API_BASE_URL}/api/v1/ai-avatar/photo-avatar`, obj),
     {
       onSuccess: (response) => {
-        setPrompt("");
         const requestBody = {
           avatarId: response?.data?._id,
-          imageInput: selectedImages,
+          imageInput: headShotStyleData.map((item) => item._id),
           creditsUsed: 1,
-          aspectRatio: aspectRatio,
+          aspectRatio: "1:1",
+          prompt: "test",
         };
         setLoading(true);
         generateImageApi(requestBody);
@@ -259,6 +170,7 @@ const Index = () => {
 
   const handleGeneratePhotoAvatar = () => {
     if (isLoggedIn) {
+      setLoading(true);
       let nameInput = name;
 
       if (!nameInput.trim()) {
@@ -280,24 +192,105 @@ const Index = () => {
         gender: "female",
         creditsUsed: 10,
         aspectRatio: "1:1",
-        ...(image && { imageUrl: image }),
         imageInput: files ? files : [],
       };
       setLoading(true);
       generatePhotoAvatarApi(requestBody);
     } else {
-      setIsPopupVisible(true);
+      alert("please login");
     }
   };
 
+  useEffect(() => {
+    if (headShotStyleData.length > 0) {
+      const grouped = headShotStyleData.reduce((acc, item) => {
+        if (!acc[item.category]) {
+          acc[item.category] = [];
+        }
+        acc[item.category].push(item);
+        return acc;
+      }, {});
+
+      setGroupedData(grouped);
+      const categories = Object.keys(grouped);
+      setCategoryOrder(categories);
+
+      // Set first category as default selected
+      if (!selectedCategory && categories.length > 0) {
+        setSelectedCategory(categories[0]);
+      }
+    }
+  }, [headShotStyleData, selectedCategory]);
+
+  const getMainImages = () => {
+    return categoryOrder.map((category) => ({
+      category,
+      ...groupedData[category][0],
+    }));
+  };
+
+  const getRelatedImages = () => {
+    if (!selectedCategory || !groupedData[selectedCategory]) {
+      return [];
+    }
+    return groupedData[selectedCategory];
+  };
+
+  const handleCategorySelect = (category) => {
+    setSelectedCategory(category);
+  };
+
+  const toggleImageSelection = (imageObj) => {
+    setSelectedImages((prev) => {
+      const isSelected = prev.some((img) => img._id === imageObj._id);
+
+      if (isSelected) {
+        return prev.filter((img) => img._id !== imageObj._id);
+      } else {
+        return [...prev, imageObj];
+      }
+    });
+  };
+
+  const isImageSelected = (imageObj) => {
+    return selectedImages.some((img) => img._id === imageObj._id);
+  };
+
+  const mainImages = getMainImages();
+  const relatedImages = getRelatedImages();
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const selectedCount = imagePreviews.length;
+    const progress = (selectedCount / totalFileSelected) * 100;
+    setProgress(progress);
+  }, [imagePreviews.length, totalFileSelected]);
+
   return (
     <div className="flex flex-col md:flex-row text-black md:gap-4">
-      {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
+      {(isLoading || loadingHeadShot) && <Loading title={"Please wait"} subTitle={subTitle} />}
       <div className="w-full md:w-[30%] bg-[#FFFFFF0D] p-4 border-2 ml-8  rounded-xl">
         <div>
           <div>
             <div className=" text-center cursor-pointer transition mb-2">
               <div className="flex flex-col items-center">
+                <div className=" w-full mx-auto py-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <h1 className="font-semibold text-[#1E1E1E]">
+                      Select upto {MAX_IMAGES} photos
+                    </h1>
+                    <span className="font-medium text-gray-600">
+                      {imagePreviews.length}/{totalFileSelected}
+                    </span>
+                  </div>
+                  <div className="w-full h-2 bg-gray-200 rounded-full cursor-pointer">
+                    <div
+                      className="h-full bg-blue-500 rounded-full transition-all duration-300 ease-out"
+                      style={{ width: `${progress}%` }}
+                    ></div>
+                  </div>
+                </div>
+
                 {imagePreviews?.length > 0 && (
                   <div className="grid grid-cols-4 sm:grid-cols-6 gap-3 mb-6">
                     {imagePreviews.map(({ url, localPreview }, idx) => (
@@ -353,45 +346,56 @@ const Index = () => {
               </div>
             </div>
           </div>
-          <div>
-            <div className="max-w-xl mx-auto pt-3">
-              <h2 className="text-sm font-medium mb-3">Select Headshot Style</h2>
-              <div className="flex gap-1 overflow-x-auto mb-4">
-                {mainImages.map((img, idx) => (
-                  <div
-                    key={img.id}
-                    className={`flex flex-col items-center cursor-pointer border-2 rounded-xl  ${
-                      selectedIndex === idx ? "border-purple-500" : "border-transparent"
-                    }`}
-                    onClick={() => setSelectedIndex(idx)}
-                  >
-                    <img
-                      src={img.url}
-                      alt={`Style ${idx + 1}`}
-                      className="w-20 h-20 object-cover rounded-lg"
-                    />
-                    <span className="text-xs text-[#626262] mt-1">Urban</span>
-                  </div>
-                ))}
-              </div>
+          <div className="max-w-xl mx-auto pt-3">
+            <h2 className="text-sm font-medium mb-3">Select Headshot Style</h2>
 
-              <div className="grid grid-cols-3 gap-4 bg-gray-50 p-4 rounded-xl mb-6">
-                {relatedImages.map((img, idx) => (
-                  <div
-                    key={img.id}
-                    className={`cursor-pointer border-2 rounded-lg overflow-hidden transition ${
-                      selectedImages.includes(img.url) ? "border-purple-500" : "border-transparent"
-                    }`}
-                    onClick={() => toggleImageSelection(img.url)}
-                  >
-                    <img
-                      src={img.url}
-                      alt={`Headshot ${img.id}`}
-                      className="w-full h-20 object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
+            {/* Category Selection Row */}
+            <div className="flex gap-1 overflow-x-auto mb-4">
+              {mainImages.map((img, idx) => (
+                <div
+                  key={img._id}
+                  className={`flex flex-col items-center cursor-pointer border-2 rounded-xl ${
+                    selectedCategory === img.category ? "border-purple-500" : "border-transparent"
+                  }`}
+                  onClick={() => handleCategorySelect(img.category)}
+                >
+                  <img
+                    src={img.url}
+                    alt={`${img.category} style`}
+                    className="w-20 h-20 object-cover rounded-lg"
+                  />
+                  <span className="text-xs text-[#626262] mt-1">{img.category}</span>
+                </div>
+              ))}
+            </div>
+            {/* Selected Category Images Grid */}
+            <div className="grid grid-cols-3 gap-4 bg-gray-50 p-4 rounded-xl mb-6">
+              {relatedImages.map((img, idx) => (
+                <div
+                  key={img._id}
+                  className={`cursor-pointer border-2 rounded-lg overflow-hidden transition relative ${
+                    isImageSelected(img) ? "border-purple-500" : "border-transparent"
+                  }`}
+                  onClick={() => toggleImageSelection(img)}
+                >
+                  <img
+                    src={img.url}
+                    alt={`${img.style} - ${img.description}`}
+                    className="w-full h-20 object-cover"
+                  />
+                  {isImageSelected(img) && (
+                    <div className="absolute top-1 right-1 w-4 h-4 bg-purple-500 rounded-full flex items-center justify-center">
+                      <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
           <h3 className="mb-6 text-sm text-[#1E1E1EB2] text-normal">Credits : 1</h3>
@@ -411,7 +415,7 @@ const Index = () => {
 
           <div className="flex w-full items-center justify-center gap-4 mt-2 mb-6">
             <button
-              onClick={handleGenerateImage}
+              onClick={handleGeneratePhotoAvatar}
               className="flex w-full items-center text-center justify-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
             >
               ✨ Generate
@@ -422,7 +426,9 @@ const Index = () => {
 
       <div className="flex-1 w-full flex flex-col pr-8 pl-4 items-center ">
         <h2 className="text-2xl font-semibold">Create an Avatar</h2>
-        <h3 className="pt-2">Upload photos to create multiple looks for your avatar</h3>
+        <h3 className="pt-2 font-semibold text-[#1E1E1EB2]">
+          Upload photos to create multiple looks for your avatar
+        </h3>
         <div></div>
         <AIAvatarSteps />
         <GoodPhotos />

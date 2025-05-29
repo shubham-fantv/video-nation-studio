@@ -603,7 +603,7 @@ const index = (data) => {
           </div>
         </div>
       )}
-      {true && (
+      {isPromptPhotoModalVisible && (
         <div className="fixed mt-20 inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
           <div className="overflow-y-auto max-h-[calc(90vh-1rem)] pr-2">
             <div className="bg-white w-full max-w-5xl rounded-xl p-6 relative grid grid-cols-1 md:grid-cols-2 gap-6 relative overflow-hidden max-h-[85vh]">

@@ -36,7 +36,7 @@ const styles = {
     width: "100%",
     marginTop: "0px",
     minHeight: "100vh",
-    // overflow: "clip",
+    overflow: "clip",
     marginLeft: "270px",
     paddingRight: "32px",
     "@media(max-width:767px)": {

@@ -148,7 +148,7 @@ const CommunityCreatedContent = ({
       <div>
         <h1 className="text-2xl font-bold mb-2 text-[#1E1E1E]">{title}</h1>
         <p className="text-base text-[#1E1E1EB2]">{subTitle}</p>
-        <div className="w-full" style={{ maxWidth: "1120px" }}>
+        <div className="w-full hidden md:flex" style={{ maxWidth: "1120px" }}>
           <div
             ref={scrollContainerRef}
             className="flex gap-2 mt-5 overflow-x-auto pb-1 md:pb-0 "
@@ -210,11 +210,6 @@ const CommunityCreatedContent = ({
               </button>
             ))}
           </div>
-          {/* <div className="flex justify-end">
-            <span className="text-xs text-gray-400  cursor-pointer" onClick={() => scrollToEnd()}>
-              Scroll for more →
-            </span>
-          </div> */}
         </div>
       </div>
 

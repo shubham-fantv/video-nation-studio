@@ -32,7 +32,7 @@ function CardComponent({ data, redirect }) {
           <img
             src={data?.imageUrl}
             className="cover"
-            class="object-cover md:h-full"
+            // class="object-cover md:h-full"
             alt="description"
           />
         </Box>

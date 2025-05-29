@@ -86,7 +86,7 @@ const VideoGrid = ({ data, data1 }) => {
         </button>
       </div>
 
-      <div className="columns-1 sm:columns-2 lg:columns-4 gap-4">
+      <div className="columns-1 sm:columns-2 lg:columns-4 gap-4 pr-8 sm:pr-0 lg:pr-0">
         {paginatedMedia.map((item, index) => (
           <div
             key={index}

@@ -351,6 +351,24 @@ const Index = ({ masterData }) => {
   return (
     <div className="flex flex-col md:flex-row text-black md:gap-4">
       {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
+      <div className=" md:hidden  pl-2 w-full md:p-4 ">
+        <button onClick={() => router.back()} className="flex items-center text-sm mb-1 text-black">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5 mr-2"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+              clipRule="evenodd"
+            />
+          </svg>
+          Back
+        </button>
+      </div>
+
       <div className="w-full md:w-[25%] bg-[#FFFFFF0D] p-4">
         <div className="">
           {slug === "headshot" ? (
@@ -542,7 +560,7 @@ const Index = ({ masterData }) => {
       </div>
 
       <div className="flex-1 flex flex-col items-center ">
-        <div className="w-full md:p-4 bg-[#F5F5F5]">
+        <div className="hidden md:block w-full md:p-4 bg-[#F5F5F5]">
           <button
             onClick={() => router.back()}
             className="flex items-center text-sm mb-1 text-black"

@@ -67,11 +67,11 @@ function MyApp({ Component, pageProps, emotionCache = createEmotionCache() }) {
                 <AppSeo />
                 <SnackbarProvider>
                   <SnackBar />
-                  <ResponsiveWrapper>
-                    <Layout {...pageProps}>
-                      <Component {...pageProps} />
-                    </Layout>
-                  </ResponsiveWrapper>
+                  {/* <ResponsiveWrapper> */}
+                  <Layout {...pageProps}>
+                    <Component {...pageProps} />
+                  </Layout>
+                  {/* </ResponsiveWrapper> */}
                 </SnackbarProvider>
               </PageThemeProvider>
             </CacheProvider>
