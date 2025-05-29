@@ -50,15 +50,8 @@ const allHeadshots = [
   "https://assets.artistfirst.in/uploads/1747722934391-Grand_Avenue_Headshot_A1.jpg",
 ].map((url, index) => ({ id: index + 1, url }));
 
-const Index = ({ masterData }) => {
-  const [template, setTemplate] = useState([]);
-
-  const RATE_LIMIT_INTERVAL_MS = 1 * 1000; // 12 hours
+const Index = () => {
   const [aspectRatio, setAspectRatio] = useState("16:9");
-  const [avatar, setAvatar] = useState("");
-  const [voice, setVoice] = useState("");
-  const [visibility, setVisibility] = useState("Public");
-  const [captionEnabled, setCaptionEnabled] = useState("");
   const [prompt, setPrompt] = useState("");
   const router = useRouter();
   const [imagePreview, setImagePreview] = useState("");
@@ -70,64 +63,18 @@ const Index = ({ masterData }) => {
   const [authToken, setAuthToken] = useState("");
   const [swalProps, setSwalProps] = useState({});
   const { isLoggedIn, userData } = useSelector((state) => state.user);
-  const { sendEvent } = useGTM();
-  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-  const [selectedAvatar, setSelectedAvatar] = useState(null);
-
-  const handleAvatarSelect = (avatar) => {
-    setSelectedAvatar(avatar);
-    console.log("Selected avatar:", avatar);
-  };
 
   const [subTitle, setSubTitle] = useState("");
   const [isLoading, setLoading] = useState(false);
-  const aspectRatioData = ["16:9", "9:16", "1:1"];
   const { slug } = router.query;
 
   const [selectedImages, setSelectedImages] = useState([]);
-  const [showAllImages, setShowAllImages] = useState(false);
 
   const toggleImageSelection = (imgUrl) => {
     setSelectedImages((prev) =>
       prev.includes(imgUrl) ? prev.filter((url) => url !== imgUrl) : [...prev, imgUrl]
     );
   };
-
-  const aspectRatioSizeMap = {
-    "1:1": "w-4 h-4",
-    "4:5": "w-10 h-12",
-    "9:16": "w-3 h-4",
-    "16:9": "w-4 h-3",
-  };
-
-  const handleImageUploadOld = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    setUploading(true);
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const response = await axios.post("https://upload.artistfirst.in/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      setImageUrl(response?.data?.data?.[0]?.url);
-
-      setImagePreview(URL.createObjectURL(file));
-    } catch (error) {
-      console.error("Upload failed", error);
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  //   const handleRemoveImage = () => {
-  //     setImageUrl(null);
-  //     setImagePreview(null);
-  //   };
 
   const { mutate: generateImageApi } = useMutation(
     (obj) => fetcher.post(`${FANTV_API_URL}/api/v1/ai-image`, obj),
@@ -157,103 +104,8 @@ const Index = ({ masterData }) => {
   );
 
   const handleGenerateImage = () => {
-    if (isLoggedIn) {
-      // if (!prompt.trim()) {
-      //   alert("Please enter a prompt!");
-      //   return;
-      // }
-
-      if (userData.credits <= 0 || userData.credits < 1) {
-        setSwalProps({
-          key: Date.now(), // or use a counter
-          show: true,
-          title: `⏳ You only have ${userData.credits} Credits Left!`,
-          text: "Upgrade now to buy Credits, unlock HD, pro voices, and longer videos.",
-          confirmButtonText: "View Plans",
-          showCancelButton: true,
-          icon: "warning",
-          preConfirm: () => {
-            router.push("/subscription");
-          },
-        });
-      } else {
-        if (userData?.isTrialUser) {
-          const now = Date.now();
-          const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || now, 10);
-
-          if (now - lastActionTime > 0 && now - lastActionTime < RATE_LIMIT_INTERVAL_MS) {
-            const waitTime = Math.ceil(
-              (RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60
-            );
-            setSwalProps({
-              key: Date.now(), // or use a counter
-              show: true,
-              title: "⏳ Please wait",
-              text: `Free users can generate only one image every 12 hours. Try again in ${waitTime} mins. Upgrade now to unlock unlimited generation and HD quality`,
-              icon: "info",
-              confirmButtonText: "View Plans",
-              showCancelButton: true,
-              preConfirm: () => {
-                router.push("/subscription");
-              },
-            });
-            return;
-          } else {
-            //console.log("selectedAvatar",selectedAvatar);
-            sendEvent({
-              event: "Generate Image Slug",
-              slug: slug,
-              email: userData?.email,
-              name: userData?.name,
-              prompt: prompt,
-              aspectRatio: aspectRatio,
-            });
-
-            const requestBody = {
-              prompt,
-              imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
-              creditsUsed: 1,
-              aspectRatio: aspectRatio,
-              ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }), // ✅ encode URL with spaces
-              // selectedImages, // Array of URLs
-            };
-
-            //console.log(requestBody);
-            setLoading(true);
-            // alert(JSON.stringify(requestBody, null, 2));
-
-            generateImageApi(requestBody);
-          }
-        } else {
-          //console.log("selectedAvatar",selectedAvatar);
-          sendEvent({
-            event: "Generate Image Slug",
-            slug: slug,
-            email: userData?.email,
-            name: userData?.name,
-            prompt: prompt,
-            aspectRatio: aspectRatio,
-          });
-
-          const requestBody = {
-            prompt,
-            imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
-            creditsUsed: 1,
-            aspectRatio: aspectRatio,
-            ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }), // ✅ encode URL with spaces
-            // selectedImages, // Array of URLs
-          };
-
-          //console.log(requestBody);
-          setLoading(true);
-          // alert(JSON.stringify(requestBody, null, 2));
-
-          generateImageApi(requestBody);
-        }
-      }
-    } else {
-      setIsPopupVisible(true);
-    }
+    setLoading(true);
+    handleGeneratePhotoAvatar();
   };
 
   useEffect(() => {
@@ -294,12 +146,6 @@ const Index = ({ masterData }) => {
         );
 
         const data = res?.data;
-        //console.log("IAM HERE", data);
-        setTemplate(data);
-        setAvatar(data.avatarId);
-        setVoice(data.voiceId || "Default");
-        setCaptionEnabled(data.caption);
-        setAspectRatio(data.aspectRatio);
         setPrompt(data.prompt);
         setImageUrl(data.imageUrl);
         setImagePreview(data.imageUrl);
@@ -307,27 +153,20 @@ const Index = ({ masterData }) => {
       } catch (e) {
         console.error(e);
       } finally {
-        //await sleep(2000); // Wait for 1 second
         setLoading(false);
-        //setImageLoading(false);
       }
     };
 
     fetchData();
   }, [slug]);
 
-  const [avatarData, setAvatarData] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
-  const [myAvatar, setMyAvatar] = useState();
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [files, setFiles] = useState([]);
   const inputRef = useRef(null);
 
-  const [isPromptModalVisible, setIsPromptModalVisible] = useState(false);
-  const [isPromptPhotoModalVisible, setIsPromptPhotoModalVisible] = useState(false);
   const MAX_IMAGES = 12;
   const MAX_SIZE_MB = 5;
-  //  console.log("data",data);
   const handleImageUpload = async (event) => {
     const files = Array.from(event.target.files);
 
@@ -386,7 +225,7 @@ const Index = ({ masterData }) => {
 
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const mainImages = allHeadshots.slice(0, 6); // first 6 as categories
+  const mainImages = allHeadshots.slice(0, 6);
   const relatedImages = allHeadshots.slice(selectedIndex * 4, selectedIndex * 4 + 5);
 
   const { mutate: generatePhotoAvatarApi } = useMutation(
@@ -394,26 +233,19 @@ const Index = ({ masterData }) => {
     {
       onSuccess: (response) => {
         setPrompt("");
-        setLoading(false);
-        setSwalProps({
-          icon: "success",
-          show: true,
-          title: "Success",
-          text: "Photo Avatar generation is completed",
-          showCancelButton: true,
-          confirmButtonText: "Ok",
-          cancelButtonText: "Cancel",
-          allowOutsideClick: false, // Optional: prevent dismiss by clicking outside
-          allowEscapeKey: false, // Optional: prevent ESC close
-        });
+        const requestBody = {
+          avatarId: response?.data?._id,
+          imageInput: selectedImages,
+          creditsUsed: 1,
+          aspectRatio: aspectRatio,
+        };
+        setLoading(true);
+        generateImageApi(requestBody);
       },
       onError: (error) => {
         setLoading(false);
-
         const defaultMessage = "Something went wrong. Please try again later.";
-
         const message = error?.response?.data?.message || error?.message || defaultMessage;
-
         setSwalProps({
           icon: "error",
           show: true,
@@ -448,7 +280,7 @@ const Index = ({ masterData }) => {
         gender: "female",
         creditsUsed: 10,
         aspectRatio: "1:1",
-        ...(image && { imageUrl: image }), // ✅ only include if `image` is truthy
+        ...(image && { imageUrl: image }),
         imageInput: files ? files : [],
       };
       setLoading(true);
@@ -461,7 +293,7 @@ const Index = ({ masterData }) => {
   return (
     <div className="flex flex-col md:flex-row text-black md:gap-4">
       {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
-      <div className="w-full md:w-[35%] bg-[#FFFFFF0D] p-4 border-2 ml-8  rounded-xl">
+      <div className="w-full md:w-[30%] bg-[#FFFFFF0D] p-4 border-2 ml-8  rounded-xl">
         <div>
           <div>
             <div className=" text-center cursor-pointer transition mb-2">
@@ -477,9 +309,9 @@ const Index = ({ masterData }) => {
                         />
                         <button
                           onClick={() => handleRemoveImage(url)}
-                          className="absolute top-[-8px] right-[-8px] bg-[#EBEBEB] text-black rounded-full w-6 h-6 flex items-center justify-center"
+                          className="absolute top-[-8px] right-[-8px] bg-[#EBEBEB] text-black rounded-full w-5 h-5   flex items-center justify-center"
                         >
-                          ✕
+                          <img className="h-2" src="/images/headshot/close.png" />
                         </button>
                       </div>
                     ))}
@@ -513,37 +345,17 @@ const Index = ({ masterData }) => {
                       inputRef.current.click();
                     }}
                     disabled={uploading}
-                    className=" text-[#1E1E1E] px-4 py-2 rounded-full border border-[#1E1E1E] text-base "
+                    className="mt-3 text-[#1E1E1E] px-4 py-2 rounded-full border border-[#1E1E1E] text-base "
                   >
                     {uploading ? "Uploading..." : "Browse"}
                   </button>
                 </div>
               </div>
             </div>
-            <div className="flex justify-center mt-2 gap-3">
-              <button
-                onClick={() => setIsPromptPhotoModalVisible(false)}
-                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  handleGeneratePhotoAvatar();
-                  setIsPromptPhotoModalVisible(false);
-                  setLoading(true);
-                }}
-                className="px-4 py-2 text-white bg-purple-500 rounded-md hover:bg-purple-600"
-              >
-                Generate Avatar
-              </button>
-            </div>
           </div>
           <div>
             <div className="max-w-xl mx-auto pt-3">
               <h2 className="text-sm font-medium mb-3">Select Headshot Style</h2>
-
-              {/* Top selector thumbnails */}
               <div className="flex gap-1 overflow-x-auto mb-4">
                 {mainImages.map((img, idx) => (
                   <div
@@ -582,26 +394,6 @@ const Index = ({ masterData }) => {
               </div>
             </div>
           </div>
-          <div className="mb-6">
-            <div className="flex justify-between flex-wrap">
-              <h3 className="text-sm font-medium mb-2">Prompt</h3>
-            </div>
-            <div className="bg-[#F5F5F5] rounded-lg p-3 flex justify-between items-start">
-              <textarea
-                className="w-full rounded-md bg-transparent text-sm text-[#1E1E1EB2] text-normal placeholder-gray-500 focus:outline-none"
-                placeholder="Enter your prompt..."
-                rows={2}
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-              ></textarea>
-            </div>
-          </div>
-          {
-            <div className="mb-6">
-              <AvatarDropdown data={masterData?.avatars} onSelect={handleAvatarSelect} />
-            </div>
-          }
-
           <h3 className="mb-6 text-sm text-[#1E1E1EB2] text-normal">Credits : 1</h3>
 
           {Math.floor(userData?.credits) < 6 && (
@@ -629,7 +421,7 @@ const Index = ({ masterData }) => {
       </div>
 
       <div className="flex-1 w-full flex flex-col pr-8 pl-4 items-center ">
-        <h2 className="text-2xl font-semibold">Create an Aavtar</h2>
+        <h2 className="text-2xl font-semibold">Create an Avatar</h2>
         <h3 className="pt-2">Upload photos to create multiple looks for your avatar</h3>
         <div></div>
         <AIAvatarSteps />
@@ -644,34 +436,9 @@ const Index = ({ masterData }) => {
 export default Index;
 
 export async function getServerSideProps(ctx) {
-  const cookie = parseCookies(ctx);
-  const authToken = cookie["aToken"];
-
-  try {
-    var [masterData] = await Promise.all([
-      fetcher.get(
-        `${FANTV_API_URL}/api/v1/homefeed/metadata`,
-        {
-          headers: {
-            ...(!!authToken && { Authorization: `Bearer ${authToken}` }),
-          },
-        },
-        "default"
-      ),
-    ]);
-
-    return {
-      props: {
-        masterData: masterData?.data || [],
-        withSideBar: false,
-      },
-    };
-  } catch (err) {
-    console.log("error occures in while getting data==>", err);
-    return {
-      props: {
-        withSideBar: false,
-      },
-    };
-  }
+  return {
+    props: {
+      withSideBar: false,
+    },
+  };
 }

@@ -21,7 +21,7 @@ import { setUserData } from "../../redux/slices/user";
 import useGTM from "../../hooks/useGTM";
 import SweetAlert2 from "react-sweetalert2";
 import { getPageName } from "../../utils/common";
-
+import mixpanel from "mixpanel-browser";
 const activeStyle = {
   backgroundColor: "#FFFFFF0D",
   border: "1px solid #3E3E3E",
@@ -45,6 +45,19 @@ const HeaderNew = ({ app }) => {
     login: false,
   });
   const { isLoggedIn, userData } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    mixpanel.identify(userData?._id); // user_Id
+    mixpanel.people.set({
+      $name: userData?.name,
+      $email: userData?.email,
+      subscription_status: "Subscriber", // or Non Subscriber / Trial
+      plan_type: "Pro", // or Basic / Ultra Pro
+      plan_duration: "Monthly", // or Yearly
+      credits: userData?.credits,
+      isLoggedIn: isLoggedIn,
+    });
+  }, []);
 
   const layoutData = useSelector((state) => state.layout);
   const [airdropPoints, setAirdropPoints] = useState(layoutData.airdropPoints);
