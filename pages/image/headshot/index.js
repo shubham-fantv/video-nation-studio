@@ -25,9 +25,7 @@ const Index = () => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
   const [totalFileSelected, setTotalFileSelected] = useState(0);
-  console.log("🚀 ~ Index ~ imagePreviews:", imagePreviews);
   const [files, setFiles] = useState([]);
-  console.log("🚀 ~ Index ~ files:", files);
   const inputRef = useRef(null);
   const [headShotStyleData, setHeadShotStyleData] = useState([]);
 
@@ -169,35 +167,39 @@ const Index = () => {
   );
 
   const handleGeneratePhotoAvatar = () => {
-    if (isLoggedIn) {
-      setLoading(true);
-      let nameInput = name;
+    if (imagePreviews.length > 0) {
+      if (isLoggedIn) {
+        setLoading(true);
+        let nameInput = name;
 
-      if (!nameInput.trim()) {
-        nameInput = typeof window !== "undefined" ? window.prompt("Enter avatar name:") : null;
-        if (!nameInput || !nameInput.trim()) {
-          alert("Upload cancelled. Name is required.");
+        if (!nameInput.trim()) {
+          nameInput = typeof window !== "undefined" ? window.prompt("Enter avatar name:") : null;
+          if (!nameInput || !nameInput.trim()) {
+            alert("Upload cancelled. Name is required.");
+            return;
+          }
+        }
+
+        if (userData.credits <= 0) {
+          router.push("/subscription");
           return;
         }
-      }
 
-      if (userData.credits <= 0) {
-        router.push("/subscription");
-        return;
+        const requestBody = {
+          prompt: "Give a upper body image of the person",
+          name: nameInput,
+          gender: "female",
+          creditsUsed: 10,
+          aspectRatio: "1:1",
+          imageInput: files ? files : [],
+        };
+        setLoading(true);
+        generatePhotoAvatarApi(requestBody);
+      } else {
+        alert("please login");
       }
-
-      const requestBody = {
-        prompt: "Give a upper body image of the person",
-        name: nameInput,
-        gender: "female",
-        creditsUsed: 10,
-        aspectRatio: "1:1",
-        imageInput: files ? files : [],
-      };
-      setLoading(true);
-      generatePhotoAvatarApi(requestBody);
     } else {
-      alert("please login");
+      alert("Upload your photos to explore styles and generate your Headshots");
     }
   };
 
@@ -262,9 +264,9 @@ const Index = () => {
 
   useEffect(() => {
     const selectedCount = imagePreviews.length;
-    const progress = (selectedCount / totalFileSelected) * 100;
+    const progress = (selectedCount / MAX_IMAGES) * 100;
     setProgress(progress);
-  }, [imagePreviews.length, totalFileSelected]);
+  }, [imagePreviews.length, MAX_IMAGES]);
 
   return (
     <div className="flex flex-col md:flex-row text-black md:gap-4">
@@ -280,7 +282,7 @@ const Index = () => {
                       Select upto {MAX_IMAGES} photos
                     </h1>
                     <span className="font-medium text-gray-600">
-                      {imagePreviews.length}/{totalFileSelected}
+                      {imagePreviews.length}/{MAX_IMAGES}
                     </span>
                   </div>
                   <div className="w-full h-2 bg-gray-200 rounded-full cursor-pointer">
@@ -415,8 +417,10 @@ const Index = () => {
 
           <div className="flex w-full items-center justify-center gap-4 mt-2 mb-6">
             <button
+              disabled={imagePreviews?.length == 0 || selectedImages?.length == 0}
               onClick={handleGeneratePhotoAvatar}
-              className="flex w-full items-center text-center justify-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
+              className="flex w-full items-center text-center justify-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all text-sm md:text-base 
+             disabled:bg-gray-400 disabled:cursor-not-allowed disabled:from-gray-200 disabled:to-gray-400"
             >
               ✨ Generate
             </button>
