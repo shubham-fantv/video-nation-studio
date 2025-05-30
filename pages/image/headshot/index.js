@@ -76,7 +76,7 @@ const Index = () => {
     {
       refetchOnMount: "always",
       onSuccess: ({ data }) => {
-        setHeadShotStyleData(data);
+        setHeadShotStyleData(data.filter((item) => item.category !== "Natural"));
       },
     }
   );
@@ -141,15 +141,8 @@ const Index = () => {
     (obj) => fetcher.post(`${API_BASE_URL}/api/v1/ai-avatar/photo-avatar`, obj),
     {
       onSuccess: (response) => {
-        const requestBody = {
-          avatarId: response?.data?._id,
-          imageInput: headShotStyleData.map((item) => item._id),
-          creditsUsed: 1,
-          aspectRatio: "1:1",
-          prompt: "test",
-        };
-        setLoading(true);
-        generateImageApi(requestBody);
+        setLoading(false);
+        router.push(`/image/headshot/${response?.data._id}`, undefined, { scroll: false });
       },
       onError: (error) => {
         setLoading(false);
@@ -191,6 +184,7 @@ const Index = () => {
           gender: "female",
           creditsUsed: 10,
           aspectRatio: "1:1",
+          headshots: selectedImages.map((item) => item._id),
           imageInput: files ? files : [],
         };
         setLoading(true);
@@ -373,29 +367,30 @@ const Index = () => {
             {/* Selected Category Images Grid */}
             <div className="grid grid-cols-3 gap-4 bg-gray-50 p-4 rounded-xl mb-6">
               {relatedImages.map((img, idx) => (
-                <div
-                  key={img._id}
-                  className={`cursor-pointer border-2 rounded-lg overflow-hidden transition relative ${
-                    isImageSelected(img) ? "border-purple-500" : "border-transparent"
-                  }`}
-                  onClick={() => toggleImageSelection(img)}
-                >
-                  <img
-                    src={img.url}
-                    alt={`${img.style} - ${img.description}`}
-                    className="w-full h-20 object-cover"
-                  />
-                  {isImageSelected(img) && (
-                    <div className="absolute top-1 right-1 w-4 h-4 bg-purple-500 rounded-full flex items-center justify-center">
-                      <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path
-                          fillRule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </div>
-                  )}
+                <div key={img._id} onClick={() => toggleImageSelection(img)}>
+                  <div
+                    className={`cursor-pointer border-2 rounded-lg overflow-hidden transition relative ${
+                      isImageSelected(img) ? "border-purple-500" : "border-transparent"
+                    }`}
+                  >
+                    <img
+                      src={img.url}
+                      alt={`${img.style} - ${img.description}`}
+                      className="w-full h-20 object-cover"
+                    />
+                    {isImageSelected(img) && (
+                      <div className="absolute top-1 right-1 w-4 h-4 bg-purple-500 rounded-full flex items-center justify-center">
+                        <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  <span className="text-xs flex text-center text-[#626262] mt-">{img.style}</span>
                 </div>
               ))}
             </div>

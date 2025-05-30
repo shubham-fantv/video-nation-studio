@@ -381,15 +381,14 @@ const index = (data) => {
           </div>
 
           {/* Custom Photo Avatar Card */}
-          <div className="flex justify-between items-center p-6 bg-[#F5F3FF] border border-[#A78BFA] rounded-xl hover:bg-[#EDE9FE] transition">
-            {/* Left: Icon and Text */}
-            <div className="flex flex-col gap-4 max-w-[60%]">
-              <button disabled>
+          <div
+            onClick={() => router.push("/image/headshot")}
+            className=" cursor-pointer flex justify-between items-center p-6 bg-[#F5F3FF] border border-[#A78BFA] rounded-xl hover:bg-[#EDE9FE] transition"
+          >
+            <div className="flex flex-col gap-4 max-w-[60%] ">
+              <button>
                 <div className="flex items-center gap-2 text-[#7C3AED]">
                   <span className="font-semibold text-lg text-[#4C1D95]">Custom Photo Avatar</span>
-                </div>
-                <div className="flex items-center gap-2 text-[#7C3AED]">
-                  <span className="font-semibold text-sm text-[#4C1D95]">(Coming Soon)</span>
                 </div>
               </button>
               <p className="text-sm text-gray-700">
@@ -419,10 +418,10 @@ const index = (data) => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-6">
-          {/* Avatar Cards */}
-          {myAvatar.data.length > 0 ? (
-            myAvatar.data.map((avatar) => (
+          {myAvatar?.data?.length > 0 ? (
+            myAvatar?.data.map((avatar) => (
               <div
+                onClick={() => router.push(`/image/headshot/${avatar?._id}`)}
                 key={avatar._id}
                 className="relative rounded-xl overflow-hidden shadow hover:shadow-md transition cursor-pointer"
               >
