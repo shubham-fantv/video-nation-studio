@@ -259,15 +259,17 @@ export default function Index() {
             </div>
           </div>
           <div className="flex-1 w-full flex flex-col pr-8 pl-4 items-center ">
-            <div className="min-h-screen  w-full ">
-              <div className="w-full  mx-auto">
+            <div className="min-h-screen  w-full  p-6">
+              <div className="  w-full  mx-auto">
+                {/* Header */}
                 <div className="text-center mb-8">
-                  <h2 className="text-2xl font-semibold">Create an Avatar</h2>
+                  <h1 className="text-4xl font-bold text-gray-800 mb-4">Create an Avatar</h1>
                   <p className="text-lg text-gray-600">
                     Upload photos to create multiple looks for your avatar
                   </p>
                 </div>
 
+                {/* Main Content */}
                 <div className="bg-[#F6F4FF] rounded-2xl border border-[#E4DDFF] p-8 relative overflow-hidden">
                   <div className="flex justify-center ">
                     <div className="relative">
@@ -293,13 +295,14 @@ export default function Index() {
                     <p className="text-gray-600">{selectedImage?.description}</p>
                   </div>
 
+                  {/* Thumbnail Gallery */}
                   <div className="bg-[#E8E6F5] rounded-2xl p-6">
                     <div className="grid grid-cols-4 gap-6">
                       {data?.images?.map((image, index) => (
-                        <div key={image.id} className="justify-center">
+                        <div key={image.id} className="text-center">
                           <div
                             className={`w-20 h-20 rounded-2xl overflow-hidden cursor-pointer transform transition-all duration-300 hover:scale-110 hover:shadow-lg ${
-                              selectedImage?._id === image?._id
+                              selectedImage?.id === image?.id
                                 ? "ring-4 ring-purple-400 shadow-lg scale-105"
                                 : "ring-2 ring-gray-200 hover:ring-purple-300"
                             }`}
