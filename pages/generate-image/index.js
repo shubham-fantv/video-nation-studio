@@ -199,6 +199,11 @@ const index = () => {
         return;
       }
 
+      if (userData.credits <= 0) {
+        router.push("/subscription");
+        return;
+      }
+      
       if (userData.credits <= 0 || userData.credits < 1) {
         setSwalProps({
           key: Date.now(), // or use a counter

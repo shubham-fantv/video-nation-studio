@@ -259,6 +259,11 @@ const index = () => {
 
       const creditsUsed = 20 * parseInt(duration.replace("sec", "").trim() / 5, 10);
 
+      if (userData.credits <= 0) {
+        router.push("/subscription");
+        return;
+      }
+      
       if (userData.credits <= 0 || userData.credits < creditsUsed) {
         setSwalProps({
           key: Date.now(), // or use a counter

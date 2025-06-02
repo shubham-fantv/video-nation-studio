@@ -75,32 +75,32 @@ const HeaderNew = ({ app }) => {
     const hasShownModal = localStorage.getItem("creditWarningShown");
 
     if (userData?.credits < 10 && !hasShownModal) {
-      setSwalProps({
-        show: true,
-        title: "⏳ You're almost out of credits!",
-        text: "Upgrade now to unlock HD, pro voices, and longer videos.",
-        confirmButtonText: "View Plans",
-        showCancelButton: true,
-        icon: "warning",
-        preConfirm: () => {
-          router.push("/subscription");
-          sendEvent({
-            event: "button_clicked",
-            button_text: "View Plans",
-            interaction_type: "Standard button",
-            button_id: "popup_almost_out_of_credits_plans_btn",
-            section_name: "Popup",
-            page_name: getPageName(router?.pathname),
-          });
-        },
-      });
-      sendEvent({
-        event: "popup_displayed",
-        popup_type: "Nudge",
-        popup_name: "Almost out of Credits",
-        popup_messge_text: "⏳ You're almost out of credits!",
-        page_name: getPageName(router?.pathname),
-      });
+      // setSwalProps({
+      //   show: true,
+      //   title: "⏳ You're almost out of credits!",
+      //   text: "Upgrade now to unlock HD, pro voices, and longer videos.",
+      //   confirmButtonText: "View Plans",
+      //   showCancelButton: true,
+      //   icon: "warning",
+      //   preConfirm: () => {
+      //     router.push("/subscription");
+      //     sendEvent({
+      //       event: "button_clicked",
+      //       button_text: "View Plans",
+      //       interaction_type: "Standard button",
+      //       button_id: "popup_almost_out_of_credits_plans_btn",
+      //       section_name: "Popup",
+      //       page_name: getPageName(router?.pathname),
+      //     });
+      //   },
+      // });
+      // sendEvent({
+      //   event: "popup_displayed",
+      //   popup_type: "Nudge",
+      //   popup_name: "Almost out of Credits",
+      //   popup_messge_text: "⏳ You're almost out of credits!",
+      //   page_name: getPageName(router?.pathname),
+      // });
 
       // Mark as shown
       localStorage.setItem("creditWarningShown", "true");
