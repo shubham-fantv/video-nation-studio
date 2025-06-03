@@ -371,11 +371,11 @@ const index = (data) => {
             <div className="flex gap-2 relative">
               <img
                 src="https://assets.artistfirst.in/uploads/1747488821569-Custom_Avatar_Icon_1.jpg"
-                className="w-16 h-16 rounded-md object-cover"
+                className="w-20 h-20 rounded-md object-cover"
               />
               <img
                 src="https://assets.artistfirst.in/uploads/1747488851625-Custom_Avatar_Icon_2.jpg"
-                className="w-16 h-16 rounded-md object-cover"
+                className="w-20 h-20 rounded-md object-cover"
               />
             </div>
           </div>
@@ -394,20 +394,14 @@ const index = (data) => {
                 </div>
               </button>
               <p className="text-sm text-gray-700">
-                Use existing photos to create a new avatar and multiple looks.
+                Use existing photos to create a new Headshot and multiple looks.
               </p>
             </div>
 
             {/* Right: Preview Images */}
             <div className="flex gap-2">
-              <img
-                src="https://assets.artistfirst.in/uploads/1747488821569-Custom_Avatar_Icon_1.jpg"
-                className="w-16 h-16 rounded-md object-cover"
-              />
-              <img
-                src="https://assets.artistfirst.in/uploads/1747488851625-Custom_Avatar_Icon_2.jpg"
-                className="w-16 h-16 rounded-md object-cover"
-              />
+              <img src="/images/h1.jpg" className="w-20 h-20 rounded-md object-cover" />
+              <img src="/images/h2.jpg" className="w-20 h-20 rounded-md object-cover" />
             </div>
           </div>
           <div
@@ -423,7 +417,7 @@ const index = (data) => {
                 </div>
               </button>
               <p className="text-sm text-gray-700">
-                Use existing photos to create a new avatar and multiple looks.
+                Use existing photos to create a new Luxuryshot and multiple looks.
               </p>
             </div>
 
@@ -431,11 +425,11 @@ const index = (data) => {
             <div className="flex gap-2">
               <img
                 src="https://assets.artistfirst.in/uploads/1747489542488-Ai_Avatar_Icon_1.png"
-                className="w-16 h-16 rounded-md object-cover"
+                className="w-20 h-20 rounded-md object-cover"
               />
               <img
                 src="https://assets.artistfirst.in/uploads/1747489568650-AI_Avatar_Icon_2.jpg"
-                className="w-16 h-16 rounded-md object-cover"
+                className="w-20 h-20 rounded-md object-cover"
               />
             </div>
           </div>

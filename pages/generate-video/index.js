@@ -263,7 +263,7 @@ const index = () => {
         router.push("/subscription");
         return;
       }
-      
+
       if (userData.credits <= 0 || userData.credits < creditsUsed) {
         setSwalProps({
           key: Date.now(), // or use a counter
@@ -702,7 +702,7 @@ const index = () => {
           </button> */}
           <div className="text-sm">
             Credits : {credits}
-            {Math.floor(userData?.credits / credits) < 6 && (
+            {/* {Math.floor(userData?.credits / credits) < 6 && (
               <div className="text-center">
                 <small
                   className={
@@ -715,7 +715,7 @@ const index = () => {
                   {Math.floor(userData.credits / credits) === 1 ? "" : "s"} left
                 </small>
               </div>
-            )}
+            )} */}
           </div>
           <button
             onClick={() => handleGenerateVideo()}

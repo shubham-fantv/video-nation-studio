@@ -13,6 +13,7 @@ import { useRef } from "react";
 import AIAvatarSteps from "../../../src/component/HeadShot/AIAvatarSteps";
 import BadPhotos from "../../../src/component/HeadShot/BadPhotos";
 import GoodPhotos from "../../../src/component/HeadShot/GoodPhotos";
+import LoginAndSignup from "../../../src/component/feature/Login";
 
 const uploadedPhotos = [
   "https://assets.artistfirst.in/uploads/1747722518107-Urban_Sleek_Headshot_A1.jpg",
@@ -50,7 +51,7 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [groupedData, setGroupedData] = useState({});
   const [categoryOrder, setCategoryOrder] = useState([]);
-
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
   const MAX_IMAGES = 12;
   const MAX_SIZE_MB = 5;
 
@@ -165,7 +166,7 @@ const Index = () => {
     {
       onSuccess: (response) => {
         setLoading(false);
-        router.push(`/photo-studio/headshot/${response?.data._id}`, undefined, { scroll: false });
+        router.push(`/image/headshot/${response?.data._id}`, undefined, { scroll: false });
       },
       onError: (error) => {
         setLoading(false);
@@ -191,7 +192,7 @@ const Index = () => {
         }
         handleOpenModal();
       } else {
-        alert("please login");
+        setIsPopupVisible(true);
       }
     } else {
       alert("Upload your photos to explore styles and generate your Headshots");
@@ -402,7 +403,7 @@ const Index = () => {
 
           <h3 className="mb-6 text-sm text-[#1E1E1EB2] text-normal">Credits : 500</h3>
 
-          {Math.floor(userData?.credits) < 6 && (
+          {/* {Math.floor(userData?.credits) < 6 && (
             <div className="text-center">
               <small
                 className={
@@ -413,7 +414,7 @@ const Index = () => {
                 {Math.floor(userData.credits) === 1 ? "" : "s"} left
               </small>
             </div>
-          )}
+          )} */}
 
           <div className="flex w-full items-center justify-center gap-4 mt-2 mb-6">
             <button
@@ -499,6 +500,13 @@ const Index = () => {
         </div>
       )}
 
+      {isPopupVisible && (
+        <LoginAndSignup
+          callBackName={"uniqueCommunity"}
+          open={isPopupVisible}
+          handleModalClose={() => setIsPopupVisible(false)}
+        />
+      )}
       <SweetAlert2 {...swalProps} onConfirm={(handleConfirm) => setSwalProps({ show: false })} />
     </div>
   );

@@ -7,6 +7,7 @@ import fetcher from "../../../src/dataProvider";
 import { useSelector } from "react-redux";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
+import Loading from "../../../src/component/common/Loading/loading";
 
 export default function Index() {
   const [timeLeft, setTimeLeft] = useState(30);
@@ -59,7 +60,7 @@ export default function Index() {
     {
       onSuccess: (response) => {
         setLoading(false);
-        router.replace(`/image/headshot/${response?.data._id}`, undefined, { scroll: false });
+        router.reload();
       },
       onError: (error) => {
         setLoading(false);
@@ -185,14 +186,14 @@ export default function Index() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {isLoading && <isLoading title={"Please wait"} />}
+      {isLoading && <Loading title={"Please wait"} />}
       <div className="px-6 pb-4">
         <button
           onClick={() => router.push("/avatar-studio")}
           className="flex items-center  gap-2 text-gray-600 hover:text-gray-800 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
-          <span className="text-sm font-medium">Back to Avatar Studio</span>
+          <span className="text-sm font-medium">Back to Photo Studio</span>
         </button>
       </div>
 
@@ -222,6 +223,17 @@ export default function Index() {
               <div className="max-w-xl mx-auto pt-3">
                 <h2 className="text-sm font-medium mb-3">Avatars</h2>
                 <div className="flex gap-1 overflow-x-auto mb-4 whitespace-nowrap">
+                  <div
+                    className="flex-shrink-0 flex flex-col w-24 h-24 items-center cursor-pointer border-2 rounded-xl border-transparent"
+                    onClick={() => router.replace("/image/headshot")}
+                  >
+                    <img
+                      src={"/images/icons/plus.svg"}
+                      alt="Add new style"
+                      className="w-16 h-16 object-cover m-auto rounded-lg"
+                    />
+                    <span className="text-xs text-center mt-1">New</span>
+                  </div>
                   {allAvatar?.map((img, idx) => (
                     <div
                       key={img._id}
@@ -240,17 +252,6 @@ export default function Index() {
                       <span className="text-xs text-center mt-1 w-20 truncate">{img?.name}</span>
                     </div>
                   ))}
-
-                  <div
-                    className="flex-shrink-0 flex flex-col w-24 h-24 items-center cursor-pointer border-2 rounded-xl border-transparent"
-                    onClick={() => router.replace("/photo-studio/headshot")}
-                  >
-                    <img
-                      src={"/images/icons/plus.svg"}
-                      alt="Add new style"
-                      className="w-16 h-16 object-cover m-auto rounded-lg"
-                    />
-                  </div>
                 </div>
 
                 <h2 className="text-sm font-medium mb-3">Select Headshot Style</h2>
