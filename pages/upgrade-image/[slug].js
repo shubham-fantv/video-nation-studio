@@ -342,6 +342,12 @@ const fileInputRef = useRef(null);
           alert("Please enter a prompt!");
           return;
         }
+
+
+    if (userData.credits <= 0) {
+      router.push("/subscription");
+      return;
+    }
      
     if (userData.credits <= 0 || userData.credits < 1) {
         setSwalProps({

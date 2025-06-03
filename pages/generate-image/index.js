@@ -199,6 +199,11 @@ const index = () => {
         return;
       }
 
+      if (userData.credits <= 0) {
+        router.push("/subscription");
+        return;
+      }
+      
       if (userData.credits <= 0 || userData.credits < 1) {
         setSwalProps({
           key: Date.now(), // or use a counter
@@ -432,7 +437,7 @@ const index = () => {
             🪄 Magic Prompt
           </button> */}
           <div className="text-sm">
-            Credits : 1
+            Credits : 5
             {Math.floor(userData?.credits) < 6 && (
               <div className="text-center">
                 <small
@@ -440,8 +445,8 @@ const index = () => {
                     Math.floor(userData.credits) < 2 ? "text-red-600 font-semibold" : "text-black"
                   }
                 >
-                  {Math.max(1, Math.floor(userData.credits))} image
-                  {Math.floor(userData.credits) === 1 ? "" : "s"} left
+                  {/* {Math.max(1, Math.floor(userData.credits))} image
+                  {Math.floor(userData.credits) === 1 ? "" : "s"} left */}
                 </small>
               </div>
             )}
