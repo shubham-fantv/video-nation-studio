@@ -370,11 +370,11 @@ const index = (data) => {
             {/* Right: Prompt Preview */}
             <div className="flex gap-2 relative">
               <img
-                src="https://assets.artistfirst.in/uploads/1747489542488-Ai_Avatar_Icon_1.png"
+                src="https://assets.artistfirst.in/uploads/1747488821569-Custom_Avatar_Icon_1.jpg"
                 className="w-16 h-16 rounded-md object-cover"
               />
               <img
-                src="https://assets.artistfirst.in/uploads/1747489568650-AI_Avatar_Icon_2.jpg"
+                src="https://assets.artistfirst.in/uploads/1747488851625-Custom_Avatar_Icon_2.jpg"
                 className="w-16 h-16 rounded-md object-cover"
               />
             </div>
@@ -388,7 +388,9 @@ const index = (data) => {
             <div className="flex flex-col gap-4 max-w-[60%] ">
               <button>
                 <div className="flex items-center gap-2 text-[#7C3AED]">
-                  <span className="font-semibold text-lg text-[#4C1D95]">Custom Photo Avatar</span>
+                  <span className="font-semibold text-lg text-[#4C1D95]">
+                    Headshot Photo Avatar
+                  </span>
                 </div>
               </button>
               <p className="text-sm text-gray-700">
@@ -404,6 +406,35 @@ const index = (data) => {
               />
               <img
                 src="https://assets.artistfirst.in/uploads/1747488851625-Custom_Avatar_Icon_2.jpg"
+                className="w-16 h-16 rounded-md object-cover"
+              />
+            </div>
+          </div>
+          <div
+            onClick={() => router.push("/image/luxuryshot")}
+            className=" cursor-pointer flex justify-between items-center p-6 bg-[#F5F3FF] border border-[#A78BFA] rounded-xl hover:bg-[#EDE9FE] transition"
+          >
+            <div className="flex flex-col gap-4 max-w-[60%] ">
+              <button>
+                <div className="flex items-center gap-2 text-[#7C3AED]">
+                  <span className="font-semibold text-lg text-[#4C1D95]">
+                    Luxuryshot Photo Avatar
+                  </span>
+                </div>
+              </button>
+              <p className="text-sm text-gray-700">
+                Use existing photos to create a new avatar and multiple looks.
+              </p>
+            </div>
+
+            {/* Right: Preview Images */}
+            <div className="flex gap-2">
+              <img
+                src="https://assets.artistfirst.in/uploads/1747489542488-Ai_Avatar_Icon_1.png"
+                className="w-16 h-16 rounded-md object-cover"
+              />
+              <img
+                src="https://assets.artistfirst.in/uploads/1747489568650-AI_Avatar_Icon_2.jpg"
                 className="w-16 h-16 rounded-md object-cover"
               />
             </div>

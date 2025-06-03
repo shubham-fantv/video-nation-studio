@@ -14,6 +14,24 @@ import AIAvatarSteps from "../../../src/component/HeadShot/AIAvatarSteps";
 import BadPhotos from "../../../src/component/HeadShot/BadPhotos";
 import GoodPhotos from "../../../src/component/HeadShot/GoodPhotos";
 
+const uploadedPhotos = [
+  "https://assets.artistfirst.in/uploads/1747830353356-Grand_Foyer_LuxuryShot_A1.jpg",
+  "https://assets.artistfirst.in/uploads/1747830369370-City_View_Living_LuxuryShot_A1.jpg",
+  "https://assets.artistfirst.in/uploads/1747830387171-Gourmet_Kitchen_LuxuryShot_A1.jpg",
+  "https://assets.artistfirst.in/uploads/1747830404619-Refined_Study_LuxuryShot_A1.jpg",
+];
+
+const aiGeneratedImages = [
+  "https://assets.artistfirst.in/uploads/1747830337257-Forest_GT_LuxuryShot_A1.jpg",
+  "https://assets.artistfirst.in/uploads/1747830214895-Star_Dining_LuxuryShot_A1.jpg",
+  "https://assets.artistfirst.in/uploads/1747830089346-Altitude_Cabin_LuxuryShot_A1.jpg",
+  "https://assets.artistfirst.in/uploads/1747830353356-Grand_Foyer_LuxuryShot_A1.jpg",
+  "https://assets.artistfirst.in/uploads/1747830666578-Classic_Car_Rally_LuxuryShot_A1.jpg",
+  "https://assets.artistfirst.in/uploads/1747830613767-Heli_Ski_Peak_LuxuryShot_A1.jpg",
+  "https://assets.artistfirst.in/uploads/1747830686432-Art_Auction_LuxuryShot_A1.jpg",
+  "https://assets.artistfirst.in/uploads/1747830292359-Musseum_Gala_LuxuryShot_A1.jpg",
+];
+
 const Index = () => {
   const router = useRouter();
   const [uploading, setUploading] = useState(false);
@@ -36,7 +54,7 @@ const Index = () => {
   const MAX_IMAGES = 12;
   const MAX_SIZE_MB = 5;
 
-  const [avatarName, setAvatarName] = useState("Arda Guler");
+  const [avatarName, setAvatarName] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [gender, setGender] = useState("");
 
@@ -77,11 +95,11 @@ const Index = () => {
 
   const { isLoading: loadingHeadShot } = useQuery(
     `${FANTV_API_URL}/api/v1/homefeed`,
-    () => fetcher.get(`${FANTV_API_URL}/api/v1/headshot/headshot`),
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/headshot/luxuryshot`),
     {
       refetchOnMount: "always",
       onSuccess: ({ data }) => {
-        setHeadShotStyleData(data.filter((item) => item.category !== "Natural"));
+        setHeadShotStyleData(data.filter((item) => item.category !== "Estates"));
       },
     }
   );
@@ -147,7 +165,7 @@ const Index = () => {
     {
       onSuccess: (response) => {
         setLoading(false);
-        router.push(`/image/headshot/${response?.data._id}`, undefined, { scroll: false });
+        router.push(`/photo-studio/luxuryshot/${response?.data._id}`, undefined, { scroll: false });
       },
       onError: (error) => {
         setLoading(false);
@@ -247,7 +265,7 @@ const Index = () => {
   return (
     <div className="flex flex-col md:flex-row text-black md:gap-4">
       {(isLoading || loadingHeadShot) && <Loading title={"Please wait"} subTitle={subTitle} />}
-      <div className="w-full md:w-[30%] bg-[#FFFFFF0D] p-4 border-2 ml-8  rounded-xl">
+      <div className="w-full md:w-[30%] bg-[#FFFFFF0D] p-4 border-2 ml-0 md:ml-8 rounded-xl">
         <div>
           <div>
             <div className=" text-center cursor-pointer transition mb-2">
@@ -327,7 +345,7 @@ const Index = () => {
           <div className=" relative max-w-xl mx-auto pt-3 ">
             <h2 className="text-sm font-medium mb-3">Select Headshot Style</h2>
             {imagePreviews.length < 4 && (
-              <div class="absolute inset-0 bg-black/50 backdrop-blur-sm z-10 rounded"></div>
+              <div class="absolute inset-0 bg-black/5 backdrop-blur-xs z-10 rounded"></div>
             )}
 
             <div className="flex gap-1 overflow-x-auto mb-4">
@@ -382,7 +400,7 @@ const Index = () => {
             </div>
           </div>
 
-          <h3 className="mb-6 text-sm text-[#1E1E1EB2] text-normal">Credits : 1</h3>
+          <h3 className="mb-6 text-sm text-[#1E1E1EB2] text-normal">Credits : 500</h3>
 
           {Math.floor(userData?.credits) < 6 && (
             <div className="text-center">
@@ -411,18 +429,18 @@ const Index = () => {
       </div>
 
       <div className="flex-1 w-full flex flex-col pr-8 pl-4 items-center ">
-        <h2 className="text-2xl font-semibold">Create an Avatar</h2>
+        <h2 className="text-xl md:text-2xl font-semibold mt-5">Create an Avatar</h2>
         <h3 className="pt-2 font-semibold text-[#1E1E1EB2]">
           Upload photos to create multiple looks for your avatar
         </h3>
         <div></div>
-        <AIAvatarSteps />
+        <AIAvatarSteps uploadedPhotos={uploadedPhotos} aiGeneratedImages={aiGeneratedImages} />
         <GoodPhotos />
         <BadPhotos />
       </div>
 
-      <div className="min-h-screen relative">
-        {isOpen && (
+      {isOpen && (
+        <div className="min-h-screen relative">
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-3xl p-8 w-full max-w-lg mx-4 relative shadow-2xl">
               <div>
@@ -478,8 +496,8 @@ const Index = () => {
               </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       <SweetAlert2 {...swalProps} onConfirm={(handleConfirm) => setSwalProps({ show: false })} />
     </div>
