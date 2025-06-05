@@ -15,6 +15,7 @@ import LoginAndSignup from "../../src/component/feature/Login";
 import { useRouter } from "next/router";
 import SweetAlert2 from "react-sweetalert2";
 import useGTM from "../../src/hooks/useGTM";
+import LoadingScreen from "../../src/component/common/LoadingScreen";
 
 const aspectRatioSizeMap = {
   "1:1": "w-4 h-4",
@@ -436,7 +437,11 @@ const index = () => {
   return (
     <div>
       {isLoading && (
-        <Loading title={`Generating your video... (${progressPercentage}%)`} subTitle={subTitle} />
+        <LoadingScreen
+          progress={progressPercentage}
+          mainText={subTitle}
+          subText={`${progressPercentage}% completed`}
+        />
       )}
       <div className="justify-center m-auto">
         <h1 className="text-black text-[32px] font-semibold text-center leading-[38px]">
@@ -755,7 +760,6 @@ const index = () => {
           </div>
         </div>
       )}
-
       {isPopupVisible && (
         <LoginAndSignup
           callBackName={"uniqueCommunity"}

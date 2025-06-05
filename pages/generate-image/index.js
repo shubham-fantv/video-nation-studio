@@ -15,6 +15,7 @@ import LoginAndSignup from "../../src/component/feature/Login";
 import { useRouter } from "next/router";
 import SweetAlert2 from "react-sweetalert2";
 import useGTM from "../../src/hooks/useGTM";
+import LoadingScreen from "../../src/component/common/LoadingScreen";
 
 const aspectRatioSizeMap = {
   "1:1": "w-4 h-4",
@@ -36,10 +37,12 @@ const index = () => {
   const [subTitle, setSubTitle] = useState("");
   const router = useRouter();
   const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [progressPercentage, setProgressPercentage] = useState(0);
 
   const aspectRatioData = ["16:9", "9:16", "1:1"];
   const [isLoading, setLoading] = useState(false);
   const [swalProps, setSwalProps] = useState({});
+  const quoteIndexRef = useRef(0);
 
   const getRandomPrompts = (list, count = 3) =>
     list
@@ -203,7 +206,7 @@ const index = () => {
         router.push("/subscription");
         return;
       }
-      
+
       if (userData.credits <= 0 || userData.credits < 1) {
         setSwalProps({
           key: Date.now(), // or use a counter
@@ -308,15 +311,48 @@ const index = () => {
   };
 
   useEffect(() => {
-    const pickRandomQuote = () => {
-      const randomIndex = Math.floor(Math.random() * quotes.length);
-      setSubTitle(quotes[randomIndex]);
-    };
-    pickRandomQuote();
-    const interval = setInterval(pickRandomQuote, 5000);
+    if (!isLoading) return;
 
-    return () => clearInterval(interval);
-  }, []);
+    let quoteInterval;
+    let progressInterval;
+
+    const pickRandomQuote = () => {
+      setSubTitle(quotes[quoteIndexRef.current]);
+      quoteIndexRef.current = (quoteIndexRef.current + 1) % quotes.length;
+    };
+
+    pickRandomQuote();
+    setProgressPercentage(0);
+
+    // Change quote every 5 seconds (or tweak if needed)
+    quoteInterval = setInterval(() => {
+      pickRandomQuote();
+    }, 3000);
+
+    // Simulate progress over 10 seconds
+    const totalDuration = 10000; // 10 seconds
+    const updateInterval = 200; // update every 200ms
+    let elapsed = 0;
+
+    progressInterval = setInterval(() => {
+      elapsed += updateInterval;
+      const progressRatio = elapsed / totalDuration;
+
+      const easedProgress = Math.min(Math.floor(100 * Math.pow(progressRatio, 2.5)), 99);
+
+      setProgressPercentage(easedProgress);
+
+      if (elapsed >= totalDuration) {
+        clearInterval(progressInterval);
+        setProgressPercentage(100); // complete at the end
+      }
+    }, updateInterval);
+
+    return () => {
+      clearInterval(quoteInterval);
+      clearInterval(progressInterval);
+    };
+  }, [isLoading]);
 
   useEffect(() => {
     setSamplePrompts(getRandomPrompts(allPromptSamples));
@@ -343,7 +379,13 @@ const index = () => {
 
   return (
     <div>
-      {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
+      {isLoading && (
+        <LoadingScreen
+          progress={progressPercentage}
+          mainText={subTitle}
+          subText={`${progressPercentage}% completed`}
+        />
+      )}
       <div className="justify-center m-auto">
         <h1 className="text-black text-[32px] font-semibold text-center leading-[38px]">
           AI-Powered Image Creation. Just Type & Generate
