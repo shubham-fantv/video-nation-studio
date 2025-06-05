@@ -161,7 +161,7 @@ const videoCards = [
   {
     id: 3,
     // src: "/images/video-ai/video2.mp4",
-    src: "/video/video2.mp4",
+    src: "https://assets.artistfirst.in/uploads/1749135915997-1749135679036-video2_compressed.mp4",
     poster: "/images/gallery-poster.jpg",
     width: 136,
     height: 192,
@@ -172,7 +172,7 @@ const videoCards = [
   {
     id: 4,
     // src: "/images/video-ai/video2.mp4",
-    src: "/video/video3.mp4",
+    src: "https://assets.artistfirst.in/uploads/1749135933866-1749135716181-video3_compressed.mp4",
     // poster: "/images/vr-poster.jpg",
     width: 140,
     height: 224,
@@ -380,7 +380,7 @@ function Banner() {
             poster={"/images/workshop-poster.jpg"}
             style={{ objectFit: "contain" }}
           >
-            <source src={"/video/video1.mp4"} type="video/mp4" />
+            <source src={"https://assets.artistfirst.in/uploads/1749135889879-1749135510460-video1_compressed.mp4"} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         </Box>
