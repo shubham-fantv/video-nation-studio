@@ -8,6 +8,40 @@ import { useSelector } from "react-redux";
 import useGTM from "../hooks/useGTM";
 import LoginAndSignup from "./feature/Login";
 
+function LazyVideo({ videoUrl, posterUrl }) {
+  const videoRef = useRef();
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setIsVisible(true);
+      },
+      { threshold: 0.25 }
+    );
+
+    if (videoRef.current) observer.observe(videoRef.current);
+    return () => videoRef.current && observer.unobserve(videoRef.current);
+  }, []);
+
+  return (
+    <video
+      ref={videoRef}
+      muted
+      loop
+      playsInline
+      preload="none"
+      poster={posterUrl}
+      className="w-full h-full object-cover rounded-xl"
+      onMouseEnter={(e) => e.target.play()}
+      onMouseLeave={(e) => e.target.pause()}
+      onEnded={(e) => e.target.play()}
+    >
+      {isVisible && <source src={videoUrl} type="video/mp4" />}
+    </video>
+  );
+}
+
 const CommunityCreatedContent = ({
   title = "Community Created Content",
   subTitle = "Use the content created by our community as a template and add your taste",
@@ -226,17 +260,19 @@ const CommunityCreatedContent = ({
                   onMouseLeave={handleMouseLeave}
                 >
                   <div className="relative">
-                    <video
+                    {/* <video
                       src={video?.videoUrl}
                       muted
                       loop
+                      loading="lazy"
                       poster={video?.imageUrl}
                       playsInline
                       onMouseEnter={(e) => e.target.play()}
                       onMouseLeave={(e) => e.target.pause()}
                       onEnded={(e) => e.target.play()}
                       className="w-full h-full object-cover rounded-xl"
-                    />
+                    /> */}
+                    <LazyVideo videoUrl={video?.videoUrl} posterUrl={video?.imageUrl} />
                     {/* <video
                       src={video?.videoUrl}
                       muted
