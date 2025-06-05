@@ -260,7 +260,7 @@ const CommunityCreatedContent = ({
                   onMouseLeave={handleMouseLeave}
                 >
                   <div className="relative">
-                    {/* <video
+                    <video
                       src={video?.videoUrl}
                       muted
                       loop
@@ -271,8 +271,8 @@ const CommunityCreatedContent = ({
                       onMouseLeave={(e) => e.target.pause()}
                       onEnded={(e) => e.target.play()}
                       className="w-full h-full object-cover rounded-xl"
-                    /> */}
-                    <LazyVideo videoUrl={video?.videoUrl} posterUrl={video?.imageUrl} />
+                    />
+                    {/* <LazyVideo videoUrl={video?.videoUrl} posterUrl={video?.imageUrl} /> */}
                     {/* <video
                       src={video?.videoUrl}
                       muted
