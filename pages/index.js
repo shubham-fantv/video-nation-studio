@@ -15,6 +15,15 @@ import SweetAlert2 from "react-sweetalert2";
 import ShimmerCategories from "../src/component/common/ShimmerCategories";
 import useGTM from "../src/hooks/useGTM";
 
+
+export function storeUTMParams() {
+  const params = new URLSearchParams(window.location.search);
+  ['utm_source', 'utm_medium', 'utm_campaign', 'utm_id'].forEach(key => {
+    const val = params.get(key);
+    if (val) localStorage.setItem(key, val);
+  });
+}
+
 const Index = () => {
   const [swalProps, setSwalProps] = useState({});
   const [isPopupVisible, setIsPopupVisible] = useState({
@@ -43,11 +52,14 @@ const Index = () => {
     setIsPopupVisible({ login: false });
   };
 
+  console.log("userData", 'homepage');
+
+
   useEffect(() => {
     sendEvent({
       event: "land_on_home_page",
     });
-
+    storeUTMParams();
     if (!isLoggedIn) {
       // setSwalProps({
       //   show: true,
@@ -79,6 +91,7 @@ const Index = () => {
     }
     //console.log("homeFeed",JSON.stringify(homeFeedData));
   }, []);
+
 
   return (
     <div>
