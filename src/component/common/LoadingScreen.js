@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-
+import Lottie from "lottie-react";
+import animationData from "../../../public/images/lottie/background-animation.json";
 const LoadingScreen = ({
   progress = 20,
   mainText = "Analyzing your prompt and imagining the scenes",
@@ -37,7 +38,14 @@ const LoadingScreen = ({
 
   return (
     <div className="fixed top-0 left-0 w-full h-full min-h-screen bg-gray-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl shadow-sm p-12 w-[800px] text-center">
+      <div className="bg-white relative rounded-2xl shadow-sm p-12 w-[800px] text-center">
+        <div className="absolute inset-0 z-0 w-[800px]  w-full h-full overflow-hidden">
+          <Lottie
+            animationData={animationData}
+            loop={true}
+            className="w-full h-full object-cover opacity-60"
+          />
+        </div>
         {/* Progress Circle */}
         <div className="relative w-32 h-32 mx-auto mb-8">
           <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 100 100">
@@ -72,10 +80,8 @@ const LoadingScreen = ({
             </span>
           </div>
         </div>
-
         {/* Main text */}
         <h2 className="text-lg font-medium text-gray-900 mb-2">{mainText}</h2>
-
         {/* Sub text */}
         <p className="text-sm text-gray-500">
           {autoProgress ? `${Math.round(currentProgress)}% completed` : subText}
