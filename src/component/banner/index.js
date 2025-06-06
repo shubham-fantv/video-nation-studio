@@ -174,7 +174,7 @@ const videoCards = [
     // src: "/images/video-ai/video2.mp4",
     src: "https://assets.artistfirst.in/uploads/1749134802957-1745226333739-replicate-prediction-1d0d93c9f9rm80cpawbst5q7qm_compressed.mp4",
     // poster: "/images/vr-poster.jpg",
-    width: 140,
+    width: 160,
     height: 224,
     position: { left: "54%", bottom: "10%" },
     rotation: "rotate(11.16deg)",
@@ -351,19 +351,19 @@ function Banner() {
       </Box>
 
       <Box
-        className="relative flex justify-center md:justify-end items-end "
+        className="relative flex justify-between md:justify-end items-end "
         sx={{
           paddingBottom: { xs: "2rem", md: "1.5rem" },
-          paddingRight: { xs: "0rem", md: "1.5rem" },
-          paddingLeft: { xs: "1.15rem", md: "1.5rem" },
-          gap: { xs: "5px", md: "1rem" },
-          width: "95%",
+          paddingRight: { xs: "1rem", md: "1.5rem" },
+          paddingLeft: { xs: "1rem", md: "1.5rem" },
+          gap: { xs: "4px", md: "1rem" },
+          width: "100%",
           position: { xs: "absolute", md: "relative" },
           bottom: { xs: 0, md: "auto" },
           right: { xs: 0, md: "auto" },
         }}
       >
-       <Box
+        <Box
           sx={{
             width: 200 * videoScale,
             height: "auto",
@@ -373,34 +373,37 @@ function Banner() {
             transformOrigin: "bottom right",
           }}
         >
-        <img
-          src="https://assets.artistfirst.in/uploads/1749123653160-1747494182065-AI_Art_Style_Cartoon.png"
-          alt="video1"
-          style={{
-            width: "100%",
-            height: "auto",
-            display: "block",
-            objectFit: "cover",
-          }}
-        />
-        <video
-          ref={(el) => (videoRefs.current[0] = el)}
-          muted
-          playsInline
-          loop
-          poster="/images/workshop-poster.jpg"
-          style={{
-            width: "100%",
-            height: "auto",
-            display: "block",
-            objectFit: "cover",
-            marginTop: "1px",
-          }}
-        >
-            <source src="https://assets.artistfirst.in/uploads/1749134836258-1745495375865-replicate-prediction-rp7g44c4hdrmc0cpcxqskk3v18_compressed.mp4" type="video/mp4" />
+          <img
+            src="https://assets.artistfirst.in/uploads/1749123653160-1747494182065-AI_Art_Style_Cartoon.png"
+            alt="video1"
+            style={{
+              width: "100%",
+              height: "auto",
+              display: "block",
+              objectFit: "cover",
+            }}
+          />
+          <video
+            ref={(el) => (videoRefs.current[0] = el)}
+            muted
+            playsInline
+            loop
+            poster="/images/workshop-poster.jpg"
+            style={{
+              width: "100%",
+              height: "auto",
+              display: "block",
+              objectFit: "cover",
+              marginTop: "1px",
+            }}
+          >
+            <source
+              src="https://assets.artistfirst.in/uploads/1749134836258-1745495375865-replicate-prediction-rp7g44c4hdrmc0cpcxqskk3v18_compressed.mp4"
+              type="video/mp4"
+            />
             Your browser does not support the video tag.
           </video>
-      </Box>
+        </Box>
 
         {videoCards.map((card, index) => (
           <Box
@@ -414,7 +417,6 @@ function Banner() {
               // transform: isMobile ? "scale(0.7)" : "none",
               transformOrigin: "bottom right",
               marginLeft: "5px",
-
             }}
           >
             <video

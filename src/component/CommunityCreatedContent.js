@@ -11,6 +11,7 @@ import LoginAndSignup from "./feature/Login";
 function LazyVideo({ videoUrl, posterUrl }) {
   const videoRef = useRef();
   const [isVisible, setIsVisible] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -49,10 +50,14 @@ const CommunityCreatedContent = ({
   data,
   activeSlug = "all",
   page = "",
+  isMobile = false,
 }) => {
+  console.log("🚀 ~ isMobile:", isMobile);
   const [activeTab, setActiveTab] = useState(activeSlug);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [templateData, setTemplateData] = useState(data);
+
+  // const isMobile = useIsMobile();
 
   const { isLoggedIn, userData } = useSelector((state) => state.user);
   const { sendEvent } = useGTM();
@@ -102,8 +107,11 @@ const CommunityCreatedContent = ({
   );
 
   const { refetch } = useQuery(
-    `${FANTV_API_URL}/api/v1/templates/category/${activeTab}?limit=20`,
-    () => fetcher.get(`${FANTV_API_URL}/api/v1/templates/category/${activeTab}?limit=20`),
+    `${FANTV_API_URL}/api/v1/templates/category/${activeTab}?limit=${isMobile ? "10" : "20"}`,
+    () =>
+      fetcher.get(
+        `${FANTV_API_URL}/api/v1/templates/category/${activeTab}?limit=${isMobile ? "10" : "20"}`
+      ),
     {
       refetchOnMount: "always",
       enabled: isTabEnabled,
@@ -160,7 +168,6 @@ const CommunityCreatedContent = ({
       }
     }
   };
-  const isMobile = useIsMobile();
 
   const handleNavigate = (video) => {
     if (!isLoggedIn) {

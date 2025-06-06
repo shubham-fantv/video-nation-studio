@@ -554,11 +554,16 @@ const HeaderNew = ({ app }) => {
             {userData?.credits > 0 ? (
               userData.credits < 20 && router?.pathname != "/subscription" ? (
                 <div className="flex items-center px-4 gap-4">
-                  <div className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium shadow">
-                    {userData.credits} Credits Left
-                  </div>
                   <CLink href={"/subscription"}>
-                    <button className="bg-purple-600 text-white text-sm px-3 py-1 rounded-md hover:bg-purple-700 transition">
+                    <span
+                      className="bg-yellow-100 flex text-sm md:text-sm text-yellow-800 px-3 py-1
+                    rounded-full text-sm font-medium shadow"
+                    >
+                      {userData.credits} Credits Left
+                    </span>
+                  </CLink>
+                  <CLink href={"/subscription"}>
+                    <button className="hidden md:block bg-purple-600 text-white text-sm px-3 py-1 rounded-md hover:bg-purple-700 transition">
                       Upgrade
                     </button>
                   </CLink>

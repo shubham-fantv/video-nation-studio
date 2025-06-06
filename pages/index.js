@@ -15,16 +15,15 @@ import SweetAlert2 from "react-sweetalert2";
 import ShimmerCategories from "../src/component/common/ShimmerCategories";
 import useGTM from "../src/hooks/useGTM";
 
-
 export function storeUTMParams() {
   const params = new URLSearchParams(window.location.search);
-  ['utm_source', 'utm_medium', 'utm_campaign', 'utm_id'].forEach(key => {
+  ["utm_source", "utm_medium", "utm_campaign", "utm_id"].forEach((key) => {
     const val = params.get(key);
     if (val) localStorage.setItem(key, val);
   });
 }
 
-const Index = () => {
+const Index = ({ isMobile }) => {
   const [swalProps, setSwalProps] = useState({});
   const [isPopupVisible, setIsPopupVisible] = useState({
     login: false,
@@ -52,8 +51,7 @@ const Index = () => {
     setIsPopupVisible({ login: false });
   };
 
-  console.log("userData", 'homepage');
-
+  console.log("userData", "homepage");
 
   useEffect(() => {
     sendEvent({
@@ -80,7 +78,6 @@ const Index = () => {
       //     });
       //   },
       // });
-
       // sendEvent({
       //   event: "popup_displayed",
       //   popup_type: "Nudge",
@@ -91,7 +88,6 @@ const Index = () => {
     }
     //console.log("homeFeed",JSON.stringify(homeFeedData));
   }, []);
-
 
   return (
     <div>
@@ -165,6 +161,7 @@ const Index = () => {
                 title={homeFeedData?.section3?.title}
                 subTitle={homeFeedData?.section3?.subtitle}
                 isTabEnabled
+                isMobile={isMobile}
               />
             </div>
           </div>
@@ -197,3 +194,14 @@ const Index = () => {
 };
 
 export default Index;
+
+export async function getServerSideProps(ctx) {
+  const userAgent = ctx.req.headers["user-agent"] || "";
+  const isMobile = /mobile|android|touch|webos|iphone|ipad|phone/i.test(userAgent);
+
+  return {
+    props: {
+      isMobile,
+    },
+  };
+}
