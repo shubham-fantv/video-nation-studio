@@ -14,7 +14,7 @@ const index = () => {
 
   const router = useRouter();
   useQuery(
-    `${FANTV_API_URL}/api/v1/templates?limit=30`,
+    `${FANTV_API_URL}/api/v1/templates?limit=20`,
     () => fetcher.get(`${FANTV_API_URL}/api/v1/templates/category/${router.query.slug}`),
     {
       enabled: !!router.query.slug,
