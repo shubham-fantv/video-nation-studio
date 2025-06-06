@@ -158,21 +158,21 @@ const videoCards = [
   //   rotation: "rotate(-5.97deg)",
   //   zIndex: 1,
   // },
-  {
-    id: 3,
-    // src: "/images/video-ai/video2.mp4",
-    src: "https://assets.artistfirst.in/uploads/1749135915997-1749135679036-video2_compressed.mp4",
-    poster: "/images/gallery-poster.jpg",
-    width: 136,
-    height: 192,
-    position: { left: "40%", bottom: "12%" },
-    rotation: "rotate(-0.45deg)",
-    zIndex: 3,
-  },
+  // {
+  //   id: 3,
+  //   // src: "/images/video-ai/video2.mp4",
+  //   src: "https://assets.artistfirst.in/uploads/1749135915997-1749135679036-video2_compressed.mp4",
+  //   poster: "/images/gallery-poster.jpg",
+  //   width: 136,
+  //   height: 192,
+  //   position: { left: "40%", bottom: "12%" },
+  //   rotation: "rotate(-0.45deg)",
+  //   zIndex: 3,
+  // },
   {
     id: 4,
     // src: "/images/video-ai/video2.mp4",
-    src: "https://assets.artistfirst.in/uploads/1749135933866-1749135716181-video3_compressed.mp4",
+    src: "https://assets.artistfirst.in/uploads/1749134802957-1745226333739-replicate-prediction-1d0d93c9f9rm80cpawbst5q7qm_compressed.mp4",
     // poster: "/images/vr-poster.jpg",
     width: 140,
     height: 224,
@@ -193,7 +193,7 @@ function Banner() {
   useEffect(() => {
     // Set appropriate scale for videos on mobile
     if (isMobile) {
-      setVideoScale(0.7);
+      setVideoScale(0.85);
     } else {
       setVideoScale(1);
     }
@@ -241,7 +241,7 @@ function Banner() {
         className="relative px-4 md:px-8 flex flex-col justify-center gap-4"
         sx={{
           paddingTop: { xs: "2rem", md: 0 },
-          paddingBottom: { xs: "0", md: 0 },
+          paddingBottom: { xs: "1rem", md: 0 },
           zIndex: 5,
         }}
       >
@@ -269,7 +269,7 @@ function Banner() {
           }}
           className="text-white "
         >
-          Create, Customize & Captivate.
+          Create, Customize & Captivate
         </Typography>
         <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
           <CLink href={"/generate-video"}>
@@ -351,39 +351,56 @@ function Banner() {
       </Box>
 
       <Box
-        className="relative flex justify-center md:justify-end items-end"
+        className="relative flex justify-center md:justify-end items-end "
         sx={{
           paddingBottom: { xs: "2rem", md: "1.5rem" },
-          paddingRight: { xs: "0.5rem", md: "1.5rem" },
-          gap: { xs: "10px", md: "1rem" },
-          width: "100%",
+          paddingRight: { xs: "0rem", md: "1.5rem" },
+          paddingLeft: { xs: "1.15rem", md: "1.5rem" },
+          gap: { xs: "5px", md: "1rem" },
+          width: "95%",
           position: { xs: "absolute", md: "relative" },
           bottom: { xs: 0, md: "auto" },
           right: { xs: 0, md: "auto" },
         }}
       >
-        <Box
+       <Box
           sx={{
             width: 200 * videoScale,
+            height: "auto",
             borderRadius: "12px",
             overflow: "hidden",
             boxShadow: "0px 4px 10px 0px #00000073",
             transformOrigin: "bottom right",
           }}
         >
-          <video
-            ref={(el) => (videoRefs.current[0] = el)}
-            width={200}
-            muted
-            playsInline
-            loop
-            poster={"/images/workshop-poster.jpg"}
-            style={{ objectFit: "contain" }}
-          >
-            <source src={"https://assets.artistfirst.in/uploads/1749135889879-1749135510460-video1_compressed.mp4"} type="video/mp4" />
+        <img
+          src="https://assets.artistfirst.in/uploads/1749123653160-1747494182065-AI_Art_Style_Cartoon.png"
+          alt="video1"
+          style={{
+            width: "100%",
+            height: "auto",
+            display: "block",
+            objectFit: "cover",
+          }}
+        />
+        <video
+          ref={(el) => (videoRefs.current[0] = el)}
+          muted
+          playsInline
+          loop
+          poster="/images/workshop-poster.jpg"
+          style={{
+            width: "100%",
+            height: "auto",
+            display: "block",
+            objectFit: "cover",
+            marginTop: "1px",
+          }}
+        >
+            <source src="https://assets.artistfirst.in/uploads/1749134836258-1745495375865-replicate-prediction-rp7g44c4hdrmc0cpcxqskk3v18_compressed.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
-        </Box>
+      </Box>
 
         {videoCards.map((card, index) => (
           <Box
@@ -396,6 +413,8 @@ function Banner() {
               boxShadow: "0px 4px 10px 0px #00000073",
               // transform: isMobile ? "scale(0.7)" : "none",
               transformOrigin: "bottom right",
+              marginLeft: "5px",
+
             }}
           >
             <video
