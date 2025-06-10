@@ -2,25 +2,12 @@ export const styles = {
   wrapper: {
     position: "relative",
     display: "block",
-    maxWidth: "450px",
-    background: "#292929",
+    maxWidth: "500px",
     margin: "auto",
-    borderRadius: "12px",
     top: "50%",
-    padding: "32px 24px",
-    border: "1px solid #FFFFFF26",
+    border: "none",
+    transform: "translateY(-50%)",
     outline: "none",
-
-    transform: {
-      xs: "unset",
-      xm: "unset",
-      mobile: "unset",
-      tablet: "unset",
-      laptop: "unset",
-      lg: "translateY(-50%)",
-      xl: "translateY(-50%)",
-      xxl: "translateY(-50%)",
-    },
   },
   innerWrapper: {
     width: "265px",

@@ -22,6 +22,7 @@ import useGTM from "../../hooks/useGTM";
 import SweetAlert2 from "react-sweetalert2";
 import { getPageName } from "../../utils/common";
 import mixpanel from "mixpanel-browser";
+import FreeTrial from "../FreeTrial";
 const activeStyle = {
   backgroundColor: "#FFFFFF0D",
   border: "1px solid #3E3E3E",
@@ -33,8 +34,22 @@ const HeaderNew = ({ app }) => {
   const [walletAnchorEl, setWalletAnchorEl] = useState(null);
   const router = useRouter();
   const [swalProps, setSwalProps] = useState({});
+  const [isFreeTrialOpen, setIsFreeTrialOpen] = useState(false);
+  const [isShowFreeTrialBanner, setIsShowFreeTrialBanner] = useState(false);
+  console.log("🚀 ~ HeaderNew ~ isShowFreeTrialBanner:", isShowFreeTrialBanner);
+  const { isLoggedIn, userData } = useSelector((state) => state.user);
+  console.log("🚀 ~ HeaderNew ~ userData:", userData);
 
   const currentPath = router.pathname;
+
+  useEffect(() => {
+    const utmId = localStorage.getItem("utm_id");
+    const isFreeTrialUsed = userData?.isFreeTrialUsed;
+
+    if ((utmId !== null && utmId !== undefined) || isFreeTrialUsed === false) {
+      setIsShowFreeTrialBanner(true);
+    }
+  }, [userData]);
 
   // Function to check if a link is active
   const isActiveLink = (path) => {
@@ -44,7 +59,6 @@ const HeaderNew = ({ app }) => {
   const [isPopupVisible, setIsPopupVisible] = useState({
     login: false,
   });
-  const { isLoggedIn, userData } = useSelector((state) => state.user);
 
   useEffect(() => {
     mixpanel.identify(userData?._id); // user_Id
@@ -471,9 +485,29 @@ const HeaderNew = ({ app }) => {
     </Box>
   );
 
-  console.log("router.pathname", router.pathname);
+  const handleClickBanner = () => {
+    if (isLoggedIn) {
+      setIsFreeTrialOpen(true);
+    } else {
+      setIsPopupVisible({ login: true });
+    }
+  };
   return (
     <>
+      {isShowFreeTrialBanner && (
+        <div
+          className="h-[70px] w-full relative flex justify-center items-center cursor-pointer"
+          style={{ background: "linear-gradient(90deg, #653EFF 0%, #FF7B3E 100%)" }}
+          onClick={() => handleClickBanner()}
+        >
+          <div className="pt-6">
+            <img src="/images/video-ai/trial-image.svg" />
+          </div>
+          {/* <div className="absolute right-10">
+            <img src="/images/icons/close-circle.svg" />
+          </div> */}
+        </div>
+      )}
       <Box sx={styles.navbar} onClick={(e) => e.stopPropagation()}>
         <Box className="nav-container">
           <Box display="flex">
@@ -683,6 +717,9 @@ const HeaderNew = ({ app }) => {
             open={isPopupVisible.login}
             handleModalClose={handleLoginPopupClose}
           />
+        )}
+        {isFreeTrialOpen && (
+          <FreeTrial open={isFreeTrialOpen} handleModalClose={() => setIsFreeTrialOpen(false)} />
         )}
       </Box>
       <SweetAlert2

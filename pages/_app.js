@@ -21,6 +21,8 @@ import { useRouter } from "next/router";
 import useGTM from "../src/hooks/useGTM";
 import ResponsiveWrapper from "../src/component/ResponsiveWrapper";
 import { initMixpanel, trackEvent } from "../mixpanelClient";
+import { PlanModalProvider } from "../src/context/PlanModalContext";
+import PlanUpgradeModal from "../src/component/PlanUpgradeModal";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -65,14 +67,17 @@ function MyApp({ Component, pageProps, emotionCache = createEmotionCache() }) {
             <CacheProvider value={emotionCache}>
               <PageThemeProvider {...pageProps}>
                 <AppSeo />
-                <SnackbarProvider>
-                  <SnackBar />
-                  {/* <ResponsiveWrapper> */}
-                  <Layout {...pageProps}>
-                    <Component {...pageProps} />
-                  </Layout>
-                  {/* </ResponsiveWrapper> */}
-                </SnackbarProvider>
+                <PlanModalProvider>
+                  <SnackbarProvider>
+                    <SnackBar />
+                    <PlanUpgradeModal />
+                    {/* <ResponsiveWrapper> */}
+                    <Layout {...pageProps}>
+                      <Component {...pageProps} />
+                    </Layout>
+                    {/* </ResponsiveWrapper> */}
+                  </SnackbarProvider>
+                </PlanModalProvider>
               </PageThemeProvider>
             </CacheProvider>
           </PersistGate>

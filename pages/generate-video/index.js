@@ -16,6 +16,7 @@ import { useRouter } from "next/router";
 import SweetAlert2 from "react-sweetalert2";
 import useGTM from "../../src/hooks/useGTM";
 import LoadingScreen from "../../src/component/common/LoadingScreen";
+import { usePlanModal } from "../../src/context/PlanModalContext";
 
 const aspectRatioSizeMap = {
   "1:1": "w-4 h-4",
@@ -27,6 +28,9 @@ const aspectRatioSizeMap = {
 const index = () => {
   const [selectedVoice, setSelectedVoice] = useState(null);
   const lastTrialAction = localStorage.getItem("lastTrialAction");
+
+  const { openModal } = usePlanModal();
+
   const RATE_LIMIT_INTERVAL_MS = 12 * 60 * 60 * 1000; // 12 hours
   const [isPlaying, setIsPlaying] = useState(null);
   const [showVoiceDropdown, setShowVoiceDropdown] = useState(false);
@@ -265,7 +269,7 @@ const index = () => {
         return;
       }
 
-      if (userData.credits <= 0 || userData.credits < creditsUsed) {
+      if (userData.credits < creditsUsed && !userData?.isTrialUser) {
         setSwalProps({
           key: Date.now(), // or use a counter
           show: true,
@@ -294,50 +298,9 @@ const index = () => {
           page_name: getPageName(router?.pathname),
         });
       } else {
-        if (userData?.isTrialUser) {
-          const now = Date.now();
-          const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || now, 10);
-
-          if (now - lastActionTime > 0 && now - lastActionTime < RATE_LIMIT_INTERVAL_MS) {
-            const waitTime = Math.ceil(
-              (RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60
-            );
-            setSwalProps({
-              key: Date.now(), // or use a counter
-              show: true,
-              title: "⏳ Please wait",
-              text: `Free users can generate only one video every 12 hours. Try again in ${waitTime} min. Upgrade Now to get Unlimited generations and HD quality.`,
-              confirmButtonText: "View Plans",
-              showCancelButton: true,
-              icon: "info",
-              preConfirm: () => {
-                router.push("/subscription");
-              },
-            });
-            return;
-          } else {
-            //console.log("selectedVoice",selectedVoice);
-            const requestBody = {
-              prompt,
-              imageInput: image ? [image] : [],
-              creditsUsed: creditsUsed,
-              aspectRatio: aspectRatio,
-              duration: duration,
-              caption: captionEnabled,
-              ...(selectedVoice && { voiceId: selectedVoice }), // ✅ selectedVoice
-              ...(selectedCaptionStyle && { captionStyle: selectedCaptionStyle }), // ✅ selectedCaption
-              voiceover: voiceoverEnabled,
-              ...(image && { imageUrl: encodeURI(decodeURI(image)) }), // ✅ encode URL with spaces
-            };
-            setLoading(true);
-            if (userData?.isTrialUser) {
-              localStorage.setItem("lastTrialAction", Date.now().toString());
-            }
-            //console.log("requestBody",requestBody);
-            generateVideoApi(requestBody);
-          }
+        if (userData.credits < creditsUsed && userData?.isTrialUser) {
+          openModal();
         } else {
-          //console.log("selectedVoice",selectedVoice);
           const requestBody = {
             prompt,
             imageInput: image ? [image] : [],

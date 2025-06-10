@@ -54,29 +54,28 @@ const PricingPlans = () => {
 
       if (!userSubscriptionData || userSubscriptionData.length === 0) {
         const startDate = new Date(userData?.created_at);
-        const promoEndsAt = new Date(startDate.getTime() + 3 * 24 * 60 * 60 * 1000);
-        //console.log(startDate,promoEndsAt);
+        const promoEndsAt = new Date(startDate.getTime() + 1 * 60 * 60 * 1000); // ⏱️ 1 hour from signup
 
         const diff = promoEndsAt - now;
+
         if (diff > 0) {
           setIsNewCustomer(true);
           setPromoCode("NEW50");
           setDiscount(0.5);
-        }
-
-        if (diff <= 0) {
+        } else {
           setTimeLeft("Expired");
           return;
         }
-        const days = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, "0");
-        const hours = String(Math.floor((diff / (1000 * 60 * 60)) % 24)).padStart(2, "0");
+
         const minutes = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, "0");
         const seconds = String(Math.floor((diff / 1000) % 60)).padStart(2, "0");
 
-        if (days === "00") {
-          setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
+        const hours = String(Math.floor((diff / (1000 * 60 * 60)) % 24)).padStart(2, "0");
+
+        if (hours === "00") {
+          setTimeLeft(`${minutes}m ${seconds}s`);
         } else {
-          setTimeLeft(`${days}days ${hours}h`);
+          setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
         }
       }
     };
@@ -187,7 +186,11 @@ const PricingPlans = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div
+          className={`grid grid-cols-1 md:grid-cols-2 ${
+            !!userSubscriptionData?.subscriptionPlanId ? "lg:grid-cols-4" : "lg:grid-cols-3"
+          } gap-3`}
+        >
           {filteredPlans?.map((plan, index) => {
             const isCurrentPlan =
               !!userSubscriptionData && userSubscriptionData.subscriptionPlanId?._id === plan._id;
@@ -203,47 +206,46 @@ const PricingPlans = () => {
             return (
               <div
                 key={index}
-                className={`rounded-lg p-8 flex flex-col relative transition-all ${
+                className={`rounded-lg p-6 flex flex-col relative transition-all ${
                   isCurrentPlan
                     ? "bg-green-100 text-black border-2 border-green-200 shadow-xl" // ✅ light green
                     : plan.isHighlighted
-                    ? "bg-blue-100 text-black border-2 border-blue-200 shadow-xl" // ✅ light green
+                    ? "bg-[#F5F5F5] text-black border border-gray-400 shadow-xl" // ✅ light green
                     : "bg-[#F5F5F5] text-black border border-gray-400 shadow-xl" // ✅ medium gray
                 }`}
               >
-                {/* ✅ “Your Plan” badge */}
                 {isCurrentPlan && (
                   <div className="absolute top-[-15px] left-[-10px] bg-gray-700 text-white text-xs font-bold px-2 py-1 rounded shadow-md z-10">
                     Your Plan
                   </div>
                 )}
-                {/* Optional “Most Popular” badge */}
-                {plan.isHighlighted && (
+
+                {/* {plan.isHighlighted && (
                   <div className="absolute top-[-15px] right-[-10px] bg-amber-400 text-black text-xs font-bold px-2 py-1 rounded shadow-md">
                     Most Popular
                   </div>
-                )}
+                )} */}
 
-                <h2 className="text-2xl font-bold mb-2">{plan.planName}</h2>
+                <h2 className="text-xl font-bold mb-2">{plan.planName}</h2>
 
                 <div className="mb-8">
                   <span>
                     $
                     {billingCycle === "yearly" ? (
                       <>
-                        <span className="text-2xl font-bold">
+                        <span className="text-xl font-bold">
                           {isNewCustomer
                             ? ((plan.cost * discount) / 12).toFixed(2)
                             : (plan.cost / 12).toFixed(2)}
                           /month
                         </span>
                         <span className="text-gray-500 text-sm ml-2">
-                          (<s>${plan.actual_cost.toFixed(2)}</s>)
+                          (<s>${plan?.actual_cost?.toFixed(2)}</s>)
                         </span>
                       </>
                     ) : (
                       <>
-                        <span className="text-2xl font-bold">
+                        <span className="text-xl font-bold">
                           {isNewCustomer ? (plan.cost * discount).toFixed(2) : plan.cost.toFixed(2)}
                           /month
                         </span>
@@ -268,7 +270,7 @@ const PricingPlans = () => {
                   )}
                 </div>
 
-                {isCurrentPlan && !userData?.isTrialUser ? (
+                {isCurrentPlan && userData?.isTrialUser ? (
                   <button
                     disabled
                     className="py-2 px-2 rounded-md mb-4 font-medium bg-gray-400 text-white cursor-not-allowed"
