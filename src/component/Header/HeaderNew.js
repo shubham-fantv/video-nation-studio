@@ -23,6 +23,7 @@ import SweetAlert2 from "react-sweetalert2";
 import { getPageName } from "../../utils/common";
 import mixpanel from "mixpanel-browser";
 import FreeTrial from "../FreeTrial";
+import { usePlanModal } from "../../context/PlanModalContext";
 const activeStyle = {
   backgroundColor: "#FFFFFF0D",
   border: "1px solid #3E3E3E",
@@ -35,21 +36,12 @@ const HeaderNew = ({ app }) => {
   const router = useRouter();
   const [swalProps, setSwalProps] = useState({});
   const [isFreeTrialOpen, setIsFreeTrialOpen] = useState(false);
-  const [isShowFreeTrialBanner, setIsShowFreeTrialBanner] = useState(false);
   const { isLoggedIn, userData } = useSelector((state) => state.user);
+
+  const { isShowFreeTrialBanner } = usePlanModal();
 
   const currentPath = router.pathname;
 
-  useEffect(() => {
-    const utmId = localStorage.getItem("utm_id");
-    const isFreeTrialUsed = userData?.isFreeTrial;
-
-    if ((utmId !== null && utmId !== undefined) || isFreeTrialUsed) {
-      setIsShowFreeTrialBanner(true);
-    }
-  }, [userData]);
-
-  // Function to check if a link is active
   const isActiveLink = (path) => {
     return currentPath === path;
   };

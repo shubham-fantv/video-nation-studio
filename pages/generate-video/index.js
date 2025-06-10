@@ -264,10 +264,10 @@ const index = () => {
 
       const creditsUsed = 20 * parseInt(duration.replace("sec", "").trim() / 5, 10);
 
-      if (userData.credits <= 0) {
-        router.push("/subscription");
-        return;
-      }
+      // if (userData.credits <= 0) {
+      //   router.push("/subscription");
+      //   return;
+      // }
 
       if (userData.credits < creditsUsed && !userData?.isTrialUser) {
         setSwalProps({
@@ -298,7 +298,7 @@ const index = () => {
           page_name: getPageName(router?.pathname),
         });
       } else {
-        if (userData.credits < creditsUsed && userData?.isTrialUser) {
+        if (userData.credits < creditsUsed && userData?.isFreeTrial) {
           openModal();
         } else {
           const requestBody = {

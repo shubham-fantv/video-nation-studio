@@ -8,15 +8,17 @@ import { setToken, setUserData } from "../../../redux/slices/user";
 import loginData from "../../../utils/login";
 import { styles } from "./style";
 import useGTM from "../../../hooks/useGTM";
+import { usePlanModal } from "../../../context/PlanModalContext";
 
 const LoginAndSignup = ({ open, handleModalClose }) => {
   const dispatch = useDispatch();
   const { sendEvent } = useGTM();
+  const { removeUtmId } = usePlanModal();
+
   const { mutate: loginGoogleApi } = useMutation(
     (obj) => fetcher.post(`${API_BASE_URL}/api/v1/auth/login-google`, obj),
     {
       onSuccess: (res) => {
-        console.log("🚀 ~ onSuccess: ~ res 1:", res);
         loginData(res.data.token, res.data.user.name, res.data.user.email, res.data.user.id);
         dispatch(setUserData(res?.data?.user));
         dispatch(
@@ -43,12 +45,12 @@ const LoginAndSignup = ({ open, handleModalClose }) => {
   const login = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       const access_token = tokenResponse.access_token;
-      const utm_source = localStorage.getItem('utm_source');
-      const utm_id = localStorage.getItem('utm_id');
+      const utm_source = localStorage.getItem("utm_source");
+      const utm_id = localStorage.getItem("utm_id");
 
       const payload = { access_token };
 
-      if(utm_source && utm_id) {
+      if (utm_source && utm_id) {
         payload.utm_source = utm_source;
         payload.utm_id = utm_id;
       }
@@ -56,7 +58,7 @@ const LoginAndSignup = ({ open, handleModalClose }) => {
       loginGoogleApi(payload);
       localStorage.removeItem("utm_source");
       localStorage.removeItem("utm_id");
-      
+      removeUtmId();
     },
     onError: (error) => console.log("Login Failed:", error),
     scope: "openid email profile",
