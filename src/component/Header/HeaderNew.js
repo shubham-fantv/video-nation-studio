@@ -37,15 +37,14 @@ const HeaderNew = ({ app }) => {
   const [isFreeTrialOpen, setIsFreeTrialOpen] = useState(false);
   const [isShowFreeTrialBanner, setIsShowFreeTrialBanner] = useState(false);
   const { isLoggedIn, userData } = useSelector((state) => state.user);
-  console.log("🚀 ~ HeaderNew ~ userData:", userData);
 
   const currentPath = router.pathname;
 
   useEffect(() => {
     const utmId = localStorage.getItem("utm_id");
-    const isFreeTrialUsed = userData?.isFreeTrialUsed;
+    const isFreeTrialUsed = userData?.isFreeTrial;
 
-    if ((utmId !== null && utmId !== undefined) || isFreeTrialUsed === false) {
+    if ((utmId !== null && utmId !== undefined) || isFreeTrialUsed) {
       setIsShowFreeTrialBanner(true);
     }
   }, [userData]);

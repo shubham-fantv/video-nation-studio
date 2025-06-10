@@ -1,13 +1,30 @@
 import React, { useEffect } from "react";
 import fetcher from "../../src/dataProvider";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useGTM from "../../src/hooks/useGTM";
+import { useQuery } from "react-query";
+import { FANTV_API_URL } from "../../src/constant/constants";
+import { setUserData } from "../../src/redux/slices/user";
 
 const index = () => {
   const router = useRouter();
   const { userData } = useSelector((state) => state.user);
   const { sendEvent } = useGTM();
+
+  const dispatch = useDispatch();
+
+  const { refetch } = useQuery(
+    `${FANTV_API_URL}/api/v1/users/${userData?._id || userData?.id}`,
+    () => fetcher.get(`${FANTV_API_URL}/api/v1/users/${userData?._id || userData?.id}`),
+    {
+      enabled: !!(userData?._id || userData?.id),
+      refetchOnMount: "always",
+      onSuccess: ({ data }) => {
+        dispatch(setUserData(data));
+      },
+    }
+  );
 
   const checkToken = async (token) => {
     let data = await fetcher.get(`verify-payment?session_id=${token}`);
@@ -18,6 +35,7 @@ const index = () => {
         email: userData?.email,
         name: userData?.name,
       });
+      refetch();
     } else {
     }
   };
