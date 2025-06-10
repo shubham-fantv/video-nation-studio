@@ -27,7 +27,7 @@ export const PlanModalProvider = ({ children }) => {
 
   const removeUtmId = () => {
     if (typeof window !== "undefined") {
-      localStorage.remove("utm_id");
+      localStorage.removeItem("utm_id");
     }
   };
 
