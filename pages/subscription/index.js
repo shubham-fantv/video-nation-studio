@@ -255,7 +255,7 @@ const PricingPlans = () => {
                     )}
                   </span>
 
-                  {isNewCustomer && timeLeft !== "Expired" && (
+                  {isNewCustomer && timeLeft !== "Expired" && !plan.isTrialPlan && (
                     <div className="text-sm font-medium text-green-600 mt-2">
                       ⏰ {discount * 100}% OFF ends in:{" "}
                       <span className="font-mono">{timeLeft}</span>
