@@ -67,7 +67,10 @@ const FreeTrial = ({ open, handleModalClose }) => {
                 </h1>
                 <p className="text-[#626262] text-sm">Cancel anytime, secure sign up</p>
               </div>
-              <div className="text-3xl font-bold text-[#653EFF]">
+              <div
+                onClick={() => handleModalClose()}
+                className="text-3xl font-bold text-[#653EFF] cursor-pointer"
+              >
                 <img src="/images/icons/close-circle.svg" />
               </div>
             </div>

@@ -29,7 +29,7 @@ export default function PlanUpgradeModal() {
   );
 
   const { mutate: upgradeNow } = useMutation(
-    (obj) => fetcher.post(`${FANTV_API_URL}/end-trial-and-upgrade`),
+    (obj) => fetcher.post(`${FANTV_API_URL}/end-trial-and-upgrade`, obj),
     {
       onSuccess: (response) => {
         refetch();
@@ -38,15 +38,16 @@ export default function PlanUpgradeModal() {
           response?.message || "Trial ended and payment started successfully"
         );
       },
-      onError: (error) => {
-        alert(error?.response?.data?.message);
+      onError: ({ error }) => {
+        openSnackbar("error", "Something went wrong, please try again later");
       },
     }
   );
 
   const handleUpgrade = () => {
     closeModal();
-    upgradeNow();
+
+    upgradeNow({ isTrial: true });
   };
 
   const seeAllPlans = () => {
@@ -79,18 +80,21 @@ export default function PlanUpgradeModal() {
       </DialogContent>
 
       <DialogActions className="flex justify-between px-6 pb-4">
-        <button
-          onClick={seeAllPlans}
-          className="text-gray-500 text-sm font-medium hover:text-gray-700"
-        >
-          See all plans
-        </button>
-        <button
-          onClick={handleUpgrade}
-          className="bg-gradient-to-r from-purple-600 to-pink-400 text-white px-5 py-2 text-sm font-semibold rounded-full shadow hover:from-purple-700 hover:to-pink-500 transition"
-        >
-          Upgrade Now
-        </button>
+        <div></div>
+        <div className="flex ">
+          <button
+            onClick={seeAllPlans}
+            className="text-gray-500 text-sm font-medium hover:text-gray-700 pr-5"
+          >
+            See all plans
+          </button>
+          <button
+            onClick={handleUpgrade}
+            className="bg-gradient-to-r from-purple-600 to-pink-400 text-white px-5 py-2 text-sm font-semibold rounded-full shadow hover:from-purple-700 hover:to-pink-500 transition"
+          >
+            Upgrade Now
+          </button>
+        </div>
       </DialogActions>
     </Dialog>
   );

@@ -176,19 +176,16 @@ const PricingPlans = () => {
         </div>
       </div>
       <div className="relative w-full px-4">
-        {/* Optional: Display badge only if at least one plan is highlighted */}
         {filteredPlans.findIndex((plan) => plan.isHighlighted) >= 0 && (
           <div
             className="absolute z-10"
             style={{ top: "-25px", left: "50%", transform: "translateX(-135px)" }}
-          >
-            {/* Optional decorative badge */}
-          </div>
+          ></div>
         )}
 
         <div
           className={`grid grid-cols-1 md:grid-cols-2 ${
-            !!userSubscriptionData?.subscriptionPlanId ? "lg:grid-cols-4" : "lg:grid-cols-3"
+            userData?.isFreeTrial ? "lg:grid-cols-4" : "lg:grid-cols-3"
           } gap-3`}
         >
           {filteredPlans?.map((plan, index) => {

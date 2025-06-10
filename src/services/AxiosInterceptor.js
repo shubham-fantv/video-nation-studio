@@ -21,6 +21,7 @@ Api.interceptors.request.use(
     if (
       (request.url.includes("v1/") ||
         request.url.includes("v2/") ||
+        request.url.includes("end-trial-and-upgrade") ||
         request.url.includes("checkout")) &&
       !request.url.includes("login")
     ) {
@@ -50,10 +51,10 @@ Api.interceptors.response.use(
     }
 
     if (error?.response?.status === 401 || error?.response?.data?.errorCode === 403) {
-      logout();
-      if (typeof window !== "undefined") {
-        alert("Please sign in to continue");
-      }
+      // logout();
+      // if (typeof window !== "undefined") {
+      //   alert("Please sign in to continue");
+      // }
     }
 
     return Promise.reject(error);
