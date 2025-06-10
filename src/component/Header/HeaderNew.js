@@ -36,7 +36,6 @@ const HeaderNew = ({ app }) => {
   const [swalProps, setSwalProps] = useState({});
   const [isFreeTrialOpen, setIsFreeTrialOpen] = useState(false);
   const [isShowFreeTrialBanner, setIsShowFreeTrialBanner] = useState(false);
-  console.log("🚀 ~ HeaderNew ~ isShowFreeTrialBanner:", isShowFreeTrialBanner);
   const { isLoggedIn, userData } = useSelector((state) => state.user);
   console.log("🚀 ~ HeaderNew ~ userData:", userData);
 

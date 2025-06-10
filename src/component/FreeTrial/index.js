@@ -40,7 +40,6 @@ const FreeTrial = ({ open, handleModalClose }) => {
   const handleStartTrial = () => {
     const requestBody = {
       subscriptionPlanId: subscriptions?.[0]?._id,
-      redirect: "http://localhost:3000",
       isTrial: true,
     };
     // sendEvent({
