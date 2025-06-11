@@ -22,6 +22,7 @@ const PricingPlans = () => {
   const [currentPlanPriority, setcurrentPlanPriority] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [timeLeft, setTimeLeft] = useState("");
+  const [trialPlan, setTrialPlan] = useState();
 
   useQuery(
     `${FANTV_API_URL}/api/v1/subscription-plans`,
@@ -29,6 +30,8 @@ const PricingPlans = () => {
     {
       refetchOnMount: "always",
       onSuccess: ({ data }) => {
+        const trialObj = data.filter((item) => item.isTrialPlan);
+        console.log("🚀 ~ PricingPlans ~ trialObj:", trialObj);
         setSubscriptions(data);
       },
     }
@@ -210,11 +213,16 @@ const PricingPlans = () => {
                 key={index}
                 className={`rounded-lg p-6 flex flex-col relative transition-all ${
                   isCurrentPlan
-                    ? "bg-green-100 text-black border-2 border-green-200 shadow-xl" // ✅ light green
+                    ? "bg-green-100 border-2 border-green-200 shadow-xl" // ✅ light green
                     : plan.isHighlighted
-                    ? "bg-[#F5F5F5] text-black border border-gray-400 shadow-xl" // ✅ light green
-                    : "bg-[#F5F5F5] text-black border border-gray-400 shadow-xl" // ✅ medium gray
-                }`}
+                    ? "bg-[#F5F5F5] border border-gray-400 shadow-xl" // ✅ light green
+                    : "bg-[#F5F5F5] border border-gray-400 shadow-xl" // ✅ medium gray
+                } ${plan?.isTrialPlan ? "text-white" : "text-black"}`}
+                style={{
+                  background: plan?.isTrialPlan
+                    ? "linear-gradient(180deg, #653EFF 0%, #FFA0FF 100%)"
+                    : "#F5F5F5",
+                }}
               >
                 {isCurrentPlan && (
                   <div className="absolute top-[-15px] left-[-10px] bg-gray-700 text-white text-xs font-bold px-2 py-1 rounded shadow-md z-10">
@@ -241,7 +249,7 @@ const PricingPlans = () => {
                             : (plan.cost / 12).toFixed(2)}
                           /month
                         </span>
-                        <span className="text-gray-500 text-sm ml-2">
+                        <span className="text-sm ml-2">
                           (<s>${plan?.actual_cost?.toFixed(2)}</s>)
                         </span>
                       </>
@@ -254,7 +262,7 @@ const PricingPlans = () => {
                           /month
                         </span>
                         {isNewCustomer && !plan.isTrialPlan && (
-                          <span className="text-sm text-gray-500 ml-2">
+                          <span className="text-sm  ml-2">
                             <s>(${plan.cost.toFixed(2)})</s>
                           </span>
                         )}
@@ -263,7 +271,7 @@ const PricingPlans = () => {
                   </span>
 
                   {plan.isTrialPlan && timeLeft !== "Expired" ? (
-                    <div className="text-sm font-medium text-green-600 mt-2">
+                    <div className="text-sm font-medium text-white mt-2">
                       83% of users choose this plan
                     </div>
                   ) : (
@@ -276,9 +284,7 @@ const PricingPlans = () => {
                     )
                   )}
 
-                  {plan.billedType && (
-                    <p className="text-sm text-gray-700 mt-2">Billed {plan.billedType}</p>
-                  )}
+                  {plan.billedType && <p className="text-sm  mt-2">Billed {plan.billedType}</p>}
                 </div>
 
                 {isCurrentPlan && userData?.isTrialUser ? (
