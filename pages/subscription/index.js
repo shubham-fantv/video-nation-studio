@@ -193,7 +193,7 @@ const PricingPlans = () => {
 
         <div
           className={`grid grid-cols-1 md:grid-cols-2 ${
-            userData?.isFreeTrial ? "lg:grid-cols-4" : "lg:grid-cols-3"
+            userData?.isFreeTrial || userData?.isFreeTrialUsed ? "lg:grid-cols-4" : "lg:grid-cols-3"
           } gap-3`}
         >
           {filteredPlans?.map((plan, index) => {
@@ -213,10 +213,10 @@ const PricingPlans = () => {
                 key={index}
                 className={`rounded-lg p-6 flex flex-col relative transition-all ${
                   isCurrentPlan
-                    ? "bg-green-100 border-2 border-green-200 shadow-xl" // ✅ light green
+                    ? "bg-green-100 border-2 border-green-200 shadow-xl"
                     : plan.isHighlighted
-                    ? "bg-[#F5F5F5] border border-gray-400 shadow-xl" // ✅ light green
-                    : "bg-[#F5F5F5] border border-gray-400 shadow-xl" // ✅ medium gray
+                    ? "bg-[#F5F5F5] border border-gray-400 shadow-xl"
+                    : "bg-[#F5F5F5] border border-gray-400 shadow-xl"
                 } ${plan?.isTrialPlan ? "text-white" : "text-black"}`}
                 style={{
                   background: plan?.isTrialPlan

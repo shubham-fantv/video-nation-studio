@@ -11,6 +11,7 @@ import { parseCookies } from "nookies";
 import { useSelector } from "react-redux";
 import useGTM from "../../src/hooks/useGTM";
 import SweetAlert2 from "react-sweetalert2";
+import { usePlanModal } from "../../src/context/PlanModalContext";
 
 const Index = ({ masterData }) => {
   const [template, setTemplate] = useState([]);
@@ -475,7 +476,7 @@ const Index = ({ masterData }) => {
             </div>
           )}
 
-          <h3 className="mb-6 text-sm text-[#1E1E1EB2] text-normal">Credits : 1</h3>
+          <h3 className="mb-6 text-sm text-[#1E1E1EB2] text-normal">Credits : {CREDIT_AI_IMAGE}</h3>
 
           {Math.floor(userData?.credits) < 6 && (
             <div className="text-center">

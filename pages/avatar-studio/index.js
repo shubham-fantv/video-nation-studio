@@ -16,6 +16,7 @@ import useGTM from "../../src/hooks/useGTM";
 import SweetAlert2 from "react-sweetalert2";
 import Loading from "../../src/component/common/Loading/loading";
 import LoginAndSignup from "../../src/component/feature/Login/index";
+import { usePlanModal } from "../../src/context/PlanModalContext";
 const index = (data) => {
   const [avatarData, setAvatarData] = useState([]);
   const router = useRouter();
@@ -29,6 +30,9 @@ const index = (data) => {
   const [subTitle, setSubTitle] = useState("");
   const [files, setFiles] = useState([]);
   const inputRef = useRef(null);
+  const CREDIT_AI_IMAGE = process.env.NEXT_PUBLIC_CREDIT_IMAGE_VALUE;
+  const { isShowFreeTrialBanner, openUpgradeModal, openTrialModal, openNoCreditModal } =
+    usePlanModal();
 
   const [swalProps, setSwalProps] = useState({});
   const [isLoading, setLoading] = useState(false);
@@ -184,31 +188,35 @@ const index = (data) => {
         alert("Please enter a prompt!");
         return;
       }
+      if (userData.credits < CREDIT_AI_IMAGE) {
+        if (isShowFreeTrialBanner) {
+          openTrialModal();
+        } else if (!userData.isFreeTrial && userData.isFreeTrialUsed) {
+          openUpgradeModal();
+        } else {
+          openNoCreditModal();
+        }
+      } else {
+        const requestBody = {
+          prompt,
+          name: name,
+          gender: gender,
+          creditsUsed: 1,
+          aspectRatio: "1:1",
+          ...(image && { imageUrl: encodeURI(image) }), // ✅ encode URL with spaces
+        };
+        setLoading(true);
 
-      if (userData.credits <= 0) {
-        router.push("/subscription");
-        return;
+        sendEvent({
+          event: "Generate Avatar",
+          email: userData?.email,
+          name: userData?.name,
+          prompt: prompt,
+          aspectRatio: "1:1",
+        });
+
+        generateAvatarApi(requestBody);
       }
-
-      const requestBody = {
-        prompt,
-        name: name,
-        gender: gender,
-        creditsUsed: 1,
-        aspectRatio: "1:1",
-        ...(image && { imageUrl: encodeURI(image) }), // ✅ encode URL with spaces
-      };
-      setLoading(true);
-
-      sendEvent({
-        event: "Generate Avatar",
-        email: userData?.email,
-        name: userData?.name,
-        prompt: prompt,
-        aspectRatio: "1:1",
-      });
-
-      generateAvatarApi(requestBody);
     } else {
       setIsPopupVisible(true);
     }
