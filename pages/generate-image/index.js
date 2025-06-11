@@ -184,7 +184,7 @@ const index = () => {
         alert("Please enter a prompt!");
         return;
       }
-      if (userData.credits <= CREDIT_AI_IMAGE) {
+      if (userData.credits < CREDIT_AI_IMAGE) {
         if (isShowFreeTrialBanner) {
           openTrialModal();
         } else if (!userData.isFreeTrial && userData.isFreeTrialUsed) {

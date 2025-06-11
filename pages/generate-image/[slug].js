@@ -14,6 +14,7 @@ import SweetAlert2 from "react-sweetalert2";
 
 const Index = ({ masterData }) => {
   const [template, setTemplate] = useState([]);
+  const CREDIT_AI_IMAGE = process.env.NEXT_PUBLIC_CREDIT_IMAGE_VALUE;
 
   const lastTrialAction = localStorage.getItem("lastTrialAction");
   const RATE_LIMIT_INTERVAL_MS = 1 * 1000; // 12 hours
@@ -43,6 +44,8 @@ const Index = ({ masterData }) => {
     console.log("Selected avatar:", avatar);
   };
 
+  const { isShowFreeTrialBanner, openUpgradeModal, openTrialModal, openNoCreditModal } =
+    usePlanModal();
   const [subTitle, setSubTitle] = useState("");
   const [isLoading, setLoading] = useState(false);
   const aspectRatioData = ["16:9", "9:16", "1:1"];
@@ -166,94 +169,33 @@ const Index = ({ masterData }) => {
       //   alert("Please enter a prompt!");
       //   return;
       // }
-
-      if (userData.credits <= 0 || userData.credits < 1) {
-        setSwalProps({
-          key: Date.now(), // or use a counter
-          show: true,
-          title: `⏳ You only have ${userData.credits} Credits Left!`,
-          text: "Upgrade now to buy Credits, unlock HD, pro voices, and longer videos.",
-          confirmButtonText: "View Plans",
-          showCancelButton: true,
-          icon: "warning",
-          preConfirm: () => {
-            router.push("/subscription");
-          },
-        });
-      } else {
-        if (userData?.isTrialUser) {
-          const now = Date.now();
-          const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || now, 10);
-
-          if (now - lastActionTime > 0 && now - lastActionTime < RATE_LIMIT_INTERVAL_MS) {
-            const waitTime = Math.ceil(
-              (RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60
-            );
-            setSwalProps({
-              key: Date.now(), // or use a counter
-              show: true,
-              title: "⏳ Please wait",
-              text: `Free users can generate only one image every 12 hours. Try again in ${waitTime} mins. Upgrade now to unlock unlimited generation and HD quality`,
-              icon: "info",
-              confirmButtonText: "View Plans",
-              showCancelButton: true,
-              preConfirm: () => {
-                router.push("/subscription");
-              },
-            });
-            return;
-          } else {
-            //console.log("selectedAvatar",selectedAvatar);
-            sendEvent({
-              event: "Generate Image Slug",
-              slug: slug,
-              email: userData?.email,
-              name: userData?.name,
-              prompt: prompt,
-              aspectRatio: aspectRatio,
-            });
-
-            const requestBody = {
-              prompt,
-              imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
-              creditsUsed: 1,
-              aspectRatio: aspectRatio,
-              ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }), // ✅ encode URL with spaces
-              // selectedImages, // Array of URLs
-            };
-
-            //console.log(requestBody);
-            setLoading(true);
-            // alert(JSON.stringify(requestBody, null, 2));
-
-            generateImageApi(requestBody);
-          }
+      if (userData.credits < CREDIT_AI_IMAGE) {
+        if (isShowFreeTrialBanner) {
+          openTrialModal();
+        } else if (!userData.isFreeTrial && userData.isFreeTrialUsed) {
+          openUpgradeModal();
         } else {
-          //console.log("selectedAvatar",selectedAvatar);
-          sendEvent({
-            event: "Generate Image Slug",
-            slug: slug,
-            email: userData?.email,
-            name: userData?.name,
-            prompt: prompt,
-            aspectRatio: aspectRatio,
-          });
-
-          const requestBody = {
-            prompt,
-            imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
-            creditsUsed: 1,
-            aspectRatio: aspectRatio,
-            ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }), // ✅ encode URL with spaces
-            // selectedImages, // Array of URLs
-          };
-
-          //console.log(requestBody);
-          setLoading(true);
-          // alert(JSON.stringify(requestBody, null, 2));
-
-          generateImageApi(requestBody);
+          openNoCreditModal();
         }
+      } else {
+        sendEvent({
+          event: "Generate Image Slug",
+          slug: slug,
+          email: userData?.email,
+          name: userData?.name,
+          prompt: prompt,
+          aspectRatio: aspectRatio,
+        });
+
+        const requestBody = {
+          prompt,
+          imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
+          creditsUsed: 1,
+          aspectRatio: aspectRatio,
+          ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }), // ✅ encode URL with spaces
+        };
+        setLoading(true);
+        generateImageApi(requestBody);
       }
     } else {
       setIsPopupVisible(true);

@@ -11,14 +11,18 @@ import { parseCookies } from "nookies";
 import { useSelector } from "react-redux";
 import useGTM from "../../src/hooks/useGTM";
 import SweetAlert2 from "react-sweetalert2";
+import { usePlanModal } from "../../src/context/PlanModalContext";
 
 const Index = ({ masterData }) => {
+  const CREDIT_AI_VIDEO = process.env.NEXT_PUBLIC_CREDIT_AI_VIDEO_VALUE;
+  const AI_VIDEO_LYPSYN = process.env.NEXT_PUBLIC_CREDIT_AI_VIDEO_LYPSYNC;
+
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [isPlaying, setIsPlaying] = useState(null);
   const lastTrialAction = localStorage.getItem("lastTrialAction");
   const RATE_LIMIT_INTERVAL_MS = 12 * 60 * 60 * 1000; // 12 hours
   const [showVoiceDropdown, setShowVoiceDropdown] = useState(false);
-  const [credits, setCredits] = useState(20);
+  const [credits, setCredits] = useState(CREDIT_AI_VIDEO);
   const audioRef = useRef(null); // reference for controlling audio
   const quoteIndexRef = useRef(0);
 
@@ -100,6 +104,9 @@ const Index = ({ masterData }) => {
     setSelectedAvatar(avatar);
     //console.log("Selected avatar:", avatar);
   };
+
+  const { isShowFreeTrialBanner, openUpgradeModal, openTrialModal, openNoCreditModal } =
+    usePlanModal();
 
   const [subTitle, setSubTitle] = useState("");
   const [isLoading, setLoading] = useState(false);
@@ -191,99 +198,43 @@ const Index = ({ masterData }) => {
         return;
       }
 
-      const creditsUsed = 20 * parseInt(duration.replace("sec", "").trim() / 5, 10);
-      if (userData.credits <= 0 || userData.credits < creditsUsed) {
-        setSwalProps({
-          key: Date.now(), // or use a counter
-          show: true,
-          title: `⏳ You only have ${userData.credits} Credits Left!`,
-          text: "Upgrade now to buy Credits, unlock HD, pro voices, and longer videos.",
-          confirmButtonText: "View Plans",
-          showCancelButton: true,
-          icon: "warning",
-          preConfirm: () => {
-            router.push("/subscription");
-          },
-        });
-      } else {
-        if (userData?.isTrialUser) {
-          const now = Date.now();
-          const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || now, 10);
+      let creditsUsed = CREDIT_AI_VIDEO * parseInt(duration.replace("sec", "").trim() / 5, 10);
+      if (voiceoverEnabled) {
+        creditsUsed = Number(creditsUsed) + Number(AI_VIDEO_LYPSYN);
+      }
 
-          if (now - lastActionTime > 0 && now - lastActionTime < RATE_LIMIT_INTERVAL_MS) {
-            const waitTime = Math.ceil(
-              (RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60
-            );
-            setSwalProps({
-              key: Date.now(), // or use a counter
-              show: true,
-              title: "⏳ Please wait",
-              text: `Free users can generate only one video every 12 hours. Try again in ${waitTime} min. Upgrade Now to get Unlimited generations and HD quality.`,
-              confirmButtonText: "View Plans",
-              showCancelButton: true,
-              icon: "info",
-              preConfirm: () => {
-                router.push("/subscription");
-              },
-            });
-            return;
-          } else {
-            //console.log("selectedVoice",selectedVoice);
-            const requestBody = {
-              prompt,
-              imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
-              creditsUsed: creditsUsed,
-              aspectRatio: aspectRatio,
-              duration: duration,
-              caption: captionEnabled,
-              ...(selectedVoice && { voiceId: selectedVoice }), // ✅ selectedVoice
-              ...(selectedCaptionStyle && { captionStyle: selectedCaptionStyle }), // ✅ selectedCaption
-              voiceover: voiceoverEnabled,
-              ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }), // ✅ encode URL with spaces
-            };
-            setLoading(true);
-
-            sendEvent({
-              event: "button_clicked",
-              button_text: "Generate",
-              page_name: "Generate Video",
-              interaction_type: "Standard Button",
-              section_name: "Sidebar",
-              button_id: "genvid_variation_generate_sb_btn",
-            });
-
-            //console.log("requestBody",requestBody);
-            generateVideoApi(requestBody);
-          }
+      if (userData.credits < creditsUsed) {
+        if (isShowFreeTrialBanner) {
+          openTrialModal();
+        } else if (!userData.isFreeTrial && userData.isFreeTrialUsed) {
+          openUpgradeModal();
         } else {
-          // console.log("selectedVoice",selectedVoice);
-
-          const requestBody = {
-            prompt,
-            imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
-            creditsUsed: creditsUsed,
-            aspectRatio: aspectRatio,
-            duration: duration,
-            caption: captionEnabled,
-            ...(selectedVoice && { voiceId: selectedVoice }), // ✅ selectedVoice
-            ...(selectedCaptionStyle && { captionStyle: selectedCaptionStyle }), // ✅ selectedCaption
-            voiceover: voiceoverEnabled,
-            ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }), // ✅ encode URL with spaces
-          };
-          setLoading(true);
-
-          sendEvent({
-            event: "button_clicked",
-            button_text: "Generate",
-            page_name: "Generate Video",
-            interaction_type: "Standard Button",
-            section_name: "Sidebar",
-            button_id: "genvid_variation_generate_sb_btn",
-          });
-
-          //console.log("requestBody",requestBody);
-          generateVideoApi(requestBody);
+          openNoCreditModal();
         }
+      } else {
+        const requestBody = {
+          prompt,
+          imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
+          creditsUsed: creditsUsed,
+          aspectRatio: aspectRatio,
+          duration: duration,
+          caption: captionEnabled,
+          ...(selectedVoice && { voiceId: selectedVoice }), // ✅ selectedVoice
+          ...(selectedCaptionStyle && { captionStyle: selectedCaptionStyle }), // ✅ selectedCaption
+          voiceover: voiceoverEnabled,
+          ...(imageUrl && { imageUrl: encodeURI(decodeURI(imageUrl)) }), // ✅ encode URL with spaces
+        };
+        setLoading(true);
+
+        sendEvent({
+          event: "button_clicked",
+          button_text: "Generate",
+          page_name: "Generate Video",
+          interaction_type: "Standard Button",
+          section_name: "Sidebar",
+          button_id: "genvid_variation_generate_sb_btn",
+        });
+        generateVideoApi(requestBody);
       }
     } else {
       setIsPopupVisible(true);
@@ -727,8 +678,10 @@ const Index = ({ masterData }) => {
             </div>
           )}
           <div>
-            <h3 className="mb-6 text-sm text-[#1E1E1EB2] text-normal">Credits : {credits}</h3>
-            {Math.floor(userData.credits / credits) < 6 && (
+            <h3 className="mb-6 text-sm text-[#1E1E1EB2] text-normal">
+              Credits : {voiceoverEnabled ? Number(credits) + Number(AI_VIDEO_LYPSYN) : credits}
+            </h3>
+            {/* {Math.floor(userData.credits / credits) < 6 && (
               <div className="text-center">
                 <small
                   className={
@@ -741,7 +694,7 @@ const Index = ({ masterData }) => {
                   {Math.floor(userData.credits / credits) === 1 ? "" : "s"} left
                 </small>
               </div>
-            )}
+            )} */}
           </div>
           <div className="flex items-center justify-center gap-4 mt-2 mb-6">
             <button

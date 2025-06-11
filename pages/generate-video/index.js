@@ -86,8 +86,11 @@ const index = () => {
   ];
 
   const CREDIT_AI_VIDEO = process.env.NEXT_PUBLIC_CREDIT_AI_VIDEO_VALUE;
+  const AI_VIDEO_LYPSYN = process.env.NEXT_PUBLIC_CREDIT_AI_VIDEO_LYPSYNC;
+
   const [captionEnabled, setCaptionEnabled] = useState(false);
   const [voiceoverEnabled, setVoiceoverEnabled] = useState(false);
+  console.log("🚀 ~ index ~ voiceoverEnabled:", voiceoverEnabled);
   const [templates, setTemplates] = useState([]);
   const [imagePreview, setImagePreview] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -107,6 +110,15 @@ const index = () => {
   const durationData = ["5 sec", "15 sec"];
   const [isLoading, setLoading] = useState(false);
   const [swalProps, setSwalProps] = useState({});
+  const [isLipSynAdded, setIsLipSyncAdded] = useState(false);
+
+  useEffect(() => {
+    if (selectedVoice) {
+      setVoiceoverEnabled(true);
+    } else {
+      setVoiceoverEnabled(false);
+    }
+  }, [selectedVoice]);
 
   const getRandomPrompts = (list, count = 3) =>
     list
@@ -264,7 +276,10 @@ const index = () => {
         openSnackbar("error", "Please enter a prompt!");
         return;
       }
-      const creditsUsed = CREDIT_AI_VIDEO * parseInt(duration.replace("sec", "").trim() / 5, 10);
+      let creditsUsed = CREDIT_AI_VIDEO * parseInt(duration.replace("sec", "").trim() / 5, 10);
+      if (voiceoverEnabled) {
+        creditsUsed = Number(creditsUsed) + Number(AI_VIDEO_LYPSYN);
+      }
       if (userData.credits < creditsUsed) {
         if (isShowFreeTrialBanner) {
           openTrialModal();
@@ -624,7 +639,7 @@ const index = () => {
             🪄 Magic Prompt
           </button> */}
           <div className="text-sm">
-            Credits : {credits}
+            Credits : {voiceoverEnabled ? Number(credits) + Number(AI_VIDEO_LYPSYN) : credits}
             {/* {Math.floor(userData?.credits / credits) < 6 && (
               <div className="text-center">
                 <small

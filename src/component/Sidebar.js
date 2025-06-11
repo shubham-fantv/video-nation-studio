@@ -410,9 +410,7 @@ function Sidebar({ children }) {
                             style={{ height: "20px", width: "20px" }}
                             src="/images/icons/subscription.svg"
                           />
-                          <span className="text-sm text-black pl-2">
-                            {isShowFreeTrialBanner ? "Start Trial" : "Manage Subscription"}
-                          </span>
+                          <span className="text-sm text-black pl-2">{"Manage Subscription"}</span>
                         </div>
                       </div>
                     </CLink>
