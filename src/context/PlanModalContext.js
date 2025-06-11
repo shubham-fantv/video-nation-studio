@@ -5,6 +5,9 @@ const PlanModalContext = createContext();
 
 export const PlanModalProvider = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isTrialOpen, setIsTrialOpen] = useState(false);
+  const [isNoCreditModalOpen, setIsNoCreditModalOpen] = useState(false);
+
   const [isShowFreeTrialBanner, setIsShowFreeTrialBanner] = useState(false);
   const { userData } = useSelector((state) => state.user);
 
@@ -15,8 +18,14 @@ export const PlanModalProvider = ({ children }) => {
     return null;
   });
 
-  const openModal = () => setIsOpen(true);
-  const closeModal = () => setIsOpen(false);
+  const openUpgradeModal = () => setIsOpen(true);
+  const closeUpgradeModal = () => setIsOpen(false);
+
+  const openTrialModal = () => setIsTrialOpen(true);
+  const closeTrialModal = () => setIsTrialOpen(false);
+
+  const openNoCreditModal = () => setIsNoCreditModalOpen(true);
+  const closeNoCreditModal = () => setIsNoCreditModalOpen(false);
 
   const updateUtmId = (newId) => {
     if (typeof window !== "undefined") {
@@ -33,9 +42,10 @@ export const PlanModalProvider = ({ children }) => {
 
   useEffect(() => {
     const isFreeTrial = userData?.isFreeTrial ?? null;
+    const isFreeTrialUsed = userData?.isFreeTrialUsed ?? null;
     const hasUtm = utmId !== null && utmId !== undefined;
 
-    if (hasUtm || isFreeTrial) {
+    if (hasUtm || (isFreeTrial && !isFreeTrialUsed)) {
       setIsShowFreeTrialBanner(true);
     } else {
       setIsShowFreeTrialBanner(false);
@@ -46,12 +56,21 @@ export const PlanModalProvider = ({ children }) => {
     <PlanModalContext.Provider
       value={{
         isOpen,
-        openModal,
-        closeModal,
+        openUpgradeModal,
+        closeUpgradeModal,
+
         isShowFreeTrialBanner,
         setIsShowFreeTrialBanner,
         updateUtmId,
         removeUtmId,
+
+        openTrialModal,
+        closeTrialModal,
+        isTrialOpen,
+
+        openNoCreditModal,
+        closeNoCreditModal,
+        isNoCreditModalOpen,
       }}
     >
       {children}

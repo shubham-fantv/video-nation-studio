@@ -8,14 +8,16 @@ import { useSnackbar } from "../context/SnackbarContext";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../redux/slices/user";
 import fetcher from "../dataProvider";
+import { useState } from "react";
 
 export default function PlanUpgradeModal() {
-  const { isOpen, closeModal } = usePlanModal();
+  const { isOpen, closeUpgradeModal } = usePlanModal();
   const router = useRouter();
   const { openSnackbar } = useSnackbar();
   const { isLoggedIn, userData } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
+  const [isLoading, setIsLoading] = useState(false);
   const { refetch } = useQuery(
     `${FANTV_API_URL}/api/v1/users/${userData?._id || userData?.id}`,
     () => fetcher.get(`${FANTV_API_URL}/api/v1/users/${userData?._id || userData?.id}`),
@@ -37,28 +39,31 @@ export default function PlanUpgradeModal() {
           "success",
           response?.message || "Trial ended and payment started successfully"
         );
+        setIsLoading(false);
+        closeUpgradeModal();
       },
       onError: ({ error }) => {
         openSnackbar("error", "Something went wrong, please try again later");
+        setIsLoading(false);
+        closeUpgradeModal();
       },
     }
   );
 
   const handleUpgrade = () => {
-    closeModal();
-
+    setIsLoading(true);
     upgradeNow({ isTrial: true });
   };
 
   const seeAllPlans = () => {
-    closeModal();
+    closeUpgradeModal();
     router.push("/subscription");
   };
 
   return (
     <Dialog
       open={isOpen}
-      onClose={closeModal}
+      onClose={closeUpgradeModal}
       maxWidth="sm"
       fullWidth
       PaperProps={{
@@ -67,7 +72,7 @@ export default function PlanUpgradeModal() {
     >
       {/* Close Button */}
       <IconButton
-        onClick={closeModal}
+        onClick={closeUpgradeModal}
         className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
       >
         <CloseIcon />
@@ -90,9 +95,22 @@ export default function PlanUpgradeModal() {
           </button>
           <button
             onClick={handleUpgrade}
-            className="bg-gradient-to-r from-purple-600 to-pink-400 text-white px-5 py-2 text-sm font-semibold rounded-full shadow hover:from-purple-700 hover:to-pink-500 transition"
+            className="w-[150px] bg-gradient-to-r from-purple-600 to-pink-400 text-white px-5 py-2 text-sm font-semibold rounded-full shadow hover:from-purple-700 hover:to-pink-500 transition flex justify-center items-center"
+            disabled={isLoading}
           >
-            Upgrade Now
+            {isLoading ? (
+              <svg
+                className="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+              </svg>
+            ) : (
+              "Upgrade Now"
+            )}
           </button>
         </div>
       </DialogActions>

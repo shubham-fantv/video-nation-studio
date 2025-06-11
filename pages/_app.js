@@ -23,6 +23,8 @@ import ResponsiveWrapper from "../src/component/ResponsiveWrapper";
 import { initMixpanel, trackEvent } from "../mixpanelClient";
 import { PlanModalProvider } from "../src/context/PlanModalContext";
 import PlanUpgradeModal from "../src/component/PlanUpgradeModal";
+import FreeTrial from "../src/component/FreeTrial";
+import NoCreditModal from "../src/component/NoCreditModal";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -71,6 +73,8 @@ function MyApp({ Component, pageProps, emotionCache = createEmotionCache() }) {
                   <SnackbarProvider>
                     <SnackBar />
                     <PlanUpgradeModal />
+                    <FreeTrial />
+                    <NoCreditModal />
                     {/* <ResponsiveWrapper> */}
                     <Layout {...pageProps}>
                       <Component {...pageProps} />

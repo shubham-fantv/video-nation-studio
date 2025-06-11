@@ -112,10 +112,13 @@ import { useSelector } from "react-redux";
 import { useEffect, useState, useRef } from "react";
 import CLink from "./CLink";
 import { getPageName } from "../utils/common";
+import { usePlanModal } from "../context/PlanModalContext";
 
 function Sidebar({ children }) {
   const router = useRouter();
   const currentPath = router.pathname;
+
+  const { isShowFreeTrialBanner } = usePlanModal();
 
   const { isLoggedIn } = useSelector((state) => state.user);
   const isActiveLink = (...paths) => {
@@ -402,7 +405,7 @@ function Sidebar({ children }) {
                             src="/images/icons/subscription.svg"
                           />
                           <span className="text-sm text-black pl-2">
-                            {userData?.isTrialUser ? "Upgrade" : "Manage Subscription"}
+                            {isShowFreeTrialBanner ? "Start Trial" : "Manage Subscription"}
                           </span>
                         </div>
                       </div>

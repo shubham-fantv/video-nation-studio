@@ -243,10 +243,12 @@ const PricingPlans = () => {
                     ) : (
                       <>
                         <span className="text-xl font-bold">
-                          {isNewCustomer ? (plan.cost * discount).toFixed(2) : plan.cost.toFixed(2)}
+                          {isNewCustomer && !plan.isTrialPlan
+                            ? (plan.cost * discount).toFixed(2)
+                            : plan.cost.toFixed(2)}
                           /month
                         </span>
-                        {isNewCustomer && (
+                        {isNewCustomer && !plan.isTrialPlan && (
                           <span className="text-sm text-gray-500 ml-2">
                             <s>(${plan.cost.toFixed(2)})</s>
                           </span>
@@ -255,11 +257,18 @@ const PricingPlans = () => {
                     )}
                   </span>
 
-                  {isNewCustomer && timeLeft !== "Expired" && !plan.isTrialPlan && (
+                  {plan.isTrialPlan && timeLeft !== "Expired" ? (
                     <div className="text-sm font-medium text-green-600 mt-2">
-                      ⏰ {discount * 100}% OFF ends in:{" "}
-                      <span className="font-mono">{timeLeft}</span>
+                      83% of users choose this plan
                     </div>
+                  ) : (
+                    isNewCustomer &&
+                    timeLeft !== "Expired" && (
+                      <div className="text-sm font-medium text-green-600 mt-2">
+                        ⏰ {discount * 100}% OFF ends in:{" "}
+                        <span className="font-mono">{timeLeft}</span>
+                      </div>
+                    )
                   )}
 
                   {plan.billedType && (

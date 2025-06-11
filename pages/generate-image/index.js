@@ -16,6 +16,7 @@ import { useRouter } from "next/router";
 import SweetAlert2 from "react-sweetalert2";
 import useGTM from "../../src/hooks/useGTM";
 import LoadingScreen from "../../src/component/common/LoadingScreen";
+import { usePlanModal } from "../../src/context/PlanModalContext";
 
 const aspectRatioSizeMap = {
   "1:1": "w-4 h-4",
@@ -43,6 +44,8 @@ const index = () => {
   const [isLoading, setLoading] = useState(false);
   const [swalProps, setSwalProps] = useState({});
   const quoteIndexRef = useRef(0);
+  const { isShowFreeTrialBanner, openUpgradeModal, openTrialModal, openNoCreditModal } =
+    usePlanModal();
 
   const getRandomPrompts = (list, count = 3) =>
     list
@@ -119,18 +122,12 @@ const index = () => {
     (obj) => fetcher.post(`${API_BASE_URL}/api/v1/ai-image`, obj),
     {
       onSuccess: (response) => {
-        //alert(JSON.stringify(response, null, 2));
         setImagePreview(null);
         setPrompt("");
         setLoading(false);
-        // if (userData?.isTrialUser) {
-        //   localStorage.setItem("lastTrialAction", Date.now().toString());
-        // }
-
         sendEvent({
           event: "asset_generated",
           aspectRatio: aspectRatio,
-          // duration: duration,
           credits_used: 1,
           caption: captionEnabled,
           button_text: "Generate",
@@ -141,17 +138,6 @@ const index = () => {
         });
 
         router.replace(`/generate-image/${response?.data._id}`, undefined, { scroll: false });
-        // setSwalProps({
-        //   icon: "success",
-        //   show: true,
-        //   title: "Success",
-        //   text: "Image generation is completed",
-        //   showCancelButton: true,
-        //   confirmButtonText: "Go to My Library",
-        //   cancelButtonText: "Cancel",
-        //   allowOutsideClick: false, // Optional: prevent dismiss by clicking outside
-        //   allowEscapeKey: false, // Optional: prevent ESC close
-        // });
       },
       onError: (error) => {
         setLoading(false);
@@ -190,121 +176,32 @@ const index = () => {
     }
   );
 
-  const handleConfirm = () => {
-    //console.log(response.data);
-    //router.push("/my-library?tab=image");
-  };
-
   const handleGenerateImage = () => {
     if (isLoggedIn) {
       if (!prompt.trim()) {
         alert("Please enter a prompt!");
         return;
       }
-
       if (userData.credits <= 0) {
-        router.push("/subscription");
-        return;
-      }
-
-      if (userData.credits <= 0 || userData.credits < 1) {
-        setSwalProps({
-          key: Date.now(), // or use a counter
-          show: true,
-          title: `⏳ You only have ${userData.credits} Credits Left!`,
-          text: "Upgrade now to buy Credits, unlock HD, pro voices, and longer videos.",
-          confirmButtonText: "View Plans",
-          showCancelButton: true,
-          icon: "warning",
-          preConfirm: () => {
-            router.push("/subscription");
-            sendEvent({
-              event: "button_clicked",
-              button_text: "Ok",
-              interaction_type: "Standard button",
-              button_id: "popup_signup_btn",
-              section_name: "Popup",
-              page_name: getPageName(router?.pathname),
-            });
-          },
-        });
-        sendEvent({
-          event: "popup_displayed",
-          popup_type: "Nudge",
-          popup_name: "Inssufficient Credits",
-          popup_messge_text: "Insufficient credits. Please upgrade your plan or buy more credits.",
-          page_name: getPageName(router?.pathname),
-        });
-      } else {
-        if (userData?.isTrialUser) {
-          const now = Date.now();
-          const lastActionTime = parseInt(localStorage.getItem("lastTrialAction") || now, 10);
-
-          if (now - lastActionTime > 0 && now - lastActionTime < RATE_LIMIT_INTERVAL_MS) {
-            const waitTime = Math.ceil(
-              (RATE_LIMIT_INTERVAL_MS - (now - lastActionTime)) / 1000 / 60
-            );
-            setSwalProps({
-              key: Date.now(), // or use a counter
-              show: true,
-              title: "⏳ Please wait",
-              text: `Free users can generate only one image every 12 hours. Try again in ${waitTime} mins. Upgrade now to unlock unlimited generation and HD quality`,
-              icon: "info",
-              confirmButtonText: "View Plans",
-              showCancelButton: true,
-              preConfirm: () => {
-                router.push("/subscription");
-              },
-            });
-            return;
-          } else {
-            const requestBody = {
-              prompt,
-              imageInput: image ? [encodeURI(image)] : [],
-              creditsUsed: 1,
-              aspectRatio: aspectRatio,
-              caption: captionEnabled,
-              ...(image && { imageUrl: encodeURI(image) }), // ✅ encode URL with spaces
-            };
-
-            setLoading(true);
-
-            sendEvent({
-              event: "Generate Image",
-              email: userData?.email,
-              name: userData?.name,
-              prompt: prompt,
-              aspectRatio: aspectRatio,
-              caption: captionEnabled,
-            });
-
-            generateImageApi(requestBody);
-          }
+        if (isShowFreeTrialBanner) {
+          openTrialModal();
+        } else if (!userData.isFreeTrial && userData.isFreeTrialUsed) {
+          openUpgradeModal();
         } else {
-          const requestBody = {
-            prompt,
-            imageInput: image ? [encodeURI(image)] : [],
-            creditsUsed: 1,
-            aspectRatio: aspectRatio,
-            caption: captionEnabled,
-            ...(image && { imageUrl: encodeURI(image) }), // ✅ encode URL with spaces
-          };
-
-          setLoading(true);
-
-          generateImageApi(requestBody);
+          openNoCreditModal();
         }
+      } else {
+        const requestBody = {
+          prompt,
+          imageInput: image ? [encodeURI(image)] : [],
+          creditsUsed: 1,
+          aspectRatio: aspectRatio,
+          caption: captionEnabled,
+          ...(image && { imageUrl: encodeURI(image) }), // ✅ encode URL with spaces
+        };
+        setLoading(true);
+        generateImageApi(requestBody);
       }
-      sendEvent({
-        event: "button_clicked",
-        email: userData?.email,
-        name: userData?.name,
-        prompt: prompt,
-        aspectRatio: aspectRatio,
-        button_text: "Generate",
-        page_name: "Generate Image",
-        interaction_type: "Standard Button",
-      });
     } else {
       setIsPopupVisible(true);
     }

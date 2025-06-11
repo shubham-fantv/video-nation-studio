@@ -17,6 +17,7 @@ import SweetAlert2 from "react-sweetalert2";
 import useGTM from "../../src/hooks/useGTM";
 import LoadingScreen from "../../src/component/common/LoadingScreen";
 import { usePlanModal } from "../../src/context/PlanModalContext";
+import { useSnackbar } from "../../src/context/SnackbarContext";
 
 const aspectRatioSizeMap = {
   "1:1": "w-4 h-4",
@@ -29,12 +30,14 @@ const index = () => {
   const [selectedVoice, setSelectedVoice] = useState(null);
   const lastTrialAction = localStorage.getItem("lastTrialAction");
 
-  const { openModal } = usePlanModal();
+  const { isShowFreeTrialBanner, openUpgradeModal, openTrialModal, openNoCreditModal } =
+    usePlanModal();
 
   const RATE_LIMIT_INTERVAL_MS = 12 * 60 * 60 * 1000; // 12 hours
   const [isPlaying, setIsPlaying] = useState(null);
   const [showVoiceDropdown, setShowVoiceDropdown] = useState(false);
   const quoteIndexRef = useRef(0);
+  const { openSnackbar } = useSnackbar();
 
   const audioRef = useRef(null); // reference for controlling audio
   const voiceOptions = [
@@ -258,83 +261,33 @@ const index = () => {
   const handleGenerateVideo = () => {
     if (isLoggedIn) {
       if (!prompt.trim()) {
-        alert("Please enter a prompt!");
+        openSnackbar("error", "Please enter a prompt!");
         return;
       }
-
       const creditsUsed = 20 * parseInt(duration.replace("sec", "").trim() / 5, 10);
-
-      // if (userData.credits <= 0) {
-      //   router.push("/subscription");
-      //   return;
-      // }
-
-      if (userData.credits < creditsUsed && !userData?.isTrialUser) {
-        setSwalProps({
-          key: Date.now(), // or use a counter
-          show: true,
-          title: `⏳ You only have ${userData.credits} Credits Left!`,
-          text: "Upgrade now to buy Credits, unlock HD, pro voices, and longer videos.",
-          confirmButtonText: "View Plans",
-          showCancelButton: true,
-          icon: "warning",
-          preConfirm: () => {
-            router.push("/subscription");
-            sendEvent({
-              event: "button_clicked",
-              button_text: "Ok",
-              interaction_type: "Standard button",
-              button_id: "popup_signup_btn",
-              section_name: "Popup",
-              page_name: getPageName(router?.pathname),
-            });
-          },
-        });
-        sendEvent({
-          event: "popup_displayed",
-          popup_type: "Nudge",
-          popup_name: "Inssufficient Credits",
-          popup_messge_text: "Insufficient credits. Please upgrade your plan or buy more credits.",
-          page_name: getPageName(router?.pathname),
-        });
-      } else {
-        if (userData.credits < creditsUsed && userData?.isFreeTrial) {
-          openModal();
+      if (userData.credits < creditsUsed) {
+        if (isShowFreeTrialBanner) {
+          openTrialModal();
+        } else if (!userData.isFreeTrial && userData.isFreeTrialUsed) {
+          openUpgradeModal();
         } else {
-          const requestBody = {
-            prompt,
-            imageInput: image ? [image] : [],
-            creditsUsed: creditsUsed,
-            aspectRatio: aspectRatio,
-            duration: duration,
-            caption: captionEnabled,
-            ...(selectedVoice && { voiceId: selectedVoice }), // ✅ selectedVoice
-            ...(selectedCaptionStyle && { captionStyle: selectedCaptionStyle }), // ✅ selectedCaption
-            voiceover: voiceoverEnabled,
-            ...(image && { imageUrl: encodeURI(decodeURI(image)) }), // ✅ encode URL with spaces
-          };
-          setLoading(true);
-
-          if (userData?.isTrialUser) {
-            localStorage.setItem("lastTrialAction", Date.now().toString());
-          }
-          generateVideoApi(requestBody);
+          openNoCreditModal();
         }
-        sendEvent({
-          event: "button_clicked",
-          email: userData?.email,
-          name: userData?.name,
-          prompt: prompt,
+      } else {
+        const requestBody = {
+          prompt,
+          imageInput: image ? [image] : [],
+          creditsUsed: creditsUsed,
           aspectRatio: aspectRatio,
           duration: duration,
           caption: captionEnabled,
+          ...(selectedVoice && { voiceId: selectedVoice }), // ✅ selectedVoice
+          ...(selectedCaptionStyle && { captionStyle: selectedCaptionStyle }), // ✅ selectedCaption
           voiceover: voiceoverEnabled,
-          button_text: "Generate",
-          page_name: "Generate Video",
-          button_id: "genvid_btn",
-          type: "video",
-          interaction_type: "Standard Button",
-        });
+          ...(image && { imageUrl: encodeURI(decodeURI(image)) }), // ✅ encode URL with spaces
+        };
+        setLoading(true);
+        generateVideoApi(requestBody);
       }
     } else {
       setIsPopupVisible(true);

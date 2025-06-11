@@ -184,13 +184,19 @@ const Index = () => {
   );
 
   const handleGeneratePhotoAvatar = () => {
-    if (imagePreviews.length > 0) {
+    if (imagePreviews?.length > 0) {
       if (isLoggedIn) {
-        if (userData.credits <= 0) {
-          router.push("/subscription");
-          return;
+        if (userData?.credits < 500) {
+          if (isShowFreeTrialBanner) {
+            openTrialModal();
+          } else if (!userData.isFreeTrial && userData.isFreeTrialUsed) {
+            openUpgradeModal();
+          } else {
+            openNoCreditModal();
+          }
+        } else {
+          handleOpenModal();
         }
-        handleOpenModal();
       } else {
         setIsPopupVisible(true);
       }

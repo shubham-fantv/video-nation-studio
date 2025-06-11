@@ -1,17 +1,16 @@
-import { Box, Modal } from "@mui/material";
-import { useGoogleLogin } from "@react-oauth/google";
+import { Modal } from "@mui/material";
+import { useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useDispatch } from "react-redux";
-import { setToken, setUserData } from "../../redux/slices/user";
-import loginData from "../../utils/login";
-import { styles } from "./style";
-import useGTM from "../../hooks/useGTM";
-import { API_BASE_URL, FANTV_API_URL } from "../../constant/constants";
+import { FANTV_API_URL } from "../../constant/constants";
+import { usePlanModal } from "../../context/PlanModalContext";
 import fetcher from "../../dataProvider";
-import { useState } from "react";
+import useGTM from "../../hooks/useGTM";
+import { styles } from "./style";
 
-const FreeTrial = ({ open, handleModalClose }) => {
+const FreeTrial = () => {
   const dispatch = useDispatch();
+  const { isTrialOpen, closeTrialModal } = usePlanModal();
   const { sendEvent } = useGTM();
   const [subscriptions, setSubscriptions] = useState([]);
 
@@ -19,12 +18,14 @@ const FreeTrial = ({ open, handleModalClose }) => {
     `${FANTV_API_URL}/api/v1/subscription-plans`,
     () => fetcher.get(`${FANTV_API_URL}/api/v1/subscription-plans`),
     {
+      enabled: isTrialOpen,
       refetchOnMount: "always",
       onSuccess: ({ data }) => {
         setSubscriptions(data);
       },
     }
   );
+
   const { mutate: initiatePayment } = useMutation(
     (obj) => fetcher.post(`${FANTV_API_URL}/create-checkout-session`, obj),
     {
@@ -53,8 +54,8 @@ const FreeTrial = ({ open, handleModalClose }) => {
     <>
       <Modal
         style={{ zIndex: "9999", backdropFilter: "blur(44px)", blur: "40px" }}
-        open={open}
-        onClose={handleModalClose}
+        open={isTrialOpen}
+        onClose={closeTrialModal}
         closeAfterTransition
       >
         <div style={styles.wrapper}>
@@ -68,15 +69,12 @@ const FreeTrial = ({ open, handleModalClose }) => {
                 <p className="text-[#626262] text-sm">Cancel anytime, secure sign up</p>
               </div>
               <div
-                onClick={() => handleModalClose()}
+                onClick={() => closeTrialModal()}
                 className="text-3xl font-bold text-[#653EFF] cursor-pointer"
               >
                 <img src="/images/icons/close-circle.svg" />
               </div>
             </div>
-
-            {/* Benefits Card */}
-            {/* <div className="bg-gradient-to-br from-purple-900 via-purple-800 to-blue-600 rounded-2xl p-4 text-white relative overflow-hidden"> */}
             <div
               className="w-full rounded-2xl overflow-hidden relative"
               style={{
@@ -94,9 +92,10 @@ const FreeTrial = ({ open, handleModalClose }) => {
 
                 <div className="space-y-4 mb-4">
                   <div className="text-sm">1. 20 Images</div>
-                  <div className="text-sm">2. 5 Videos</div>
+                  <div className="text-sm">2. 3 Videos</div>
                   <div className="text-sm">3. Full Access to the exclusive Image Studio</div>
-                  <div className="text-sm">3. Full Access to the exclusive Video Studio</div>
+                  <div className="text-sm">4. Full Access to the exclusive Video Studio</div>
+                  <div className="text-sm">5. Unlimited HD downloads</div>
                 </div>
 
                 {/* Start Trial Button */}
@@ -110,17 +109,6 @@ const FreeTrial = ({ open, handleModalClose }) => {
                 <p className="text-[] mt-4 text-xs">Trial ends after 7 days</p>
               </div>
             </div>
-
-            {/* Footer */}
-            {/* <div className="flex justify-between items-center mt-6">
-              <div className="bg-blue-400 text-white  rounded text-sm font-medium"></div>
-              <button
-                onClick={handleModalClose}
-                className="text-gray-900 text-xl font-medium hover:text-gray-700 transition-colors"
-              >
-                Close
-              </button>
-            </div> */}
           </div>
         </div>
       </Modal>

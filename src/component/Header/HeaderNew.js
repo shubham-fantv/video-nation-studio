@@ -10,7 +10,6 @@ import { setSignWalletPopupOpen } from "../../redux/slices/layout";
 import styles from "./style";
 import MenuIcon from "@mui/icons-material/Menu";
 import { X } from "lucide-react";
-import { usePathname } from "next/navigation";
 import LoginAndSignup from "../feature/Login";
 import UserProfileDropdown from "./UserProfileDropdown";
 import CLink from "../CLink";
@@ -22,7 +21,6 @@ import useGTM from "../../hooks/useGTM";
 import SweetAlert2 from "react-sweetalert2";
 import { getPageName } from "../../utils/common";
 import mixpanel from "mixpanel-browser";
-import FreeTrial from "../FreeTrial";
 import { usePlanModal } from "../../context/PlanModalContext";
 const activeStyle = {
   backgroundColor: "#FFFFFF0D",
@@ -35,10 +33,9 @@ const HeaderNew = ({ app }) => {
   const [walletAnchorEl, setWalletAnchorEl] = useState(null);
   const router = useRouter();
   const [swalProps, setSwalProps] = useState({});
-  const [isFreeTrialOpen, setIsFreeTrialOpen] = useState(false);
   const { isLoggedIn, userData } = useSelector((state) => state.user);
 
-  const { isShowFreeTrialBanner } = usePlanModal();
+  const { isShowFreeTrialBanner, openTrialModal } = usePlanModal();
 
   const currentPath = router.pathname;
 
@@ -477,7 +474,7 @@ const HeaderNew = ({ app }) => {
 
   const handleClickBanner = () => {
     if (isLoggedIn) {
-      setIsFreeTrialOpen(true);
+      openTrialModal();
     } else {
       setIsPopupVisible({ login: true });
     }
@@ -707,9 +704,6 @@ const HeaderNew = ({ app }) => {
             open={isPopupVisible.login}
             handleModalClose={handleLoginPopupClose}
           />
-        )}
-        {isFreeTrialOpen && (
-          <FreeTrial open={isFreeTrialOpen} handleModalClose={() => setIsFreeTrialOpen(false)} />
         )}
       </Box>
       <SweetAlert2

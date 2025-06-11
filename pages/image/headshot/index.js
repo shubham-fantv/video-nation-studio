@@ -14,6 +14,7 @@ import AIAvatarSteps from "../../../src/component/HeadShot/AIAvatarSteps";
 import BadPhotos from "../../../src/component/HeadShot/BadPhotos";
 import GoodPhotos from "../../../src/component/HeadShot/GoodPhotos";
 import LoginAndSignup from "../../../src/component/feature/Login";
+import { usePlanModal } from "../../../src/context/PlanModalContext";
 
 const uploadedPhotos = [
   "https://assets.artistfirst.in/uploads/1747722518107-Urban_Sleek_Headshot_A1.jpg",
@@ -36,7 +37,8 @@ const aiGeneratedImages = [
 const Index = () => {
   const router = useRouter();
   const [uploading, setUploading] = useState(false);
-
+  const { isShowFreeTrialBanner, openUpgradeModal, openTrialModal, openNoCreditModal } =
+    usePlanModal();
   const [swalProps, setSwalProps] = useState({});
   const { isLoggedIn, userData } = useSelector((state) => state.user);
   const [subTitle, setSubTitle] = useState("");
@@ -65,6 +67,7 @@ const Index = () => {
 
   const handleDone = () => {
     setIsOpen(false);
+
     if (avatarName) {
       const requestBody = {
         prompt: "Give a upper body image of the person",
@@ -184,13 +187,19 @@ const Index = () => {
   );
 
   const handleGeneratePhotoAvatar = () => {
-    if (imagePreviews.length > 0) {
+    if (imagePreviews?.length > 0) {
       if (isLoggedIn) {
-        if (userData.credits <= 0) {
-          router.push("/subscription");
-          return;
+        if (userData?.credits < 500) {
+          if (isShowFreeTrialBanner) {
+            openTrialModal();
+          } else if (!userData.isFreeTrial && userData.isFreeTrialUsed) {
+            openUpgradeModal();
+          } else {
+            openNoCreditModal();
+          }
+        } else {
+          handleOpenModal();
         }
-        handleOpenModal();
       } else {
         setIsPopupVisible(true);
       }
