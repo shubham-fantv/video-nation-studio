@@ -39,15 +39,16 @@ const FreeTrial = () => {
   );
 
   const handleStartTrial = () => {
+    sendEvent({
+      event: "trialInitiatedVN",
+      plan_type: subscriptions?.[0]?.planName,
+      plan_duration: subscriptions?.[0]?.billedType,
+    });
+
     const requestBody = {
       subscriptionPlanId: subscriptions?.[0]?._id,
       isTrial: true,
     };
-    // sendEvent({
-    //   event: "subscription _initiated",
-    //   plan_type: plan?.planName,
-    //   plan_duration: plan?.billedType,
-    // });
     initiatePayment(requestBody);
   };
   return (

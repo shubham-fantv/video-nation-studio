@@ -140,7 +140,7 @@ function Sidebar({ children }) {
     border: "1px solid #3E3E3E",
   };
   const { userData } = useSelector((state) => state.user);
-  const { sendEvent } = useGTM();
+  const { sendEvent, sendGTM } = useGTM();
 
   const handleBack = () => {
     sendEvent({
@@ -159,6 +159,25 @@ function Sidebar({ children }) {
     }
   };
 
+  const handleStartTrial = () => {
+    router.push("/subscription");
+    sendEvent({
+      event: "button_clicked",
+      button_text: "Manage Subscription",
+      interaction_type: "Sidebar Navigation",
+      section_name: "Sidebar",
+      navigation_group: "Profile",
+      button_id: "sb_profile_nav_lnk",
+      page_name: "Home Page",
+    });
+    if (isShowFreeTrialBanner) {
+      sendGTM({
+        event: "trialActivatedVN",
+        email: userData?.email,
+        name: userData?.name,
+      });
+    }
+  };
   return (
     <Box sx={styles.wrapper}>
       <Box sx={styles.sidebar}>
@@ -379,20 +398,7 @@ function Sidebar({ children }) {
                 <h2 className=" text-black text-base font-semibold px-4 mb-2">Profile</h2>
                 <ul>
                   <li>
-                    <CLink
-                      route="/subscription"
-                      handleClick={() =>
-                        sendEvent({
-                          event: "button_clicked",
-                          button_text: "Manage Subscription",
-                          interaction_type: "Sidebar Navigation",
-                          section_name: "Sidebar",
-                          navigation_group: "Profile",
-                          button_id: "sb_profile_nav_lnk",
-                          page_name: "Home Page",
-                        })
-                      }
-                    >
+                    <CLink route="/subscription" handleClick={() => handleStartTrial()}>
                       <div className="flex items-center  py-2">
                         <div
                           className={`flex items-center rounded-xl p-3 w-full ${

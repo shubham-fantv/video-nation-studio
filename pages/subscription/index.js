@@ -10,7 +10,7 @@ const PricingPlans = () => {
   const [subscriptions, setSubscriptions] = useState([]);
 
   const { userData, isLoggedIn } = useSelector((state) => state.user);
-  const { sendEvent } = useGTM();
+  const { sendEvent, sendGTM } = useGTM();
   const [billingCycle, setBillingCycle] = useState("monthly");
 
   const filteredPlans = subscriptions?.filter((plan) => plan.billedType === billingCycle);
@@ -108,12 +108,17 @@ const PricingPlans = () => {
       subscriptionPlanId: plan._id,
       ...(promoCode && promoCode !== "" && { promoCode }),
     };
-    sendEvent({
-      event: "subscription _initiated",
-      plan_type: plan?.planName,
-      plan_duration: plan?.billedType,
-    });
     if (isLoggedIn) {
+      sendGTM({
+        event: plan?.isTrialPlan ? "trialInitiatedVN" : "subscriptionInitiatedVN",
+        plan_type: plan?.planName,
+        plan_duration: plan?.billedType,
+      });
+      sendEvent({
+        event: "subscription_initiated",
+        plan_type: plan?.planName,
+        plan_duration: plan?.billedType,
+      });
       initiatePayment(requestBody);
     } else {
       setIsPopupVisible(true);

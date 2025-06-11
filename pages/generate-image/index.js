@@ -26,6 +26,8 @@ const aspectRatioSizeMap = {
 };
 
 const index = () => {
+  const CREDIT_AI_IMAGE = process.env.NEXT_PUBLIC_CREDIT_IMAGE_VALUE;
+
   const [captionEnabled, setCaptionEnabled] = useState(false);
   const lastTrialAction = localStorage.getItem("lastTrialAction");
   const RATE_LIMIT_INTERVAL_MS = 1 * 1000; // 1 sec for Image
@@ -182,7 +184,7 @@ const index = () => {
         alert("Please enter a prompt!");
         return;
       }
-      if (userData.credits <= 0) {
+      if (userData.credits <= CREDIT_AI_IMAGE) {
         if (isShowFreeTrialBanner) {
           openTrialModal();
         } else if (!userData.isFreeTrial && userData.isFreeTrialUsed) {
@@ -376,12 +378,14 @@ const index = () => {
             🪄 Magic Prompt
           </button> */}
           <div className="text-sm">
-            Credits : 5
-            {Math.floor(userData?.credits) < 6 && (
+            Credits : {CREDIT_AI_IMAGE}
+            {Math.floor(userData?.credits) <= CREDIT_AI_IMAGE && (
               <div className="text-center">
                 <small
                   className={
-                    Math.floor(userData.credits) < 2 ? "text-red-600 font-semibold" : "text-black"
+                    Math.floor(userData.credits) < CREDIT_AI_IMAGE
+                      ? "text-red-600 font-semibold"
+                      : "text-black"
                   }
                 >
                   {/* {Math.max(1, Math.floor(userData.credits))} image

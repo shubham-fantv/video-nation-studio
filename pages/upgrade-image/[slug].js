@@ -14,6 +14,8 @@ import SweetAlert2 from "react-sweetalert2";
 import LoginAndSignup from "../../src/component/feature/Login";
 import { usePlanModal } from "../../src/context/PlanModalContext";
 const Index = ({ masterData }) => {
+  const CREDIT_AI_IMAGE = process.env.NEXT_PUBLIC_CREDIT_IMAGE_VALUE;
+  const CREDIT_PRODUCT_AD = process.env.NEXT_PUBLIC_CREDIT_PRODUCT_AD;
   const SLUG_CONFIG = {
     enhance: {
       title: "Enhance Image Quality",
@@ -340,7 +342,7 @@ const Index = ({ masterData }) => {
         alert("Please enter a prompt!");
         return;
       }
-      if (userData?.credits <= 0) {
+      if (userData?.credits <= (slug == "product-ad" ? CREDIT_PRODUCT_AD : CREDIT_AI_IMAGE)) {
         if (isShowFreeTrialBanner) {
           openTrialModal();
         } else if (!userData.isFreeTrial && userData.isFreeTrialUsed) {

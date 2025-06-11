@@ -10,9 +10,13 @@ export const pageview = (url) => {
 };
 
 export const event = ({ event, ...rest }) => {
+  trackEvent(event, { ...rest, app_id: "videonation" });
+};
+
+export const GTMevent = ({ event, ...rest }) => {
   window.dataLayer?.push({
     event,
+    app_id: "videonation",
     ...rest,
   });
-  trackEvent(event, { ...rest });
 };

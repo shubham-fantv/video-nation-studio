@@ -85,6 +85,7 @@ const index = () => {
     },
   ];
 
+  const CREDIT_AI_VIDEO = process.env.NEXT_PUBLIC_CREDIT_AI_VIDEO_VALUE;
   const [captionEnabled, setCaptionEnabled] = useState(false);
   const [voiceoverEnabled, setVoiceoverEnabled] = useState(false);
   const [templates, setTemplates] = useState([]);
@@ -94,7 +95,8 @@ const index = () => {
   const [finalVideo, setFinalVideo] = useState("");
   const [image, setImage] = useState("");
   const [aspectRatio, setAspectRatio] = useState("16:9");
-  const [credits, setCredits] = useState(20);
+
+  const [credits, setCredits] = useState(CREDIT_AI_VIDEO);
   const [duration, setDuration] = useState("5 sec");
   const [subTitle, setSubTitle] = useState("");
   const router = useRouter();
@@ -217,9 +219,7 @@ const index = () => {
       },
       onError: (error) => {
         setLoading(false);
-
         const defaultMessage = "Something went wrong. Please try again later.";
-
         const message = error?.response?.data?.message || error?.message || defaultMessage;
 
         setSwalProps({
@@ -264,7 +264,7 @@ const index = () => {
         openSnackbar("error", "Please enter a prompt!");
         return;
       }
-      const creditsUsed = 20 * parseInt(duration.replace("sec", "").trim() / 5, 10);
+      const creditsUsed = CREDIT_AI_VIDEO * parseInt(duration.replace("sec", "").trim() / 5, 10);
       if (userData.credits < creditsUsed) {
         if (isShowFreeTrialBanner) {
           openTrialModal();
@@ -441,7 +441,9 @@ const index = () => {
               value={duration}
               onChange={(e) => {
                 setDuration(e.target.value);
-                setCredits(20 * parseInt(e.target.value.replace("sec", "").trim() / 5, 10));
+                setCredits(
+                  CREDIT_AI_VIDEO * parseInt(e.target.value.replace("sec", "").trim() / 5, 10)
+                );
                 sendEvent({
                   event: "button_clicked",
                   button_text: "-",

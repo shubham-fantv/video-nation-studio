@@ -35,6 +35,8 @@ const aiGeneratedImages = [
 ];
 
 const Index = () => {
+  const CREDIT_AI_AVATAR = process.env.NEXT_PUBLIC_CREDIT_AI_AVATAR_VALUE;
+
   const router = useRouter();
   const [uploading, setUploading] = useState(false);
   const { isShowFreeTrialBanner, openUpgradeModal, openTrialModal, openNoCreditModal } =
@@ -189,7 +191,7 @@ const Index = () => {
   const handleGeneratePhotoAvatar = () => {
     if (imagePreviews?.length > 0) {
       if (isLoggedIn) {
-        if (userData?.credits < 500) {
+        if (userData?.credits < CREDIT_AI_AVATAR) {
           if (isShowFreeTrialBanner) {
             openTrialModal();
           } else if (!userData.isFreeTrial && userData.isFreeTrialUsed) {
@@ -410,7 +412,9 @@ const Index = () => {
             </div>
           </div>
 
-          <h3 className="mb-6 text-sm text-[#1E1E1EB2] text-normal">Credits : 500</h3>
+          <h3 className="mb-6 text-sm text-[#1E1E1EB2] text-normal">
+            Credits : {CREDIT_AI_AVATAR}
+          </h3>
 
           {/* {Math.floor(userData?.credits) < 6 && (
             <div className="text-center">

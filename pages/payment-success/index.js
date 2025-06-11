@@ -10,7 +10,7 @@ import { setUserData } from "../../src/redux/slices/user";
 const index = () => {
   const router = useRouter();
   const { userData } = useSelector((state) => state.user);
-  const { sendEvent } = useGTM();
+  const { sendEvent, sendGTM } = useGTM();
 
   const dispatch = useDispatch();
 
@@ -29,13 +29,21 @@ const index = () => {
   const checkToken = async (token) => {
     let data = await fetcher.get(`verify-payment?session_id=${token}`);
 
-    if (data.status == 204) {
-      sendEvent({
-        event: "Subscribe",
-        email: userData?.email,
-        name: userData?.name,
-      });
+    if (data?.success) {
       refetch();
+      if (data?.session?.metadata?.isFreeTrial == "true") {
+        sendGTM({
+          event: "trialActivatedVN",
+          email: userData?.email,
+          name: userData?.name,
+        });
+      } else {
+        sendGTM({
+          event: "subscriptionActivatedVN",
+          email: userData?.email,
+          name: userData?.name,
+        });
+      }
     } else {
     }
   };
