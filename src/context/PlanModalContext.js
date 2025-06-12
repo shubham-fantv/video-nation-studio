@@ -6,12 +6,11 @@ const PlanModalContext = createContext();
 
 export const PlanModalProvider = ({ children }) => {
   const router = useRouter();
-  console.log("🚀 ~ PlanModalProvider ~ router:", router.query.utm_source);
   const [isOpen, setIsOpen] = useState(false);
   const [isTrialOpen, setIsTrialOpen] = useState(false);
   const [isNoCreditModalOpen, setIsNoCreditModalOpen] = useState(false);
 
-  const [isShowFreeTrialBanner, setIsShowFreeTrialBanner] = useState(false);
+  const [isShowFreeTrialBanner, setIsShowFreeTrialBanner] = useState(true);
   const { userData } = useSelector((state) => state.user);
 
   const [utmId, setUtmId] = useState(() => {
@@ -44,16 +43,12 @@ export const PlanModalProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const isFreeTrial = userData?.isFreeTrial ?? null;
+    // const isFreeTrial = userData?.isFreeTrial ?? null;
     const isFreeTrialUsed = userData?.isFreeTrialUsed ?? null;
-    const hasUtm = router?.query?.utm_source || (utmId !== null && utmId !== undefined);
-
-    if (hasUtm || (isFreeTrial && !isFreeTrialUsed)) {
-      setIsShowFreeTrialBanner(true);
-    } else {
+    if (isFreeTrialUsed) {
       setIsShowFreeTrialBanner(false);
     }
-  }, [utmId, userData?.isFreeTrial, router?.query?.utm_source]);
+  }, [userData?.isFreeTrial, userData?.isFreeTrialUsed]);
 
   return (
     <PlanModalContext.Provider

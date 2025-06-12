@@ -45,20 +45,17 @@ const LoginAndSignup = ({ open, handleModalClose }) => {
   const login = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       const access_token = tokenResponse.access_token;
-      const utm_source = localStorage.getItem("utm_source");
-      const utm_id = localStorage.getItem("utm_id");
-
+      // const utm_source = localStorage.getItem("utm_source");
+      // const utm_id = localStorage.getItem("utm_id");
       const payload = { access_token };
 
-      if (utm_source && utm_id) {
-        payload.utm_source = utm_source;
-        payload.utm_id = utm_id;
-      }
+      payload.utm_source = "google";
+      payload.utm_id = "free_trial_1717684987231_593";
 
       loginGoogleApi(payload);
-      localStorage.removeItem("utm_source");
-      localStorage.removeItem("utm_id");
-      removeUtmId();
+      // localStorage.removeItem("utm_source");
+      // localStorage.removeItem("utm_id");
+      // removeUtmId();
     },
     onError: (error) => console.log("Login Failed:", error),
     scope: "openid email profile",
