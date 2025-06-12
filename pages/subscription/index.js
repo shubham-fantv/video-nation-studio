@@ -262,9 +262,11 @@ const PricingPlans = () => {
                             : (plan.cost / 12).toFixed(2)}
                           /month
                         </span>
-                        <span className="text-sm ml-2">
-                          (<s>${plan?.actual_cost?.toFixed(2)}</s>)
-                        </span>
+                        {!plan.isTrialPlan && (
+                          <span className="text-sm ml-2">
+                            (<s>${plan?.actual_cost?.toFixed(2)}</s>)
+                          </span>
+                        )}
                       </>
                     ) : (
                       <>
