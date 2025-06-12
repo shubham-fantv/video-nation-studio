@@ -615,7 +615,6 @@ const index = (data) => {
                     setPrompt(generated.trim());
                     handleGenerateAvatar(generated, name, gender);
                     setIsPromptModalVisible(false);
-                    setLoading(true);
                   }}
                   className="px-4 py-2 bg-black text-white rounded-md"
                 >
