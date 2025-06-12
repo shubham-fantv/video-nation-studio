@@ -126,6 +126,35 @@ export const getPageName = (name) => {
       return "Generate Image";
 
     default:
-      return "Unknown Page";
+      return name;
   }
+};
+
+export const getPageSubPage = (path) => {
+  const cleanedPath = path?.replace(/^\/|\/$/g, "");
+  const parts = cleanedPath?.split("/");
+  const basePath = "/" + parts[0];
+  const page_name = getPageName(basePath);
+  if (parts.length > 1) {
+    return {
+      page_name,
+      sub_page_name: parts.slice(1).join("/"), // in case sub page has multiple parts
+    };
+  }
+
+  return { page_name };
+};
+
+export const getDateTimeFromTimestamp = (timestampInSeconds) => {
+  const date = new Date(timestampInSeconds * 1000);
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // months are 0-indexed
+  const day = String(date.getDate()).padStart(2, "0");
+
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };

@@ -19,7 +19,7 @@ import fetcher from "../../dataProvider";
 import { setUserData } from "../../redux/slices/user";
 import useGTM from "../../hooks/useGTM";
 import SweetAlert2 from "react-sweetalert2";
-import { getPageName } from "../../utils/common";
+import { getPageName, getPageSubPage } from "../../utils/common";
 import mixpanel from "mixpanel-browser";
 import { usePlanModal } from "../../context/PlanModalContext";
 const activeStyle = {
@@ -393,17 +393,27 @@ const HeaderNew = ({ app }) => {
                   <li>
                     <CLink
                       route="/subscription"
-                      handleClick={() =>
-                        sendEvent({
-                          event: "button_clicked",
-                          button_text: "Manage Subscription",
-                          interaction_type: "Sidebar Navigation",
-                          section_name: "Sidebar",
-                          navigation_group: "Profile",
-                          button_id: "sb_profile_nav_lnk",
-                          page_name: "Home Page",
-                        })
-                      }
+                      handleClick={() => {
+                        if (userData?.isTrialUser) {
+                          sendEvent({
+                            event: "button_clicked",
+                            button_text: "Upgrade",
+                            interaction_type: "Tab Button",
+                            button_id: "hdr_upgrade_btn",
+                            ...getPageSubPage(router?.asPath),
+                          });
+                        } else {
+                          sendEvent({
+                            event: "button_clicked",
+                            button_text: "Manage Subscription",
+                            interaction_type: "Sidebar Navigation",
+                            section_name: "Sidebar",
+                            navigation_group: "Profile",
+                            button_id: "sb_profile_nav_lnk",
+                            page_name: "Home Page",
+                          });
+                        }
+                      }}
                     >
                       <div className="flex items-center  py-2">
                         <div
@@ -487,7 +497,7 @@ const HeaderNew = ({ app }) => {
           style={{ background: "linear-gradient(90deg, #653EFF 0%, #FF7B3E 100%)" }}
           onClick={() => handleClickBanner()}
         >
-          <div className="pt-6">
+          <div className=" pt-2 md:pt-6  px-2">
             <img src="/images/video-ai/trial-image.svg" />
           </div>
           {/* <div className="absolute right-10">
@@ -583,7 +593,18 @@ const HeaderNew = ({ app }) => {
                       {userData.credits} Credits Left
                     </span>
                   </CLink>
-                  <CLink href={"/subscription"}>
+                  <CLink
+                    href={"/subscription"}
+                    handleClick={() => {
+                      sendEvent({
+                        event: "button_clicked",
+                        button_text: "Upgrade",
+                        interaction_type: "Tab Button",
+                        button_id: "hdr_upgrade_btn",
+                        ...getPageSubPage(router?.asPath),
+                      });
+                    }}
+                  >
                     <button className="hidden md:block bg-purple-600 text-white text-sm px-3 py-1 rounded-md hover:bg-purple-700 transition">
                       Upgrade
                     </button>
@@ -622,7 +643,18 @@ const HeaderNew = ({ app }) => {
             ) : (
               <div>
                 {!isActiveLink("/subscription") && isLoggedIn ? (
-                  <CLink href={"/subscription"}>
+                  <CLink
+                    href={"/subscription"}
+                    handleClick={() => {
+                      sendEvent({
+                        event: "button_clicked",
+                        button_text: "Upgrade",
+                        interaction_type: "Tab Button",
+                        button_id: "hdr_upgrade_btn",
+                        ...getPageSubPage(router?.asPath),
+                      });
+                    }}
+                  >
                     <button
                       style={{
                         border: "1px solid #262626",

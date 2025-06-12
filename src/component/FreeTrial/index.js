@@ -1,5 +1,5 @@
 import { Modal } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useDispatch } from "react-redux";
 import { FANTV_API_URL } from "../../constant/constants";
@@ -7,13 +7,17 @@ import { usePlanModal } from "../../context/PlanModalContext";
 import fetcher from "../../dataProvider";
 import useGTM from "../../hooks/useGTM";
 import { styles } from "./style";
+import useIsMobile from "../../hooks/useIsMobile";
+import { useRouter } from "next/router";
+import { getPageSubPage } from "../../utils/common";
 
-const FreeTrial = () => {
+const FreeTrial = ({ app }) => {
   const dispatch = useDispatch();
   const { isTrialOpen, closeTrialModal } = usePlanModal();
-  const { sendEvent } = useGTM();
+  const router = useRouter();
+  const { sendEvent, sendGTM } = useGTM();
   const [subscriptions, setSubscriptions] = useState([]);
-
+  const isMobile = useIsMobile(app?.deviceParsedInfo?.device?.isMobile);
   useQuery(
     `${FANTV_API_URL}/api/v1/subscription-plans`,
     () => fetcher.get(`${FANTV_API_URL}/api/v1/subscription-plans`),
@@ -39,10 +43,18 @@ const FreeTrial = () => {
   );
 
   const handleStartTrial = () => {
-    sendEvent({
+    sendGTM({
       event: "trialInitiatedVN",
       plan_type: subscriptions?.[0]?.planName,
       plan_duration: subscriptions?.[0]?.billedType,
+    });
+    sendEvent({
+      event: "trial_initiated",
+      plan_id: "Basic",
+      plan_type: subscriptions?.[0]?.planName,
+      text: "Start Trial",
+      source: "popup",
+      ...getPageSubPage(router?.asPath),
     });
 
     const requestBody = {
@@ -50,6 +62,29 @@ const FreeTrial = () => {
       isTrial: true,
     };
     initiatePayment(requestBody);
+  };
+
+  useEffect(() => {
+    if (isTrialOpen) {
+      sendEvent({
+        event: "popup_displayed",
+        popup_type: "Nudge",
+        popup_name: "Free Trial",
+        popup_messge_text: "Start creating like a pro, free for 7 days",
+        ...getPageSubPage(router?.asPath),
+      });
+    }
+  }, [isTrialOpen]);
+
+  const handleClose = () => {
+    sendEvent({
+      event: "button_clicked",
+      button_text: "X",
+      interaction_type: "Cross button",
+      button_id: "free_trial_exit_btn",
+      ...getPageSubPage(router?.asPath),
+    });
+    closeTrialModal();
   };
   return (
     <>
@@ -60,7 +95,7 @@ const FreeTrial = () => {
         closeAfterTransition
       >
         <div style={styles.wrapper}>
-          <div className="max-w-2xl mx-auto p-6 bg-gray-100 rounded-3xl">
+          <div className="w-[90%] mx-auto p-4 md:p-6 bg-gray-100 rounded-3xl">
             {/* Header */}
             <div className="flex justify-between items-start mb-6">
               <div>
@@ -70,7 +105,7 @@ const FreeTrial = () => {
                 <p className="text-[#626262] text-sm">Cancel anytime, secure sign up</p>
               </div>
               <div
-                onClick={() => closeTrialModal()}
+                onClick={() => handleClose()}
                 className="text-3xl font-bold text-[#653EFF] cursor-pointer"
               >
                 <img src="/images/icons/close-circle.svg" />
@@ -102,12 +137,12 @@ const FreeTrial = () => {
                 {/* Start Trial Button */}
                 <button
                   onClick={() => handleStartTrial()}
-                  className="bg-white text-gray-900 px-6 py-3 font-base font-semibold  rounded-full text-xl font-semibold hover:bg-gray-100 transition-colors"
+                  className="bg-white w-full md:w-auto text-gray-900 px-6 py-3 font-base font-semibold  rounded-full text-xl font-semibold hover:bg-gray-100 transition-colors"
                 >
                   Start Trial
                 </button>
 
-                <p className="text-[] mt-4 text-xs">Trial ends after 7 days</p>
+                {!isMobile && <p className="text-[] mt-4 text-xs">Trial ends after 7 days</p>}
               </div>
             </div>
           </div>

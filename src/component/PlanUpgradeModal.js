@@ -8,7 +8,8 @@ import { useSnackbar } from "../context/SnackbarContext";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../redux/slices/user";
 import fetcher from "../dataProvider";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getPageSubPage } from "../utils/common";
 
 export default function PlanUpgradeModal() {
   const { isOpen, closeUpgradeModal } = usePlanModal();
@@ -52,13 +53,42 @@ export default function PlanUpgradeModal() {
 
   const handleUpgrade = () => {
     setIsLoading(true);
+    sendEvent({
+      event: "button_clicked",
+      button_text: "Upgrade",
+      interaction_type: "Standard button",
+      button_id: "free_trial_upgrade_btn",
+      section_name: "Popup",
+      ...getPageSubPage(router?.asPath),
+    });
     upgradeNow({ isTrial: true });
   };
 
   const seeAllPlans = () => {
     closeUpgradeModal();
+
+    sendEvent({
+      event: "button_clicked",
+      button_text: "View All Plans",
+      interaction_type: "Standard button",
+      button_id: "free_trial_upgrade_view_plans_btn",
+      ...getPageSubPage(router?.asPath),
+    });
+
     router.push("/subscription");
   };
+
+  useEffect(() => {
+    if (isOpen) {
+      sendEvent({
+        event: "popup_displayed",
+        popup_type: "Nudge",
+        popup_name: "Upgrade Free Trial",
+        popup_messge_text: "Start your basic plan now to get all the features",
+        ...getPageSubPage(router?.asPath),
+      });
+    }
+  }, [isOpen]);
 
   return (
     <Dialog

@@ -5,6 +5,7 @@ import { FANTV_API_URL } from "../../src/constant/constants";
 import { useSelector } from "react-redux";
 import useGTM from "../../src/hooks/useGTM";
 import LoginAndSignup from "../../src/component/feature/Login";
+import { getPageSubPage } from "../../src/utils/common";
 const PricingPlans = () => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [subscriptions, setSubscriptions] = useState([]);
@@ -117,11 +118,23 @@ const PricingPlans = () => {
         plan_type: plan?.planName,
         plan_duration: plan?.billedType,
       });
-      sendEvent({
-        event: "subscription_initiated",
-        plan_type: plan?.planName,
-        plan_duration: plan?.billedType,
-      });
+      if (plan?.isTrialPlan) {
+        sendEvent({
+          event: "trial_initiated",
+          plan_id: "Basic",
+          plan_type: plan?.planName,
+          text: "Choose Plan",
+          source: "popup",
+          page_name: "Subscription",
+        });
+      } else {
+        sendEvent({
+          event: "subscription_initiated",
+          plan_type: plan?.planName,
+          plan_duration: plan?.billedType,
+          page_name: "Subscription",
+        });
+      }
       initiatePayment(requestBody);
     } else {
       setIsPopupVisible(true);

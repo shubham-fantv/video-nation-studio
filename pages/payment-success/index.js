@@ -6,6 +6,7 @@ import useGTM from "../../src/hooks/useGTM";
 import { useQuery } from "react-query";
 import { FANTV_API_URL } from "../../src/constant/constants";
 import { setUserData } from "../../src/redux/slices/user";
+import { getDateTimeFromTimestamp } from "../../src/utils/common";
 
 const index = () => {
   const router = useRouter();
@@ -37,11 +38,25 @@ const index = () => {
           email: userData?.email,
           name: userData?.name,
         });
+        sendEvent({
+          event: "trial_activated",
+          trial_start_timestamp: data?.session?.created,
+          plan_price: data?.session?.amount_total,
+          payment_type: data?.session?.payment_method_types,
+          trial_start_date: getDateTimeFromTimestamp(data?.session?.created),
+        });
       } else {
         sendGTM({
           event: "subscriptionActivatedVN",
           email: userData?.email,
           name: userData?.name,
+        });
+        sendEvent({
+          event: "subscription_activated",
+          trial_start_timestamp: data?.session?.created,
+          plan_price: data?.session?.amount_total,
+          payment_type: data?.session?.payment_method_types,
+          trial_start_date: getDateTimeFromTimestamp(data?.session?.created),
         });
       }
     } else {
