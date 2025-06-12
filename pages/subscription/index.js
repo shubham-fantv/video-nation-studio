@@ -216,10 +216,10 @@ const PricingPlans = () => {
             let isUpgrade = false;
             let isDowngrade = false;
 
-            if (!userData?.isTrialUser && userSubscriptionData?.subscriptionPlanId) {
-              isUpgrade = plan.planNumber > currentPlanPriority;
-              isDowngrade = plan.planNumber < currentPlanPriority;
-            }
+            // if (!userData?.isTrialUser && userSubscriptionData?.subscriptionPlanId) {
+            //   isUpgrade = plan.planNumber > currentPlanPriority;
+            //   isDowngrade = plan.planNumber < currentPlanPriority;
+            // }
 
             return (
               <div
@@ -323,8 +323,8 @@ const PricingPlans = () => {
                     {!userSubscriptionData?.subscriptionPlanId || userData?.isTrialUser
                       ? "Choose Plan"
                       : isUpgrade
-                      ? "Upgrade"
-                      : "Downgrade"}
+                      ? "Choose Plan"
+                      : "Choose Plan"}
                   </button>
                 )}
 

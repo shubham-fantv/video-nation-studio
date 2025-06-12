@@ -10,6 +10,7 @@ import { setUserData } from "../redux/slices/user";
 import fetcher from "../dataProvider";
 import { useEffect, useState } from "react";
 import { getPageSubPage } from "../utils/common";
+import useGTM from "../hooks/useGTM";
 
 export default function PlanUpgradeModal() {
   const { isOpen, closeUpgradeModal } = usePlanModal();
@@ -17,6 +18,7 @@ export default function PlanUpgradeModal() {
   const { openSnackbar } = useSnackbar();
   const { isLoggedIn, userData } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const { sendEvent } = useGTM();
 
   const [isLoading, setIsLoading] = useState(false);
   const { refetch } = useQuery(
