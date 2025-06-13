@@ -48,17 +48,17 @@ const HeaderNew = ({ app }) => {
   });
 
   useEffect(() => {
-    mixpanel.identify(userData?._id); // user_Id
+    mixpanel.identify(userData?._id);
     mixpanel.people.set({
       $name: userData?.name,
       $email: userData?.email,
-      subscription_status: "Subscriber", // or Non Subscriber / Trial
-      plan_type: "Pro", // or Basic / Ultra Pro
+      subscription_status: "Subscriber",
+      plan_type: "Pro",
       plan_duration: "Monthly", // or Yearly
       credits: userData?.credits,
       isLoggedIn: isLoggedIn,
     });
-  }, []);
+  }, [userData, isLoggedIn, userData?._id]);
 
   const layoutData = useSelector((state) => state.layout);
   const [airdropPoints, setAirdropPoints] = useState(layoutData.airdropPoints);
