@@ -170,6 +170,9 @@ function Sidebar({ children }) {
       button_id: "sb_profile_nav_lnk",
       page_name: "Home Page",
     });
+    sendGTM({
+      event: "manageSubscription",
+    });
     if (isShowFreeTrialBanner) {
       sendGTM({
         event: "trialActivatedVN",

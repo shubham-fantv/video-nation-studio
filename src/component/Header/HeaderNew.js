@@ -42,7 +42,7 @@ const HeaderNew = ({ app }) => {
   const isActiveLink = (path) => {
     return currentPath === path;
   };
-  const { sendEvent } = useGTM();
+  const { sendEvent, sendGTM } = useGTM();
   const [isPopupVisible, setIsPopupVisible] = useState({
     login: false,
   });
@@ -652,6 +652,9 @@ const HeaderNew = ({ app }) => {
                         interaction_type: "Tab Button",
                         button_id: "hdr_upgrade_btn",
                         ...getPageSubPage(router?.asPath),
+                      });
+                      sendGTM({
+                        event: "upgradeNow",
                       });
                     }}
                   >
