@@ -360,7 +360,7 @@ const Index = ({ masterData }) => {
           aspectRatio: aspectRatio,
         });
 
-        const requestBody = {
+        var requestBody = {
           prompt: prompt,
           imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
           creditsUsed: 1,
@@ -371,7 +371,14 @@ const Index = ({ masterData }) => {
           style: slug,
         };
         setLoading(true);
+        const gen_slug = ["ghibli", "cartoon", "anime", "cyberpunk"]
+        if(gen_slug.includes(slug)){
+          delete requestBody["tool"];
+          generateImageApiNew(requestBody)
+        }
+        else{
         generateImageApi(requestBody);
+        }
       }
     } else {
       setIsPopupVisible(true);
