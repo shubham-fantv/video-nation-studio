@@ -12,7 +12,7 @@ import { usePlanModal } from "../../../context/PlanModalContext";
 
 const LoginAndSignup = ({ open, handleModalClose }) => {
   const dispatch = useDispatch();
-  const { sendEvent } = useGTM();
+  const { sendEvent, sendGTM } = useGTM();
   const { removeUtmId } = usePlanModal();
 
   const { mutate: loginGoogleApi } = useMutation(
@@ -28,6 +28,12 @@ const LoginAndSignup = ({ open, handleModalClose }) => {
             isLoggedIn: true,
           })
         );
+        sendGTM({
+          event: "signup_successful",
+          email: res?.data?.user?.email,
+          name: res?.data?.user?.name,
+          signup_method: "Google",
+        });
         sendEvent({
           event: "signup_successful",
           email: res?.data?.user?.email,
