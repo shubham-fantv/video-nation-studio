@@ -492,18 +492,22 @@ const HeaderNew = ({ app }) => {
   return (
     <>
       {isShowFreeTrialBanner && (
-        <div
-          className="h-[70px] w-full relative flex justify-center items-center cursor-pointer"
-          style={{ background: "linear-gradient(90deg, #653EFF 0%, #FF7B3E 100%)" }}
-          onClick={() => handleClickBanner()}
-        >
-          <div className=" pt-2 md:pt-6  px-2">
-            <img src="/images/video-ai/trial-image.svg" />
-          </div>
-          {/* <div className="absolute right-10">
+        <Box sx={{position: "fixed", top: 0, left: 0, width: "100%", zIndex: 10}}>
+          <div
+            className="h-[90px] w-full relative flex justify-center items-center cursor-pointer"
+            style={{
+              background: "linear-gradient(90deg, #653EFF 0%, #FF7B3E 100%)",
+            }}
+            onClick={() => handleClickBanner()}
+          >
+            <div className=" pt-2 md:pt-6  px-2">
+              <img src="/images/video-ai/trial-image.svg" />
+            </div>
+            {/* <div className="absolute right-10">
             <img src="/images/icons/close-circle.svg" />
           </div> */}
-        </div>
+          </div>
+        </Box>
       )}
       <Box sx={styles.navbar} onClick={(e) => e.stopPropagation()}>
         <Box className="nav-container">
@@ -537,7 +541,9 @@ const HeaderNew = ({ app }) => {
           <div className="flex hidden md:flex">
             <div
               className={`text-black text-base font-medium m-auto ${
-                isActiveLink("/video-studio") ? "underline underline-offset-8" : ""
+                isActiveLink("/video-studio")
+                  ? "underline underline-offset-8"
+                  : ""
               }`}
             >
               <CLink
@@ -558,7 +564,9 @@ const HeaderNew = ({ app }) => {
             </div>
             <div
               className={`text-black flex ml-10 text-base font-medium m-auto ${
-                isActiveLink("/image-studio") ? "underline underline-offset-8" : ""
+                isActiveLink("/image-studio")
+                  ? "underline underline-offset-8"
+                  : ""
               }`}
             >
               <div>
@@ -726,10 +734,16 @@ const HeaderNew = ({ app }) => {
 
           {isMobile && (
             <Box sx={styles.profileNavBar} onClick={toggleDrawer(true)}>
-              <MenuIcon style={{ color: "black", marginTop: "8px", marginLeft: "10px" }} />
+              <MenuIcon
+                style={{ color: "black", marginTop: "8px", marginLeft: "10px" }}
+              />
             </Box>
           )}
-          <Drawer anchor="right" open={isMenuOpen} onClose={toggleDrawer(false)}>
+          <Drawer
+            anchor="right"
+            open={isMenuOpen}
+            onClose={toggleDrawer(false)}
+          >
             {drawerContent}
           </Drawer>
         </Box>

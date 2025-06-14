@@ -1,12 +1,13 @@
 const styles = {
   navbar: {
+    marginTop: "90px",
     height: "80px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     fontSize: "1.2rem",
     position: "sticky",
-    top: "0",
+    top: "90px",
     zIndex: "99",
     padding: "0 40px",
     width: "100%",
