@@ -12,6 +12,8 @@ import { useSelector } from "react-redux";
 import useGTM from "../../src/hooks/useGTM";
 import SweetAlert2 from "react-sweetalert2";
 import { usePlanModal } from "../../src/context/PlanModalContext";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../../src/redux/slices/user";
 
 const Index = ({ masterData }) => {
   const CREDIT_AI_VIDEO = process.env.NEXT_PUBLIC_CREDIT_AI_VIDEO_VALUE;
@@ -25,6 +27,22 @@ const Index = ({ masterData }) => {
   const [credits, setCredits] = useState(CREDIT_AI_VIDEO);
   const audioRef = useRef(null); // reference for controlling audio
   const quoteIndexRef = useRef(0);
+  const dispatch = useDispatch();
+
+  useQuery(
+    `${FANTV_API_URL}/api/v1/users/${userData?._id || userData?.id}`,
+    () =>
+      fetcher.get(
+        `${FANTV_API_URL}/api/v1/users/${userData?._id || userData?.id}`
+      ),
+    {
+      enabled: !!(userData?._id || userData?.id),
+      refetchOnMount: "always",
+      onSuccess: ({ data }) => {
+        dispatch(setUserData(data));
+      },
+    }
+  );
 
   const voiceOptions = [
     {
@@ -54,16 +72,33 @@ const Index = ({ masterData }) => {
     {
       name: "Arjun",
       value: "dxhwlBCxCrnzRlP4wDeE",
-      sampleUrl: "https://assets.artistfirst.in/uploads/1747488220089-voice_preview_arjun.mp3",
+      sampleUrl:
+        "https://assets.artistfirst.in/uploads/1747488220089-voice_preview_arjun.mp3",
     },
   ];
   const [selectedCaptionStyle, setSelectedCaptionStyle] = useState(null);
   const [showCaptionDropdown, setShowCaptionDropdown] = useState(false);
   const captionOptions = [
-    { label: "Classic White", value: "ClassicWhite", img: "/images/caption-white.png" },
-    { label: "Yellow Border", value: "YellowBorder", img: "/images/fantasy-purple.png" },
-    { label: "Top Italic", value: "TopItalic", img: "/images/caption-previews/top_italic.png" },
-    { label: "Big Red", value: "BigRedImpact", img: "/images/caption-previews/big_red_impact.png" },
+    {
+      label: "Classic White",
+      value: "ClassicWhite",
+      img: "/images/caption-white.png",
+    },
+    {
+      label: "Yellow Border",
+      value: "YellowBorder",
+      img: "/images/fantasy-purple.png",
+    },
+    {
+      label: "Top Italic",
+      value: "TopItalic",
+      img: "/images/caption-previews/top_italic.png",
+    },
+    {
+      label: "Big Red",
+      value: "BigRedImpact",
+      img: "/images/caption-previews/big_red_impact.png",
+    },
     {
       label: "Fantasy Purple",
       value: "FantasyPurple",
@@ -105,8 +140,12 @@ const Index = ({ masterData }) => {
     //console.log("Selected avatar:", avatar);
   };
 
-  const { isShowFreeTrialBanner, openUpgradeModal, openTrialModal, openNoCreditModal } =
-    usePlanModal();
+  const {
+    isShowFreeTrialBanner,
+    openUpgradeModal,
+    openTrialModal,
+    openNoCreditModal,
+  } = usePlanModal();
 
   const [subTitle, setSubTitle] = useState("");
   const [isLoading, setLoading] = useState(false);
@@ -129,11 +168,15 @@ const Index = ({ masterData }) => {
     formData.append("file", file);
 
     try {
-      const response = await axios.post("https://upload.artistfirst.in/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        "https://upload.artistfirst.in/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       setImageUrl(response?.data?.data?.[0]?.url);
       setImagePreview(URL.createObjectURL(file));
     } catch (error) {
@@ -162,13 +205,16 @@ const Index = ({ masterData }) => {
         }
         //console.log("I AM HERE", response?.data._id);
         //router.push("/my-library?tab=video");
-        router.replace(`/generate-video/${response?.data._id}`, undefined, { scroll: false });
+        router.replace(`/generate-video/${response?.data._id}`, undefined, {
+          scroll: false,
+        });
       },
       onError: (error) => {
         setLoading(false);
         const defaultMessage = "Something went wrong. Please try again later.";
 
-        const message = error?.response?.data?.message || error?.message || defaultMessage;
+        const message =
+          error?.response?.data?.message || error?.message || defaultMessage;
 
         setSwalProps({
           key: Date.now(), // or use a counter
@@ -198,7 +244,8 @@ const Index = ({ masterData }) => {
         return;
       }
 
-      let creditsUsed = CREDIT_AI_VIDEO * parseInt(duration.replace("sec", "").trim() / 5, 10);
+      let creditsUsed =
+        CREDIT_AI_VIDEO * parseInt(duration.replace("sec", "").trim() / 5, 10);
       if (voiceoverEnabled) {
         creditsUsed = Number(creditsUsed) + Number(AI_VIDEO_LYPSYN);
       }
@@ -277,7 +324,10 @@ const Index = ({ masterData }) => {
         99
       );
 
-      const progress = Math.min(Math.floor((elapsed / totalDuration) * 100), 99); // max 99%
+      const progress = Math.min(
+        Math.floor((elapsed / totalDuration) * 100),
+        99
+      ); // max 99%
       setProgressPercentage(easedProgress);
     }, updateInterval);
 
@@ -372,10 +422,16 @@ const Index = ({ masterData }) => {
   return (
     <div className="flex flex-col md:flex-row text-black md:gap-4">
       {isLoading && (
-        <Loading title={`Generating your video... (${progressPercentage}%)`} subTitle={subTitle} />
+        <Loading
+          title={`Generating your video... (${progressPercentage}%)`}
+          subTitle={subTitle}
+        />
       )}
       <div className="md:hidden w-full pl-2 md:p-4 ">
-        <button onClick={() => router.back()} className="flex items-center text-sm mb-1 text-black">
+        <button
+          onClick={() => router.back()}
+          className="flex items-center text-sm mb-1 text-black"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5 mr-2"
@@ -478,7 +534,13 @@ const Index = ({ masterData }) => {
                   value={duration}
                   onChange={(e) => {
                     setDuration(e.target.value);
-                    setCredits(20 * parseInt(e.target.value.replace("sec", "").trim() / 5, 10));
+                    setCredits(
+                      20 *
+                        parseInt(
+                          e.target.value.replace("sec", "").trim() / 5,
+                          10
+                        )
+                    );
                   }}
                   className="bg-[#F5F5F5]"
                 >
@@ -498,7 +560,10 @@ const Index = ({ masterData }) => {
                 <span>
                   Voiceover
                   {selectedVoice
-                    ? `: ${voiceOptions.find((v) => v.value === selectedVoice)?.name}`
+                    ? `: ${
+                        voiceOptions.find((v) => v.value === selectedVoice)
+                          ?.name
+                      }`
                     : ""}
                 </span>
                 <span>{showVoiceDropdown ? "^" : "▼"}</span>
@@ -509,14 +574,18 @@ const Index = ({ masterData }) => {
                 <div className="absolute z-10 mt-1 w-full bg-[#F5F5F5] border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
                   <div
                     className={`flex justify-between items-center px-4 py-2 cursor-pointer hover:bg-gray-100 ${
-                      selectedVoice === null ? "bg-purple-100 border-l-4 border-purple-400" : ""
+                      selectedVoice === null
+                        ? "bg-purple-100 border-l-4 border-purple-400"
+                        : ""
                     }`}
                     onClick={() => {
                       setSelectedVoice(null);
                       setShowVoiceDropdown(false);
                     }}
                   >
-                    <span className="text-sm italic text-gray-500">No Voice</span>
+                    <span className="text-sm italic text-gray-500">
+                      No Voice
+                    </span>
                   </div>
                   {voiceOptions.map((voice) => (
                     <div
@@ -574,7 +643,9 @@ const Index = ({ masterData }) => {
                 onClick={() => setShowCaptionDropdown((prev) => !prev)}
                 className="flex items-center gap-2 rounded-md bg-[#F5F5F5] px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all"
               >
-                <span>Caption: {selectedCaptionStyle ? selectedCaptionStyle : ""}</span>
+                <span>
+                  Caption: {selectedCaptionStyle ? selectedCaptionStyle : ""}
+                </span>
                 <span>{showCaptionDropdown ? "▲" : "▼"}</span>
               </button>
 
@@ -593,7 +664,9 @@ const Index = ({ masterData }) => {
                       setCaptionEnabled(false);
                     }}
                   >
-                    <span className="text-sm italic text-gray-500">No Captions</span>
+                    <span className="text-sm italic text-gray-500">
+                      No Captions
+                    </span>
                   </div>
 
                   {captionOptions.map((style) => (
@@ -611,14 +684,18 @@ const Index = ({ masterData }) => {
                       }}
                     >
                       {" "}
-                      <span className="text-sm text-gray-500">{style.label}</span>
+                      <span className="text-sm text-gray-500">
+                        {style.label}
+                      </span>
                       {/* <img
                         src={style.img}
                         alt={style.label}
                         className="h-10 w-30 object-contain rounded-md"
                     /> */}
                       {selectedCaptionStyle === style.value && (
-                        <span className="ml-2 text-purple-600 font-semibold">✓</span>
+                        <span className="ml-2 text-purple-600 font-semibold">
+                          ✓
+                        </span>
                       )}
                     </div>
                   ))}
@@ -679,7 +756,10 @@ const Index = ({ masterData }) => {
           )}
           <div>
             <h3 className="mb-6 text-sm text-[#1E1E1EB2] text-normal">
-              Credits : {voiceoverEnabled ? Number(credits) + Number(AI_VIDEO_LYPSYN) : credits}
+              Credits :{" "}
+              {voiceoverEnabled
+                ? Number(credits) + Number(AI_VIDEO_LYPSYN)
+                : credits}
             </h3>
             {/* {Math.floor(userData.credits / credits) < 6 && (
               <div className="text-center">
@@ -764,7 +844,10 @@ const Index = ({ masterData }) => {
           </div>
         </div>
       </div>
-      <SweetAlert2 {...swalProps} onConfirm={(handleConfirm) => setSwalProps({ show: false })} />
+      <SweetAlert2
+        {...swalProps}
+        onConfirm={(handleConfirm) => setSwalProps({ show: false })}
+      />
     </div>
   );
 };

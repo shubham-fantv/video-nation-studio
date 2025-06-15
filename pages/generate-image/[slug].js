@@ -12,6 +12,8 @@ import { useSelector } from "react-redux";
 import useGTM from "../../src/hooks/useGTM";
 import SweetAlert2 from "react-sweetalert2";
 import { usePlanModal } from "../../src/context/PlanModalContext";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../../src/redux/slices/user";
 
 const Index = ({ masterData }) => {
   const [template, setTemplate] = useState([]);
@@ -30,6 +32,7 @@ const Index = ({ masterData }) => {
   const [imageUrl, setImageUrl] = useState("");
   const [uploading, setUploading] = useState(false);
   const [imageLoading, setImageLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const [image, setImage] = useState("");
   const [newImage, setNewImage] = useState("");
@@ -40,13 +43,32 @@ const Index = ({ masterData }) => {
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const [selectedAvatar, setSelectedAvatar] = useState(null);
 
+  useQuery(
+    `${FANTV_API_URL}/api/v1/users/${userData?._id || userData?.id}`,
+    () =>
+      fetcher.get(
+        `${FANTV_API_URL}/api/v1/users/${userData?._id || userData?.id}`
+      ),
+    {
+      enabled: !!(userData?._id || userData?.id),
+      refetchOnMount: "always",
+      onSuccess: ({ data }) => {
+        dispatch(setUserData(data));
+      },
+    }
+  );
+
   const handleAvatarSelect = (avatar) => {
     setSelectedAvatar(avatar);
     console.log("Selected avatar:", avatar);
   };
 
-  const { isShowFreeTrialBanner, openUpgradeModal, openTrialModal, openNoCreditModal } =
-    usePlanModal();
+  const {
+    isShowFreeTrialBanner,
+    openUpgradeModal,
+    openTrialModal,
+    openNoCreditModal,
+  } = usePlanModal();
   const [subTitle, setSubTitle] = useState("");
   const [isLoading, setLoading] = useState(false);
   const aspectRatioData = ["16:9", "9:16", "1:1"];
@@ -80,7 +102,9 @@ const Index = ({ masterData }) => {
 
   const toggleImageSelection = (imgUrl) => {
     setSelectedImages((prev) =>
-      prev.includes(imgUrl) ? prev.filter((url) => url !== imgUrl) : [...prev, imgUrl]
+      prev.includes(imgUrl)
+        ? prev.filter((url) => url !== imgUrl)
+        : [...prev, imgUrl]
     );
   };
 
@@ -100,11 +124,15 @@ const Index = ({ masterData }) => {
     formData.append("file", file);
 
     try {
-      const response = await axios.post("https://upload.artistfirst.in/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        "https://upload.artistfirst.in/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       setImageUrl(response?.data?.data?.[0]?.url);
 
       setImagePreview(URL.createObjectURL(file));
@@ -134,13 +162,16 @@ const Index = ({ masterData }) => {
         // }
         //console.log("I AM HERE", response?.data._id);
         //router.push("/my-library?tab=image");
-        router.replace(`/generate-image/${response?.data._id}`, undefined, { scroll: false });
+        router.replace(`/generate-image/${response?.data._id}`, undefined, {
+          scroll: false,
+        });
       },
       onError: (error) => {
         setLoading(false);
         const defaultMessage = "Something went wrong. Please try again later.";
 
-        const message = error?.response?.data?.message || error?.message || defaultMessage;
+        const message =
+          error?.response?.data?.message || error?.message || defaultMessage;
 
         setSwalProps({
           key: Date.now(), // or use a counter
@@ -295,7 +326,10 @@ const Index = ({ masterData }) => {
     <div className="flex flex-col md:flex-row text-black md:gap-4">
       {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
       <div className=" md:hidden  pl-2 w-full md:p-4 ">
-        <button onClick={() => router.back()} className="flex items-center text-sm mb-1 text-black">
+        <button
+          onClick={() => router.back()}
+          className="flex items-center text-sm mb-1 text-black"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5 mr-2"
@@ -318,21 +352,25 @@ const Index = ({ masterData }) => {
             <div className="mb-6">
               <h3 className="text-sm font-medium mb-2">Select Headshots</h3>
               <div className="grid grid-cols-4 gap-3">
-                {(showAllImages ? allHeadshots : allHeadshots.slice(0, 8)).map((img) => (
-                  <div
-                    key={img.id}
-                    className={`cursor-pointer border-2 rounded-lg overflow-hidden transition ${
-                      selectedImages.includes(img.url) ? "border-purple-500" : "border-transparent"
-                    }`}
-                    onClick={() => toggleImageSelection(img.url)}
-                  >
-                    <img
-                      src={img.url}
-                      alt={`Headshot ${img.id}`}
-                      className="w-full h-20 object-cover"
-                    />
-                  </div>
-                ))}
+                {(showAllImages ? allHeadshots : allHeadshots.slice(0, 8)).map(
+                  (img) => (
+                    <div
+                      key={img.id}
+                      className={`cursor-pointer border-2 rounded-lg overflow-hidden transition ${
+                        selectedImages.includes(img.url)
+                          ? "border-purple-500"
+                          : "border-transparent"
+                      }`}
+                      onClick={() => toggleImageSelection(img.url)}
+                    >
+                      <img
+                        src={img.url}
+                        alt={`Headshot ${img.id}`}
+                        className="w-full h-20 object-cover"
+                      />
+                    </div>
+                  )
+                )}
               </div>
 
               {allHeadshots.length > 8 && (
@@ -425,7 +463,10 @@ const Index = ({ masterData }) => {
 
           {
             <div className="mb-6">
-              <AvatarDropdown data={masterData?.avatars} onSelect={handleAvatarSelect} />
+              <AvatarDropdown
+                data={masterData?.avatars}
+                onSelect={handleAvatarSelect}
+              />
             </div>
           }
 
@@ -476,13 +517,17 @@ const Index = ({ masterData }) => {
             </div>
           )}
 
-          <h3 className="mb-6 text-sm text-[#1E1E1EB2] text-normal">Credits : {CREDIT_AI_IMAGE}</h3>
+          <h3 className="mb-6 text-sm text-[#1E1E1EB2] text-normal">
+            Credits : {CREDIT_AI_IMAGE}
+          </h3>
 
           {Math.floor(userData?.credits) < 6 && (
             <div className="text-center">
               <small
                 className={
-                  Math.floor(userData.credits) < 2 ? "text-red-600 font-semibold" : "text-black"
+                  Math.floor(userData.credits) < 2
+                    ? "text-red-600 font-semibold"
+                    : "text-black"
                 }
               >
                 {Math.max(1, Math.floor(userData.credits))} image
@@ -529,7 +574,9 @@ const Index = ({ masterData }) => {
               {/* Loader overlay */}
               {imageLoading && (
                 <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-xl z-10">
-                  <span className="text-sm text-gray-400">Loading image...</span>
+                  <span className="text-sm text-gray-400">
+                    Loading image...
+                  </span>
                 </div>
               )}
 
@@ -562,7 +609,10 @@ const Index = ({ masterData }) => {
           </div>
         </div>
       </div>
-      <SweetAlert2 {...swalProps} onConfirm={(handleConfirm) => setSwalProps({ show: false })} />
+      <SweetAlert2
+        {...swalProps}
+        onConfirm={(handleConfirm) => setSwalProps({ show: false })}
+      />
     </div>
   );
 };
