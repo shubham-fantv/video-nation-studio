@@ -123,7 +123,10 @@ const HeaderNew = ({ app }) => {
   const isMobile = useIsMobile(app?.deviceParsedInfo?.device?.isMobile);
 
   const toggleDrawer = (open) => (event) => {
-    if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
       return;
     }
     setIsMenuOpen(open);
@@ -131,7 +134,10 @@ const HeaderNew = ({ app }) => {
 
   useQuery(
     `${FANTV_API_URL}/api/v1/users/${userData?._id || userData?.id}`,
-    () => fetcher.get(`${FANTV_API_URL}/api/v1/users/${userData?._id || userData?.id}`),
+    () =>
+      fetcher.get(
+        `${FANTV_API_URL}/api/v1/users/${userData?._id || userData?.id}`
+      ),
     {
       enabled: !!(userData?._id || userData?.id),
       refetchOnMount: "always",
@@ -207,7 +213,9 @@ const HeaderNew = ({ app }) => {
             </ul>
 
             <div className="mb-4">
-              <h2 className="text-black text-base font-semibold px-4 ">Studios</h2>
+              <h2 className="text-black text-base font-semibold px-4 ">
+                Studios
+              </h2>
               <ul>
                 <li>
                   <CLink
@@ -227,12 +235,20 @@ const HeaderNew = ({ app }) => {
                     <div className="flex items-center  pt-1">
                       <div
                         className={`flex items-center rounded-xl p-3 w-full ${
-                          isActiveLink("/video-studio", "/category", "/generate-video")
+                          isActiveLink(
+                            "/video-studio",
+                            "/category",
+                            "/generate-video"
+                          )
                             ? "bg-[#FFFFFF0D] font-bold"
                             : ""
                         }`}
                         style={
-                          isActiveLink("/video-studio", "/category", "/generate-video")
+                          isActiveLink(
+                            "/video-studio",
+                            "/category",
+                            "/generate-video"
+                          )
                             ? activeStyle
                             : {}
                         }
@@ -243,7 +259,9 @@ const HeaderNew = ({ app }) => {
                           className="text-black"
                         />{" "}
                         &nbsp;
-                        <span className="text-sm text-black pl-2">Video Studio</span>
+                        <span className="text-sm text-black pl-2">
+                          Video Studio
+                        </span>
                       </div>
                     </div>
                   </CLink>
@@ -266,12 +284,20 @@ const HeaderNew = ({ app }) => {
                     <div className="flex items-center  pt-1">
                       <div
                         className={`flex items-center rounded-xl p-3 w-full ${
-                          isActiveLink("/image-studio", "/image-category", "/generate-image")
+                          isActiveLink(
+                            "/image-studio",
+                            "/image-category",
+                            "/generate-image"
+                          )
                             ? "bg-[#FFFFFF0D] font-bold"
                             : ""
                         }`}
                         style={
-                          isActiveLink("/image-studio", "/image-category", "/generate-image")
+                          isActiveLink(
+                            "/image-studio",
+                            "/image-category",
+                            "/generate-image"
+                          )
                             ? activeStyle
                             : {}
                         }
@@ -282,7 +308,9 @@ const HeaderNew = ({ app }) => {
                           className="text-black"
                         />{" "}
                         &nbsp;
-                        <span className="text-sm text-black pl-2">Image Studio</span>
+                        <span className="text-sm text-black pl-2">
+                          Image Studio
+                        </span>
                       </div>
                     </div>
                   </CLink>
@@ -310,7 +338,9 @@ const HeaderNew = ({ app }) => {
                             : ""
                         }`}
                         style={
-                          isActiveLink("/avatar-studio", "/generate-avatar") ? activeStyle : {}
+                          isActiveLink("/avatar-studio", "/generate-avatar")
+                            ? activeStyle
+                            : {}
                         }
                       >
                         <img
@@ -319,7 +349,9 @@ const HeaderNew = ({ app }) => {
                           className="text-black"
                         />{" "}
                         &nbsp;
-                        <span className="text-sm text-black pl-2">Avatar Studio</span>
+                        <span className="text-sm text-black pl-2">
+                          Avatar Studio
+                        </span>
                         {/* <sup
                             style={{
                               marginLeft: "4px",
@@ -363,7 +395,9 @@ const HeaderNew = ({ app }) => {
                       <div className="flex items-center   cursor-pointer">
                         <div
                           className={`flex items-center rounded-xl p-3 w-full ${
-                            isActiveLink("/my-library") ? "bg-[#FFFFFF0D] font-bold" : ""
+                            isActiveLink("/my-library")
+                              ? "bg-[#FFFFFF0D] font-bold"
+                              : ""
                           }`}
                           style={isActiveLink("/my-library") ? activeStyle : {}}
                         >
@@ -377,7 +411,9 @@ const HeaderNew = ({ app }) => {
                               <path d="M17 10.5V7c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-3.5l4 4v-11l-4 4z" />
                             </svg>
                           </span>
-                          <span className="text-sm text-black pl-2">My Library</span>
+                          <span className="text-sm text-black pl-2">
+                            My Library
+                          </span>
                         </div>
                       </div>
                     </CLink>
@@ -388,7 +424,9 @@ const HeaderNew = ({ app }) => {
 
             {isLoggedIn && (
               <div className="">
-                <h2 className=" text-black text-base font-semibold px-4 mb-2">Profile</h2>
+                <h2 className=" text-black text-base font-semibold px-4 mb-2">
+                  Profile
+                </h2>
                 <ul>
                   <li>
                     <CLink
@@ -418,16 +456,22 @@ const HeaderNew = ({ app }) => {
                       <div className="flex items-center  py-2">
                         <div
                           className={`flex items-center rounded-xl p-3 w-full ${
-                            isActiveLink("/subscription") ? "bg-[#FFFFFF0D] font-bold" : ""
+                            isActiveLink("/subscription")
+                              ? "bg-[#FFFFFF0D] font-bold"
+                              : ""
                           }`}
-                          style={isActiveLink("/subscription") ? activeStyle : {}}
+                          style={
+                            isActiveLink("/subscription") ? activeStyle : {}
+                          }
                         >
                           <img
                             style={{ height: "20px", width: "20px" }}
                             src="/images/icons/subscription.svg"
                           />
                           <span className="text-sm text-black pl-2">
-                            {userData?.isTrialUser ? "Upgrade" : "Manage Subscription"}
+                            {userData?.isTrialUser
+                              ? "Upgrade"
+                              : "Manage Subscription"}
                           </span>
                         </div>
                       </div>
@@ -459,7 +503,9 @@ const HeaderNew = ({ app }) => {
                               })
                             }
                             className={`flex items-center rounded-xl p-3 w-full ${
-                              isActiveLink("/usage") ? "bg-[#FFFFFF0D] font-bold" : ""
+                              isActiveLink("/usage")
+                                ? "bg-[#FFFFFF0D] font-bold"
+                                : ""
                             }`}
                             style={isActiveLink("/usage") ? activeStyle : {}}
                           >
@@ -467,7 +513,9 @@ const HeaderNew = ({ app }) => {
                               style={{ height: "20px", width: "20px" }}
                               src="/images/icons/usage.svg"
                             />
-                            <span className="text-sm text-black pl-2">Usage</span>
+                            <span className="text-sm text-black pl-2">
+                              Usage
+                            </span>
                           </div>
                         </div>
                       </CLink>
@@ -492,20 +540,26 @@ const HeaderNew = ({ app }) => {
   return (
     <>
       {isShowFreeTrialBanner && (
-        <Box sx={{position: "fixed", top: 0, left: 0, width: "100%", zIndex: 10}}>
+        <Box
+          sx={{ position: "fixed", top: 0, left: 0, width: "100%", zIndex: 10 }}
+        >
           <div
-            className="h-[90px] w-full relative flex justify-center items-center cursor-pointer"
+            className="w-full relative flex justify-center items-center cursor-pointer"
             style={{
               background: "linear-gradient(90deg, #653EFF 0%, #FF7B3E 100%)",
+              height: "auto", // allow dynamic height
+              paddingTop: "0.5rem",
+              paddingBottom: "0.5rem",
             }}
             onClick={() => handleClickBanner()}
           >
-            <div className=" pt-2 md:pt-6  px-2">
-              <img src="/images/video-ai/trial-image.svg" />
+            <div className=" md:py-1 px-2 flex justify-center items-center w-full">
+              <img
+                src="/images/video-ai/trial-image.svg"
+                className="h-10 w-64 md:w-auto md:h-auto"
+                alt="Trial Banner"
+              />
             </div>
-            {/* <div className="absolute right-10">
-            <img src="/images/icons/close-circle.svg" />
-          </div> */}
           </div>
         </Box>
       )}
