@@ -28,6 +28,7 @@ const Index = ({ masterData }) => {
   const audioRef = useRef(null); // reference for controlling audio
   const quoteIndexRef = useRef(0);
   const dispatch = useDispatch();
+  const { isLoggedIn, userData } = useSelector((state) => state.user);
 
   useQuery(
     `${FANTV_API_URL}/api/v1/users/${userData?._id || userData?.id}`,
@@ -129,7 +130,7 @@ const Index = ({ masterData }) => {
   const [authToken, setAuthToken] = useState("");
   const [captionStyle, setCaptionStyle] = useState("");
   const [swalProps, setSwalProps] = useState({});
-  const { isLoggedIn, userData } = useSelector((state) => state.user);
+  
 
   const { sendEvent } = useGTM();
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
