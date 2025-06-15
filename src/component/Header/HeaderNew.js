@@ -533,6 +533,14 @@ const HeaderNew = ({ app }) => {
   const handleClickBanner = () => {
     if (isLoggedIn) {
       openTrialModal();
+      sendEvent({
+        event: "button_clicked",
+        button_text: "Back",
+        page_name: getPageName(router?.pathname),
+        sub_page: getPageSubPage(router?.asPath),
+        section_name: "Header",
+        banner_id: "thdr_free_trial_banner",
+      });
     } else {
       setIsPopupVisible({ login: true });
     }
