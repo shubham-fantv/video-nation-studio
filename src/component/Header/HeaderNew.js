@@ -492,9 +492,9 @@ const HeaderNew = ({ app }) => {
   return (
     <>
       {isShowFreeTrialBanner && (
-        <Box sx={{position: "fixed", top: 0, left: 0, width: "100%", zIndex: 10}}>
+        <Box sx={{ position: "sticky", top: 0, left: 0, width: "100%", zIndex: 10 }}>
           <div
-            className="h-[90px] w-full relative flex justify-center items-center cursor-pointer"
+            className="h-[70px] w-full overflow-hidden relative flex justify-center items-center cursor-pointer"
             style={{
               background: "linear-gradient(90deg, #653EFF 0%, #FF7B3E 100%)",
             }}
@@ -541,9 +541,7 @@ const HeaderNew = ({ app }) => {
           <div className="flex hidden md:flex">
             <div
               className={`text-black text-base font-medium m-auto ${
-                isActiveLink("/video-studio")
-                  ? "underline underline-offset-8"
-                  : ""
+                isActiveLink("/video-studio") ? "underline underline-offset-8" : ""
               }`}
             >
               <CLink
@@ -564,9 +562,7 @@ const HeaderNew = ({ app }) => {
             </div>
             <div
               className={`text-black flex ml-10 text-base font-medium m-auto ${
-                isActiveLink("/image-studio")
-                  ? "underline underline-offset-8"
-                  : ""
+                isActiveLink("/image-studio") ? "underline underline-offset-8" : ""
               }`}
             >
               <div>
@@ -734,16 +730,10 @@ const HeaderNew = ({ app }) => {
 
           {isMobile && (
             <Box sx={styles.profileNavBar} onClick={toggleDrawer(true)}>
-              <MenuIcon
-                style={{ color: "black", marginTop: "8px", marginLeft: "10px" }}
-              />
+              <MenuIcon style={{ color: "black", marginTop: "8px", marginLeft: "10px" }} />
             </Box>
           )}
-          <Drawer
-            anchor="right"
-            open={isMenuOpen}
-            onClose={toggleDrawer(false)}
-          >
+          <Drawer anchor="right" open={isMenuOpen} onClose={toggleDrawer(false)}>
             {drawerContent}
           </Drawer>
         </Box>

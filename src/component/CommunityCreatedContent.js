@@ -7,6 +7,8 @@ import useIsMobile from "../hooks/useIsMobile";
 import { useSelector } from "react-redux";
 import useGTM from "../hooks/useGTM";
 import LoginAndSignup from "./feature/Login";
+import VideoCard from "./TemplateVideo";
+import { useIntersectionVideo } from "../hooks/useIntsectionVideo";
 
 function LazyVideo({ videoUrl, posterUrl }) {
   const videoRef = useRef();
@@ -258,103 +260,17 @@ const CommunityCreatedContent = ({
         <div>
           <div className="columns-1 sm:columns-2 lg:columns-4 gap-4">
             {templateData &&
-              templateData?.map((video, index) => (
-                <div
+              templateData.map((video, index) => (
+                <VideoCard
                   key={index}
-                  onClick={() => handleNavigate(video)}
-                  className="mb-6 break-inside-avoid rounded-xl transition-transform relative"
-                  onMouseEnter={() => handleMouseEnter(video._id)}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  <div className="relative">
-                    <video
-                      src={video?.videoUrl}
-                      muted
-                      loop
-                      loading="lazy"
-                      poster={video?.imageUrl}
-                      playsInline
-                      onMouseEnter={(e) => e.target.play()}
-                      onMouseLeave={(e) => e.target.pause()}
-                      onEnded={(e) => e.target.play()}
-                      className="w-full h-full object-cover rounded-xl"
-                    />
-                    {/* <LazyVideo videoUrl={video?.videoUrl} posterUrl={video?.imageUrl} /> */}
-                    {/* <video
-                      src={video?.videoUrl}
-                      muted
-                      playsInline
-                      poster={video?.imageUrl}
-                      preload="metadata"
-                      loop
-                      className="w-full h-full object-cover rounded-xl"
-                      onClick={(e) => {
-                        if (isMobile) {
-                          if (e.target.paused) {
-                            e.target.play().catch((err) => console.log("Playback failed:", err));
-                          } else {
-                            e.target.pause();
-                          }
-                        }
-                      }}
-                      onMouseEnter={(e) => !isMobile && e.target.play()}
-                      onMouseLeave={(e) => !isMobile && e.target.pause()}
-                      onEnded={(e) => e.target.play()}
-                    /> */}
-                    {hoveredIndex === video._id && (
-                      <div
-                        className="absolute bottom-2 left-0 right-0 z-10 p-2 text-white bg-[#292929] rounded-b-xl"
-                        style={{ transform: "translateY(100%)" }}
-                      >
-                        <div className="flex">
-                          <div>
-                            <h3 className="text-sm pb-1 font-medium line-clamp-1 text-amber-400">
-                              {video?.title}
-                            </h3>
-                            <h3 className="text-xs font-normal line-clamp-2 pr-1">
-                              {video?.prompt ||
-                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod"}
-                            </h3>
-                          </div>
-
-                          <div className="flex justify-end">
-                            <button
-                              style={{
-                                background: "linear-gradient(180deg, #5A5A5A 0%, #1E1E1E 100%)",
-                                border: "1px solid #FFFFFF",
-                                borderRadius: "100px",
-                                color: "#FFF",
-                                fontSize: "14px",
-                                textTransform: "capitalize",
-                                width: "max-content",
-                                marginRight: "0px",
-                                display: "flex",
-                                alignItems: "center",
-                                padding: "2px 8px",
-                                alignSelf: "center",
-                              }}
-                              onClick={() =>
-                                sendEvent({
-                                  event: "button_clicked",
-                                  button_text: "Select",
-                                  page_name: "Video Studio",
-                                  interaction_type: "Standard Button",
-                                  button_id: "vs_template_select_btn",
-                                })
-                              }
-                            >
-                              <img
-                                src="/images/video-ai/star.png"
-                                style={{ height: "20px", width: "20px" }}
-                              />
-                              Select
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                  video={video}
+                  handleNavigate={handleNavigate}
+                  handleMouseEnter={handleMouseEnter}
+                  handleMouseLeave={handleMouseLeave}
+                  hoveredIndex={hoveredIndex}
+                  sendEvent={sendEvent}
+                  useIntersectionVideo={useIntersectionVideo}
+                />
               ))}
           </div>
         </div>

@@ -1,13 +1,12 @@
 const styles = {
   navbar: {
-    marginTop: "90px",
     height: "80px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     fontSize: "1.2rem",
     position: "sticky",
-    top: "90px",
+    top: "70px",
     zIndex: "99",
     padding: "0 40px",
     width: "100%",
@@ -16,7 +15,7 @@ const styles = {
     "@media (max-width:767px)": {
       height: "55px",
       position: "sticky !important",
-      top: "0",
+      top: "70px",
       zIndex: "999",
       width: "100%",
       padding: "0px",
