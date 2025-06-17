@@ -485,6 +485,14 @@ const HeaderNew = ({ app }) => {
   const handleClickBanner = () => {
     if (isLoggedIn) {
       openTrialModal();
+      sendEvent({
+        event: "button_clicked",
+        button_text: "Back",
+        page_name: getPageName(router?.pathname),
+        sub_page: getPageSubPage(router?.asPath),
+        section_name: "Header",
+        banner_id: "thdr_free_trial_banner",
+      });
     } else {
       setIsPopupVisible({ login: true });
     }
@@ -497,15 +505,69 @@ const HeaderNew = ({ app }) => {
             className="h-[70px] w-full overflow-hidden relative flex justify-center items-center cursor-pointer"
             style={{
               background: "linear-gradient(90deg, #653EFF 0%, #FF7B3E 100%)",
+              height: "auto", // allow dynamic height
+              // paddingTop: "0.5rem",
+              // paddingBottom: "0.5rem",
             }}
             onClick={() => handleClickBanner()}
           >
-            <div className=" pt-2 md:pt-6  px-2">
-              <img src="/images/video-ai/trial-image.svg" />
+            <div className="px-2 flex justify-center items-center w-full">
+              {/* Desktop Banner */}
+              <div className="hidden md:flex items-start justify-between text-white px-6 py-4 rounded-sm space-x-4">
+                <div className="text-left">
+                  <p className="text-md font-semibold">
+                    Start your <span className="font-bold">7 days free trial</span>
+                  </p>
+                  <button className="mt-2 inline-flex items-center text-white font-medium hover:underline">
+                    Start Now
+                    <span className="ml-1">➜</span>
+                  </button>
+                </div>
+                <div className="flex space-x-3">
+                  <img
+                    src="https://assets.artistfirst.in/uploads/1750135216037-1747830337257-Forest_GT_LuxuryShot_A1%20(1)_comp.jpg"
+                    alt="img2"
+                    className="h-24 rounded-lg transform rotate-[-10deg]"
+                  />
+                  <img
+                    src="https://assets.artistfirst.in/uploads/1750135391088-AI%20Art%20Style_Anime%20(1)_comp_comp.png"
+                    alt="img1"
+                    className="h-24 rounded-lg"
+                  />
+
+                  <img
+                    src="https://assets.artistfirst.in/uploads/1750091924730-Sea_Horizon_Headshot_A1_comp.jpg"
+                    alt="img3"
+                    className="h-24 rounded-lg transfrom rotate-[10deg]"
+                  />
+                </div>
+              </div>
+
+              {/* Mobile Banner */}
+              <div className="flex md:hidden items-center justify-between text-white px-4 py-2 rounded-md space-x-4">
+                <div className="flex flex-col justify-center items-start">
+                  <p className="text-xs">
+                    Start <span className="font-bold">7 days trial</span>
+                  </p>
+                  <button className="mt-1 inline-flex items-center text-white hover:underline">
+                    Start Now
+                    <span className="ml-1">➜</span>
+                  </button>
+                </div>
+                <div className="flex space-x-2">
+                  <img
+                    src="https://assets.artistfirst.in/uploads/1750091924730-Sea_Horizon_Headshot_A1_comp.jpg"
+                    alt="img1"
+                    className="h-16 rounded-md transform rotate-[-5deg]"
+                  />
+                  <img
+                    src="https://assets.artistfirst.in/uploads/1750135216037-1747830337257-Forest_GT_LuxuryShot_A1%20(1)_comp.jpg"
+                    alt="img2"
+                    className="h-16 rounded-md transform rotate-[5deg]"
+                  />
+                </div>
+              </div>
             </div>
-            {/* <div className="absolute right-10">
-            <img src="/images/icons/close-circle.svg" />
-          </div> */}
           </div>
         </Box>
       )}

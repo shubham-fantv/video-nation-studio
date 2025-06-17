@@ -13,13 +13,14 @@ const styles = {
     backgroundColor: "#FFF",
 
     "@media (max-width:767px)": {
+      marginTop: "0px",
       height: "55px",
       position: "sticky !important",
       top: "70px",
       zIndex: "999",
       width: "100%",
       padding: "0px",
-      marginBottom: "20px",
+      marginBottom: "50px",
     },
     "& .nav-container": {
       display: "flex",

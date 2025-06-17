@@ -117,13 +117,13 @@ const LoginAndSignup = ({ open, handleModalClose }) => {
             isLoggedIn: true,
           })
         );
-        sendGTM({
+        sendEvent({
           event: "signup_successful",
           email: res?.data?.user?.email,
           name: res?.data?.user?.name,
           signup_method: "Google",
         });
-        sendEvent({
+        sendGTM({
           event: "signup_successful",
           email: res?.data?.user?.email,
           name: res?.data?.user?.name,
