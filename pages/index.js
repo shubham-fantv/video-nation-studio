@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import SweetAlert2 from "react-sweetalert2";
 import ShimmerCategories from "../src/component/common/ShimmerCategories";
 import useGTM from "../src/hooks/useGTM";
+import Head from "next/head";
 
 export function storeUTMParams() {
   const params = new URLSearchParams(window.location.search);
@@ -91,6 +92,20 @@ const Index = ({ isMobile }) => {
 
   return (
     <div>
+      <Head>
+        <link
+          rel="preload"
+          as="video"
+          href="https://assets.artistfirst.in/uploads/1749134836258-1745495375865-replicate-prediction-rp7g44c4hdrmc0cpcxqskk3v18_compressed.mp4"
+          type="video/mp4"
+        />
+        <link
+          rel="preload"
+          as="video"
+          href="https://assets.artistfirst.in/uploads/1749134802957-1745226333739-replicate-prediction-1d0d93c9f9rm80cpawbst5q7qm_compressed.mp4"
+          type="video/mp4"
+        />
+      </Head>
       <Box className="min-h-screen text-black bg-[#FFF]">
         <Banner />
         <Box className="mt-6">

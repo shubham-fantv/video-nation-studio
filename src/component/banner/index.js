@@ -426,6 +426,7 @@ function Banner() {
               muted
               playsInline
               loop
+              preload="auto"
               poster={card.poster}
               style={{ objectFit: "contain" }}
             >
