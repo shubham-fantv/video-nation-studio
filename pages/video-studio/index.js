@@ -22,6 +22,7 @@ const index = () => {
     }
   );
 
+
   const [templates, setTemplates] = useState([]);
 
   useQuery(
@@ -65,7 +66,8 @@ const index = () => {
             <div>
               <button
                 style={{
-                  background: "linear-gradient(180deg, #5A5A5A 0%, #1E1E1E 100%)",
+                  background:
+                    "linear-gradient(180deg, #5A5A5A 0%, #1E1E1E 100%)",
                   border: "1px solid #FFFFFF",
                   borderRadius: "100px",
                   // width: "auto",
@@ -80,7 +82,10 @@ const index = () => {
                   padding: "8px 16px",
                 }}
               >
-                <img src="/images/video-ai/star.png" style={{ height: "28px", width: "28px" }} />
+                <img
+                  src="/images/video-ai/star.png"
+                  style={{ height: "28px", width: "28px" }}
+                />
                 Generate
               </button>
             </div>
@@ -94,15 +99,23 @@ const index = () => {
             <p variant="h5" className="font-semibold text-2xl text-[#1E1E1E]">
               {homeFeedData?.title || "Categories"}
             </p>
-            <p variant="body2" className="text-normal pt-2 text-[#1E1E1EB2] text-base">
-              {homeFeedData?.subtitle || "Pick a category to discover purpose-built templates"}
+            <p
+              variant="body2"
+              className="text-normal pt-2 text-[#1E1E1EB2] text-base"
+            >
+              {homeFeedData?.subtitle ||
+                "Pick a category to discover purpose-built templates"}
             </p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {homeFeedData?.results?.map((card) => (
-            <CardComponent key={card.id} data={card} redirect={`/category/${card?.slug}`} />
+            <CardComponent
+              key={card.id}
+              data={card}
+              redirect={`/category/${card?.slug}`}
+            />
           ))}
         </div>
       </div>
