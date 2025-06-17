@@ -59,8 +59,8 @@ export const styles = {
     margin: "auto",
   },
   googleButton: {
-    background: "#FFFFFF33",
-    border: "1px solid #FFFFFF26",
+    background: "#F5F5F5",
+    border: "1px solid #E0E0E0",
     borderRadius: "100px",
     padding: "7px",
     margin: "auto",
@@ -72,18 +72,23 @@ export const styles = {
     height: "50px",
     fontSize: "16px",
     paddingInline: "20px",
-    width: "100%",
+    width: "80%",
     marginTop: "44px",
     marginBottom: "44px",
-
+    color: "#1E1E1E",
+    transition: "all 0.2s ease-in-out",
+    "&:hover": {
+      background: "#EBEBEB",
+      border: "1px solid #D0D0D0",
+    },
     "& img": {
       marginRight: "10px",
       width: "20px",
     },
     "& button": {
-      backgroundColor: "#251D3E !important",
-      color: "#fff !important",
-      opacity: "9 !important",
+      backgroundColor: "transparent !important",
+      color: "#1E1E1E !important",
+      opacity: "1 !important",
       boxShadow: "none !important",
       fontSize: "16px",
       fontWeight: "500 !important",
@@ -92,13 +97,14 @@ export const styles = {
       },
     },
     "& div": {
-      backgroundColor: "#251D3E !important",
+      backgroundColor: "transparent !important",
       padding: "0 !important",
       display: "flex",
     },
     "@media (max-width:480px)": {
       height: "40px",
       fontSize: "14px",
+      width: "240px",
       "& img": {
         width: "18px",
       },

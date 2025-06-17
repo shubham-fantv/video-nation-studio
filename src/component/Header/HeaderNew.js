@@ -566,7 +566,7 @@ const HeaderNew = ({ app }) => {
               <div className="hidden md:flex items-start justify-between text-white px-6 py-4 rounded-sm space-x-4">
                 <div className="text-left">
                   <p className="text-md font-semibold">
-                    ✨ Start your{" "}
+                    Start your{" "}
                     <span className="font-bold">7 days free trial</span>
                   </p>
                   <button className="mt-2 inline-flex items-center text-white font-medium hover:underline">
@@ -587,7 +587,7 @@ const HeaderNew = ({ app }) => {
                   />
                   
                   <img
-                    src="https://assets.artistfirst.in/uploads/1750135216004-1747489568650-AI_Avatar_Icon_2_comp.jpg"
+                    src="https://assets.artistfirst.in/uploads/1750091924730-Sea_Horizon_Headshot_A1_comp.jpg"
                     alt="img3"
                     className="h-24 rounded-lg transfrom rotate-[10deg]"
                   />
@@ -607,7 +607,7 @@ const HeaderNew = ({ app }) => {
                 </div>
                 <div className="flex space-x-2">
                   <img
-                    src="https://assets.artistfirst.in/uploads/1750135216004-1747489568650-AI_Avatar_Icon_2_comp.jpg"
+                    src="https://assets.artistfirst.in/uploads/1750091924730-Sea_Horizon_Headshot_A1_comp.jpg"
                     alt="img1"
                     className="h-16 rounded-md transform rotate-[-5deg]"
                   />
