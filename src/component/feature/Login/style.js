@@ -1,6 +1,6 @@
 export const styles = {
   wrapper: {
-    position: "relative",
+    // position: "relative",
     display: "block",
     maxWidth: "450px",
     background: "#292929",

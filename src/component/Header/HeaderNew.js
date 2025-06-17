@@ -513,12 +513,12 @@ const HeaderNew = ({ app }) => {
           >
             <div className="px-2 flex justify-center items-center w-full">
               {/* Desktop Banner */}
-              <div className="hidden md:flex items-start justify-between text-white px-6 py-4 rounded-sm space-x-4">
+              <div className="hidden md:flex items-start justify-between text-white px-6 pt-2 rounded-sm space-x-4">
                 <div className="text-left">
                   <p className="text-md font-semibold">
                     Start your <span className="font-bold">7 days free trial</span>
                   </p>
-                  <button className="mt-2 inline-flex items-center text-white font-medium hover:underline">
+                  <button className="mt-1 inline-flex items-center text-white font-medium hover:underline">
                     Start Now
                     <span className="ml-1">➜</span>
                   </button>
@@ -527,18 +527,18 @@ const HeaderNew = ({ app }) => {
                   <img
                     src="https://assets.artistfirst.in/uploads/1750135216037-1747830337257-Forest_GT_LuxuryShot_A1%20(1)_comp.jpg"
                     alt="img2"
-                    className="h-24 rounded-lg transform rotate-[-10deg]"
+                    className="h-16 rounded-lg transform rotate-[-10deg]"
                   />
                   <img
                     src="https://assets.artistfirst.in/uploads/1750135391088-AI%20Art%20Style_Anime%20(1)_comp_comp.png"
                     alt="img1"
-                    className="h-24 rounded-lg"
+                    className="h-16 rounded-lg"
                   />
 
                   <img
                     src="https://assets.artistfirst.in/uploads/1750091924730-Sea_Horizon_Headshot_A1_comp.jpg"
                     alt="img3"
-                    className="h-24 rounded-lg transfrom rotate-[10deg]"
+                    className="h-16 rounded-lg transfrom rotate-[10deg]"
                   />
                 </div>
               </div>
@@ -571,7 +571,13 @@ const HeaderNew = ({ app }) => {
           </div>
         </Box>
       )}
-      <Box sx={styles.navbar} onClick={(e) => e.stopPropagation()}>
+      <Box
+        sx={{
+          ...styles.navbar,
+          top: isShowFreeTrialBanner ? 72 : 0,
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
         <Box className="nav-container">
           <Box display="flex">
             <Box

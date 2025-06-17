@@ -173,7 +173,7 @@ const videoCards = [
     id: 4,
     // src: "/images/video-ai/video2.mp4",
     src: "https://assets.artistfirst.in/uploads/1749134802957-1745226333739-replicate-prediction-1d0d93c9f9rm80cpawbst5q7qm_compressed.mp4",
-    // poster: "/images/vr-poster.jpg",
+    poster: "https://assets.artistfirst.in/uploads/1750090950011-header2.jpg",
     width: 160,
     height: 224,
     position: { left: "54%", bottom: "10%" },
@@ -388,7 +388,7 @@ function Banner() {
             muted
             playsInline
             loop
-            poster="/images/workshop-poster.jpg"
+            poster="https://assets.artistfirst.in/uploads/1750090949969-header1.jpg"
             style={{
               width: "100%",
               height: "auto",

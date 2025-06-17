@@ -6,7 +6,7 @@ const styles = {
     alignItems: "center",
     fontSize: "1.2rem",
     position: "sticky",
-    top: "70px",
+    top: "72px",
     zIndex: "99",
     padding: "0 40px",
     width: "100%",
@@ -14,13 +14,11 @@ const styles = {
 
     "@media (max-width:767px)": {
       marginTop: "0px",
-      height: "55px",
       position: "sticky !important",
-      top: "70px",
+      top: "80px",
       zIndex: "999",
       width: "100%",
       padding: "0px",
-      marginBottom: "50px",
     },
     "& .nav-container": {
       display: "flex",
