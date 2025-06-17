@@ -17,7 +17,7 @@ const styles = {
       marginTop: "0px",
       height: "55px",
       position: "sticky",
-      top: "50px",
+      top: "65px",
       zIndex: "999",
       width: "100%",
       padding: "0px",

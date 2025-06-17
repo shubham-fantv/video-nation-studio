@@ -552,21 +552,72 @@ const HeaderNew = ({ app }) => {
           sx={{ position: "fixed", top: 0, left: 0, width: "100%", zIndex: 10 }}
         >
           <div
-            className="w-full relative flex justify-center items-center cursor-pointer"
+            className="w-full relative flex justify-center items-center"
             style={{
               background: "linear-gradient(90deg, #653EFF 0%, #FF7B3E 100%)",
               height: "auto", // allow dynamic height
-              paddingTop: "0.5rem",
-              paddingBottom: "0.5rem",
+              // paddingTop: "0.5rem",
+              // paddingBottom: "0.5rem",
             }}
             onClick={() => handleClickBanner()}
           >
-            <div className=" md:py-1 px-2 flex justify-center items-center w-full">
-              <img
-                src="/images/video-ai/trial-image.svg"
-                className="h-10 w-64 md:w-auto md:h-auto"
-                alt="Trial Banner"
-              />
+            <div className="px-2 flex justify-center items-center w-full">
+              {/* Desktop Banner */}
+              <div className="hidden md:flex items-start justify-between text-white px-6 py-4 rounded-sm space-x-4">
+                <div className="text-left">
+                  <p className="text-md font-semibold">
+                    ✨ Start your{" "}
+                    <span className="font-bold">7 days free trial</span>
+                  </p>
+                  <button className="mt-2 inline-flex items-center text-white font-medium hover:underline">
+                    Start Now
+                    <span className="ml-1">➜</span>
+                  </button>
+                </div>
+                <div className="flex space-x-3">
+                  <img
+                    src="https://assets.artistfirst.in/uploads/1750135216037-1747830337257-Forest_GT_LuxuryShot_A1%20(1)_comp.jpg"
+                    alt="img2"
+                    className="h-24 rounded-lg transform rotate-[-10deg]"
+                  />
+                  <img
+                    src="https://assets.artistfirst.in/uploads/1750135391088-AI%20Art%20Style_Anime%20(1)_comp_comp.png"
+                    alt="img1"
+                    className="h-24 rounded-lg"
+                  />
+                  
+                  <img
+                    src="https://assets.artistfirst.in/uploads/1750135216004-1747489568650-AI_Avatar_Icon_2_comp.jpg"
+                    alt="img3"
+                    className="h-24 rounded-lg transfrom rotate-[10deg]"
+                  />
+                </div>
+              </div>
+
+              {/* Mobile Banner */}
+              <div className="flex md:hidden items-center justify-between text-white px-4 py-2 rounded-md space-x-4">
+                <div className="flex flex-col justify-center items-start">
+                  <p className="text-xs">
+                    Start <span className="font-bold">7 days trial</span>
+                  </p>
+                  <button className="mt-1 inline-flex items-center text-white hover:underline">
+                    Start Now
+                    <span className="ml-1">➜</span>
+                  </button>
+                </div>
+                <div className="flex space-x-2">
+                  <img
+                    src="https://assets.artistfirst.in/uploads/1750135216004-1747489568650-AI_Avatar_Icon_2_comp.jpg"
+                    alt="img1"
+                    className="h-16 rounded-md transform rotate-[-5deg]"
+                  />
+                  <img
+                    src="https://assets.artistfirst.in/uploads/1750135216037-1747830337257-Forest_GT_LuxuryShot_A1%20(1)_comp.jpg"
+                    alt="img2"
+                    className="h-16 rounded-md transform rotate-[5deg]"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </Box>
