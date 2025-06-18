@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 import axios from "axios";
 import { FANTV_API_URL } from "../../../src/constant/constants";
+import { parseCookies } from "nookies";
 
 const EffectPage = () => {
   const router = useRouter();
@@ -55,7 +56,7 @@ const EffectPage = () => {
     setLoading(true);
     try {
       const res = await axios.post(
-        `http://${FANTV_API_URL}/api/v1/ai-video`,
+        `${FANTV_API_URL}/api/v1/ai-video`,
         {
           prompt: prompt || "Transform this person",
           imageUrl,
@@ -83,7 +84,7 @@ const EffectPage = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-white text-black p-4">
+    <div className="min-h-screen bg-white text-black p-5 w-screen mx-4">
       <button
         onClick={() => router.back()}
         className="text-sm text-gray-600 mb-4 hover:underline"
@@ -190,21 +191,20 @@ const EffectPage = () => {
                 <button
                   key={ratio}
                   onClick={() => handleAspectClick(ratio)}
-                  className={`border-2 rounded flex items-center justify-center font-medium transition-all duration-200 ease-in ${
-                    ratio === "16:9" ? "w-16 h-8" : "w-12 h-12"
-                  } ${
+                  className={`border-2 w-18 h-18 p-3 rounded flex flex-col gap-y-1 items-center justify-center font-medium transition-all duration-200 ease-in  ${
                     aspectRatio === ratio
                       ? "bg-purple-100 text-purple-700 border-purple-500"
                       : "text-gray-600"
                   }`}
                 >
-                  {ratio}
+                  <div className={`border-2 border-gray-400 rounded-md ${ratio == "16:9" ? "w-12 h-8" : "w-10 h-10"}`}></div>
+                  <p>{ratio}</p>
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Creative Description */}
+          {/* Creative Description
           <div className="mb-4">
             <label className="text-sm font-medium">
               Creative Description{" "}
@@ -216,7 +216,7 @@ const EffectPage = () => {
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
             ></textarea>
-          </div>
+          </div> */}
 
           <button
             className="w-full py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-xl shadow"
@@ -274,3 +274,41 @@ const VideoProgressPanel = ({ progress = 10 }) => {
 };
 
 export default EffectPage;
+
+export async function getServerSideProps(ctx) {
+  const cookie = parseCookies(ctx);
+
+  const authToken = cookie["aToken"];
+
+  try {
+    const {
+      params: { slug1 },
+    } = ctx;
+
+    var [masterData] = await Promise.all([
+      fetcher.get(
+        `${FANTV_API_URL}/api/v1/homefeed/metadata`,
+        {
+          headers: {
+            ...(!!authToken && { Authorization: `Bearer ${authToken}` }),
+          },
+        },
+        "default"
+      ),
+    ]);
+
+    return {
+      props: {
+        masterData: masterData?.data || [],
+        withSideBar: false,
+      },
+    };
+  } catch (err) {
+    console.log("error occures in while getting data==>", err);
+    return {
+      props: {
+        withSideBar: false,
+      },
+    };
+  }
+}

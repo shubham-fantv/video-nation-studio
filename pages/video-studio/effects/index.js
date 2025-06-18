@@ -159,25 +159,32 @@ const index = () => {
             //   data={card}
             //   redirect={`/video-studio/effects/${card?.slug}`}
             // />
-            <div className="rounded-2xl border border-gray-200 shadow-sm overflow-hidden bg-white hover:shadow-lg transition">
-              <img
-                src={card.imageUrl}
-                alt={card.title}
-                className="w-full h-[200px] object-cover"
-              />
-              <div className="p-4">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  {card.title}
-                </h3>
-                <p className="text-gray-600 text-sm mt-1">{card.description}</p>
-                <Link href={`/video-studio/effects/${card.slug}`} passHref>
+            <Link href={`/video-studio/effects/${card.slug}`} passHref>
+              <div className="rounded-2xl border border-gray-200 shadow-sm overflow-hidden bg-white hover:shadow-lg transition">
+                <video
+                  src="/video.mp4"
+                  className="w-full h-[200px] object-cover"
+                  muted
+                  loop
+                  preload="metadata"
+                  onMouseEnter={(e) => e.target.play()}
+                  onMouseLeave={(e) => e.target.pause()}
+                />
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {card.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm mt-1">
+                    {card.description}
+                  </p>
+
                   <button className="mt-4 bg-[#EAE7F4] text-black text-sm font-medium px-4 py-2 rounded-md flex items-center gap-2">
-                    Use this Effect
+                    Explore Now
                     <span className="ml-1">→</span>
                   </button>
-                </Link>
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
