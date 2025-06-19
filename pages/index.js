@@ -124,7 +124,12 @@ const Index = ({ isMobile }) => {
           ) : (
             <Box className="grid grid-cols-1 md:grid-cols-4 gap-4">
               {homeFeedData?.section1?.data?.slice(0, 4).map((card) => (
-                <CardComponent key={card?._id} data={card} redirect={`/category/${card?.slug}`} />
+                <CardComponent
+                  key={card?._id}
+                  data={card}
+                  redirect={`/category/${card?.slug}`}
+                  handleLogin={() => setIsPopupVisible({ login: true })}
+                />
               ))}
             </Box>
           )}
@@ -154,7 +159,12 @@ const Index = ({ isMobile }) => {
 
           <Box className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {homeFeedData?.section2?.data?.slice(0, 4).map((card) => (
-              <CardComponent key={card?._id} data={card} redirect={`/${card?.slug}`} />
+              <CardComponent
+                key={card?._id}
+                data={card}
+                redirect={`/${card?.slug}`}
+                handleLogin={() => setIsPopupVisible({ login: true })}
+              />
             ))}
           </Box>
 

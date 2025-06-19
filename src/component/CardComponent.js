@@ -5,25 +5,65 @@ import CLink from "./CLink";
 import { getDriveImageUrl, getPageName } from "../utils/common";
 import { useRouter } from "next/router";
 import useGTM from "../hooks/useGTM";
+import { useSelector } from "react-redux";
 
-function CardComponent({ data, redirect }) {
+function CardComponent({ data, redirect, handleLogin }) {
   const imageUrl = getDriveImageUrl(data.imageUrl);
+  const { isLoggedIn } = useSelector((state) => state.user);
   const router = useRouter();
   const { sendEvent } = useGTM();
 
+  const handleCardClick = () => {
+    if (isLoggedIn) {
+      router.push(redirect);
+      sendEvent({
+        event: "card_clicked",
+        card_title: data.title,
+        page_name: getPageName(router?.pathname),
+        card_id: data?.categoryType == "image" ? "image_use_case_card" : "video_category_card",
+        section_name: data?.categoryType + " Category",
+      });
+    } else if (data?.categoryType == "image") {
+      handleLogin();
+    } else {
+      router.push(redirect);
+      sendEvent({
+        event: "card_clicked",
+        card_title: data.title,
+        page_name: getPageName(router?.pathname),
+        card_id: data?.categoryType == "image" ? "image_use_case_card" : "video_category_card",
+        section_name: data?.categoryType + " Category",
+      });
+    }
+  };
+  const handleExploreButton = (e) => {
+    e.stopPropagation();
+    if (isLoggedIn) {
+      router.push(redirect);
+      sendEvent({
+        event: "button_clicked",
+        button_text: "Explore Now",
+        category_name: data.title,
+        page_name: getPageName(router?.pathname),
+        interaction_type: "Standard Button",
+        section_name: data?.categoryType + " Category",
+        button_id: data?.categoryType == "image" ? "img_cat_explore_btn" : "vs_cat_explore_btn",
+      });
+    } else if (data?.categoryType == "image") {
+      handleLogin();
+    } else {
+      router.push(redirect);
+      sendEvent({
+        event: "card_clicked",
+        card_title: data.title,
+        page_name: getPageName(router?.pathname),
+        card_id: data?.categoryType == "image" ? "image_use_case_card" : "video_category_card",
+        section_name: data?.categoryType + " Category",
+      });
+    }
+  };
   return (
-    <CLink
-      route={redirect}
-      handleClick={() =>
-        sendEvent({
-          event: "card_clicked",
-          card_title: data.title,
-          page_name: getPageName(router?.pathname),
-          card_id: data?.categoryType == "image" ? "image_use_case_card" : "video_category_card",
-          section_name: data?.categoryType + " Category",
-        })
-      }
-    >
+    <div onClick={() => handleCardClick()} className="cursor-pointer">
       <Box
         className="bg-[#FFFFFF0D] rounded-xl overflow-hidden"
         sx={{ boxShadow: "0px 4px 4px 0px #00000040" }}
@@ -52,20 +92,7 @@ function CardComponent({ data, redirect }) {
           <button
             size="small"
             className="mt-6 py-2 px-4 rounded-xl text-sm font-regular normal-case flex bg-[#1E1E1E]  text-[#FFFFFF] "
-            onClick={(e) => {
-              e.stopPropagation();
-              router.push(redirect);
-              sendEvent({
-                event: "button_clicked",
-                button_text: "Explore Now",
-                category_name: data.title,
-                page_name: getPageName(router?.pathname),
-                interaction_type: "Standard Button",
-                section_name: data?.categoryType + " Category",
-                button_id:
-                  data?.categoryType == "image" ? "img_cat_explore_btn" : "vs_cat_explore_btn",
-              });
-            }}
+            onClick={(e) => handleExploreButton(e)}
           >
             Explore Now
             <img
@@ -77,7 +104,7 @@ function CardComponent({ data, redirect }) {
         </Box>
         <img src="/images/ellipse.png"></img>
       </Box>
-    </CLink>
+    </div>
   );
 }
 
