@@ -54,7 +54,6 @@ const CommunityCreatedContent = ({
   page = "",
   isMobile = false,
 }) => {
-  console.log("🚀 ~ isMobile:", isMobile);
   const [activeTab, setActiveTab] = useState(activeSlug);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [templateData, setTemplateData] = useState(data);
@@ -112,7 +111,12 @@ const CommunityCreatedContent = ({
     `${FANTV_API_URL}/api/v1/templates/category/${activeTab}?limit=${isMobile ? "10" : "20"}`,
     () =>
       fetcher.get(
-        `${FANTV_API_URL}/api/v1/templates/category/${activeTab}?limit=${isMobile ? "10" : "20"}`
+        `${FANTV_API_URL}/api/v1/templates/category/${activeTab}?limit=${isMobile ? "10" : "20"}`,
+        {
+          headers: {
+            "X-Device-Type": isMobile ? "mobile" : "web",
+          },
+        }
       ),
     {
       refetchOnMount: "always",
