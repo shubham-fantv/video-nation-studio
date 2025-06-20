@@ -533,7 +533,7 @@ const HeaderNew = ({ app }) => {
   const handleClickBanner = () => {
     if (isLoggedIn) {
       sendEvent({
-        event: "button_clicked",
+        event: "banner_clicked",
         button_text: "Back",
         page_name: "Home",
         sub_page: "Free Trial Banner",
