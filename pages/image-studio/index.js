@@ -7,9 +7,14 @@ import { FANTV_API_URL } from "../../src/constant/constants";
 import { useQuery } from "react-query";
 import CardComponent from "../../src/component/CardComponent";
 import CommunityCreatedContent from "../../src/component/imageCommunityCreatedContent";
+import LoginAndSignup from "../../src/component/feature/Login";
 
 const index = () => {
   const [homeFeedData, setHomeFeedData] = useState([]);
+
+  const [isPopupVisible, setIsPopupVisible] = useState({
+    login: false,
+  });
 
   useQuery(
     `${FANTV_API_URL}/api/v1/image_categories`,
@@ -34,6 +39,9 @@ const index = () => {
       },
     }
   );
+  const handleLoginPopupClose = () => {
+    setIsPopupVisible({ login: false });
+  };
 
   return (
     <div>
@@ -104,9 +112,16 @@ const index = () => {
 
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
       {homeFeedData.results.map((card) => (
-        <CardComponent key={card.id} data={card} redirect={`/${card?.slug}`} />
+        <CardComponent key={card.id} data={card} redirect={`/${card?.slug}`}  handleLogin={() => setIsPopupVisible({ login: true })} />
       ))}
     </div>
+    {isPopupVisible.login && (
+          <LoginAndSignup
+            callBackName={"uniqueCommunity"}
+            open={isPopupVisible.login}
+            handleModalClose={handleLoginPopupClose}
+          />
+        )}
   </>
 )}
       </div>
