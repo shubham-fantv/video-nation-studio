@@ -28,7 +28,8 @@ const slides = [
   },
   {
     title: "Avatar Studio",
-    description: "Express yourself with diverse styles and endless possibilities",
+    description:
+      "Express yourself with diverse styles and endless possibilities",
     images: [
       ["/images/before7.png", "/images/after7.png"],
       ["/images/before8.png", "/images/after8.png"],
@@ -51,14 +52,18 @@ const Carousel = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       handleNext();
-    }, 4000); // Auto scroll every 4 seconds
+    }, 2000);
     return () => clearInterval(interval);
   }, []);
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center p-4 bg-gradient-to-b from-purple-500 to-pink-400 text-white relative transition-all duration-1000 ease-linear">
-      <h2 className="text-2xl md:text-4xl font-bold mb-3 text-center">{slides[current].title}</h2>
-      <p className="text-center mb-6 text-sm md:text-lg">{slides[current].description}</p>
+      <h2 className="text-2xl md:text-4xl font-bold mb-3 text-center">
+        {slides[current].title}
+      </h2>
+      <p className="text-center mb-6 text-sm md:text-lg">
+        {slides[current].description}
+      </p>
 
       <div className="flex justify-center items-center">
         <img
@@ -98,7 +103,12 @@ const LoginAndSignup = ({ open, handleModalClose }) => {
     (obj) => fetcher.post(`${API_BASE_URL}/api/v1/auth/login-google`, obj),
     {
       onSuccess: (res) => {
-        loginData(res.data.token, res.data.user.name, res.data.user.email, res.data.user.id);
+        loginData(
+          res.data.token,
+          res.data.user.name,
+          res.data.user.email,
+          res.data.user.id
+        );
         dispatch(setUserData(res?.data?.user));
         dispatch(
           setToken({
@@ -207,10 +217,18 @@ const LoginAndSignup = ({ open, handleModalClose }) => {
               Welcome to VideoNation
             </p>
 
-            <button style={styles.googleButton} onClick={() => handleLoginClick()} className="mt-6">
+            <button
+              style={styles.googleButton}
+              onClick={() => handleLoginClick()}
+              className="mt-6"
+            >
               <div className="flex items-center justify-center">
                 <span className="h-6 w-6">
-                  <img className="h-6 w-6" src="/images/icons/google.svg" alt="Google Icon" />
+                  <img
+                    className="h-6 w-6"
+                    src="/images/icons/google.svg"
+                    alt="Google Icon"
+                  />
                 </span>
                 &nbsp;
                 <span>Login with Google</span>
