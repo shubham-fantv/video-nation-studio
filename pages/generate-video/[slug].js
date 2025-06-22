@@ -536,7 +536,7 @@ const Index = ({ masterData }) => {
                   onChange={(e) => {
                     setDuration(e.target.value);
                     setCredits(
-                      20 *
+                      process.env.NEXT_PUBLIC_CREDIT_AI_VIDEO_VALUE *
                         parseInt(
                           e.target.value.replace("sec", "").trim() / 5,
                           10
