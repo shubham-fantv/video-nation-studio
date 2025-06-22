@@ -426,6 +426,7 @@ const Index = ({ masterData }) => {
         <Loading
           title={`Generating your video... (${progressPercentage}%)`}
           subTitle={subTitle}
+          percentage={progressPercentage}
         />
       )}
       <div className="md:hidden w-full pl-2 md:p-4 ">
