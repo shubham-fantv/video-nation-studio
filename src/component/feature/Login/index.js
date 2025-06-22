@@ -51,7 +51,7 @@ const Carousel = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       handleNext();
-    }, 4000); // Auto scroll every 4 seconds
+    }, 3000); // Auto scroll every 3 seconds
     return () => clearInterval(interval);
   }, []);
 
