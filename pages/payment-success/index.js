@@ -13,6 +13,7 @@ const index = () => {
   const { userData } = useSelector((state) => state.user);
   const { sendEvent, sendGTM } = useGTM();
 
+
   const dispatch = useDispatch();
 
   const { refetch } = useQuery(
@@ -37,6 +38,9 @@ const index = () => {
           event: "trialActivatedVN",
           email: userData?.email,
           name: userData?.name,
+          plan: router?.query?.plan || null,
+          plan_type:router?.query?.billed || null,
+
         });
         sendEvent({
           event: "trial_activated",
@@ -44,12 +48,16 @@ const index = () => {
           plan_price: data?.session?.amount_total,
           payment_type: data?.session?.payment_method_types,
           trial_start_date: getDateTimeFromTimestamp(data?.session?.created),
+          plan: router?.query?.plan || null,
+          plan_type:router?.query?.billed || null,
         });
       } else {
         sendGTM({
           event: "subscriptionActivatedVN",
           email: userData?.email,
           name: userData?.name,
+          plan: router?.query?.plan || null,
+          plan_type:router?.query?.billed || null,
         });
         sendEvent({
           event: "subscription_activated",
@@ -57,6 +65,8 @@ const index = () => {
           plan_price: data?.session?.amount_total,
           payment_type: data?.session?.payment_method_types,
           trial_start_date: getDateTimeFromTimestamp(data?.session?.created),
+          plan: router?.query?.plan || null,
+          plan_type:router?.query?.billed || null,
         });
       }
     } else {
