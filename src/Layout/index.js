@@ -1,21 +1,31 @@
-import { memo } from "react";
-import DefaultLayout from "./Default";
-import EmptyLayout from "./Empty";
 
+import { memo } from 'react'
+import DefaultLayout from './Default'
+import EmptyLayout from './Empty'
+import { ContextProvider } from '../context/WalletContext'
 const LayoutTypesMapping = {
   DefaultLayout,
   EmptyLayout,
-};
+}
 
-const defaultLayoutType = "DefaultLayout";
+const defaultLayoutType = 'DefaultLayout'
 
 const Layout = ({ asLayout = defaultLayoutType, children, ...rest }) => {
-  const LayoutType = LayoutTypesMapping[asLayout];
-  console.log(window.location.pathname);
-  if (window.location.pathname.includes("/edit-video")) {
-    return <LayoutType withSideBar={false}>{children}</LayoutType>;
-  }
-  return <LayoutType {...rest}>{children}</LayoutType>;
-};
+  const LayoutType = LayoutTypesMapping[asLayout]
+  const path = window.location.pathname
 
-export default memo(Layout);
+  const inner = path.includes('/edit-video') ? (
+    <LayoutType withSideBar={false}>{children}</LayoutType>
+  ) : (
+    <LayoutType {...rest}>{children}</LayoutType>
+  )
+
+  // pass the real browser cookies into your ContextProvider
+  return (
+    <ContextProvider cookies={document.cookie}>
+      {inner}
+    </ContextProvider>
+  )
+}
+
+export default memo(Layout)

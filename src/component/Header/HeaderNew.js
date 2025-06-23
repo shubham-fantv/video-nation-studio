@@ -22,6 +22,7 @@ import SweetAlert2 from "react-sweetalert2";
 import { getPageName, getPageSubPage } from "../../utils/common";
 import mixpanel from "mixpanel-browser";
 import { usePlanModal } from "../../context/PlanModalContext";
+import ConnectButton from "../WalletConnectButton";
 const activeStyle = {
   backgroundColor: "#FFFFFF0D",
   border: "1px solid #3E3E3E",
@@ -174,9 +175,13 @@ const HeaderNew = ({ app }) => {
         <Box onClick={(e) => e.stopPropagation()}>
           {isLoggedIn ? (
             <UserProfileDropdown />
-          ) : (
+          ) : 
+            process?.env.NEXT_PUBLIC_APP =="studio" ? 
+              <ConnectButton></ConnectButton>
+              :
             <Box sx={styles.btnContainer} onClick={handleWalletClick}>
-              <Button
+              
+               <Button
                 sx={{
                   color: "#000000",
                   fontFamily: "Nohemi",
@@ -186,7 +191,7 @@ const HeaderNew = ({ app }) => {
                 Sign In
               </Button>
             </Box>
-          )}
+          }
         </Box>
         <div class="w-full h-px bg-gray-300 my-4"></div>
 
@@ -761,21 +766,25 @@ const HeaderNew = ({ app }) => {
               </div>
             )}
             <span className="hidden md:flex">
-              {isLoggedIn ? (
-                <UserProfileDropdown />
-              ) : (
-                <Box sx={styles.btnContainer} onClick={handleWalletClick}>
-                  <Button
-                    sx={{
-                      color: "#000000",
-                      fontFamily: "Nohemi",
-                      fontSize: "16px",
-                    }}
-                  >
-                    Sign In
-                  </Button>
-                </Box>
-              )}
+            {isLoggedIn ? (
+            <UserProfileDropdown />
+          ) : 
+            process?.env.NEXT_PUBLIC_APP =="studio" ? 
+              <ConnectButton></ConnectButton>
+              :
+            <Box sx={styles.btnContainer} onClick={handleWalletClick}>
+              
+               <Button
+                sx={{
+                  color: "#000000",
+                  fontFamily: "Nohemi",
+                  fontSize: "16px",
+                }}
+              >
+                Sign In
+              </Button>
+            </Box>
+          }
             </span>
           </Box>
           {/* <span className="md:hidden">

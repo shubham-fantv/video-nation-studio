@@ -45,7 +45,8 @@ const moduleExports = {
     if (!isServer) {
       config.optimization.minimizer.push(new CssMinimizerPlugin());
     }
-
+    config.externals.push("pino-pretty", "lokijs", "encoding");
+    
     return config;
   },
   poweredByHeader: false,
