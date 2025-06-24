@@ -31,13 +31,18 @@ const index = (data) => {
   const [files, setFiles] = useState([]);
   const inputRef = useRef(null);
   const CREDIT_AI_IMAGE = process.env.NEXT_PUBLIC_CREDIT_IMAGE_VALUE;
-  const { isShowFreeTrialBanner, openUpgradeModal, openTrialModal, openNoCreditModal } =
-    usePlanModal();
+  const {
+    isShowFreeTrialBanner,
+    openUpgradeModal,
+    openTrialModal,
+    openNoCreditModal,
+  } = usePlanModal();
 
   const [swalProps, setSwalProps] = useState({});
   const [isLoading, setLoading] = useState(false);
   const [isPromptModalVisible, setIsPromptModalVisible] = useState(false);
-  const [isPromptPhotoModalVisible, setIsPromptPhotoModalVisible] = useState(false);
+  const [isPromptPhotoModalVisible, setIsPromptPhotoModalVisible] =
+    useState(false);
   const [uploading, setUploading] = useState(false);
   const MAX_IMAGES = 12;
   const MAX_SIZE_MB = 5;
@@ -64,9 +69,13 @@ const index = (data) => {
         const formData = new FormData();
         formData.append("file", file);
 
-        const response = await axios.post("https://upload.artistfirst.in/upload", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        const response = await axios.post(
+          "https://upload.artistfirst.in/upload",
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
 
         const uploadedUrl = response?.data?.data?.[0]?.url;
 
@@ -165,7 +174,8 @@ const index = (data) => {
 
         const defaultMessage = "Something went wrong. Please try again later.";
 
-        const message = error?.response?.data?.message || error?.message || defaultMessage;
+        const message =
+          error?.response?.data?.message || error?.message || defaultMessage;
 
         setSwalProps({
           icon: "error",
@@ -245,7 +255,8 @@ const index = (data) => {
 
         const defaultMessage = "Something went wrong. Please try again later.";
 
-        const message = error?.response?.data?.message || error?.message || defaultMessage;
+        const message =
+          error?.response?.data?.message || error?.message || defaultMessage;
 
         setSwalProps({
           icon: "error",
@@ -263,7 +274,10 @@ const index = (data) => {
       let nameInput = name;
 
       if (!nameInput.trim()) {
-        nameInput = typeof window !== "undefined" ? window.prompt("Enter avatar name:") : null;
+        nameInput =
+          typeof window !== "undefined"
+            ? window.prompt("Enter avatar name:")
+            : null;
         if (!nameInput || !nameInput.trim()) {
           alert("Upload cancelled. Name is required.");
           return;
@@ -358,36 +372,6 @@ const index = (data) => {
         {/* <SectionCards data={homeFeedData?.section1} /> */}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-          {/* Generate Avatar Card */}
-          <div
-            onClick={() => setIsPromptModalVisible(true)}
-            className="flex justify-between items-center p-6 bg-[#F0F9FF] border border-[#7DD3FC] rounded-xl hover:bg-[#E0F2FE] transition cursor-pointer"
-          >
-            {/* Left: Icon and Text */}
-            <div className="flex flex-col gap-4 max-w-[60%]">
-              <button>
-                <div className="flex items-center gap-2 text-[#0EA5E9]">
-                  <span className="font-semibold text-lg text-[#0369A1]">Generate AI Avatar</span>
-                </div>
-              </button>
-              <p className="text-sm text-gray-700">
-                Create an AI avatar by describing its appearance and attributes with text prompts.
-              </p>
-            </div>
-
-            {/* Right: Prompt Preview */}
-            <div className="flex gap-2 relative">
-              <img
-                src="https://assets.artistfirst.in/uploads/1747488821569-Custom_Avatar_Icon_1.jpg"
-                className="w-20 h-20 rounded-md object-cover"
-              />
-              <img
-                src="https://assets.artistfirst.in/uploads/1747488851625-Custom_Avatar_Icon_2.jpg"
-                className="w-20 h-20 rounded-md object-cover"
-              />
-            </div>
-          </div>
-
           {/* Custom Photo Avatar Card */}
           <div
             onClick={() => router.push("/image/headshot")}
@@ -408,8 +392,14 @@ const index = (data) => {
 
             {/* Right: Preview Images */}
             <div className="flex gap-2">
-              <img src="/images/h1.jpg" className="w-20 h-20 rounded-md object-cover" />
-              <img src="/images/h2.jpg" className="w-20 h-20 rounded-md object-cover" />
+              <img
+                src="/images/h1.jpg"
+                className="w-20 h-20 rounded-md object-cover"
+              />
+              <img
+                src="/images/h2.jpg"
+                className="w-20 h-20 rounded-md object-cover"
+              />
             </div>
           </div>
           <div
@@ -420,12 +410,13 @@ const index = (data) => {
               <button>
                 <div className="flex items-center gap-2 text-[#7C3AED]">
                   <span className="font-semibold text-lg text-[#4C1D95]">
-                    Luxuryshot Photo Avatar
+                    Luxury Photo Avatar
                   </span>
                 </div>
               </button>
               <p className="text-sm text-gray-700">
-                Use existing photos to create a new Luxuryshot and multiple looks.
+                Use existing photos to create a new Luxuryshot and multiple
+                looks.
               </p>
             </div>
 
@@ -437,6 +428,39 @@ const index = (data) => {
               />
               <img
                 src="https://assets.artistfirst.in/uploads/1747489568650-AI_Avatar_Icon_2.jpg"
+                className="w-20 h-20 rounded-md object-cover"
+              />
+            </div>
+          </div>
+
+          {/* Generate Avatar Card */}
+          <div
+            onClick={() => setIsPromptModalVisible(true)}
+            className="flex justify-between items-center p-6 bg-[#F0F9FF] border border-[#7DD3FC] rounded-xl hover:bg-[#E0F2FE] transition cursor-pointer"
+          >
+            {/* Left: Icon and Text */}
+            <div className="flex flex-col gap-4 max-w-[60%]">
+              <button>
+                <div className="flex items-center gap-2 text-[#0EA5E9]">
+                  <span className="font-semibold text-lg text-[#0369A1]">
+                    Generate AI Avatar
+                  </span>
+                </div>
+              </button>
+              <p className="text-sm text-gray-700">
+                Create an AI avatar by describing its appearance and attributes
+                with text prompts.
+              </p>
+            </div>
+
+            {/* Right: Prompt Preview */}
+            <div className="flex gap-2 relative">
+              <img
+                src="https://assets.artistfirst.in/uploads/1747488821569-Custom_Avatar_Icon_1.jpg"
+                className="w-20 h-20 rounded-md object-cover"
+              />
+              <img
+                src="https://assets.artistfirst.in/uploads/1747488851625-Custom_Avatar_Icon_2.jpg"
                 className="w-20 h-20 rounded-md object-cover"
               />
             </div>
@@ -475,12 +499,16 @@ const index = (data) => {
                 {/* Optional overlay for status other than 'completed' */}
                 {avatar?.status == "processing" && (
                   <div className="absolute h-48 inset-0 bg-black bg-opacity-70 flex items-center justify-center rounded-xl">
-                    <p className="text-white font-medium text-lg">{avatar?.status}</p>
+                    <p className="text-white font-medium text-lg">
+                      {avatar?.status}
+                    </p>
                   </div>
                 )}
 
                 <div className="p-2 space-y-1">
-                  <div className="text-base font-semibold text-gray-800">{avatar.name}</div>
+                  <div className="text-base font-semibold text-gray-800">
+                    {avatar.name}
+                  </div>
                 </div>
               </div>
             ))
@@ -509,7 +537,9 @@ const index = (data) => {
                   />
                 </div>
                 <div className="p-3 space-y-1">
-                  <div className="text-base font-semibold text-gray-800">{card.name}</div>
+                  <div className="text-base font-semibold text-gray-800">
+                    {card.name}
+                  </div>
                 </div>
               </div>
             </div>
@@ -529,7 +559,9 @@ const index = (data) => {
 
             {/* LEFT: Form Fields */}
             <div>
-              <h2 className="text-xl font-semibold mb-6">Create New AI Avatar</h2>
+              <h2 className="text-xl font-semibold mb-6">
+                Create New AI Avatar
+              </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700 font-medium mb-2">
                 {[
                   ["Name", "name", "text"],
@@ -611,7 +643,8 @@ const index = (data) => {
                       pose ? `showing ${pose}` : "",
                     ];
 
-                    const generated = promptParts.filter(Boolean).join(", ") + ".";
+                    const generated =
+                      promptParts.filter(Boolean).join(", ") + ".";
                     setPrompt(generated.trim());
                     handleGenerateAvatar(generated, name, gender);
                     setIsPromptModalVisible(false);
@@ -679,7 +712,9 @@ const index = (data) => {
                         />
                       </svg>
                     </div>
-                    <p className="text-sm text-gray-600">Select upto 12 photos to upload</p>
+                    <p className="text-sm text-gray-600">
+                      Select upto 12 photos to upload
+                    </p>
                     <p className="text-xs text-gray-500 mb-2">
                       Upload PNG, JPG, HEIC, or WebP file up to 5MB each
                     </p>
@@ -758,13 +793,16 @@ const index = (data) => {
                 {/* Good Photos */}
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-green-600 font-semibold">✔ Good Photos</span>
+                    <span className="text-green-600 font-semibold">
+                      ✔ Good Photos
+                    </span>
                   </div>
                   <p className="text-sm text-gray-600 mb-2">
-                    Recent photos of yourself (just you), showing a mix of close-ups and full-body
-                    shots, with different angles, expressions (smiling, neutral, serious), and a
-                    variety of outfits. Make sure they are high-resolution and reflect your current
-                    appearance.
+                    Recent photos of yourself (just you), showing a mix of
+                    close-ups and full-body shots, with different angles,
+                    expressions (smiling, neutral, serious), and a variety of
+                    outfits. Make sure they are high-resolution and reflect your
+                    current appearance.
                   </p>
                   <div className="flex gap-2 overflow-x-auto">
                     <img
@@ -803,12 +841,15 @@ const index = (data) => {
                 {/* Bad Photos */}
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-red-600 font-semibold">✖ Bad Photos</span>
+                    <span className="text-red-600 font-semibold">
+                      ✖ Bad Photos
+                    </span>
                   </div>
                   <p className="text-sm text-gray-600 mb-2">
-                    No group photos, hats, sunglasses, pets, heavy filters, low-resolution images,
-                    or screenshots. Avoid photos that are too old, overly edited, or don’t represent
-                    how you currently look.
+                    No group photos, hats, sunglasses, pets, heavy filters,
+                    low-resolution images, or screenshots. Avoid photos that are
+                    too old, overly edited, or don’t represent how you currently
+                    look.
                   </p>
                   <div className="flex gap-2 overflow-x-auto">
                     <img

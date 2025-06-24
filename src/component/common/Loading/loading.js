@@ -59,11 +59,11 @@ const Loader = ({
   percentage = 90,
 }) => {
   return (
-    <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-80 flex flex-col items-center justify-center z-50">
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-gray-800 space-y-4 w-screen">
+    <div className="w-full h-full bg-black bg-opacity-80 flex flex-col items-center justify-center">
+      <div className="w-full h-full flex flex-col items-center justify-center bg-gray-100 text-gray-800 space-y-4">
         {/* Circular Progress */}
         <div className="relative w-28 h-28">
-          <svg className="w-full h-full" viewBox="0 0 36 36">
+          <svg className="" viewBox="0 0 36 36">
             {/* Background circle */}
             <path
               className="text-gray-300"
