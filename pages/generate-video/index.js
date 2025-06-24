@@ -206,6 +206,7 @@ const index = () => {
           type: "video",
           prompt: prompt,
           url: response?.data?.finalVideoUrl,
+          section: "Sidebar",
         });
 
         setImagePreview(null);

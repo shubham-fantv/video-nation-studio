@@ -46,8 +46,12 @@ const index = () => {
   const [isLoading, setLoading] = useState(false);
   const [swalProps, setSwalProps] = useState({});
   const quoteIndexRef = useRef(0);
-  const { isShowFreeTrialBanner, openUpgradeModal, openTrialModal, openNoCreditModal } =
-    usePlanModal();
+  const {
+    isShowFreeTrialBanner,
+    openUpgradeModal,
+    openTrialModal,
+    openNoCreditModal,
+  } = usePlanModal();
 
   const getRandomPrompts = (list, count = 3) =>
     list
@@ -66,7 +70,8 @@ const index = () => {
   ];
 
   const generateMagicPrompt = () => {
-    const randomPrompt = magicPrompts[Math.floor(Math.random() * magicPrompts.length)];
+    const randomPrompt =
+      magicPrompts[Math.floor(Math.random() * magicPrompts.length)];
     setPrompt(randomPrompt);
   };
 
@@ -93,11 +98,15 @@ const index = () => {
     formData.append("file", file);
 
     try {
-      const response = await axios.post("https://upload.artistfirst.in/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        "https://upload.artistfirst.in/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       setImage(response?.data?.data?.[0]?.url);
       setImagePreview(URL.createObjectURL(file));
 
@@ -125,7 +134,6 @@ const index = () => {
     {
       onSuccess: (response) => {
         setImagePreview(null);
-        setPrompt("");
         setLoading(false);
         sendEvent({
           event: "asset_generated",
@@ -137,16 +145,22 @@ const index = () => {
           interaction_type: "Standard Button",
           type: "Image",
           url: response?.data?.finalImageUrl,
+          prompt: prompt,
+          section: "Sidebar",
         });
+        setPrompt("");
 
-        router.replace(`/generate-image/${response?.data._id}`, undefined, { scroll: false });
+        router.replace(`/generate-image/${response?.data._id}`, undefined, {
+          scroll: false,
+        });
       },
       onError: (error) => {
         setLoading(false);
 
         const defaultMessage = "Something went wrong. Please try again later.";
 
-        const message = error?.response?.data?.message || error?.message || defaultMessage;
+        const message =
+          error?.response?.data?.message || error?.message || defaultMessage;
 
         setSwalProps({
           key: Date.now(), // or use a counter
@@ -237,7 +251,10 @@ const index = () => {
       elapsed += updateInterval;
       const progressRatio = elapsed / totalDuration;
 
-      const easedProgress = Math.min(Math.floor(100 * Math.pow(progressRatio, 2.5)), 99);
+      const easedProgress = Math.min(
+        Math.floor(100 * Math.pow(progressRatio, 2.5)),
+        99
+      );
 
       setProgressPercentage(easedProgress);
 
@@ -290,7 +307,8 @@ const index = () => {
           AI-Powered Image Creation. Just Type & Generate
         </h1>
         <p className="text-[#1E1E1EB2] pt-2 text-base font-normal text-center">
-          Transform words into cinematic visuals — effortless, fast, and stunning.
+          Transform words into cinematic visuals — effortless, fast, and
+          stunning.
         </p>
       </div>
       <div className="flex mt-8 w-full flex-col gap-4 rounded-lg bg-[#F5F5F5] p-4 shadow-md">
@@ -436,7 +454,10 @@ const index = () => {
           handleModalClose={() => setIsPopupVisible(false)}
         />
       )}
-      <SweetAlert2 {...swalProps} onConfirm={(handleConfirm) => setSwalProps({ show: false })} />
+      <SweetAlert2
+        {...swalProps}
+        onConfirm={(handleConfirm) => setSwalProps({ show: false })}
+      />
     </div>
   );
 };
