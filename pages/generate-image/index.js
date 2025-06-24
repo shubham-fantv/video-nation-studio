@@ -125,7 +125,7 @@ const index = () => {
     {
       onSuccess: (response) => {
         setImagePreview(null);
-        setPrompt("");
+        
         setLoading(false);
         sendEvent({
           event: "asset_generated",
@@ -137,7 +137,9 @@ const index = () => {
           interaction_type: "Standard Button",
           type: "Image",
           url: response?.data?.finalImageUrl,
+          prompt: prompt,
         });
+        setPrompt("");
 
         router.replace(`/generate-image/${response?.data._id}`, undefined, { scroll: false });
       },
