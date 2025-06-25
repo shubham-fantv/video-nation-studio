@@ -337,7 +337,6 @@ const Index = ({ masterData }) => {
   };
   return (
     <div className="flex flex-col md:flex-row text-black md:gap-4">
-      {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
       <div className=" md:hidden  pl-2 w-full md:p-4 ">
         <button
           onClick={() => router.back()}
@@ -561,66 +560,72 @@ const Index = ({ masterData }) => {
       </div>
 
       <div className="flex-1 flex flex-col items-center ">
-        <div className="hidden md:block w-full md:p-4 bg-[#F5F5F5]">
-          <button
-            onClick={() => router.back()}
-            className="flex items-center text-sm mb-1 text-black"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 mr-2"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Back
-          </button>
-        </div>
-        <div className="w-full p-4 md:p-4 bg-[#F5F5F5] px-4 md:px-[30px] py-4 md:py-[30px]">
-          <div className="bg-[#FFFFFF0D] rounded-lg aspect-video flex items-center justify-center mb-4 m-auto max-h-[300px] md:max-h-[450px]">
-            <div className="text-gray-500 w-full h-full">
-              {/* Loader overlay */}
-              {imageLoading && (
-                <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-xl z-10">
-                  <span className="text-sm text-gray-400">
-                    Loading image...
-                  </span>
-                </div>
-              )}
-
-              {/* Image always rendered */}
-              <img
-                src={image}
-                key={image}
-                alt={prompt}
-                onLoad={() => setImageLoading(false)}
-                className={`w-full h-full object-contain rounded-xl max-h-[300px] md:max-h-[450px] transition-opacity duration-500 ${
-                  imageLoading ? "opacity-0" : "opacity-100"
-                }`}
-              />
+        {isLoading ? (
+          <Loading title={"Please wait"} subTitle={subTitle} percentage={0} />
+        ) : (
+          <>
+            <div className="hidden md:block w-full md:p-4 bg-[#F5F5F5]">
+              <button
+                onClick={() => router.back()}
+                className="flex items-center text-sm mb-1 text-black"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 mr-2"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                Back
+              </button>
             </div>
-          </div>
+            <div className="w-full p-4 md:p-4 bg-[#F5F5F5] px-4 md:px-[30px] py-4 md:py-[30px]">
+              <div className="bg-[#FFFFFF0D] rounded-lg aspect-video flex items-center justify-center mb-4 m-auto max-h-[300px] md:max-h-[450px]">
+                <div className="text-gray-500 w-full h-full">
+                  {/* Loader overlay */}
+                  {imageLoading && (
+                    <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-xl z-10">
+                      <span className="text-sm text-gray-400">
+                        Loading image...
+                      </span>
+                    </div>
+                  )}
 
-          <div className="flex items-center justify-center flex-wrap gap-2 md:gap-4 mt-2">
-            <button
-              onClick={handleDownloadImage}
-              className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
-            >
-              ✨ Download
-            </button>
-            <button
-              onClick={handleEdit}
-              className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
-            >
-              Edit
-            </button>
-          </div>
-        </div>
+                  {/* Image always rendered */}
+                  <img
+                    src={image}
+                    key={image}
+                    alt={prompt}
+                    onLoad={() => setImageLoading(false)}
+                    className={`w-full h-full object-contain rounded-xl max-h-[300px] md:max-h-[450px] transition-opacity duration-500 ${
+                      imageLoading ? "opacity-0" : "opacity-100"
+                    }`}
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-center flex-wrap gap-2 md:gap-4 mt-2">
+                <button
+                  onClick={handleDownloadImage}
+                  className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
+                >
+                  ✨ Download
+                </button>
+                <button
+                  onClick={handleEdit}
+                  className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
+                >
+                  Edit
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
       <SweetAlert2
         {...swalProps}
