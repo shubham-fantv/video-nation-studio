@@ -560,7 +560,7 @@ const Index = ({ masterData }) => {
       </div>
 
       <div className="flex-1 flex flex-col items-center ">
-        {isLoading ? (
+        {!isLoading ? (
           <Loading title={"Please wait"} subTitle={subTitle} percentage={0} />
         ) : (
           <>

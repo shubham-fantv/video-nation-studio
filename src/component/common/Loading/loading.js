@@ -1,6 +1,8 @@
 import React from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Typography, Box } from "@mui/material";
+import Lottie from "lottie-react";
+import animationData from "../../../../public/images/lottie/background-animation.json";
 
 // const styles = {
 //   root: {
@@ -61,6 +63,13 @@ const Loader = ({
   return (
     <div className="w-full h-full bg-black bg-opacity-80 flex flex-col items-center justify-center">
       <div className="w-full h-full flex flex-col items-center justify-center bg-gray-100 text-gray-800 space-y-4">
+        <div className="absolute">
+          <Lottie
+            animationData={animationData}
+            loop={true}
+            className="w-full h-full object-cover opacity-60"
+          />
+        </div>
         {/* Circular Progress */}
         <div className="relative w-28 h-28">
           <svg className="" viewBox="0 0 36 36">
