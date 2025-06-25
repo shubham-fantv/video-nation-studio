@@ -368,7 +368,7 @@ const index = () => {
 
   return (
     <div>
-      {!isLoading && (
+      {isLoading && (
         <LoadingScreen
           progress={progressPercentage}
           mainText={subTitle}
