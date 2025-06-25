@@ -153,6 +153,19 @@ const Index = ({ masterData }) => {
     {
       onSuccess: (response) => {
         //console.log("I AM HERE", response?.data);
+        sendEvent({
+          event: "asset_generated",
+          aspectRatio: aspectRatio,
+          credits_used: 1,
+          caption: captionEnabled,
+          button_text: "Generate",
+          page_name: "Generate Image",
+          interaction_type: "Standard Button",
+          type: "Image",
+          url: response?.data?.finalImageUrl,
+          prompt: prompt,
+          section: "Sidebar",
+        });
         setImagePreview(null);
         setImageUrl(null);
         setPrompt("");

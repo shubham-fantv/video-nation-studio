@@ -196,6 +196,20 @@ const Index = ({ masterData }) => {
     {
       onSuccess: (response) => {
         //console.log("I AM HERE", response?.data);
+        sendEvent({
+          event: "asset_generated",
+          aspectRatio: aspectRatio,
+          duration: duration,
+          credits_used: credits,
+          caption: captionEnabled,
+          voiceover: voiceoverEnabled,
+          page_name: "Generate Video",
+          interaction_type: "Standard Button",
+          type: "video",
+          prompt: prompt,
+          url: response?.data?.finalVideoUrl,
+          section: "Sidebar",
+        });
         setImagePreview(null);
         setImageUrl(null);
         setPrompt("");
