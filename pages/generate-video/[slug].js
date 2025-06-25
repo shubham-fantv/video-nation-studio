@@ -793,7 +793,7 @@ const Index = ({ masterData }) => {
           <Loading
             title={`Generating your video... (${progressPercentage}%)`}
             subTitle={subTitle}
-            percentage={(progressPercentage * 95) / 100}
+            percentage={Math.round((progressPercentage * 95) / 100)}
           />
         ) : (
           <>
