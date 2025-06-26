@@ -67,7 +67,7 @@ const Loader = ({
           <Lottie
             animationData={animationData}
             loop={true}
-            className="w-full h-full object-cover opacity-60"
+            className="w-[90%] h-[90%] object-cover opacity-60 ml-[30px]"
           />
         </div>
         {/* Circular Progress */}

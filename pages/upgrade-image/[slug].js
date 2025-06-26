@@ -13,13 +13,15 @@ import useGTM from "../../src/hooks/useGTM";
 import SweetAlert2 from "react-sweetalert2";
 import LoginAndSignup from "../../src/component/feature/Login";
 import { usePlanModal } from "../../src/context/PlanModalContext";
+import LoadingScreen from "../../src/component/common/LoadingScreen";
 const Index = ({ masterData }) => {
   const CREDIT_AI_IMAGE = process.env.NEXT_PUBLIC_CREDIT_IMAGE_VALUE;
   const CREDIT_PRODUCT_AD = process.env.NEXT_PUBLIC_CREDIT_PRODUCT_AD;
   const SLUG_CONFIG = {
     enhance: {
       title: "Enhance Image Quality",
-      description: "Instantly elevate your images with AI for professional clarity and vibrancy",
+      description:
+        "Instantly elevate your images with AI for professional clarity and vibrancy",
       prompt: "Enhance Image Quality",
       imageModel: 1,
       fileCaption1: "Upload Picture",
@@ -44,7 +46,8 @@ const Index = ({ masterData }) => {
     },
     "ai-deblur": {
       title: "AI Deblur",
-      description: "Rescue your blurry memories and achieve crystal-clear focus",
+      description:
+        "Rescue your blurry memories and achieve crystal-clear focus",
       prompt: "AI Deblur",
       imageModel: 1,
       fileCaption1: "Upload Picture",
@@ -52,7 +55,8 @@ const Index = ({ masterData }) => {
     },
     "ai-face-swap": {
       title: "Face Swap",
-      description: "Seamlessly integrate faces into new images with professional-grade precision",
+      description:
+        "Seamlessly integrate faces into new images with professional-grade precision",
       prompt: "Face Swap",
       imageModel: 2,
       fileCaption1: "Upload Face 1",
@@ -60,7 +64,8 @@ const Index = ({ masterData }) => {
     },
     cyberpunk: {
       title: "Cyberpunk Style Image",
-      description: "Immerse your images in a neon-drenched, futuristic cyberpunk world",
+      description:
+        "Immerse your images in a neon-drenched, futuristic cyberpunk world",
       prompt: "Cyberpunk Style Image",
       imageModel: 1,
       fileCaption1: "Upload Picture",
@@ -68,7 +73,8 @@ const Index = ({ masterData }) => {
     },
     ghibli: {
       title: "Ghibli Art Photo",
-      description: "Evoke the beloved, hand-crafted aesthetic of Ghibli art from any picture",
+      description:
+        "Evoke the beloved, hand-crafted aesthetic of Ghibli art from any picture",
       prompt: "Ghibli Art Photo",
       imageModel: 1,
       fileCaption1: "Upload Picture",
@@ -84,7 +90,8 @@ const Index = ({ masterData }) => {
     },
     cartoon: {
       title: "Cartoonize Your Image",
-      description: "Instantly 'cartoonify' your photos for a playful and artistic new look",
+      description:
+        "Instantly 'cartoonify' your photos for a playful and artistic new look",
       prompt: "Cartoonize Your Image",
       imageModel: 1,
       fileCaption1: "Upload Picture",
@@ -92,7 +99,8 @@ const Index = ({ masterData }) => {
     },
     "product-ad": {
       title: "Product Placement Ad",
-      description: "Generate stunning, professional AI product photos that captivate customers",
+      description:
+        "Generate stunning, professional AI product photos that captivate customers",
       prompt: "Product Placement Ad",
       imageModel: 2,
       fileCaption1: "Upload Picture",
@@ -100,7 +108,8 @@ const Index = ({ masterData }) => {
     },
     "album-art": {
       title: "Create Album Art",
-      description: "Craft compelling album covers that capture your music's essence",
+      description:
+        "Craft compelling album covers that capture your music's essence",
       prompt: "Create Album Art",
       imageModel: 1,
       fileCaption1: "Upload Picture",
@@ -145,8 +154,12 @@ const Index = ({ masterData }) => {
 
   const [showUploadPopup, setShowUploadPopup] = useState(true);
   const fileInputRef = useRef(null);
-  const { isShowFreeTrialBanner, openUpgradeModal, openTrialModal, openNoCreditModal } =
-    usePlanModal();
+  const {
+    isShowFreeTrialBanner,
+    openUpgradeModal,
+    openTrialModal,
+    openNoCreditModal,
+  } = usePlanModal();
 
   const handleAvatarSelect = (avatar) => {
     setSelectedAvatar(avatar);
@@ -176,11 +189,15 @@ const Index = ({ masterData }) => {
     else setUploading2(true);
 
     try {
-      const response = await axios.post("https://upload.artistfirst.in/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        "https://upload.artistfirst.in/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       const imageUrl = response?.data?.data?.[0]?.url;
       const preview = URL.createObjectURL(file);
@@ -211,11 +228,15 @@ const Index = ({ masterData }) => {
     formData.append("file", file);
 
     try {
-      const response = await axios.post("https://upload.artistfirst.in/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        "https://upload.artistfirst.in/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       setImageUrl(response?.data?.data?.[0]?.url);
       setImagePreview(URL.createObjectURL(file));
     } catch (error) {
@@ -255,16 +276,21 @@ const Index = ({ masterData }) => {
           localStorage.setItem("lastTrialAction", Date.now().toString());
         }
         //console.log("I AM HERE", response?.data._id);
-        router.replace(`/upgrade-image/${tool}?id=${response?.data._id}`, undefined, {
-          scroll: false,
-        });
+        router.replace(
+          `/upgrade-image/${tool}?id=${response?.data._id}`,
+          undefined,
+          {
+            scroll: false,
+          }
+        );
         //router.reload();
       },
       onError: (error) => {
         setLoading(false);
         const defaultMessage = "Something went wrong. Please try again later.";
 
-        const message = error?.response?.data?.message || error?.message || defaultMessage;
+        const message =
+          error?.response?.data?.message || error?.message || defaultMessage;
 
         setSwalProps({
           key: Date.now(), // or use a counter
@@ -293,16 +319,21 @@ const Index = ({ masterData }) => {
           localStorage.setItem("lastTrialAction", Date.now().toString());
         }
         //console.log("I AM HERE", response?.data._id);
-        router.replace(`/upgrade-image/${tool}?id=${response?.data._id}`, undefined, {
-          scroll: false,
-        });
+        router.replace(
+          `/upgrade-image/${tool}?id=${response?.data._id}`,
+          undefined,
+          {
+            scroll: false,
+          }
+        );
         //router.reload();
       },
       onError: (error) => {
         setLoading(false);
         const defaultMessage = "Something went wrong. Please try again later.";
 
-        const message = error?.response?.data?.message || error?.message || defaultMessage;
+        const message =
+          error?.response?.data?.message || error?.message || defaultMessage;
 
         setSwalProps({
           key: Date.now(), // or use a counter
@@ -342,7 +373,10 @@ const Index = ({ masterData }) => {
         alert("Please enter a prompt!");
         return;
       }
-      if (userData?.credits <= (slug == "product-ad" ? CREDIT_PRODUCT_AD : CREDIT_AI_IMAGE)) {
+      if (
+        userData?.credits <=
+        (slug == "product-ad" ? CREDIT_PRODUCT_AD : CREDIT_AI_IMAGE)
+      ) {
         if (isShowFreeTrialBanner) {
           openTrialModal();
         } else if (!userData.isFreeTrial && userData.isFreeTrialUsed) {
@@ -371,13 +405,12 @@ const Index = ({ masterData }) => {
           style: slug,
         };
         setLoading(true);
-        const gen_slug = ["ghibli", "cartoon", "anime", "cyberpunk"]
-        if(gen_slug.includes(slug)){
+        const gen_slug = ["ghibli", "cartoon", "anime", "cyberpunk"];
+        if (gen_slug.includes(slug)) {
           delete requestBody["tool"];
-          generateImageApiNew(requestBody)
-        }
-        else{
-        generateImageApi(requestBody);
+          generateImageApiNew(requestBody);
+        } else {
+          generateImageApi(requestBody);
         }
       }
     } else {
@@ -484,8 +517,6 @@ const Index = ({ masterData }) => {
   };
   return (
     <div className="flex flex-col md:flex-row text-black md:gap-4">
-      {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
-
       <div className="flex-1 flex flex-col items-center">
         {/* Back Button */}
         <div className="w-full md:p-4 bg-[#F5F5F5]">
@@ -514,12 +545,18 @@ const Index = ({ masterData }) => {
           <div className="bg-[#FFFFFF0D] rounded-lg flex flex-col md:flex-row items-center justify-center mb-4 max-h-[750px] overflow-hidden">
             {/* Old Image */}
             <div className="w-full md:w-1/2 p-4">
-              <h3 className="text-sm font-medium mb-2 text-center">Old Image</h3>
+              <h3 className="text-sm font-medium mb-2 text-center">
+                Old Image
+              </h3>
               <div className="w-full h-[300px] md:h-[450px] flex items-center justify-center bg-white rounded-xl overflow-hidden">
                 {uploading ? (
                   <span className="text-sm text-gray-400">Uploading...</span>
                 ) : imageUrl ? (
-                  <img src={imageUrl} alt="Old" className="w-full h-full object-contain" />
+                  <img
+                    src={imageUrl}
+                    alt="Old"
+                    className="w-full h-full object-contain"
+                  />
                 ) : (
                   <p className="text-sm text-gray-500"></p>
                 )}
@@ -528,22 +565,37 @@ const Index = ({ masterData }) => {
 
             {/* New Image */}
             <div className="w-full md:w-1/2 p-4">
-              <h3 className="text-sm font-medium mb-2 text-center">New Image</h3>
+              <h3 className="text-sm font-medium mb-2 text-center">
+                New Image
+              </h3>
+
               <div className="w-full h-[300px] md:h-[450px] flex items-center justify-center bg-white rounded-xl overflow-hidden relative">
-                {imageLoading && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
-                    <span className="text-sm text-gray-400">Loading image...</span>
-                  </div>
+                {isLoading ? (
+                  <Loading
+                    title={"Please wait"}
+                    subTitle={subTitle}
+                    percentage={0}
+                  />
+                ) : (
+                  <>
+                    {imageLoading && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
+                        <span className="text-sm text-gray-400">
+                          Loading image...
+                        </span>
+                      </div>
+                    )}
+                    <img
+                      src={image}
+                      key={image}
+                      alt={prompt}
+                      onLoad={() => setImageLoading(false)}
+                      className={`w-full h-full object-contain transition-opacity duration-500 ${
+                        imageLoading ? "opacity-0" : "opacity-100"
+                      }`}
+                    />
+                  </>
                 )}
-                <img
-                  src={image}
-                  key={image}
-                  alt={prompt}
-                  onLoad={() => setImageLoading(false)}
-                  className={`w-full h-full object-contain transition-opacity duration-500 ${
-                    imageLoading ? "opacity-0" : "opacity-100"
-                  }`}
-                />
               </div>
             </div>
           </div>
@@ -571,7 +623,10 @@ const Index = ({ masterData }) => {
             {/* Header */}
             <div className="flex justify-between items-center px-6 py-4 border-b">
               <h2 className="text-xl font-semibold">{popUpTitle}</h2>
-              <button onClick={onCancel} className="text-black text-xl font-bold">
+              <button
+                onClick={onCancel}
+                className="text-black text-xl font-bold"
+              >
                 &times;
               </button>
             </div>
@@ -675,7 +730,10 @@ const Index = ({ masterData }) => {
             {/* Header */}
             <div className="flex justify-between items-center px-6 py-4 border-b">
               <h2 className="text-xl font-semibold">{popUpTitle}</h2>
-              <button onClick={onCancel} className="text-black text-xl font-bold">
+              <button
+                onClick={onCancel}
+                className="text-black text-xl font-bold"
+              >
                 &times;
               </button>
             </div>
@@ -745,7 +803,10 @@ const Index = ({ masterData }) => {
         />
       )}
 
-      <SweetAlert2 {...swalProps} onConfirm={(handleConfirm) => setSwalProps({ show: false })} />
+      <SweetAlert2
+        {...swalProps}
+        onConfirm={(handleConfirm) => setSwalProps({ show: false })}
+      />
     </div>
   );
 };
