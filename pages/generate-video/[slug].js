@@ -804,11 +804,13 @@ const Index = ({ masterData }) => {
 
       <div className="flex-1 flex flex-col items-center ">
         {isLoading ? (
-          <Loading
-            title={`Generating your video... (${progressPercentage}%)`}
-            subTitle={subTitle}
-            percentage={Math.round((progressPercentage * 95) / 100)}
-          />
+          <div className="w-full h-screen">
+            <Loading
+              title={`Generating your video... (${progressPercentage}%)`}
+              subTitle={subTitle}
+              percentage={Math.round((progressPercentage * 95) / 100)}
+            />
+          </div>
         ) : (
           <>
             <div className="hidden md:block w-full md:p-4 bg-[#F5F5F5]">

@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 import useGTM from "../../src/hooks/useGTM";
 import SweetAlert2 from "react-sweetalert2";
 import Loading from "../../src/component/common/Loading/loading";
+import LoadingScreen from "../../src/component/common/LoadingScreen";
 import LoginAndSignup from "../../src/component/feature/Login/index";
 import { usePlanModal } from "../../src/context/PlanModalContext";
 const index = (data) => {
@@ -316,7 +317,7 @@ const index = (data) => {
 
   return (
     <div>
-      {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
+      {isLoading && <LoadingScreen title={"Please wait"} subTitle={subTitle} />}
       <div className="justify-center m-auto">
         <h1 className="text-black text-[32px] font-semibold text-center leading-[38px]">
           Avatar Studio

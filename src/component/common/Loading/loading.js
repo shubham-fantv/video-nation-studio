@@ -61,13 +61,13 @@ const Loader = ({
   percentage = 90,
 }) => {
   return (
-    <div className="w-full h-full bg-black bg-opacity-80 flex flex-col items-center justify-center">
+    <div className="w-full h-3/4 bg-gray-100 bg-opacity-80 flex flex-col items-center justify-center">
       <div className="w-full h-full flex flex-col items-center justify-center bg-gray-100 text-gray-800 space-y-4">
         <div className="absolute">
           <Lottie
             animationData={animationData}
             loop={true}
-            className="w-[90%] h-[90%] object-cover opacity-60 ml-[30px]"
+            className="w-[80%] h-[80%] object-cover opacity-60 ml-[30px]"
           />
         </div>
         {/* Circular Progress */}
