@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import AvatarDropdown from "../../src/component/common/AvatarDropdown";
 import { useRouter } from "next/router";
 import { useMutation, useQuery } from "react-query";
