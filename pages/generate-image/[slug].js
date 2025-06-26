@@ -33,6 +33,7 @@ const Index = ({ masterData }) => {
   const [uploading, setUploading] = useState(false);
   const [imageLoading, setImageLoading] = useState(false);
   const dispatch = useDispatch();
+  const [progressPercentage, setProgressPercentage] = useState(0);
 
   const [image, setImage] = useState("");
   const [newImage, setNewImage] = useState("");
@@ -248,18 +249,54 @@ const Index = ({ masterData }) => {
   };
 
   useEffect(() => {
+    if (!isLoading) return;
+
+    let quoteInterval;
+    let progressInterval;
+
     const pickRandomQuote = () => {
-      const randomIndex = Math.floor(Math.random() * quotes.length);
-      setSubTitle(quotes[randomIndex]);
+      setSubTitle(quotes[quoteIndexRef.current]);
+      quoteIndexRef.current = (quoteIndexRef.current + 1) % quotes.length; // cycle
+
+      // const randomIndex = Math.floor(Math.random() * quotes.length);
+      // setSubTitle(quotes[randomIndex]);
     };
+
+    // Initial call
     pickRandomQuote();
-    const interval = setInterval(pickRandomQuote, 5000);
+    setProgressPercentage(0);
 
-    const cookies = parseCookies();
-    setAuthToken(cookies.aToken); // or any key you're tracking
+    // Change quote every 15 seconds
+    quoteInterval = setInterval(() => {
+      pickRandomQuote();
+    }, 15000);
 
-    return () => clearInterval(interval);
-  }, []);
+    // Simulate progress over ~3 minutes
+    const totalDuration = 180000; // 3 minutes
+    const updateInterval = 2000; // every 2 seconds
+    let elapsed = 0;
+
+    progressInterval = setInterval(() => {
+      elapsed += updateInterval;
+      const progressRatio = elapsed / totalDuration;
+
+      const easedProgress = Math.min(
+        Math.floor(100 * Math.pow(progressRatio, 2.5)), // exponent controls acceleration
+        99
+      );
+
+      const progress = Math.min(
+        Math.floor((elapsed / totalDuration) * 100),
+        99
+      ); // max 99%
+      setProgressPercentage(easedProgress);
+    }, updateInterval);
+
+    return () => {
+      clearInterval(quoteInterval);
+      clearInterval(progressInterval);
+    };
+  }, [isLoading]);
 
   // Fetch new data on ID change
   useEffect(() => {
@@ -561,7 +598,11 @@ const Index = ({ masterData }) => {
 
       <div className="flex-1 flex flex-col items-center ">
         {isLoading ? (
-          <Loading title={"Please wait"} subTitle={subTitle} percentage={0} />
+          <Loading
+            title={"Please wait"}
+            subTitle={subTitle}
+            percentage={Math.round((progressPercentage * 95) / 100)}
+          />
         ) : (
           <>
             <div className="hidden md:block w-full md:p-4 bg-[#F5F5F5]">

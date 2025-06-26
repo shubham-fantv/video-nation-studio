@@ -151,6 +151,7 @@ const Index = ({ masterData }) => {
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const [selectedAvatar, setSelectedAvatar] = useState(null);
   const { isLoggedIn, userData } = useSelector((state) => state.user);
+  const [progressPercentage, setProgressPercentage] = useState(0);
 
   const [showUploadPopup, setShowUploadPopup] = useState(true);
   const fileInputRef = useRef(null);
@@ -418,22 +419,76 @@ const Index = ({ masterData }) => {
     }
   };
 
+  // useEffect(() => {
+  //   //console.log("I am in useEffect blank ",slug, "id=",id);
+  //   if (id ? setShowUploadPopup(false) : setShowUploadPopup(true));
+
+  //   const pickRandomQuote = () => {
+  //     const randomIndex = Math.floor(Math.random() * quotes.length);
+  //     setSubTitle(quotes[randomIndex]);
+  //   };
+  //   pickRandomQuote();
+  //   const interval = setInterval(pickRandomQuote, 5000);
+
+  //   const cookies = parseCookies();
+  //   setAuthToken(cookies.aToken); // or any key you're tracking
+
+  //   return () => clearInterval(interval);
+  // }, []);
+
   useEffect(() => {
-    //console.log("I am in useEffect blank ",slug, "id=",id);
+    if (!isLoading) return;
     if (id ? setShowUploadPopup(false) : setShowUploadPopup(true));
 
+    let quoteInterval;
+    let progressInterval;
+
     const pickRandomQuote = () => {
-      const randomIndex = Math.floor(Math.random() * quotes.length);
-      setSubTitle(quotes[randomIndex]);
+      setSubTitle(quotes[quoteIndexRef.current]);
+      quoteIndexRef.current = (quoteIndexRef.current + 1) % quotes.length; // cycle
+
+      // const randomIndex = Math.floor(Math.random() * quotes.length);
+      // setSubTitle(quotes[randomIndex]);
     };
+
+    // Initial call
     pickRandomQuote();
-    const interval = setInterval(pickRandomQuote, 5000);
+    setProgressPercentage(0);
+
+    // Change quote every 15 seconds
+    quoteInterval = setInterval(() => {
+      pickRandomQuote();
+    }, 15000);
+
+    // Simulate progress over ~3 minutes
+    const totalDuration = 180000; // 3 minutes
+    const updateInterval = 2000; // every 2 seconds
+    let elapsed = 0;
+
+    progressInterval = setInterval(() => {
+      elapsed += updateInterval;
+      const progressRatio = elapsed / totalDuration;
+
+      const easedProgress = Math.min(
+        Math.floor(100 * Math.pow(progressRatio, 2.5)), // exponent controls acceleration
+        99
+      );
+
+      const progress = Math.min(
+        Math.floor((elapsed / totalDuration) * 100),
+        99
+      ); // max 99%
+      setProgressPercentage(easedProgress);
+    }, updateInterval);
 
     const cookies = parseCookies();
     setAuthToken(cookies.aToken); // or any key you're tracking
 
-    return () => clearInterval(interval);
-  }, []);
+    return () => {
+      clearInterval(quoteInterval);
+      clearInterval(progressInterval);
+    };
+  }, [isLoading]);
 
   // Fetch new data on ID change
   useEffect(() => {
@@ -574,7 +629,7 @@ const Index = ({ masterData }) => {
                   <Loading
                     title={"Please wait"}
                     subTitle={subTitle}
-                    percentage={0}
+                    percentage={Math.round((progressPercentage * 95) / 100)}
                   />
                 ) : (
                   <>
