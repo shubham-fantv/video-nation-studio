@@ -235,7 +235,7 @@ const index = () => {
     };
 
     pickRandomQuote();
-    setProgressPercentage(0);
+    // setProgressPercentage(0);
 
     // Change quote every 5 seconds (or tweak if needed)
     quoteInterval = setInterval(() => {
@@ -248,7 +248,7 @@ const index = () => {
     let elapsed = 0;
 
     progressInterval = setInterval(() => {
-      elapsed += updateInterval;
+        elapsed += updateInterval;
       const progressRatio = elapsed / totalDuration;
 
       const easedProgress = Math.min(
@@ -260,7 +260,7 @@ const index = () => {
 
       if (elapsed >= totalDuration) {
         clearInterval(progressInterval);
-        setProgressPercentage(100); // complete at the end
+        setProgressPercentage(99); // complete at the end, but only up to 99%
       }
     }, updateInterval);
 

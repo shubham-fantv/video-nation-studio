@@ -4,12 +4,11 @@ import animationData from "../../../public/images/lottie/background-animation.js
 const LoadingScreen = ({
   progress = 20,
   mainText = "Analyzing your prompt and imagining the scenes",
-  subText = "20% completed",
+  subText = "",
   autoProgress = false,
   duration = 5000,
 }) => {
   const [currentProgress, setCurrentProgress] = useState(progress);
-
   useEffect(() => {
     if (autoProgress) {
       const interval = setInterval(() => {

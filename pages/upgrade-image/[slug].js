@@ -170,6 +170,8 @@ const Index = ({ masterData }) => {
 
   const [subTitle, setSubTitle] = useState("");
   const [isLoading, setLoading] = useState(false);
+  console.log("isLoading", isLoading);
+
   const aspectRatioData = ["16:9", "9:16", "1:1"];
   const { slug, id } = router.query;
 
@@ -439,7 +441,7 @@ const Index = ({ masterData }) => {
 
   useEffect(() => {
     if (!isLoading) return;
-    if (id ? setShowUploadPopup(false) : setShowUploadPopup(true));
+    // if (id ? setShowUploadPopup(false) : setShowUploadPopup(true));
 
     let quoteInterval;
     let progressInterval;
@@ -461,9 +463,9 @@ const Index = ({ masterData }) => {
       pickRandomQuote();
     }, 15000);
 
-    // Simulate progress over ~3 minutes
-    const totalDuration = 180000; // 3 minutes
-    const updateInterval = 2000; // every 2 seconds
+    // Simulate progress over ~6 seconds
+    const totalDuration = 6000; // 6 seconds
+    const updateInterval = 500; // every 2 seconds
     let elapsed = 0;
 
     progressInterval = setInterval(() => {
@@ -479,7 +481,7 @@ const Index = ({ masterData }) => {
         Math.floor((elapsed / totalDuration) * 100),
         99
       ); // max 99%
-      setProgressPercentage(easedProgress);
+      setProgressPercentage(progress);
     }, updateInterval);
 
     const cookies = parseCookies();
@@ -627,11 +629,13 @@ const Index = ({ masterData }) => {
 
               <div className="w-full h-[300px] md:h-[450px] flex items-center justify-center bg-white rounded-xl overflow-hidden relative">
                 {isLoading ? (
-                  <Loading
-                    title={"Please wait"}
-                    subTitle={subTitle}
-                    percentage={Math.round((progressPercentage * 95) / 100)}
-                  />
+                  <div className="w-full h-full flex items-center justify-center px-10 m-auto">
+                    <Loading
+                      title={"Please wait"}
+                      subTitle={subTitle}
+                      percentage={Math.round((progressPercentage * 95) / 100)}
+                    />
+                  </div>
                 ) : (
                   <>
                     {imageLoading && (

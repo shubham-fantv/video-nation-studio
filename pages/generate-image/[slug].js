@@ -273,8 +273,8 @@ const Index = ({ masterData }) => {
     }, 15000);
 
     // Simulate progress over ~3 minutes
-    const totalDuration = 180000; // 3 minutes
-    const updateInterval = 2000; // every 2 seconds
+    const totalDuration = 10000; // 10 seconds
+    const updateInterval = 200; // update every 200ms
     let elapsed = 0;
 
     progressInterval = setInterval(() => {

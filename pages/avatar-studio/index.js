@@ -45,6 +45,8 @@ const index = (data) => {
   const [isPromptPhotoModalVisible, setIsPromptPhotoModalVisible] =
     useState(false);
   const [uploading, setUploading] = useState(false);
+  const [progressPercentage, setProgressPercentage] = useState(0);
+  const quoteIndexRef = useRef(0);
   const MAX_IMAGES = 12;
   const MAX_SIZE_MB = 5;
   //  console.log("data",data);
@@ -315,9 +317,57 @@ const index = (data) => {
     }
   };
 
+  useEffect(() => {
+    if (!isLoading) return;
+
+    let quoteInterval;
+    let progressInterval;
+
+    const pickRandomQuote = () => {
+      setSubTitle(quotes[quoteIndexRef.current]);
+      quoteIndexRef.current = (quoteIndexRef.current + 1) % quotes.length;
+    };
+
+    pickRandomQuote();
+    // setProgressPercentage(0);
+
+    // Change quote every 5 seconds (or tweak if needed)
+    quoteInterval = setInterval(() => {
+      pickRandomQuote();
+    }, 3000);
+
+    // Simulate progress over 10 seconds
+    const totalDuration = 10000; // 10 seconds
+    const updateInterval = 200; // update every 200ms
+    let elapsed = 0;
+
+    progressInterval = setInterval(() => {
+        elapsed += updateInterval;
+      const progressRatio = elapsed / totalDuration;
+
+      const easedProgress = Math.min(
+        Math.floor(100 * Math.pow(progressRatio, 2.5)),
+        99
+      );
+
+      setProgressPercentage(easedProgress);
+
+      if (elapsed >= totalDuration) {
+        clearInterval(progressInterval);
+        setProgressPercentage(99); // complete at the end, but only up to 99%
+      }
+    }, updateInterval);
+
+    return () => {
+      clearInterval(quoteInterval);
+      clearInterval(progressInterval);
+    };
+  }, [isLoading]);
+  
+
   return (
     <div>
-      {isLoading && <LoadingScreen title={"Please wait"} subTitle={subTitle} />}
+      {isLoading && <LoadingScreen  progress={progressPercentage} title={"Please wait"} subTitle={subTitle}  />}
       <div className="justify-center m-auto">
         <h1 className="text-black text-[32px] font-semibold text-center leading-[38px]">
           Avatar Studio
