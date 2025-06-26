@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import AvatarDropdown from "../../src/component/common/AvatarDropdown";
 import { useRouter } from "next/router";
 import { useMutation, useQuery } from "react-query";
@@ -33,6 +33,8 @@ const Index = ({ masterData }) => {
   const [uploading, setUploading] = useState(false);
   const [imageLoading, setImageLoading] = useState(false);
   const dispatch = useDispatch();
+  const [progressPercentage, setProgressPercentage] = useState(0);
+  const quoteIndexRef = useRef(0);
 
   const [image, setImage] = useState("");
   const [newImage, setNewImage] = useState("");
@@ -153,6 +155,19 @@ const Index = ({ masterData }) => {
     {
       onSuccess: (response) => {
         //console.log("I AM HERE", response?.data);
+        sendEvent({
+          event: "asset_generated",
+          aspectRatio: aspectRatio,
+          credits_used: 1,
+          caption: captionEnabled,
+          button_text: "Generate",
+          page_name: "Generate Image",
+          interaction_type: "Standard Button",
+          type: "Image",
+          url: response?.data?.finalImageUrl,
+          prompt: prompt,
+          section: "Sidebar",
+        });
         setImagePreview(null);
         setImageUrl(null);
         setPrompt("");
@@ -235,18 +250,54 @@ const Index = ({ masterData }) => {
   };
 
   useEffect(() => {
+    if (!isLoading) return;
+
+    let quoteInterval;
+    let progressInterval;
+
     const pickRandomQuote = () => {
-      const randomIndex = Math.floor(Math.random() * quotes.length);
-      setSubTitle(quotes[randomIndex]);
+      setSubTitle(quotes[quoteIndexRef.current]);
+      quoteIndexRef.current = (quoteIndexRef.current + 1) % quotes.length; // cycle
+
+      // const randomIndex = Math.floor(Math.random() * quotes.length);
+      // setSubTitle(quotes[randomIndex]);
     };
+
+    // Initial call
     pickRandomQuote();
-    const interval = setInterval(pickRandomQuote, 5000);
+    setProgressPercentage(0);
 
-    const cookies = parseCookies();
-    setAuthToken(cookies.aToken); // or any key you're tracking
+    // Change quote every 15 seconds
+    quoteInterval = setInterval(() => {
+      pickRandomQuote();
+    }, 15000);
 
-    return () => clearInterval(interval);
-  }, []);
+    // Simulate progress over ~3 minutes
+    const totalDuration = 10000; // 10 seconds
+    const updateInterval = 200; // update every 200ms
+    let elapsed = 0;
+
+    progressInterval = setInterval(() => {
+      elapsed += updateInterval;
+      const progressRatio = elapsed / totalDuration;
+
+      const easedProgress = Math.min(
+        Math.floor(100 * Math.pow(progressRatio, 2.5)), // exponent controls acceleration
+        99
+      );
+
+      const progress = Math.min(
+        Math.floor((elapsed / totalDuration) * 100),
+        99
+      ); // max 99%
+      setProgressPercentage(easedProgress);
+    }, updateInterval);
+
+    return () => {
+      clearInterval(quoteInterval);
+      clearInterval(progressInterval);
+    };
+  }, [isLoading]);
 
   // Fetch new data on ID change
   useEffect(() => {
@@ -324,7 +375,6 @@ const Index = ({ masterData }) => {
   };
   return (
     <div className="flex flex-col md:flex-row text-black md:gap-4">
-      {isLoading && <Loading title={"Please wait"} subTitle={subTitle} />}
       <div className=" md:hidden  pl-2 w-full md:p-4 ">
         <button
           onClick={() => router.back()}
@@ -548,66 +598,76 @@ const Index = ({ masterData }) => {
       </div>
 
       <div className="flex-1 flex flex-col items-center ">
-        <div className="hidden md:block w-full md:p-4 bg-[#F5F5F5]">
-          <button
-            onClick={() => router.back()}
-            className="flex items-center text-sm mb-1 text-black"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 mr-2"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Back
-          </button>
-        </div>
-        <div className="w-full p-4 md:p-4 bg-[#F5F5F5] px-4 md:px-[30px] py-4 md:py-[30px]">
-          <div className="bg-[#FFFFFF0D] rounded-lg aspect-video flex items-center justify-center mb-4 m-auto max-h-[300px] md:max-h-[450px]">
-            <div className="text-gray-500 w-full h-full">
-              {/* Loader overlay */}
-              {imageLoading && (
-                <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-xl z-10">
-                  <span className="text-sm text-gray-400">
-                    Loading image...
-                  </span>
-                </div>
-              )}
-
-              {/* Image always rendered */}
-              <img
-                src={image}
-                key={image}
-                alt={prompt}
-                onLoad={() => setImageLoading(false)}
-                className={`w-full h-full object-contain rounded-xl max-h-[300px] md:max-h-[450px] transition-opacity duration-500 ${
-                  imageLoading ? "opacity-0" : "opacity-100"
-                }`}
-              />
+        {isLoading ? (
+          <Loading
+            title={"Please wait"}
+            subTitle={subTitle}
+            percentage={Math.round((progressPercentage * 95) / 100)}
+          />
+        ) : (
+          <>
+            <div className="hidden md:block w-full md:p-4 bg-[#F5F5F5]">
+              <button
+                onClick={() => router.back()}
+                className="flex items-center text-sm mb-1 text-black"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 mr-2"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                Back
+              </button>
             </div>
-          </div>
+            <div className="w-full p-4 md:p-4 bg-[#F5F5F5] px-4 md:px-[30px] py-4 md:py-[30px]">
+              <div className="bg-[#FFFFFF0D] rounded-lg aspect-video flex items-center justify-center mb-4 m-auto max-h-[300px] md:max-h-[450px]">
+                <div className="text-gray-500 w-full h-full">
+                  {/* Loader overlay */}
+                  {imageLoading && (
+                    <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-xl z-10">
+                      <span className="text-sm text-gray-400">
+                        Loading image...
+                      </span>
+                    </div>
+                  )}
 
-          <div className="flex items-center justify-center flex-wrap gap-2 md:gap-4 mt-2">
-            <button
-              onClick={handleDownloadImage}
-              className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
-            >
-              ✨ Download
-            </button>
-            <button
-              onClick={handleEdit}
-              className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
-            >
-              Edit
-            </button>
-          </div>
-        </div>
+                  {/* Image always rendered */}
+                  <img
+                    src={image}
+                    key={image}
+                    alt={prompt}
+                    onLoad={() => setImageLoading(false)}
+                    className={`w-full h-full object-contain rounded-xl max-h-[300px] md:max-h-[450px] transition-opacity duration-500 ${
+                      imageLoading ? "opacity-0" : "opacity-100"
+                    }`}
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-center flex-wrap gap-2 md:gap-4 mt-2">
+                <button
+                  onClick={handleDownloadImage}
+                  className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
+                >
+                  ✨ Download
+                </button>
+                <button
+                  onClick={handleEdit}
+                  className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
+                >
+                  Edit
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
       <SweetAlert2
         {...swalProps}

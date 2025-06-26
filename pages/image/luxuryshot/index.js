@@ -37,8 +37,12 @@ const aiGeneratedImages = [
 const Index = () => {
   const CREDIT_AI_AVATAR = process.env.NEXT_PUBLIC_CREDIT_AI_AVATAR_VALUE;
 
-  const { isShowFreeTrialBanner, openUpgradeModal, openTrialModal, openNoCreditModal } =
-    usePlanModal();
+  const {
+    isShowFreeTrialBanner,
+    openUpgradeModal,
+    openTrialModal,
+    openNoCreditModal,
+  } = usePlanModal();
 
   const router = useRouter();
   const [uploading, setUploading] = useState(false);
@@ -106,7 +110,9 @@ const Index = () => {
     {
       refetchOnMount: "always",
       onSuccess: ({ data }) => {
-        setHeadShotStyleData(data.filter((item) => item.category !== "Estates"));
+        setHeadShotStyleData(
+          data.filter((item) => item.category !== "Estates")
+        );
       },
     }
   );
@@ -133,9 +139,13 @@ const Index = () => {
         const formData = new FormData();
         formData.append("file", file);
 
-        const response = await axios.post("https://upload.artistfirst.in/upload", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        const response = await axios.post(
+          "https://upload.artistfirst.in/upload",
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
 
         const uploadedUrl = response?.data?.data?.[0]?.url;
 
@@ -172,12 +182,15 @@ const Index = () => {
     {
       onSuccess: (response) => {
         setLoading(false);
-        router.push(`/image/luxuryshot/${response?.data._id}`, undefined, { scroll: false });
+        router.push(`/image/luxuryshot/${response?.data._id}`, undefined, {
+          scroll: false,
+        });
       },
       onError: (error) => {
         setLoading(false);
         const defaultMessage = "Something went wrong. Please try again later.";
-        const message = error?.response?.data?.message || error?.message || defaultMessage;
+        const message =
+          error?.response?.data?.message || error?.message || defaultMessage;
         setSwalProps({
           icon: "error",
           show: true,
@@ -277,7 +290,6 @@ const Index = () => {
 
   return (
     <div className="flex flex-col md:flex-row text-black md:gap-4">
-      {(isLoading || loadingHeadShot) && <Loading title={"Please wait"} subTitle={subTitle} />}
       <div className="w-full md:w-[30%] bg-[#FFFFFF0D] p-4 border-2 ml-0 md:ml-8 rounded-xl">
         <div>
           <div>
@@ -313,7 +325,10 @@ const Index = () => {
                           onClick={() => handleRemoveImage(url)}
                           className="absolute top-[-8px] right-[-8px] bg-[#EBEBEB] text-black rounded-full w-5 h-5   flex items-center justify-center"
                         >
-                          <img className="h-2" src="/images/headshot/close.png" />
+                          <img
+                            className="h-2"
+                            src="/images/headshot/close.png"
+                          />
                         </button>
                       </div>
                     ))}
@@ -333,7 +348,9 @@ const Index = () => {
                   <div className="flex m-auto justify-center">
                     <img src="/images/headshot/gallery-add.svg" />
                   </div>
-                  <p className="text-sm text-[#1E1E1E]">Select upto 12 photos to upload</p>
+                  <p className="text-sm text-[#1E1E1E]">
+                    Select upto 12 photos to upload
+                  </p>
                   <p className="text-xs text-[#626262] mb-2 mt-4">
                     Upload PNG, JPG, HEIC, or WebP file up to 5MB each
                   </p>
@@ -366,7 +383,9 @@ const Index = () => {
                 <div
                   key={img._id}
                   className={`flex flex-col items-center cursor-pointer border-2 rounded-xl ${
-                    selectedCategory === img.category ? "border-purple-500" : "border-transparent"
+                    selectedCategory === img.category
+                      ? "border-purple-500"
+                      : "border-transparent"
                   }`}
                   onClick={() => handleCategorySelect(img.category)}
                 >
@@ -375,7 +394,9 @@ const Index = () => {
                     alt={`${img.category} style`}
                     className="w-20 h-20 object-cover rounded-lg"
                   />
-                  <span className="text-xs text-[#626262] mt-1">{img.category}</span>
+                  <span className="text-xs text-[#626262] mt-1">
+                    {img.category}
+                  </span>
                 </div>
               ))}
             </div>
@@ -385,7 +406,9 @@ const Index = () => {
                 <div key={img._id} onClick={() => toggleImageSelection(img)}>
                   <div
                     className={`cursor-pointer border-2 rounded-lg overflow-hidden transition relative ${
-                      isImageSelected(img) ? "border-purple-500" : "border-transparent"
+                      isImageSelected(img)
+                        ? "border-purple-500"
+                        : "border-transparent"
                     }`}
                   >
                     <img
@@ -395,7 +418,11 @@ const Index = () => {
                     />
                     {isImageSelected(img) && (
                       <div className="absolute top-1 right-1 w-4 h-4 bg-purple-500 rounded-full flex items-center justify-center">
-                        <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <svg
+                          className="w-2 h-2 text-white"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
                           <path
                             fillRule="evenodd"
                             d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -432,7 +459,9 @@ const Index = () => {
 
           <div className="flex w-full items-center justify-center gap-4 mt-2 mb-6">
             <button
-              disabled={imagePreviews?.length == 0 || selectedImages?.length == 0}
+              disabled={
+                imagePreviews?.length == 0 || selectedImages?.length == 0
+              }
               onClick={() => handleGeneratePhotoAvatar()}
               className="flex w-full items-center text-center justify-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all text-sm md:text-base 
              disabled:bg-gray-400 disabled:cursor-not-allowed disabled:from-gray-200 disabled:to-gray-400"
@@ -443,16 +472,29 @@ const Index = () => {
         </div>
       </div>
 
-      <div className="flex-1 w-full flex flex-col pr-8 pl-4 items-center ">
-        <h2 className="text-xl md:text-2xl font-semibold mt-5">Create an Avatar</h2>
-        <h3 className="pt-2 font-semibold text-[#1E1E1EB2]">
-          Upload photos to create multiple looks for your avatar
-        </h3>
-        <div></div>
-        <AIAvatarSteps uploadedPhotos={uploadedPhotos} aiGeneratedImages={aiGeneratedImages} />
-        <GoodPhotos />
-        <BadPhotos />
-      </div>
+      {isLoading || loadingHeadShot ? (
+        <div className="w-full h-screen ">
+          <Loading title={"Please wait"} subTitle={subTitle} />
+        </div>
+      ) : (
+        <>
+          <div className="flex-1 w-full flex flex-col pr-8 pl-4 items-center ">
+            <h2 className="text-xl md:text-2xl font-semibold mt-5">
+              Create an Avatar
+            </h2>
+            <h3 className="pt-2 font-semibold text-[#1E1E1EB2]">
+              Upload photos to create multiple looks for your avatar
+            </h3>
+            <div></div>
+            <AIAvatarSteps
+              uploadedPhotos={uploadedPhotos}
+              aiGeneratedImages={aiGeneratedImages}
+            />
+            <GoodPhotos />
+            <BadPhotos />
+          </div>
+        </>
+      )}
 
       {isOpen && (
         <div className="min-h-screen relative">
@@ -481,7 +523,9 @@ const Index = () => {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-gray-700 font-medium mb-2">Select gender</label>
+                  <label className="block text-gray-700 font-medium mb-2">
+                    Select gender
+                  </label>
                   <select
                     value={gender}
                     placeholder="select gender"
@@ -522,7 +566,10 @@ const Index = () => {
         />
       )}
 
-      <SweetAlert2 {...swalProps} onConfirm={(handleConfirm) => setSwalProps({ show: false })} />
+      <SweetAlert2
+        {...swalProps}
+        onConfirm={(handleConfirm) => setSwalProps({ show: false })}
+      />
     </div>
   );
 };

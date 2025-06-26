@@ -1,6 +1,8 @@
 import React from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Typography, Box } from "@mui/material";
+import Lottie from "lottie-react";
+import animationData from "../../../../public/images/lottie/background-animation.json";
 
 // const styles = {
 //   root: {
@@ -53,12 +55,66 @@ import { Typography, Box } from "@mui/material";
 
 // import React from "react";
 
-const Loader = ({ title = "Please wait", subTitle = "Loading..." }) => {
+const Loader = ({
+  title = "Please wait",
+  subTitle = "Loading...",
+  percentage = 90,
+}) => {
   return (
-    <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-80 flex flex-col items-center justify-center z-50">
-      <div className="animate-spin rounded-full h-16 w-16 border-4 border-white border-t-transparent mb-6" />
-      <h2 className="text-white text-xl font-semibold">{title}</h2>
-      <p className="text-white text-sm mt-1">{subTitle}</p>
+    <div className="w-full h-3/4 bg-gray-100 bg-opacity-80 flex flex-col items-center justify-center">
+      <div className="w-full h-full flex flex-col items-center justify-center bg-gray-100 text-gray-800 space-y-4">
+        <div className="absolute">
+          <Lottie
+            animationData={animationData}
+            loop={true}
+            className="w-[80%] h-[80%] object-cover opacity-60 ml-[60px]"
+          />
+        </div>
+        {/* Circular Progress */}
+        <div className="relative w-28 h-28">
+          <svg className="" viewBox="0 0 36 36">
+            {/* Background circle */}
+            <path
+              className="text-gray-300"
+              d="M18 2.0845
+               a 15.9155 15.9155 0 0 1 0 31.831
+               a 15.9155 15.9155 0 0 1 0 -31.831"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+            />
+            {/* Progress circle */}
+            <path
+              className="text-transparent"
+              d="M18 2.0845
+               a 15.9155 15.9155 0 0 1 0 31.831
+               a 15.9155 15.9155 0 0 1 0 -31.831"
+              fill="none"
+              stroke="url(#gradient)"
+              strokeWidth="3"
+              strokeDasharray={`${percentage}, 100`}
+            />
+            <defs>
+              <linearGradient id="gradient" x1="1" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#6D28D9" />
+                <stop offset="100%" stopColor="#EC4899" />
+              </linearGradient>
+            </defs>
+          </svg>
+          {/* Percentage in center */}
+          <div className="absolute inset-0 flex items-center justify-center text-lg font-semibold text-purple-700">
+            {percentage}%
+          </div>
+        </div>
+
+        {/* Subtext */}
+        <p className="text-center font-medium">
+          Polishing the visuals for a stunning finish
+        </p>
+
+        {/* Completion Status */}
+        <p className="text-sm text-gray-600">{percentage}% completed</p>
+      </div>
     </div>
   );
 };

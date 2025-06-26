@@ -4,12 +4,11 @@ import animationData from "../../../public/images/lottie/background-animation.js
 const LoadingScreen = ({
   progress = 20,
   mainText = "Analyzing your prompt and imagining the scenes",
-  subText = "20% completed",
+  subText = "",
   autoProgress = false,
   duration = 5000,
 }) => {
   const [currentProgress, setCurrentProgress] = useState(progress);
-
   useEffect(() => {
     if (autoProgress) {
       const interval = setInterval(() => {
@@ -37,7 +36,7 @@ const LoadingScreen = ({
   const strokeDashoffset = circumference - (currentProgress / 100) * circumference;
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full min-h-screen bg-gray-50 flex items-center justify-center p-4 z-50">
+    <div className=" fixed top-[72px] left-0 w-full h-full min-h-screen bg-gray-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white relative rounded-2xl shadow-sm p-12 w-[800px] text-center">
         <div className="absolute inset-0 z-0 w-[800px]  w-full h-full overflow-hidden">
           <Lottie

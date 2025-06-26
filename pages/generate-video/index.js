@@ -206,6 +206,7 @@ const index = () => {
           type: "video",
           prompt: prompt,
           url: response?.data?.finalVideoUrl,
+          section: "Sidebar",
         });
 
         setImagePreview(null);
@@ -332,7 +333,7 @@ const index = () => {
     }, 15000);
 
     // Simulate progress over ~3 minutes
-    const totalDuration = 180000; // 3 minutes
+    const totalDuration = 240000; // 4 minutes
     const updateInterval = 2000; // every 2 seconds
     let elapsed = 0;
 

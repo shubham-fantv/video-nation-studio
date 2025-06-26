@@ -15,7 +15,6 @@ const styles = {
     "@media (max-width:767px)": {
       marginTop: "0px",
       position: "sticky !important",
-      top: "80px",
       zIndex: "999",
       width: "100%",
       padding: "0px",

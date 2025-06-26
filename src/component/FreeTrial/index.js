@@ -68,6 +68,8 @@ const FreeTrial = ({ app }) => {
     if (isTrialOpen) {
       sendEvent({
         event: "popup_displayed",
+        page_name: "Free Trial",
+        sub_page: "Banner",
         popup_type: "Nudge",
         popup_name: "Free Trial",
         popup_messge_text: "Start creating like a pro, free for 7 days",
@@ -102,7 +104,9 @@ const FreeTrial = ({ app }) => {
                 <h1 className="text-base font-semibold text-[#1E1E1E] mb-2">
                   Start Creating Like a Pro, Free for 7 Days
                 </h1>
-                <p className="text-[#626262] text-sm">Cancel anytime, secure sign up</p>
+                <p className="text-[#626262] text-sm">
+                  Cancel anytime, secure sign up
+                </p>
               </div>
               <div
                 onClick={() => handleClose()}
@@ -129,8 +133,12 @@ const FreeTrial = ({ app }) => {
                 <div className="space-y-4 mb-4">
                   <div className="text-sm">1. 20 Images</div>
                   <div className="text-sm">2. 3 Videos</div>
-                  <div className="text-sm">3. Full Access to the exclusive Image Studio</div>
-                  <div className="text-sm">4. Full Access to the exclusive Video Studio</div>
+                  <div className="text-sm">
+                    3. Full Access to the exclusive Image Studio
+                  </div>
+                  <div className="text-sm">
+                    4. Full Access to the exclusive Video Studio
+                  </div>
                   <div className="text-sm">5. Unlimited HD downloads</div>
                 </div>
 
@@ -142,7 +150,11 @@ const FreeTrial = ({ app }) => {
                   Start Trial
                 </button>
 
-                {!isMobile && <p className="text-[] mt-4 text-xs">Trial ends after 7 days</p>}
+                {!isMobile && (
+                  <p className="text-[] mt-4 text-xs">
+                    Trial ends after 7 days
+                  </p>
+                )}
               </div>
             </div>
           </div>

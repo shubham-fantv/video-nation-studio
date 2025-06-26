@@ -21,7 +21,10 @@ const VideoGrid = ({ data, data1 }) => {
 
   // Compute paginated slice
   const paginatedContent = Array.isArray(mergedContent)
-    ? mergedContent.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+    ? mergedContent.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+      )
     : [];
 
   const totalPages = Math.ceil(mergedContent.length / itemsPerPage);
@@ -57,7 +60,9 @@ const VideoGrid = ({ data, data1 }) => {
 
   return (
     <div className="min-h-screen w-full py-6 max-w-[1120px] mx-auto">
-      <h1 className="text-black text-3xl font-bold text-center mb-8">My Usage</h1>
+      <h1 className="text-black text-3xl font-bold text-center mb-8">
+        My Usage
+      </h1>
 
       {/* Desktop Table View */}
       <div className="hidden md:block">
@@ -156,7 +161,9 @@ const VideoGrid = ({ data, data1 }) => {
                     <div className="text-sm  font-semibold mb-1 font-semibold text-[#1E1E1E]">
                       PROMPT
                     </div>
-                    <div className="text-sm text-black break-words">{item?.prompt || "-"}</div>
+                    <div className="text-sm text-black break-words">
+                      {item?.prompt || "-"}
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
@@ -164,13 +171,17 @@ const VideoGrid = ({ data, data1 }) => {
                       <div className="text-sm  font-semibold mb-1 font-semibold text-[#1E1E1E]">
                         TYPE
                       </div>
-                      <div className="text-sm text-black capitalize">{item?.type}</div>
+                      <div className="text-sm text-black capitalize">
+                        {item?.type}
+                      </div>
                     </div>
                     <div>
                       <div className="text-sm  font-semibold mb-1 font-semibold text-[#1E1E1E]">
                         STATUS
                       </div>
-                      <div className="text-sm text-black capitalize">{item?.status}</div>
+                      <div className="text-sm text-black capitalize">
+                        {item?.status}
+                      </div>
                     </div>
                   </div>
 
@@ -179,7 +190,9 @@ const VideoGrid = ({ data, data1 }) => {
                       <div className="text-sm  font-semibold mb-1 font-semibold text-[#1E1E1E]">
                         CREDITS USED
                       </div>
-                      <div className="text-sm text-black">{item?.creditsUsed || 0}</div>
+                      <div className="text-sm text-black">
+                        {item?.creditsUsed || 0}
+                      </div>
                     </div>
                     <div>
                       <div className="text-sm  font-semibold mb-1 font-semibold text-[#1E1E1E]">
@@ -196,7 +209,9 @@ const VideoGrid = ({ data, data1 }) => {
 
                   {item.status === "completed" && (
                     <div className="pt-2 border-t border-gray-200">
-                      <div className="text-blue-500 underline text-sm font-medium">View</div>
+                      <div className="text-blue-500 underline text-sm font-medium">
+                        View
+                      </div>
                     </div>
                   )}
                 </div>
@@ -234,7 +249,9 @@ const VideoGrid = ({ data, data1 }) => {
           ))}
 
           <button
-            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
             disabled={currentPage === totalPages}
             className="px-3 py-2 border rounded disabled:opacity-50 text-sm"
           >
@@ -271,6 +288,7 @@ export async function getServerSideProps(ctx) {
     },
     "default"
   );
+
 
   if (!data.success) {
     return { notFound: true };

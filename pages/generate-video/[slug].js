@@ -130,7 +130,6 @@ const Index = ({ masterData }) => {
   const [authToken, setAuthToken] = useState("");
   const [captionStyle, setCaptionStyle] = useState("");
   const [swalProps, setSwalProps] = useState({});
-  
 
   const { sendEvent } = useGTM();
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -197,6 +196,20 @@ const Index = ({ masterData }) => {
     {
       onSuccess: (response) => {
         //console.log("I AM HERE", response?.data);
+        sendEvent({
+          event: "asset_generated",
+          aspectRatio: aspectRatio,
+          duration: duration,
+          credits_used: credits,
+          caption: captionEnabled,
+          voiceover: voiceoverEnabled,
+          page_name: "Generate Video",
+          interaction_type: "Standard Button",
+          type: "video",
+          prompt: prompt,
+          url: response?.data?.finalVideoUrl,
+          section: "Sidebar",
+        });
         setImagePreview(null);
         setImageUrl(null);
         setPrompt("");
@@ -312,7 +325,7 @@ const Index = ({ masterData }) => {
     }, 15000);
 
     // Simulate progress over ~3 minutes
-    const totalDuration = 180000; // 3 minutes
+    const totalDuration = 240000; // 4 minutes
     const updateInterval = 2000; // every 2 seconds
     let elapsed = 0;
 
@@ -422,12 +435,6 @@ const Index = ({ masterData }) => {
 
   return (
     <div className="flex flex-col md:flex-row text-black md:gap-4">
-      {isLoading && (
-        <Loading
-          title={`Generating your video... (${progressPercentage}%)`}
-          subTitle={subTitle}
-        />
-      )}
       <div className="md:hidden w-full pl-2 md:p-4 ">
         <button
           onClick={() => router.back()}
@@ -536,7 +543,7 @@ const Index = ({ masterData }) => {
                   onChange={(e) => {
                     setDuration(e.target.value);
                     setCredits(
-                      20 *
+                      process.env.NEXT_PUBLIC_CREDIT_AI_VIDEO_VALUE *
                         parseInt(
                           e.target.value.replace("sec", "").trim() / 5,
                           10
@@ -584,7 +591,14 @@ const Index = ({ masterData }) => {
                       setShowVoiceDropdown(false);
                     }}
                   >
-                    <span className="text-sm italic text-gray-500">
+                    <span
+                      className="text-sm italic text-gray-500"
+                      onClick={() => {
+                        setSelectedVoice(null);
+                        setVoiceoverEnabled(false);
+                        setShowVoiceDropdown(false);
+                      }}
+                    >
                       No Voice
                     </span>
                   </div>
@@ -789,61 +803,73 @@ const Index = ({ masterData }) => {
       </div>
 
       <div className="flex-1 flex flex-col items-center ">
-        <div className="hidden md:block w-full md:p-4 bg-[#F5F5F5]">
-          <button
-            onClick={() => router.back()}
-            className="flex items-center text-sm mb-1 text-black"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 mr-2"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Back
-          </button>
-        </div>
-        <div className="w-full p-4 md:p-4 bg-[#F5F5F5] px-4 md:px-[30px] py-4 md:py-[30px]">
-          <div className="bg-[#FFFFFF0D] rounded-lg aspect-video flex items-center justify-center mb-4 m-auto max-h-[300px] md:max-h-[450px]">
-            <div className="text-gray-500 w-full h-full">
-              {/* Video */}
-              {/* Video always rendered */}
-
-              <video
-                src={video}
-                muted
-                loop
-                playsInline
-                controls
-                onMouseEnter={(e) => e.target.play()}
-                onMouseLeave={(e) => e.target.pause()}
-                onEnded={(e) => e.target.play()}
-                className="w-full h-full object-contain rounded-xl max-h-[300px] md:max-h-[450px]"
-              />
+        {isLoading ? (
+          <div className="w-full h-screen">
+            <Loading
+              title={`Generating your video... (${progressPercentage}%)`}
+              subTitle={subTitle}
+              percentage={Math.round((progressPercentage * 95) / 100)}
+            />
+          </div>
+        ) : (
+          <>
+            <div className="hidden md:block w-full md:p-4 bg-[#F5F5F5]">
+              <button
+                onClick={() => router.back()}
+                className="flex items-center text-sm mb-1 text-black"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 mr-2"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                Back
+              </button>
             </div>
-          </div>
+            <div className="w-full p-4 md:p-4 bg-[#F5F5F5] px-4 md:px-[30px] py-4 md:py-[30px]">
+              <div className="bg-[#FFFFFF0D] rounded-lg aspect-video flex items-center justify-center mb-4 m-auto max-h-[300px] md:max-h-[450px]">
+                <div className="text-gray-500 w-full h-full">
+                  {/* Video */}
+                  {/* Video always rendered */}
 
-          <div className="flex items-center justify-center flex-wrap gap-2 md:gap-4 mt-2">
-            <button
-              onClick={handleDownloadVideo}
-              className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
-            >
-              ✨ Download
-            </button>
-            <button
-              onClick={handleEdit}
-              className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
-            >
-              Edit
-            </button>
-          </div>
-        </div>
+                  <video
+                    src={video}
+                    muted
+                    loop
+                    playsInline
+                    controls
+                    onMouseEnter={(e) => e.target.play()}
+                    onMouseLeave={(e) => e.target.pause()}
+                    onEnded={(e) => e.target.play()}
+                    className="w-full h-full object-contain rounded-xl max-h-[300px] md:max-h-[450px]"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-center flex-wrap gap-2 md:gap-4 mt-2">
+                <button
+                  onClick={handleDownloadVideo}
+                  className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
+                >
+                  ✨ Download
+                </button>
+                <button
+                  onClick={handleEdit}
+                  className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
+                >
+                  Edit
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
       <SweetAlert2
         {...swalProps}

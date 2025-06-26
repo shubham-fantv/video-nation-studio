@@ -32,7 +32,10 @@ export default function Index() {
   const router = useRouter();
   const { isLoading: avatarLoading } = useQuery(
     `${FANTV_API_URL}/api/v1/ai-avatar/photo-avatar/${router?.query?.slug}`,
-    () => fetcher.get(`${FANTV_API_URL}/api/v1/ai-avatar/photo-avatar/${router?.query?.slug}`),
+    () =>
+      fetcher.get(
+        `${FANTV_API_URL}/api/v1/ai-avatar/photo-avatar/${router?.query?.slug}`
+      ),
     {
       enabled: !!router.query.slug,
       refetchOnMount: "always",
@@ -45,7 +48,10 @@ export default function Index() {
 
   const { isLoading: createdAvatar } = useQuery(
     `${FANTV_API_URL}/api/v1/ai-avatar/user-avatars?page=1&limit=100`,
-    () => fetcher.get(`${FANTV_API_URL}/api/v1/ai-avatar/user-avatars?page=1&limit=100`),
+    () =>
+      fetcher.get(
+        `${FANTV_API_URL}/api/v1/ai-avatar/user-avatars?page=1&limit=100`
+      ),
     {
       enabled: !!router.query.slug,
       refetchOnMount: "always",
@@ -57,7 +63,10 @@ export default function Index() {
 
   const { mutate: generatePhotoAvatarApi } = useMutation(
     (obj) =>
-      fetcher.post(`${API_BASE_URL}/api/v1/ai-avatar/photo-avatar/${router.query.slug}`, obj),
+      fetcher.post(
+        `${API_BASE_URL}/api/v1/ai-avatar/photo-avatar/${router.query.slug}`,
+        obj
+      ),
     {
       onSuccess: (response) => {
         setLoading(false);
@@ -66,7 +75,8 @@ export default function Index() {
       onError: (error) => {
         setLoading(false);
         const defaultMessage = "Something went wrong. Please try again later.";
-        const message = error?.response?.data?.message || error?.message || defaultMessage;
+        const message =
+          error?.response?.data?.message || error?.message || defaultMessage;
         setSwalProps({
           icon: "error",
           show: true,
@@ -105,7 +115,9 @@ export default function Index() {
     {
       refetchOnMount: "always",
       onSuccess: ({ data }) => {
-        setHeadShotStyleData(data.filter((item) => item.category !== "Estates"));
+        setHeadShotStyleData(
+          data.filter((item) => item.category !== "Estates")
+        );
       },
     }
   );
@@ -206,7 +218,9 @@ export default function Index() {
                 <div className="space-y-5 ">
                   <h1 className="text-base font-medium text-gray-900">
                     Hang tight! Just{" "}
-                    <span className="text-blue-500 text-xl font-semibold">{timeLeft} minutes</span>{" "}
+                    <span className="text-blue-500 text-xl font-semibold">
+                      {timeLeft} minutes
+                    </span>{" "}
                     left to bring your image to life.
                   </h1>
                   <p className=" text-sm text-gray-600 text-sm">
@@ -250,12 +264,16 @@ export default function Index() {
                         alt={`${img?.category} style`}
                         className={`w-20 h-20 object-cover rounded-lg `}
                       />
-                      <span className="text-xs text-center mt-1 w-20 truncate">{img?.name}</span>
+                      <span className="text-xs text-center mt-1 w-20 truncate">
+                        {img?.name}
+                      </span>
                     </div>
                   ))}
                 </div>
 
-                <h2 className="text-sm font-semibold my-3">Select Luxuryshot Style</h2>
+                <h2 className="text-sm font-semibold my-3">
+                  Select Luxuryshot Style
+                </h2>
                 <div className="flex gap-1 overflow-x-auto mb-4">
                   {mainImages.map((img, idx) => (
                     <div
@@ -272,16 +290,23 @@ export default function Index() {
                         alt={`${img.category} style`}
                         className="w-20 h-20 object-cover rounded-lg"
                       />
-                      <span className="text-xs text-[#626262] mt-1">{img.category}</span>
+                      <span className="text-xs text-[#626262] mt-1">
+                        {img.category}
+                      </span>
                     </div>
                   ))}
                 </div>
                 <div className="grid grid-cols-3 gap-4 bg-gray-50 p-4 rounded-xl mb-6">
                   {relatedImages.map((img, idx) => (
-                    <div key={img._id} onClick={() => toggleImageSelection(img)}>
+                    <div
+                      key={img._id}
+                      onClick={() => toggleImageSelection(img)}
+                    >
                       <div
                         className={`cursor-pointer border-2 rounded-lg overflow-hidden transition relative ${
-                          isImageSelected(img) ? "border-purple-500" : "border-transparent"
+                          isImageSelected(img)
+                            ? "border-purple-500"
+                            : "border-transparent"
                         }`}
                       >
                         <img
@@ -312,7 +337,9 @@ export default function Index() {
                   ))}
                 </div>
               </div>
-              <h3 className="mb-6 text-sm text-[#1E1E1EB2] text-normal">Credits : 100</h3>
+              <h3 className="mb-6 text-sm text-[#1E1E1EB2] text-normal">
+                Credits : 100
+              </h3>
               <div className="flex w-full items-center justify-center gap-4 mt-2 mb-6">
                 <button
                   disabled={selectedImages?.length == 0}
@@ -325,100 +352,113 @@ export default function Index() {
               </div>
             </div>
           </div>
-          <div className="flex-1 w-full flex flex-col pt-5 md:pt-0 pr-0 md:pr-8 pl-0 md:pl-4 items-center ">
-            <div className="min-h-screen  w-full ">
-              <div className="w-full  mx-auto">
-                <div className="bg-[#F6F4FF] rounded-2xl border border-[#E4DDFF] p-8 relative overflow-hidden">
-                  <h2 className="text-2xl text-center mb-3 font-semibold">{data?.name}</h2>
-                  <div className="flex justify-center ">
-                    <div className="relative">
-                      <div className="w-80 h-80 rounded-3xl overflow-hidden border-4  shadow-2xl ">
-                        <img
-                          src={selectedImage?.imageUrl}
-                          alt={selectedImage?.description}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.target.src =
-                              "https://via.placeholder.com/320x320/e5e7eb/9ca3af?text=Avatar+Image";
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Selected Image Info */}
-                  <div className="text-center mb-8">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-2">
-                      {selectedImage?.style}
+          {isLoading ? (
+            <div className="w-full h-screen">
+              <Loading title={"Please wait"} />
+            </div>
+          ) : (
+            <div className="flex-1 w-full flex flex-col pt-5 md:pt-0 pr-0 md:pr-8 pl-0 md:pl-4 items-center ">
+              <div className="min-h-screen  w-full ">
+                <div className="w-full  mx-auto">
+                  <div className="bg-[#F6F4FF] rounded-2xl border border-[#E4DDFF] p-8 relative overflow-hidden">
+                    <h2 className="text-2xl text-center mb-3 font-semibold">
+                      {data?.name}
                     </h2>
-                    <p className="text-gray-600">{selectedImage?.description}</p>
-                  </div>
-
-                  <div className="bg-[#E8E6F5] rounded-2xl p-3 sm:p-4 lg:p-6">
-                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 sm:gap-3 lg:gap-1">
-                      {data?.images?.map((image, index) => (
-                        <div key={image.id} className="flex flex-col items-center">
-                          <div
-                            className={`w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 lg:w-20 lg:h-20 rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer transform transition-all duration-300 hover:scale-110 hover:shadow-lg ${
-                              selectedImage?._id === image?._id
-                                ? "ring-2 sm:ring-4 ring-purple-400 shadow-lg scale-105"
-                                : "ring-1 sm:ring-2 ring-gray-200 hover:ring-purple-300"
-                            }`}
-                            onClick={() => handleImageClick(image)}
-                          >
-                            <img
-                              src={image.imageUrl}
-                              alt={image.description}
-                              className="w-full h-full object-cover"
-                              onError={(e) => {
-                                e.target.src =
-                                  "https://via.placeholder.com/80x80/e5e7eb/9ca3af?text=Avatar";
-                              }}
-                            />
-                          </div>
-                          <p className="text-xs sm:text-sm font-medium text-center text-gray-700 mt-1 sm:mt-2 leading-tight max-w-full truncate px-1">
-                            {image?.headshotId?.style}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Selected Image Info - Mobile Only */}
-                    {selectedImage && (
-                      <div className="mt-4 p-3 bg-white rounded-xl shadow-sm sm:hidden">
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
-                            <img
-                              src={selectedImage.imageUrl}
-                              alt={selectedImage.description}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-semibold text-gray-900 truncate">
-                              {selectedImage?.headshotId?.style}
-                            </p>
-                            <p className="text-xs text-gray-600 truncate">
-                              {selectedImage.description}
-                            </p>
-                          </div>
+                    <div className="flex justify-center ">
+                      <div className="relative">
+                        <div className="w-80 h-80 rounded-3xl overflow-hidden border-4  shadow-2xl ">
+                          <img
+                            src={selectedImage?.imageUrl}
+                            alt={selectedImage?.description}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.src =
+                                "https://via.placeholder.com/320x320/e5e7eb/9ca3af?text=Avatar+Image";
+                            }}
+                          />
                         </div>
                       </div>
-                    )}
-                  </div>
-                  <div className="flex justify-center pt-4">
-                    <div
-                      onClick={() => handleDownload()}
-                      className="px-3 py-2 rounded-full w-max-content cursor-pointer"
-                      style={{ border: "1px solid #1E1E1E" }}
-                    >
-                      Download All
+                    </div>
+
+                    {/* Selected Image Info */}
+                    <div className="text-center mb-8">
+                      <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+                        {selectedImage?.style}
+                      </h2>
+                      <p className="text-gray-600">
+                        {selectedImage?.description}
+                      </p>
+                    </div>
+
+                    <div className="bg-[#E8E6F5] rounded-2xl p-3 sm:p-4 lg:p-6">
+                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 sm:gap-3 lg:gap-1">
+                        {data?.images?.map((image, index) => (
+                          <div
+                            key={image.id}
+                            className="flex flex-col items-center"
+                          >
+                            <div
+                              className={`w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 lg:w-20 lg:h-20 rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer transform transition-all duration-300 hover:scale-110 hover:shadow-lg ${
+                                selectedImage?._id === image?._id
+                                  ? "ring-2 sm:ring-4 ring-purple-400 shadow-lg scale-105"
+                                  : "ring-1 sm:ring-2 ring-gray-200 hover:ring-purple-300"
+                              }`}
+                              onClick={() => handleImageClick(image)}
+                            >
+                              <img
+                                src={image.imageUrl}
+                                alt={image.description}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.target.src =
+                                    "https://via.placeholder.com/80x80/e5e7eb/9ca3af?text=Avatar";
+                                }}
+                              />
+                            </div>
+                            <p className="text-xs sm:text-sm font-medium text-center text-gray-700 mt-1 sm:mt-2 leading-tight max-w-full truncate px-1">
+                              {image?.headshotId?.style}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Selected Image Info - Mobile Only */}
+                      {selectedImage && (
+                        <div className="mt-4 p-3 bg-white rounded-xl shadow-sm sm:hidden">
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                              <img
+                                src={selectedImage.imageUrl}
+                                alt={selectedImage.description}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-semibold text-gray-900 truncate">
+                                {selectedImage?.headshotId?.style}
+                              </p>
+                              <p className="text-xs text-gray-600 truncate">
+                                {selectedImage.description}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex justify-center pt-4">
+                      <div
+                        onClick={() => handleDownload()}
+                        className="px-3 py-2 rounded-full w-max-content cursor-pointer"
+                        style={{ border: "1px solid #1E1E1E" }}
+                      >
+                        Download All
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       )}
     </div>
