@@ -127,6 +127,7 @@ const Index = ({ masterData }) => {
   const [visibility, setVisibility] = useState("Public");
   const [captionEnabled, setCaptionEnabled] = useState("");
   const [prompt, setPrompt] = useState("");
+  const quoteIndexRef = useRef(0);
   const router = useRouter();
   const [imagePreview, setImagePreview] = useState("");
 

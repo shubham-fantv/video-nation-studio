@@ -34,6 +34,7 @@ const Index = ({ masterData }) => {
   const [imageLoading, setImageLoading] = useState(false);
   const dispatch = useDispatch();
   const [progressPercentage, setProgressPercentage] = useState(0);
+  const quoteIndexRef = useRef(0);
 
   const [image, setImage] = useState("");
   const [newImage, setNewImage] = useState("");
