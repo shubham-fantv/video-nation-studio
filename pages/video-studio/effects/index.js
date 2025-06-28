@@ -10,7 +10,6 @@ import CommunityCreatedContent from "../../../src/component/CommunityCreatedCont
 
 const index = () => {
   const cards = [
-    // existing cards...
     {
       _id: "1",
       name: "Let's YMCA!",
