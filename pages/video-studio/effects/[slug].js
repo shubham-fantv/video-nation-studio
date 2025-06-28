@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { FANTV_API_URL } from "../../../src/constant/constants";
 import { parseCookies } from "nookies";
+import fetcher from "../../../src/dataProvider";
 
 const cards = [
   {
@@ -139,9 +140,6 @@ const cards = [
   },
 ];
 
-let HARDCODED_TOKEN =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MzQxOTI3MGRiYjU5M2FmNDc3NjZiNiIsIm5hbWUiOiJIaW1hbnNodSBKYWluIiwiaWF0IjoxNzQ5NzI0NzU5fQ.OnleWnLm_aXWHrgG3QLwTOAhOhz76Kjtive1ZQboSNw";
-
 const EffectPage = () => {
   const router = useRouter();
   const { slug } = router.query;
@@ -231,7 +229,7 @@ const EffectPage = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post(
+      const res = await fetcher.post(
         `${FANTV_API_URL}/api/v1/ai-video-pixverse`,
         {
           prompt: "smiling",
@@ -243,18 +241,12 @@ const EffectPage = () => {
           motion_mode: "normal",
           aspect_ratio: aspectRatio,
           visibility: "private",
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${HARDCODED_TOKEN}`,
-            "Content-Type": "application/json",
-          },
         }
       );
 
       console.log("Video creation response:", res);
 
-      const _id = res?.data?.data?._id;
+      const _id = res?.data?._id;
       if (!_id) throw new Error("No video ID returned from server");
 
       setVideoId(_id);
@@ -274,16 +266,11 @@ const EffectPage = () => {
 
     const pollProgress = async () => {
       try {
-        const progressRes = await axios.get(
-          `https://api.videonation.xyz/api/v1/ai-video-pixverse/progress/${videoId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${HARDCODED_TOKEN}`,
-            },
-          }
+        const progressRes = await fetcher.get(
+          `https://api.videonation.xyz/api/v1/ai-video-pixverse/progress/${videoId}`
         );
 
-        const responseData = progressRes?.data?.data || {};
+        const responseData = progressRes?.data || {};
         const {
           finalVideoUrl,
           status: apiStatus,
