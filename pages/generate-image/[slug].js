@@ -70,6 +70,7 @@ const Index = ({ masterData }) => {
     openUpgradeModal,
     openTrialModal,
     openNoCreditModal,
+    refetchUserData
   } = usePlanModal();
   const [subTitle, setSubTitle] = useState("");
   const [isLoading, setLoading] = useState(false);
@@ -180,6 +181,7 @@ const Index = ({ masterData }) => {
         router.replace(`/generate-image/${response?.data._id}`, undefined, {
           scroll: false,
         });
+        refetchUserData()
       },
       onError: (error) => {
         setLoading(false);

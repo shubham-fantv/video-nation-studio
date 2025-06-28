@@ -51,7 +51,9 @@ const index = () => {
     openUpgradeModal,
     openTrialModal,
     openNoCreditModal,
+    refetchUserData
   } = usePlanModal();
+
 
   const getRandomPrompts = (list, count = 3) =>
     list
@@ -153,6 +155,7 @@ const index = () => {
         router.replace(`/generate-image/${response?.data._id}`, undefined, {
           scroll: false,
         });
+        refetchUserData()
       },
       onError: (error) => {
         setLoading(false);
