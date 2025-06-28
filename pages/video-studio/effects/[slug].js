@@ -24,6 +24,24 @@ const EffectPage = () => {
   const [status, setStatus] = useState(""); // Track the actual status from API
   const [error, setError] = useState("");
 
+  const handleDownload = async () => {
+    try {
+      const response = await fetch(videoUrl);
+      const blob = await response.blob();
+
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = "video.mp4";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error("Video download failed:", error);
+    }
+  };
+
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -365,13 +383,12 @@ const EffectPage = () => {
                   onCanPlay={() => console.log("Video can play")}
                 />
 
-                <a
-                  href={videoUrl}
-                  download
+                <button
+                  onClick={handleDownload}
                   className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
                 >
                   Download Video
-                </a>
+                </button>
               </div>
             </div>
           ) : (
