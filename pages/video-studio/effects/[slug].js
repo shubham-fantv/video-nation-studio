@@ -354,15 +354,25 @@ const EffectPage = () => {
               showCompleted={progress >= 100 && videoUrl}
             />
           ) : videoUrl ? (
-            <div className="w-full max-w-2xl">
-              <video
-                src={videoUrl}
-                controls
-                autoPlay
-                className="rounded-xl w-3/4 shadow-lg"
-                onLoadStart={() => console.log("Video loading started")}
-                onCanPlay={() => console.log("Video can play")}
-              />
+            <div className="w-full max-w-xl mx-auto p-6 bg-[#F9FAFB] rounded-2xl shadow-md">
+              <div className="flex flex-col items-center space-y-4">
+                <video
+                  src={videoUrl}
+                  controls
+                  autoPlay
+                  className="rounded-lg w-[640px] h-[280px] shadow-md"
+                  onLoadStart={() => console.log("Video loading started")}
+                  onCanPlay={() => console.log("Video can play")}
+                />
+
+                <a
+                  href={videoUrl}
+                  download
+                  className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
+                >
+                  Download Video
+                </a>
+              </div>
             </div>
           ) : (
             <div className="text-center">
