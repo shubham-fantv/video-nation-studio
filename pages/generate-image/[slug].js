@@ -236,6 +236,7 @@ const Index = ({ masterData }) => {
           credits_used: 1,
           button_id: "rect_img_btn",
           section: "Sidebar",
+          app_id: "Videonation",
         });
         sendEvent({
           event: "Generate Image Slug",

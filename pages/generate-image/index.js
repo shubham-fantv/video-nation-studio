@@ -217,6 +217,7 @@ const index = () => {
           prompt: prompt,
           credits_used: 1,
           button_id: "gen_img_btn",
+          app_id: "Videonation",
         });
         const requestBody = {
           prompt,

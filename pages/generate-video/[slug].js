@@ -308,6 +308,7 @@ const Index = ({ masterData, slug }) => {
           credits_used: creditsUsed,
           section: "Sidebar",
           button_id: "rect_vid_btn",
+          app_id: "Videonation",
         });
         const requestBody = {
           prompt,
