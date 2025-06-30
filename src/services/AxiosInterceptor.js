@@ -22,6 +22,7 @@ Api.interceptors.request.use(
       (request.url.includes("v1/") ||
         request.url.includes("v2/") ||
         request.url.includes("end-trial-and-upgrade") ||
+        request.url.includes("crypto") ||
         request.url.includes("checkout")) &&
       !request.url.includes("login")
     ) {

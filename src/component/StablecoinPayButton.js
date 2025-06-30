@@ -11,6 +11,7 @@ import { setUserData } from "../../src/redux/slices/user";
 import { useQuery } from 'react-query';
 import { FANTV_API_URL } from "../constant/constants";
 import fetcher from "../dataProvider";
+import { useMutation } from 'react-query';
 
 // Setup SUI client
 const client = new SuiClient({ url: getFullnodeUrl('mainnet') });
@@ -20,7 +21,7 @@ const STABLECOIN_CONFIG = {
     sui: {
       coinType: '0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC',
       decimals: 6,
-      pay_recipient: '0x71c2ee4d0ad15c7375049f1e1cd220f8e75955ffda8f2112ae1f08d5731682fb'
+      pay_recipient: '0xc2bb2fb23effeff61b34230849f17d5a53bb12f480f9850b6b64dee3dbbd5dc8'
     },
     ethereum: {
       address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
@@ -107,47 +108,20 @@ export default function StablecoinPayButton({
       },
     }
   );
-
-
-  async function verifyCryptoPayment({ txDigest, planId, chain='sui' }) {
-    try {
-      const response = await fetch('http://127.0.0.1:3001/verify-crypto-payment', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NWJiNWJlMTRjZDhlMGU2YTc2OTEyMiIsIm5hbWUiOiJHdWVzdCBVc2VyIiwiaWF0IjoxNzUwODQ0OTYwfQ.TKuFEACdygh-c34gE8_gEg_dT-WpcnABDLqQDPAKRoo`,
-          'Connection': 'keep-alive',
-          'Content-Type': 'application/json',
-          'Origin': 'https://app.videonation.ai',
-          'Referer': 'https://app.videonation.ai/',
-          'User-Agent': navigator.userAgent,
-          'platform': 'web',
-        },
-        body: JSON.stringify({
-          tx_digest: txDigest,
-          chain: chain,
-          plan_id: planId,
-        }),
-      });
-  
-      console.log(verifyCryptoPayment, response)
-      if (!response?.ok) {
-        alert(`Something went wrong.`);
-
-      }
-  
-      const data = await response.json();
-      console.log('✅ Verified on backend:', data);
-      refetch()
-      return data;
-    } catch (error) {
-      console.error('❌ Error in verifyCryptoPayment:', error);
-      alert(`Something went wrong. ${error}`);
+  const { mutate: verifyCryptoPayment } = useMutation(
+    (obj) => fetcher.post(`${FANTV_API_URL}/verify-crypto-payment`, obj),
+    {
+      onSuccess: async(response) => {
+        console.log('✅ Verified on backend:', response);
+        refetch()
+      },
+      onError: (error) => {
+        console.log('❌ Error in verifyCryptoPayment:', error);
+        alert(`Something went wrong. ${error}`);
+      },
     }
-  }
+  );
 
-  
 
   const handlePayment = async () => {
     const tokenConfig = STABLECOIN_CONFIG[tokenType];
@@ -191,11 +165,16 @@ export default function StablecoinPayButton({
                     timeout: 45000,
                   });
         
+                  // verifyCryptoPayment({
+                  //   txDigest,
+                  //   planId: plan_id,
+                  //   chain: 'sui',
+                  // });
                   verifyCryptoPayment({
-                    txDigest,
-                    planId: plan_id,
+                    tx_digest: txDigest,
                     chain: 'sui',
-                  });
+                    plan_id: plan_id,
+                  })
                 } catch (err) {
                   console.error('⛔️ Error waiting for tx confirmation:', err);
                   alert('Tip sent but confirmation failed.');

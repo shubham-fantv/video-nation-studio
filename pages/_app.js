@@ -98,7 +98,7 @@ function MyApp({ Component, pageProps, emotionCache = createEmotionCache() }) {
                     <FreeTrial />
                     <NoCreditModal />
                     <SuiClientProvider networks={networkConfig} defaultNetwork="mainnet">
-                      <WalletProvider autoConnect={false}>
+                      <WalletProvider autoConnect={true}>
                         <Layout {...pageProps}>
                           <Component {...pageProps} />
                         </Layout>
