@@ -9,6 +9,7 @@ import useGTM from "../hooks/useGTM";
 import LoginAndSignup from "./feature/Login";
 import VideoCard from "./TemplateVideo";
 import { useIntersectionVideo } from "../hooks/useIntsectionVideo";
+import CustomWalletModal from "./CustomWalletModal";
 
 function LazyVideo({ videoUrl, posterUrl }) {
   const videoRef = useRef();
@@ -275,13 +276,19 @@ const CommunityCreatedContent = ({
           </div>
         </div>
       </div>
-      {isPopupVisible && (
-        <LoginAndSignup
-          callBackName={"uniqueCommunity"}
-          open={isPopupVisible}
-          handleModalClose={() => setIsPopupVisible(false)}
-        />
-      )}
+
+      {process?.env.NEXT_PUBLIC_APP === 'studio' && isPopupVisible ? (
+          <CustomWalletModal open={isPopupVisible} onClose={() => setIsPopupVisible(false)} />
+        ) : (
+          isPopupVisible && (
+            <LoginAndSignup
+              callBackName={"uniqueCommunity"}
+              open={isPopupVisible}
+              handleModalClose={() => setIsPopupVisible(false)}
+            />
+          )
+        )}
+
     </div>
   );
 };

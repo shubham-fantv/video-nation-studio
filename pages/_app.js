@@ -3,7 +3,13 @@ import { SnackbarProvider } from "@/src/context/SnackbarContext";
 import { CacheProvider } from "@emotion/react";
 import "@fontsource/inter";
 import "animate.css";
-import { QueryClient, QueryClientProvider } from "react-query";
+import {
+  QueryClient as QueryClientV3,
+  QueryClientProvider as QueryClientProviderV3,
+  Hydrate,
+} from "react-query"
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
@@ -25,6 +31,18 @@ import { PlanModalProvider } from "../src/context/PlanModalContext";
 import PlanUpgradeModal from "../src/component/PlanUpgradeModal";
 import FreeTrial from "../src/component/FreeTrial";
 import NoCreditModal from "../src/component/NoCreditModal";
+import {
+  createNetworkConfig,
+  SuiClientProvider,
+  WalletProvider,
+} from '@mysten/dapp-kit';
+import { getFullnodeUrl } from '@mysten/sui/client';
+import '@mysten/dapp-kit/dist/index.css';
+
+const { networkConfig } = createNetworkConfig({
+  mainnet: { url: getFullnodeUrl('mainnet') },
+});
+
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -61,9 +79,13 @@ function MyApp({ Component, pageProps, emotionCache = createEmotionCache() }) {
     };
   }, [router]);
 
+  const tanstackQueryClient = new QueryClient();       // For mysten/dapp-kit
+  const reactQueryClientV3 = new QueryClientV3();      // For legacy useQuery
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <GoogleOAuthProvider clientId="508551165708-227o7s8mmoc7sdt41999gqjratr78tjq.apps.googleusercontent.com">
+    <QueryClientProviderV3 client={reactQueryClientV3}>
+    <QueryClientProvider client={tanstackQueryClient}>
+      <GoogleOAuthProvider clientId="...">
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
             <CacheProvider value={emotionCache}>
@@ -75,11 +97,13 @@ function MyApp({ Component, pageProps, emotionCache = createEmotionCache() }) {
                     <PlanUpgradeModal />
                     <FreeTrial />
                     <NoCreditModal />
-                    {/* <ResponsiveWrapper> */}
-                    <Layout {...pageProps}>
-                      <Component {...pageProps} />
-                    </Layout>
-                    {/* </ResponsiveWrapper> */}
+                    <SuiClientProvider networks={networkConfig} defaultNetwork="mainnet">
+                      <WalletProvider autoConnect={false}>
+                        <Layout {...pageProps}>
+                          <Component {...pageProps} />
+                        </Layout>
+                      </WalletProvider>
+                    </SuiClientProvider>
                   </SnackbarProvider>
                 </PlanModalProvider>
               </PageThemeProvider>
@@ -88,6 +112,8 @@ function MyApp({ Component, pageProps, emotionCache = createEmotionCache() }) {
         </Provider>
       </GoogleOAuthProvider>
     </QueryClientProvider>
+    </QueryClientProviderV3>
   );
+  
 }
 export default MyApp;

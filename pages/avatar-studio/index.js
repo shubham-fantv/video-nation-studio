@@ -17,6 +17,8 @@ import SweetAlert2 from "react-sweetalert2";
 import Loading from "../../src/component/common/Loading/loading";
 import LoginAndSignup from "../../src/component/feature/Login/index";
 import { usePlanModal } from "../../src/context/PlanModalContext";
+import CustomWalletModal from "../../src/component/CustomWalletModal";
+
 const index = (data) => {
   const [avatarData, setAvatarData] = useState([]);
   const router = useRouter();
@@ -848,13 +850,18 @@ const index = (data) => {
           </div>
         </div>
       )}
-      {isPopupVisible && (
-        <LoginAndSignup
-          callBackName={"uniqueCommunity"}
-          open={isPopupVisible}
-          handleModalClose={() => setIsPopupVisible(false)}
-        />
-      )}
+    
+   {process?.env.NEXT_PUBLIC_APP === 'studio' && isPopupVisible ? (
+        <CustomWalletModal open={isPopupVisible} onClose={() => setIsPopupVisible(false)} />
+      ) : (
+        isPopupVisible && (
+          <LoginAndSignup
+            callBackName={"uniqueCommunity"}
+            open={isPopupVisible}
+            handleModalClose={() => setIsPopupVisible(false)}
+          />
+        )
+      )} 
 
       <SweetAlert2 {...swalProps} onConfirm={handleConfirm} />
     </div>

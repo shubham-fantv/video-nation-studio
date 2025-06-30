@@ -18,6 +18,7 @@ import useGTM from "../../src/hooks/useGTM";
 import LoadingScreen from "../../src/component/common/LoadingScreen";
 import { usePlanModal } from "../../src/context/PlanModalContext";
 import { useSnackbar } from "../../src/context/SnackbarContext";
+import CustomWalletModal from "../../src/component/CustomWalletModal";
 
 const aspectRatioSizeMap = {
   "1:1": "w-4 h-4",
@@ -693,13 +694,17 @@ const index = () => {
           </div>
         </div>
       )}
-      {isPopupVisible && (
-        <LoginAndSignup
-          callBackName={"uniqueCommunity"}
-          open={isPopupVisible}
-          handleModalClose={() => setIsPopupVisible(false)}
-        />
-      )}
+     {process?.env.NEXT_PUBLIC_APP === 'studio' && isPopupVisible ? (
+        <CustomWalletModal open={isPopupVisible} onClose={() => setIsPopupVisible(false)} />
+      ) : (
+        isPopupVisible && (
+          <LoginAndSignup
+            callBackName={"uniqueCommunity"}
+            open={isPopupVisible}
+            handleModalClose={() => setIsPopupVisible(false)}
+          />
+        )
+      )} 
       <SweetAlert2 {...swalProps} onConfirm={(handleConfirm) => setSwalProps({ show: false })} />
     </div>
   );

@@ -25,14 +25,21 @@ const UserProfileDropdown = () => {
         style={{ border: "1px solid #262626" }}
         className="flex items-center space-x-2 rounded-xl h-[40px]  p-1 md:p-2 shadow-sm hover:bg-gray-50 transition-colors"
       >
-        <img
-          src={userData?.profilePicture}
-          alt={userData?.name || "User"}
-          className="h-8 w-8 rounded-full object-cover"
-          onError={(e) => {
-            e.currentTarget.src = "/images/icons/user.png";
-          }}
-        />
+        {userData?.profilePicture ? (
+          <img
+            src={userData.profilePicture}
+            alt={userData.name || "User"}
+            className="h-8 w-8 rounded-full object-cover"
+            onError={(e) => {
+              e.currentTarget.src = "/images/icons/user.png";
+            }}
+          />
+        ) : (
+          <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center text-sm font-semibold text-white">
+            {userData?.name ? userData.name.charAt(0).toUpperCase() : "G"}
+          </div>
+        )}
+        
         <span className="font-medium text-gray-700 truncate">{userData.name}</span>
         <ChevronDown
           className={`h-4 w-4 text-gray-500 transition-transform ${isOpen ? "rotate-180" : ""}`}

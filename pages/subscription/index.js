@@ -6,6 +6,8 @@ import { useSelector } from "react-redux";
 import useGTM from "../../src/hooks/useGTM";
 import LoginAndSignup from "../../src/component/feature/Login";
 import { getPageSubPage } from "../../src/utils/common";
+import StablecoinPayButton from "../../src/component/StablecoinPayButton";
+
 const PricingPlans = () => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [subscriptions, setSubscriptions] = useState([]);
@@ -299,7 +301,7 @@ const PricingPlans = () => {
                     )
                   )}
 
-                  {plan.billedType && <p className="text-sm  mt-2">Billed {plan.billedType}</p>}
+                  {plan.billedType && process.env.NEXT_PUBLIC_APP !== "studio"  && <p className="text-sm  mt-2">Billed {plan.billedType}</p>}
                 </div>
 
                 {isCurrentPlan && userData?.isTrialUser ? (
@@ -309,24 +311,33 @@ const PricingPlans = () => {
                   >
                     Current Plan
                   </button>
-                ) : (
-                  <button
-                    onClick={() => handleChoosePlan(plan)}
-                    className={`py-2 px-2 rounded-md mb-4 font-medium ${
-                      !userSubscriptionData?.subscriptionPlanId || userData?.isTrialUser
-                        ? "bg-blue-600" // new/trial user default
-                        : isUpgrade
-                        ? "bg-[#1E1E1E]"
-                        : "bg-yellow-600"
-                    } text-white hover:brightness-110`}
+                ) : 
+                  process.env.NEXT_PUBLIC_APP === "studio" ? 
+                    <StablecoinPayButton
+                    amount={plan?.cost}
+                    tokenType="USDC"
+                    recipient="0xYourWalletAddress"
+                    evmProvider={window.ethereum}
+                    onSuccess={() => alert('✅ Payment success')}
+                    onFailure={(err) => alert(`❌ Payment failed: ${err.message}`)}
+                    plan_id={plan?._id}
                   >
-                    {!userSubscriptionData?.subscriptionPlanId || userData?.isTrialUser
-                      ? "Choose Plan"
-                      : isUpgrade
-                      ? "Choose Plan"
-                      : "Choose Plan"}
-                  </button>
-                )}
+                     Choose Plan
+                  </StablecoinPayButton>
+                   : 
+                    <button
+                      onClick={() => handleChoosePlan(plan)}
+                      className={`py-2 px-2 rounded-md mb-4 font-medium ${
+                        !userSubscriptionData?.subscriptionPlanId || userData?.isTrialUser
+                          ? "bg-blue-600"
+                          : isUpgrade
+                          ? "bg-[#1E1E1E]"
+                          : "bg-yellow-600"
+                      } text-white hover:brightness-110`}
+                    >
+                      Choose Plan
+                    </button>
+                }
 
                 <ul className="space-y-2">
                   {plan?.benefits?.map((feature, featureIndex) => (

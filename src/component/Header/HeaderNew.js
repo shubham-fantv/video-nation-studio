@@ -23,6 +23,7 @@ import { getPageName, getPageSubPage } from "../../utils/common";
 import mixpanel from "mixpanel-browser";
 import { usePlanModal } from "../../context/PlanModalContext";
 import ConnectButton from "../WalletConnectButton";
+
 const activeStyle = {
   backgroundColor: "#FFFFFF0D",
   border: "1px solid #3E3E3E",

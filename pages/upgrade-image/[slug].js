@@ -13,6 +13,7 @@ import useGTM from "../../src/hooks/useGTM";
 import SweetAlert2 from "react-sweetalert2";
 import LoginAndSignup from "../../src/component/feature/Login";
 import { usePlanModal } from "../../src/context/PlanModalContext";
+import CustomWalletModal from "../../src/component/CustomWalletModal";
 const Index = ({ masterData }) => {
   const CREDIT_AI_IMAGE = process.env.NEXT_PUBLIC_CREDIT_IMAGE_VALUE;
   const CREDIT_PRODUCT_AD = process.env.NEXT_PUBLIC_CREDIT_PRODUCT_AD;
@@ -737,12 +738,16 @@ const Index = ({ masterData }) => {
         </div>
       )}
 
-      {!isLoggedIn && (
-        <LoginAndSignup
-          callBackName={"uniqueCommunity"}
-          open={!isLoggedIn}
-          handleModalClose={() => router.replace("/")}
-        />
+      {process?.env.NEXT_PUBLIC_APP === 'studio' && !isLoggedIn ? (
+        <CustomWalletModal open={!isLoggedIn} onClose={() => router.replace("/")} />
+      ) : (
+        !isLoggedIn && (
+          <LoginAndSignup
+            callBackName={"uniqueCommunity"}
+            open={!isLoggedIn}
+            handleModalClose={() => router.replace("/")}
+          />
+        )
       )}
 
       <SweetAlert2 {...swalProps} onConfirm={(handleConfirm) => setSwalProps({ show: false })} />
