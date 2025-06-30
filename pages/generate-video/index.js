@@ -148,7 +148,7 @@ const index = () => {
 
   const [samplePrompts, setSamplePrompts] = useState([]);
 
-  const { sendEvent } = useGTM();
+  const { sendEvent, sendGTM } = useGTM();
 
   const magicPrompts = [
     "A dragon soaring over snow-covered mountains at dusk",
@@ -220,6 +220,9 @@ const index = () => {
     (obj) => fetcher.post(`${API_BASE_URL}/api/v1/ai-video`, obj),
     {
       onSuccess: (response) => {
+        sendGTM({
+          event: "videoGeneratedVN",
+        });
         sendEvent({
           event: "asset_generated",
           aspectRatio: aspectRatio,

@@ -41,7 +41,7 @@ const Index = ({ masterData }) => {
   const [authToken, setAuthToken] = useState("");
   const [swalProps, setSwalProps] = useState({});
   const { isLoggedIn, userData } = useSelector((state) => state.user);
-  const { sendEvent } = useGTM();
+  const { sendEvent, sendGTM } = useGTM();
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const [selectedAvatar, setSelectedAvatar] = useState(null);
 
@@ -156,6 +156,9 @@ const Index = ({ masterData }) => {
     {
       onSuccess: (response) => {
         //console.log("I AM HERE", response?.data);
+        sendGTM({
+          event: "imageGeneratedVN",
+        });
         sendEvent({
           event: "asset_generated",
           aspectRatio: aspectRatio,

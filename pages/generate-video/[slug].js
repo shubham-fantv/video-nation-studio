@@ -156,7 +156,7 @@ const Index = ({ masterData, slug }) => {
   const [captionStyle, setCaptionStyle] = useState("");
   const [swalProps, setSwalProps] = useState({});
 
-  const { sendEvent } = useGTM();
+  const { sendEvent, sendGTM } = useGTM();
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const [selectedAvatar, setSelectedAvatar] = useState(null);
 
@@ -221,6 +221,9 @@ const Index = ({ masterData, slug }) => {
     {
       onSuccess: (response) => {
         //console.log("I AM HERE", response?.data);
+        sendGTM({
+          event: "videoGeneratedVN",
+        });
         sendEvent({
           event: "asset_generated",
           aspectRatio: aspectRatio,

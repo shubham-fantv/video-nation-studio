@@ -76,7 +76,7 @@ const index = () => {
     setPrompt(randomPrompt);
   };
 
-  const { sendEvent } = useGTM();
+  const { sendEvent, sendGTM } = useGTM();
 
   const { isLoggedIn, userData } = useSelector((state) => state.user);
   useQuery(
@@ -134,6 +134,9 @@ const index = () => {
     (obj) => fetcher.post(`${API_BASE_URL}/api/v1/ai-image`, obj),
     {
       onSuccess: (response) => {
+        sendGTM({
+          event: "imageGeneratedVN",
+        });
         setImagePreview(null);
         setLoading(false);
         sendEvent({
