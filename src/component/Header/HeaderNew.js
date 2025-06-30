@@ -505,7 +505,7 @@ const HeaderNew = ({ app }) => {
   };
   return (
     <>
-      {isShowFreeTrialBanner && (
+      {isShowFreeTrialBanner  && process?.env.NEXT_PUBLIC_APP !== 'studio' ? (
         <Box sx={{ position: "sticky", top: 0, left: 0, width: "100%", zIndex: 10 }}>
           <div
             className="h-[70px] w-full overflow-hidden relative flex justify-center items-center cursor-pointer"
@@ -576,11 +576,11 @@ const HeaderNew = ({ app }) => {
             </div>
           </div>
         </Box>
-      )}
+      ):null}
       <Box
         sx={{
           ...styles.navbar,
-          top: isShowFreeTrialBanner ? 72 : 0,
+          top: isShowFreeTrialBanner && process?.env.NEXT_PUBLIC_APP !== 'studio' ? 72 : 0,
         }}
         onClick={(e) => e.stopPropagation()}
       >
