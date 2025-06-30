@@ -51,9 +51,8 @@ const index = () => {
     openUpgradeModal,
     openTrialModal,
     openNoCreditModal,
-    refetchUserData
+    refetchUserData,
   } = usePlanModal();
-
 
   const getRandomPrompts = (list, count = 3) =>
     list
@@ -155,7 +154,7 @@ const index = () => {
         router.replace(`/generate-image/${response?.data._id}`, undefined, {
           scroll: false,
         });
-        refetchUserData()
+        refetchUserData();
       },
       onError: (error) => {
         setLoading(false);
@@ -210,6 +209,15 @@ const index = () => {
           openNoCreditModal();
         }
       } else {
+        sendEvent({
+          event: "button_clicked",
+          type: "Image",
+          aspect_ratio: aspectRatio,
+          url: window.location.pathname,
+          prompt: prompt,
+          credits_used: 1,
+          button_id: "gen_img_btn",
+        });
         const requestBody = {
           prompt,
           imageInput: image ? [encodeURI(image)] : [],
@@ -251,7 +259,7 @@ const index = () => {
     let elapsed = 0;
 
     progressInterval = setInterval(() => {
-        elapsed += updateInterval;
+      elapsed += updateInterval;
       const progressRatio = elapsed / totalDuration;
 
       const easedProgress = Math.min(

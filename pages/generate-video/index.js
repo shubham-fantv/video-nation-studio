@@ -30,8 +30,12 @@ const index = () => {
   const [selectedVoice, setSelectedVoice] = useState(null);
   const lastTrialAction = localStorage.getItem("lastTrialAction");
 
-  const { isShowFreeTrialBanner, openUpgradeModal, openTrialModal, openNoCreditModal } =
-    usePlanModal();
+  const {
+    isShowFreeTrialBanner,
+    openUpgradeModal,
+    openTrialModal,
+    openNoCreditModal,
+  } = usePlanModal();
 
   const RATE_LIMIT_INTERVAL_MS = 12 * 60 * 60 * 1000; // 12 hours
   const [isPlaying, setIsPlaying] = useState(null);
@@ -68,16 +72,33 @@ const index = () => {
     {
       name: "Arjun",
       value: "dxhwlBCxCrnzRlP4wDeE",
-      sampleUrl: "https://assets.artistfirst.in/uploads/1747488220089-voice_preview_arjun.mp3",
+      sampleUrl:
+        "https://assets.artistfirst.in/uploads/1747488220089-voice_preview_arjun.mp3",
     },
   ];
   const [selectedCaptionStyle, setSelectedCaptionStyle] = useState(null);
   const [showCaptionDropdown, setShowCaptionDropdown] = useState(false);
   const captionOptions = [
-    { label: "Classic White", value: "ClassicWhite", img: "/images/caption-white.png" },
-    { label: "Yellow Border", value: "YellowBorder", img: "/images/fantasy-purple.png" },
-    { label: "Top Italic", value: "TopItalic", img: "/images/caption-previews/top_italic.png" },
-    { label: "Big Red", value: "BigRedImpact", img: "/images/caption-previews/big_red_impact.png" },
+    {
+      label: "Classic White",
+      value: "ClassicWhite",
+      img: "/images/caption-white.png",
+    },
+    {
+      label: "Yellow Border",
+      value: "YellowBorder",
+      img: "/images/fantasy-purple.png",
+    },
+    {
+      label: "Top Italic",
+      value: "TopItalic",
+      img: "/images/caption-previews/top_italic.png",
+    },
+    {
+      label: "Big Red",
+      value: "BigRedImpact",
+      img: "/images/caption-previews/big_red_impact.png",
+    },
     {
       label: "Fantasy Purple",
       value: "FantasyPurple",
@@ -139,7 +160,8 @@ const index = () => {
   ];
 
   const generateMagicPrompt = () => {
-    const randomPrompt = magicPrompts[Math.floor(Math.random() * magicPrompts.length)];
+    const randomPrompt =
+      magicPrompts[Math.floor(Math.random() * magicPrompts.length)];
     setPrompt(randomPrompt);
   };
 
@@ -164,11 +186,15 @@ const index = () => {
     formData.append("file", file);
 
     try {
-      const response = await axios.post("https://upload.artistfirst.in/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        "https://upload.artistfirst.in/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       setImage(response?.data?.data?.[0]?.url);
       setImagePreview(URL.createObjectURL(file));
       sendEvent({
@@ -217,7 +243,9 @@ const index = () => {
           localStorage.setItem("lastTrialAction", Date.now().toString());
         }
 
-        router.push(`/generate-video/${response?.data._id}`, undefined, { scroll: false });
+        router.push(`/generate-video/${response?.data._id}`, undefined, {
+          scroll: false,
+        });
         // setSwalProps({
         //   icon: "success",
         //   show: true,
@@ -233,7 +261,8 @@ const index = () => {
       onError: (error) => {
         setLoading(false);
         const defaultMessage = "Something went wrong. Please try again later.";
-        const message = error?.response?.data?.message || error?.message || defaultMessage;
+        const message =
+          error?.response?.data?.message || error?.message || defaultMessage;
 
         setSwalProps({
           key: Date.now(), // or use a counter
@@ -277,7 +306,8 @@ const index = () => {
         openSnackbar("error", "Please enter a prompt!");
         return;
       }
-      let creditsUsed = CREDIT_AI_VIDEO * parseInt(duration.replace("sec", "").trim() / 5, 10);
+      let creditsUsed =
+        CREDIT_AI_VIDEO * parseInt(duration.replace("sec", "").trim() / 5, 10);
       if (voiceoverEnabled) {
         creditsUsed = Number(creditsUsed) + Number(AI_VIDEO_LYPSYN);
       }
@@ -290,6 +320,18 @@ const index = () => {
           openNoCreditModal();
         }
       } else {
+        sendEvent({
+          event: "button_clicked",
+          type: "Video",
+          aspect_ratio: aspectRatio,
+          url: window.location.pathname,
+          duration: duration,
+          caption: selectedCaptionStyle,
+          voiceover: selectedVoice,
+          prompt: prompt,
+          credits_used: creditsUsed,
+          button_id: "gen_vid_btn",
+        });
         const requestBody = {
           prompt,
           imageInput: image ? [image] : [],
@@ -346,7 +388,10 @@ const index = () => {
         99
       );
 
-      const progress = Math.min(Math.floor((elapsed / totalDuration) * 100), 99); // max 99%
+      const progress = Math.min(
+        Math.floor((elapsed / totalDuration) * 100),
+        99
+      ); // max 99%
       setProgressPercentage(easedProgress);
     }, updateInterval);
 
@@ -458,7 +503,8 @@ const index = () => {
               onChange={(e) => {
                 setDuration(e.target.value);
                 setCredits(
-                  CREDIT_AI_VIDEO * parseInt(e.target.value.replace("sec", "").trim() / 5, 10)
+                  CREDIT_AI_VIDEO *
+                    parseInt(e.target.value.replace("sec", "").trim() / 5, 10)
                 );
                 sendEvent({
                   event: "button_clicked",
@@ -485,7 +531,9 @@ const index = () => {
               onClick={() => setShowCaptionDropdown((prev) => !prev)}
               className="flex items-center gap-2 rounded-md bg-white px-4 py-2 text-sm text-[#1E1E1E] shadow-md transition-all"
             >
-              <span>Caption {selectedCaptionStyle ? selectedCaptionStyle : ""}</span>
+              <span>
+                Caption {selectedCaptionStyle ? selectedCaptionStyle : ""}
+              </span>
               <span>{showCaptionDropdown ? "▲" : "▼"}</span>
             </button>
 
@@ -503,7 +551,9 @@ const index = () => {
                     setShowCaptionDropdown(false);
                   }}
                 >
-                  <span className="text-sm italic text-gray-500">No Captions</span>
+                  <span className="text-sm italic text-gray-500">
+                    No Captions
+                  </span>
                 </div>
 
                 {captionOptions.map((style) => (
@@ -537,7 +587,9 @@ const index = () => {
                       className="h-10 w-30 object-contain rounded-md"
                     /> */}
                     {selectedCaptionStyle === style.value && (
-                      <span className="ml-2 text-purple-600 font-semibold">✓</span>
+                      <span className="ml-2 text-purple-600 font-semibold">
+                        ✓
+                      </span>
                     )}
                   </div>
                 ))}
@@ -555,7 +607,9 @@ const index = () => {
               <span>
                 Voiceover
                 {selectedVoice
-                  ? `: ${voiceOptions.find((v) => v.value === selectedVoice)?.name}`
+                  ? `: ${
+                      voiceOptions.find((v) => v.value === selectedVoice)?.name
+                    }`
                   : ""}
               </span>
               <span>{showVoiceDropdown ? "^" : "▼"}</span>
@@ -566,7 +620,9 @@ const index = () => {
               <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
                 <div
                   className={`flex justify-between items-center px-4 py-2 cursor-pointer hover:bg-gray-100 ${
-                    selectedVoice === null ? "bg-purple-100 border-l-4 border-purple-400" : ""
+                    selectedVoice === null
+                      ? "bg-purple-100 border-l-4 border-purple-400"
+                      : ""
                   }`}
                   onClick={() => {
                     setSelectedVoice(null);
@@ -640,7 +696,10 @@ const index = () => {
             🪄 Magic Prompt
           </button> */}
           <div className="text-sm">
-            Credits : {voiceoverEnabled ? Number(credits) + Number(AI_VIDEO_LYPSYN) : credits}
+            Credits :{" "}
+            {voiceoverEnabled
+              ? Number(credits) + Number(AI_VIDEO_LYPSYN)
+              : credits}
             {/* {Math.floor(userData?.credits / credits) < 6 && (
               <div className="text-center">
                 <small
@@ -701,7 +760,10 @@ const index = () => {
           handleModalClose={() => setIsPopupVisible(false)}
         />
       )}
-      <SweetAlert2 {...swalProps} onConfirm={(handleConfirm) => setSwalProps({ show: false })} />
+      <SweetAlert2
+        {...swalProps}
+        onConfirm={(handleConfirm) => setSwalProps({ show: false })}
+      />
     </div>
   );
 };

@@ -70,7 +70,7 @@ const Index = ({ masterData }) => {
     openUpgradeModal,
     openTrialModal,
     openNoCreditModal,
-    refetchUserData
+    refetchUserData,
   } = usePlanModal();
   const [subTitle, setSubTitle] = useState("");
   const [isLoading, setLoading] = useState(false);
@@ -181,7 +181,7 @@ const Index = ({ masterData }) => {
         router.replace(`/generate-image/${response?.data._id}`, undefined, {
           scroll: false,
         });
-        refetchUserData()
+        refetchUserData();
       },
       onError: (error) => {
         setLoading(false);
@@ -227,6 +227,16 @@ const Index = ({ masterData }) => {
           openNoCreditModal();
         }
       } else {
+        sendEvent({
+          event: "button_clicked",
+          type: "Image",
+          aspect_ratio: aspectRatio,
+          url: window.location.pathname,
+          prompt: prompt,
+          credits_used: 1,
+          button_id: "rect_img_btn",
+          section: "Sidebar",
+        });
         sendEvent({
           event: "Generate Image Slug",
           slug: slug,
