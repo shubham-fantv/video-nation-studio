@@ -7,6 +7,7 @@ import useGTM from "../../src/hooks/useGTM";
 import LoginAndSignup from "../../src/component/feature/Login";
 import { getPageSubPage } from "../../src/utils/common";
 import StablecoinPayButton from "../../src/component/StablecoinPayButton";
+import { useDomainConfig } from '../../src/component/hooks/useDomainConfig';
 
 const PricingPlans = () => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
@@ -26,6 +27,7 @@ const PricingPlans = () => {
   const [discount, setDiscount] = useState(0);
   const [timeLeft, setTimeLeft] = useState("");
   const [trialPlan, setTrialPlan] = useState();
+  const { isStudio, isApp, domain } = useDomainConfig();
 
   useQuery(
     `${FANTV_API_URL}/api/v1/subscription-plans`,
@@ -301,7 +303,7 @@ const PricingPlans = () => {
                     )
                   )}
 
-                  {plan.billedType && process.env.NEXT_PUBLIC_APP !== "studio"  && <p className="text-sm  mt-2">Billed {plan.billedType}</p>}
+                  {plan.billedType && !isStudio  && <p className="text-sm  mt-2">Billed {plan.billedType}</p>}
                 </div>
 
                 {isCurrentPlan && userData?.isTrialUser ? (
@@ -312,7 +314,7 @@ const PricingPlans = () => {
                     Current Plan
                   </button>
                 ) : 
-                  process.env.NEXT_PUBLIC_APP === "studio" ? 
+                  isStudio ? 
                     <StablecoinPayButton
                     amount={plan?.cost}
                     tokenType="USDC"

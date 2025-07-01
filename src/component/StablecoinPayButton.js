@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ethers } from 'ethers';
+import { BrowserProvider, Contract, parseUnits, toBigInt } from 'ethers';
 import { useCurrentAccount, useSignAndExecuteTransaction } from '@mysten/dapp-kit';
 import { SuiClient, getFullnodeUrl } from '@mysten/sui.js/client';
 import { modal } from '../context/WalletContext';
@@ -25,10 +25,12 @@ const STABLECOIN_CONFIG = {
     ethereum: {
       address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
       decimals: 6,
+      pay_recipient: '0x36bC15CD7518b2Dcf6F94bFC1dc2a6fFff6dd9C8'
     },
     solana: {
-      mint: 'EPjFWdd5AufqSSqeM2qN1xzybKZm7dtJZ5uNjL3YjvDp',
+      mint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
       decimals: 6,
+      pay_recipient: '91Vyf77vbGHLPk5m9USbq2XxCEa9ADKP5YG7ZF1WzauA'
     },
   },
   USDT: {
@@ -128,139 +130,6 @@ export default function StablecoinPayButton({
     }
   );
 
-  // const handlePayment = async () => {
-  //   const tokenConfig = STABLECOIN_CONFIG[tokenType];
-  //   if (!tokenConfig) {
-  //     alert(`Unsupported token: ${tokenType}`);
-  //     return;
-  //   }
-
-  //   try {
-  //     setIsLoading(true);
-
-  //     if (suiAccount?.address) {
-  //       const { coinType, decimals, pay_recipient } = tokenConfig.sui;
-  //       const { data: coins } = await client.getCoins({
-  //         owner: suiAccount.address,
-  //         coinType,
-  //       });
-
-  //       if (!coins.length) {
-  //         alert(`No ${tokenType} in SUI wallet`);
-  //         setIsLoading(false);
-  //         return;
-  //       }
-
-  //       const tx = new Transaction();
-  //       const smallestAmount = BigInt(amount * 10 ** decimals);
-  //       const [coin] = tx.splitCoins(coins[0].coinObjectId, [smallestAmount]);
-  //       tx.transferObjects([coin], pay_recipient);
-
-  //       try {
-  //          signAndExecuteTransaction(
-  //           {
-  //             transaction: tx,
-  //             chain: 'sui:mainnet',
-  //           },
-  //           {
-  //             onSuccess: async (res) => {
-  //               try {
-  //                 const txDigest = res.digest;
-  //                 await client.waitForTransactionBlock({
-  //                   digest: txDigest,
-  //                   timeout: 45000,
-  //                 });
-
-  //                 verifyCryptoPayment({
-  //                   tx_digest: txDigest,
-  //                   chain: 'sui',
-  //                   plan_id: plan_id,
-  //                 });
-  //               } catch (err) {
-  //                 console.error('⛔️ Error waiting for tx confirmation:', err);
-  //                 alert('Tip sent but confirmation failed.');
-  //                 setIsLoading(false);
-  //               }
-  //             },
-  //             onError: (err) => {
-  //               const message = err?.message || '';
-  //               const isRejected =
-  //                 message.includes('-4005') ||
-  //                 message.includes('UserRejectionError') ||
-  //                 message.toLowerCase().includes('user rejection');
-
-  //               if (isRejected) {
-  //                 console.log('🛑 User rejected the transaction.');
-  //               } else {
-  //                 console.error('❌ Transaction failed:', err);
-  //                 alert('Transaction failed. Please try again.');
-  //               }
-  //               setIsLoading(false);
-  //             },
-  //           }
-  //         );
-  //       } catch (err) {
-  //         const message = err?.message || '';
-  //         if (
-  //           message.includes('-4005') ||
-  //           message.includes('UserRejectionError') ||
-  //           message.toLowerCase().includes('user rejection')
-  //         ) {
-  //           console.log('🛑 User rejected transaction before confirmation modal.');
-  //           setIsLoading(false);
-  //           return;
-  //         }
-
-  //         console.error('❌ Unexpected error submitting transaction:', err);
-  //         alert('Something went wrong. Please try again.');
-  //         setIsLoading(false);
-  //       }
-
-  //       return;
-  //     }
-
-  //     if (evmAddress && window.ethereum) {
-  //       const { address, decimals } = tokenConfig.ethereum;
-  //       const provider = new ethers.providers.Web3Provider(window.ethereum);
-  //       const signer = provider.getSigner();
-  //       const erc20 = new ethers.Contract(
-  //         address,
-  //         ['function transfer(address to, uint256 amount) public returns (bool)'],
-  //         signer
-  //       );
-
-  //       const smallest = ethers.utils.parseUnits(amount.toString(), decimals);
-  //       const tx = await erc20.transfer(recipient, smallest);
-  //       await tx.wait();
-
-  //       setIsLoading(false);
-  //       setIsSuccess(true);
-
-  //       setTimeout(() => {
-  //         setIsSuccess(false);
-  //       }, 3000);
-
-  //       onSuccess?.(tx);
-  //       return;
-  //     }
-
-  //     if (solanaAddress && window.solana) {
-  //       console.warn('Solana transfer not yet implemented');
-  //       onFailure?.(new Error('Solana stablecoin transfer not implemented'));
-  //       setIsLoading(false);
-  //       return;
-  //     }
-
-  //     modal.open({ view: 'Connect' });
-  //     setIsLoading(false);
-  //   } catch (err) {
-  //     console.error('❌ Payment error:', err);
-  //     alert(err?.message || 'Unexpected payment error');
-  //     setIsLoading(false);
-  //     onFailure?.(err);
-  //   }
-  // };
-
   const handlePayment = async () => {
     const tokenConfig = STABLECOIN_CONFIG[tokenType];
     if (!tokenConfig) {
@@ -357,27 +226,57 @@ export default function StablecoinPayButton({
       }
   
       // 2. Handle Ethereum payment
-      if (evmAddress && window.ethereum) {
-        const { address, decimals } = tokenConfig.ethereum;
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-        const erc20 = new ethers.Contract(
-          address,
-          ['function transfer(address to, uint256 amount) public returns (bool)'],
-          signer
-        );
-  
-        const smallest = ethers.utils.parseUnits(amount.toString(), decimals);
-        const tx = await erc20.transfer(recipient, smallest);
-        await tx.wait();
-  
-        setIsLoading(false);
-        setIsSuccess(true);
-        setTimeout(() => setIsSuccess(false), 3000);
-  
-        onSuccess?.(tx);
+
+     if (evmAddress && window.ethereum) {
+          try {
+            const { address, decimals, pay_recipient } = tokenConfig.ethereum;
+
+            const provider = new BrowserProvider(window.ethereum);
+            const signer = await provider.getSigner();
+            const userAddress = await signer.getAddress();
+
+            const erc20 = new Contract(
+              address,
+              [
+                'function transfer(address to, uint256 amount) public returns (bool)',
+                'function balanceOf(address account) public view returns (uint256)'
+              ],
+              signer
+            );
+
+            const smallest = parseUnits(amount.toString(), decimals);
+
+            // ✅ Check user balance before transferring
+
+           
+            const balance = await erc20.balanceOf(userAddress);
+
+          
+
+            console.log(`User balance:`, toBigInt(balance) < toBigInt(smallest));
+            if (toBigInt(balance) < toBigInt(smallest)) {
+              alert('Insufficient token balance');
+              setIsLoading(false);
+              return
+            }
+
+            // 🚀 Proceed with transfer
+            const tx = await erc20.transfer(pay_recipient, smallest);
+            await tx.wait();
+
+            setIsLoading(false);
+            setIsSuccess(true);
+            setTimeout(() => setIsSuccess(false), 3000);
+
+            onSuccess?.(tx);
+          } catch (err) {
+            setIsLoading(false);
+            console.error('ERC20 Transfer Error:', err);
+            alert(err?.reason || err?.message || 'Transaction failed');
+          }
         return;
-      }
+        }
+
   
       // 3. Solana placeholder
       if (solanaAddress && window.solana) {

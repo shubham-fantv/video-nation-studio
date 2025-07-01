@@ -10,6 +10,7 @@ import LoginAndSignup from "./feature/Login";
 import VideoCard from "./TemplateVideo";
 import { useIntersectionVideo } from "../hooks/useIntsectionVideo";
 import CustomWalletModal from "./CustomWalletModal";
+import { useDomainConfig } from '../../src/component/hooks/useDomainConfig';
 
 function LazyVideo({ videoUrl, posterUrl }) {
   const videoRef = useRef();
@@ -56,6 +57,7 @@ const CommunityCreatedContent = ({
   isMobile = false,
 }) => {
   console.log("🚀 ~ isMobile:", isMobile);
+  const { isStudio, isApp, domain } = useDomainConfig();
   const [activeTab, setActiveTab] = useState(activeSlug);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [templateData, setTemplateData] = useState(data);
@@ -277,7 +279,7 @@ const CommunityCreatedContent = ({
         </div>
       </div>
 
-      {process?.env.NEXT_PUBLIC_APP === 'studio' && isPopupVisible ? (
+      {isStudio && isPopupVisible ? (
           <CustomWalletModal open={isPopupVisible} onClose={() => setIsPopupVisible(false)} />
         ) : (
           isPopupVisible && (

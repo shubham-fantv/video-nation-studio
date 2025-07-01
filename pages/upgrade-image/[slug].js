@@ -14,7 +14,10 @@ import SweetAlert2 from "react-sweetalert2";
 import LoginAndSignup from "../../src/component/feature/Login";
 import { usePlanModal } from "../../src/context/PlanModalContext";
 import CustomWalletModal from "../../src/component/CustomWalletModal";
+import { useDomainConfig } from '../../src/component/hooks/useDomainConfig';
+
 const Index = ({ masterData }) => {
+  const { isStudio, isApp, domain } = useDomainConfig();
   const CREDIT_AI_IMAGE = process.env.NEXT_PUBLIC_CREDIT_IMAGE_VALUE;
   const CREDIT_PRODUCT_AD = process.env.NEXT_PUBLIC_CREDIT_PRODUCT_AD;
   const SLUG_CONFIG = {
@@ -738,7 +741,7 @@ const Index = ({ masterData }) => {
         </div>
       )}
 
-      {process?.env.NEXT_PUBLIC_APP === 'studio' && !isLoggedIn ? (
+      {isStudio && !isLoggedIn ? (
         <CustomWalletModal open={!isLoggedIn} onClose={() => router.replace("/")} />
       ) : (
         !isLoggedIn && (

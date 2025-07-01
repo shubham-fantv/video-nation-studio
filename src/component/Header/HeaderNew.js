@@ -23,6 +23,7 @@ import { getPageName, getPageSubPage } from "../../utils/common";
 import mixpanel from "mixpanel-browser";
 import { usePlanModal } from "../../context/PlanModalContext";
 import ConnectButton from "../WalletConnectButton";
+import { useDomainConfig } from '../hooks/useDomainConfig';
 
 const activeStyle = {
   backgroundColor: "#FFFFFF0D",
@@ -36,6 +37,7 @@ const HeaderNew = ({ app }) => {
   const router = useRouter();
   const [swalProps, setSwalProps] = useState({});
   const { isLoggedIn, userData } = useSelector((state) => state.user);
+  const { isStudio, isApp, domain } = useDomainConfig();
 
   const { isShowFreeTrialBanner, openTrialModal } = usePlanModal();
 
@@ -177,7 +179,7 @@ const HeaderNew = ({ app }) => {
           {isLoggedIn ? (
             <UserProfileDropdown />
           ) : 
-            process?.env.NEXT_PUBLIC_APP =="studio" ? 
+            isStudio ? 
               <ConnectButton></ConnectButton>
               :
             <Box sx={styles.btnContainer} onClick={handleWalletClick}>
@@ -503,9 +505,10 @@ const HeaderNew = ({ app }) => {
       setIsPopupVisible({ login: true });
     }
   };
+
   return (
     <>
-      {isShowFreeTrialBanner  && process?.env.NEXT_PUBLIC_APP !== 'studio' ? (
+      {isShowFreeTrialBanner  && !isStudio ? (
         <Box sx={{ position: "sticky", top: 0, left: 0, width: "100%", zIndex: 10 }}>
           <div
             className="h-[70px] w-full overflow-hidden relative flex justify-center items-center cursor-pointer"
@@ -580,7 +583,7 @@ const HeaderNew = ({ app }) => {
       <Box
         sx={{
           ...styles.navbar,
-          top: isShowFreeTrialBanner && process?.env.NEXT_PUBLIC_APP !== 'studio' ? 72 : 0,
+          top: isShowFreeTrialBanner && !isStudio ? 72 : 0,
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -770,7 +773,7 @@ const HeaderNew = ({ app }) => {
             {isLoggedIn ? (
             <UserProfileDropdown />
           ) : 
-            process?.env.NEXT_PUBLIC_APP =="studio" ? 
+          isStudio ? 
               <ConnectButton></ConnectButton>
               :
             <Box sx={styles.btnContainer} onClick={handleWalletClick}>

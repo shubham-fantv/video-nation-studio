@@ -18,6 +18,7 @@ import Loading from "../../src/component/common/Loading/loading";
 import LoginAndSignup from "../../src/component/feature/Login/index";
 import { usePlanModal } from "../../src/context/PlanModalContext";
 import CustomWalletModal from "../../src/component/CustomWalletModal";
+import { useDomainConfig } from '../../src/component/hooks/useDomainConfig';
 
 const index = (data) => {
   const [avatarData, setAvatarData] = useState([]);
@@ -35,7 +36,7 @@ const index = (data) => {
   const CREDIT_AI_IMAGE = process.env.NEXT_PUBLIC_CREDIT_IMAGE_VALUE;
   const { isShowFreeTrialBanner, openUpgradeModal, openTrialModal, openNoCreditModal } =
     usePlanModal();
-
+  const { isStudio, isApp, domain } = useDomainConfig();
   const [swalProps, setSwalProps] = useState({});
   const [isLoading, setLoading] = useState(false);
   const [isPromptModalVisible, setIsPromptModalVisible] = useState(false);
@@ -851,7 +852,7 @@ const index = (data) => {
         </div>
       )}
     
-   {process?.env.NEXT_PUBLIC_APP === 'studio' && isPopupVisible ? (
+   {isStudio && isPopupVisible ? (
         <CustomWalletModal open={isPopupVisible} onClose={() => setIsPopupVisible(false)} />
       ) : (
         isPopupVisible && (

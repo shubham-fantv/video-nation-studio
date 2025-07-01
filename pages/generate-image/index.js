@@ -18,6 +18,8 @@ import useGTM from "../../src/hooks/useGTM";
 import LoadingScreen from "../../src/component/common/LoadingScreen";
 import { usePlanModal } from "../../src/context/PlanModalContext";
 import CustomWalletModal from "../../src/component/CustomWalletModal";
+import { useDomainConfig } from '../../src/component/hooks/useDomainConfig';
+
 const aspectRatioSizeMap = {
   "1:1": "w-4 h-4",
   "4:5": "w-10 h-12",
@@ -27,7 +29,7 @@ const aspectRatioSizeMap = {
 
 const index = () => {
   const CREDIT_AI_IMAGE = process.env.NEXT_PUBLIC_CREDIT_IMAGE_VALUE;
-
+  const { isStudio, isApp, domain } = useDomainConfig();
   const [captionEnabled, setCaptionEnabled] = useState(false);
   const lastTrialAction = localStorage.getItem("lastTrialAction");
   const RATE_LIMIT_INTERVAL_MS = 1 * 1000; // 1 sec for Image
@@ -429,7 +431,7 @@ const index = () => {
         </div>
       )}
 
-      {process?.env.NEXT_PUBLIC_APP === 'studio' ? (
+      {isStudio && isPopupVisible ? (
         <CustomWalletModal open={isPopupVisible} onClose={() => setIsPopupVisible(false)} />
       ) : (
         isPopupVisible && (

@@ -19,6 +19,7 @@ import LoadingScreen from "../../src/component/common/LoadingScreen";
 import { usePlanModal } from "../../src/context/PlanModalContext";
 import { useSnackbar } from "../../src/context/SnackbarContext";
 import CustomWalletModal from "../../src/component/CustomWalletModal";
+import { useDomainConfig } from '../../src/component/hooks/useDomainConfig';
 
 const aspectRatioSizeMap = {
   "1:1": "w-4 h-4",
@@ -30,7 +31,7 @@ const aspectRatioSizeMap = {
 const index = () => {
   const [selectedVoice, setSelectedVoice] = useState(null);
   const lastTrialAction = localStorage.getItem("lastTrialAction");
-
+  const { isStudio, isApp, domain } = useDomainConfig();
   const { isShowFreeTrialBanner, openUpgradeModal, openTrialModal, openNoCreditModal } =
     usePlanModal();
 
@@ -694,7 +695,7 @@ const index = () => {
           </div>
         </div>
       )}
-     {process?.env.NEXT_PUBLIC_APP === 'studio' && isPopupVisible ? (
+     {isStudio && isPopupVisible ? (
         <CustomWalletModal open={isPopupVisible} onClose={() => setIsPopupVisible(false)} />
       ) : (
         isPopupVisible && (
