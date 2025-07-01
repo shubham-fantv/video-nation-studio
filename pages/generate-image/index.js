@@ -51,6 +51,7 @@ const index = () => {
     openUpgradeModal,
     openTrialModal,
     openNoCreditModal,
+    refetchUserData,
   } = usePlanModal();
 
   const getRandomPrompts = (list, count = 3) =>
@@ -75,7 +76,7 @@ const index = () => {
     setPrompt(randomPrompt);
   };
 
-  const { sendEvent } = useGTM();
+  const { sendEvent, sendGTM } = useGTM();
 
   const { isLoggedIn, userData } = useSelector((state) => state.user);
   useQuery(
@@ -133,6 +134,9 @@ const index = () => {
     (obj) => fetcher.post(`${API_BASE_URL}/api/v1/ai-image`, obj),
     {
       onSuccess: (response) => {
+        sendGTM({
+          event: "imageGeneratedVN",
+        });
         setImagePreview(null);
         setLoading(false);
         sendEvent({
@@ -153,6 +157,7 @@ const index = () => {
         router.replace(`/generate-image/${response?.data._id}`, undefined, {
           scroll: false,
         });
+        refetchUserData();
       },
       onError: (error) => {
         setLoading(false);
@@ -207,6 +212,16 @@ const index = () => {
           openNoCreditModal();
         }
       } else {
+        sendEvent({
+          event: "button_clicked",
+          type: "Image",
+          aspect_ratio: aspectRatio,
+          url: window.location.pathname,
+          prompt: prompt,
+          credits_used: 1,
+          button_id: "gen_img_btn",
+          app_id: "Videonation",
+        });
         const requestBody = {
           prompt,
           imageInput: image ? [encodeURI(image)] : [],
@@ -248,7 +263,7 @@ const index = () => {
     let elapsed = 0;
 
     progressInterval = setInterval(() => {
-        elapsed += updateInterval;
+      elapsed += updateInterval;
       const progressRatio = elapsed / totalDuration;
 
       const easedProgress = Math.min(

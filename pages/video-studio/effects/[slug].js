@@ -3,9 +3,142 @@ import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { FANTV_API_URL } from "../../../src/constant/constants";
 import { parseCookies } from "nookies";
+import fetcher from "../../../src/dataProvider";
 
-let HARDCODED_TOKEN =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MzQxOTI3MGRiYjU5M2FmNDc3NjZiNiIsIm5hbWUiOiJIaW1hbnNodSBKYWluIiwiaWF0IjoxNzQ5NzI0NzU5fQ.OnleWnLm_aXWHrgG3QLwTOAhOhz76Kjtive1ZQboSNw";
+const cards = [
+  {
+    _id: "1",
+    name: "Let's YMCA!",
+    title: "Let's YMCA!",
+    description: "Dance to the YMCA rhythm with AI animation.",
+    imageUrl: "https://assets.artistfirst.in/uploads/ymca.jpg",
+    videoUrl: "https://assets.artistfirst.in/uploads/ymca.mp4",
+    isActive: true,
+    slug: "lets-ymca",
+    order: 5,
+    categoryType: "video",
+  },
+  {
+    _id: "2",
+    name: "Subject 3 Fever",
+    title: "Subject 3 Fever",
+    description: "Feel the fever with Subject 3 visual style.",
+    imageUrl: "https://assets.artistfirst.in/uploads/subject3.jpg",
+    videoUrl: "https://assets.artistfirst.in/uploads/subject3.mp4",
+    isActive: true,
+    slug: "subject-3-fever",
+    order: 6,
+    categoryType: "video",
+  },
+  {
+    _id: "3",
+    name: "Ghibli Live!",
+    title: "Ghibli Live!",
+    description: "Transform your video into a live Ghibli scene.",
+    imageUrl: "https://assets.artistfirst.in/uploads/ghibli.jpg",
+    videoUrl: "https://assets.artistfirst.in/uploads/ghibli.mp4",
+    isActive: true,
+    slug: "ghibli-live",
+    order: 7,
+    categoryType: "video",
+  },
+  {
+    _id: "4",
+    name: "Suit Swagger",
+    title: "Suit Swagger",
+    description: "Put on a suit and strut with swagger.",
+    imageUrl: "https://assets.artistfirst.in/uploads/suit.jpg",
+    videoUrl: "https://assets.artistfirst.in/uploads/suit.mp4",
+    isActive: true,
+    slug: "suit-swagger",
+    order: 8,
+    categoryType: "video",
+  },
+  {
+    _id: "5",
+    name: "Muscle Surge",
+    title: "Muscle Surge",
+    description: "Bulk up instantly with AI-generated muscles.",
+    imageUrl: "https://assets.artistfirst.in/uploads/muscle.jpg",
+    videoUrl: "https://assets.artistfirst.in/uploads/muscle.mp4",
+    isActive: true,
+    slug: "muscle-surge",
+    order: 9,
+    categoryType: "video",
+  },
+  {
+    _id: "6",
+    name: "Emergency Beat",
+    title: "Emergency Beat",
+    description: "Dance like it’s an emergency drill!",
+    imageUrl: "https://assets.artistfirst.in/uploads/emergency.jpg",
+    videoUrl: "https://assets.artistfirst.in/uploads/emergency.mp4",
+    isActive: true,
+    slug: "emergency-beat",
+    order: 10,
+    categoryType: "video",
+  },
+  {
+    _id: "7",
+    name: "Kungfu Club",
+    title: "Kungfu Club",
+    description: "Enter the dojo with kungfu movie effects.",
+    imageUrl: "https://assets.artistfirst.in/uploads/kungfu.jpg",
+    videoUrl: "https://assets.artistfirst.in/uploads/kungfu.mp4",
+    isActive: true,
+    slug: "kungfu-club",
+    order: 11,
+    categoryType: "video",
+  },
+  {
+    _id: "8",
+    name: "Retro Anime Pop",
+    title: "Retro Anime Pop",
+    description: "Animate yourself in retro anime style.",
+    imageUrl: "https://assets.artistfirst.in/uploads/retro.jpg",
+    videoUrl: "https://assets.artistfirst.in/uploads/retro.mp4",
+    isActive: true,
+    slug: "retro-anime-pop",
+    order: 12,
+    categoryType: "video",
+  },
+  {
+    _id: "9",
+    name: "Vogue Walk",
+    title: "Vogue Walk",
+    description: "Strike a pose and walk the runway with AI flair.",
+    imageUrl: "https://assets.artistfirst.in/uploads/vogue.jpg",
+    videoUrl: "https://assets.artistfirst.in/uploads/vogue.mp4",
+    isActive: true,
+    slug: "vogue-walk",
+    order: 13,
+    categoryType: "video",
+  },
+  {
+    _id: "10",
+    name: "Mega Dive",
+    title: "Mega Dive",
+    description: "Jump into hyper-stylized cinematic action.",
+    imageUrl: "https://assets.artistfirst.in/uploads/mega.jpg",
+    videoUrl: "https://assets.artistfirst.in/uploads/mega.mp4",
+    isActive: true,
+    slug: "mega-dive",
+    order: 14,
+    categoryType: "video",
+  },
+  {
+    _id: "11",
+    name: "Evil Trigger",
+    title: "Evil Trigger",
+    description: "Unleash your dark side with Evil Trigger mode.",
+    imageUrl: "https://assets.artistfirst.in/uploads/evil.jpg",
+    videoUrl: "https://assets.artistfirst.in/uploads/evil.mp4",
+    isActive: true,
+    slug: "evil-trigger",
+    order: 15,
+    categoryType: "video",
+  },
+];
 
 const EffectPage = () => {
   const router = useRouter();
@@ -23,6 +156,25 @@ const EffectPage = () => {
   const [videoUrl, setVideoUrl] = useState("");
   const [status, setStatus] = useState(""); // Track the actual status from API
   const [error, setError] = useState("");
+  const title = cards.find((c) => c.slug === slug)?.title;
+
+  const handleDownload = async () => {
+    try {
+      const response = await fetch(videoUrl);
+      const blob = await response.blob();
+
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = "video.mp4";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error("Video download failed:", error);
+    }
+  };
 
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
@@ -77,30 +229,24 @@ const EffectPage = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post(
+      const res = await fetcher.post(
         `${FANTV_API_URL}/api/v1/ai-video-pixverse`,
         {
           prompt: "smiling",
           style: "anime",
           imageUrl,
-          effect: "Ghibli Live!",
+          effect: title || "Ghibli Live!",
           quality: "720p",
           duration: 5,
           motion_mode: "normal",
           aspect_ratio: aspectRatio,
           visibility: "private",
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${HARDCODED_TOKEN}`,
-            "Content-Type": "application/json",
-          },
         }
       );
 
       console.log("Video creation response:", res);
 
-      const _id = res?.data?.data?._id;
+      const _id = res?.data?._id;
       if (!_id) throw new Error("No video ID returned from server");
 
       setVideoId(_id);
@@ -120,16 +266,11 @@ const EffectPage = () => {
 
     const pollProgress = async () => {
       try {
-        const progressRes = await axios.get(
-          `https://api.videonation.xyz/api/v1/ai-video-pixverse/progress/${videoId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${HARDCODED_TOKEN}`,
-            },
-          }
+        const progressRes = await fetcher.get(
+          `https://api.videonation.xyz/api/v1/ai-video-pixverse/progress/${videoId}`
         );
 
-        const responseData = progressRes?.data?.data || {};
+        const responseData = progressRes?.data || {};
         const {
           finalVideoUrl,
           status: apiStatus,
@@ -354,15 +495,24 @@ const EffectPage = () => {
               showCompleted={progress >= 100 && videoUrl}
             />
           ) : videoUrl ? (
-            <div className="w-full max-w-2xl">
-              <video
-                src={videoUrl}
-                controls
-                autoPlay
-                className="rounded-xl w-3/4 shadow-lg"
-                onLoadStart={() => console.log("Video loading started")}
-                onCanPlay={() => console.log("Video can play")}
-              />
+            <div className="w-full max-w-xl mx-auto p-6 bg-[#F9FAFB] rounded-2xl shadow-md">
+              <div className="flex flex-col items-center space-y-4">
+                <video
+                  src={videoUrl}
+                  controls
+                  autoPlay
+                  className="rounded-lg w-[640px] h-[280px] shadow-md"
+                  onLoadStart={() => console.log("Video loading started")}
+                  onCanPlay={() => console.log("Video can play")}
+                />
+
+                <button
+                  onClick={handleDownload}
+                  className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
+                >
+                  Download Video
+                </button>
+              </div>
             </div>
           ) : (
             <div className="text-center">

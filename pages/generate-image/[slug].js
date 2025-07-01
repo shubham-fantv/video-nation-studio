@@ -41,7 +41,7 @@ const Index = ({ masterData }) => {
   const [authToken, setAuthToken] = useState("");
   const [swalProps, setSwalProps] = useState({});
   const { isLoggedIn, userData } = useSelector((state) => state.user);
-  const { sendEvent } = useGTM();
+  const { sendEvent, sendGTM } = useGTM();
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const [selectedAvatar, setSelectedAvatar] = useState(null);
 
@@ -70,6 +70,7 @@ const Index = ({ masterData }) => {
     openUpgradeModal,
     openTrialModal,
     openNoCreditModal,
+    refetchUserData,
   } = usePlanModal();
   const [subTitle, setSubTitle] = useState("");
   const [isLoading, setLoading] = useState(false);
@@ -155,6 +156,9 @@ const Index = ({ masterData }) => {
     {
       onSuccess: (response) => {
         //console.log("I AM HERE", response?.data);
+        sendGTM({
+          event: "imageGeneratedVN",
+        });
         sendEvent({
           event: "asset_generated",
           aspectRatio: aspectRatio,
@@ -180,6 +184,7 @@ const Index = ({ masterData }) => {
         router.replace(`/generate-image/${response?.data._id}`, undefined, {
           scroll: false,
         });
+        refetchUserData();
       },
       onError: (error) => {
         setLoading(false);
@@ -225,6 +230,17 @@ const Index = ({ masterData }) => {
           openNoCreditModal();
         }
       } else {
+        sendEvent({
+          event: "button_clicked",
+          type: "Image",
+          aspect_ratio: aspectRatio,
+          url: window.location.pathname,
+          prompt: prompt,
+          credits_used: 1,
+          button_id: "rect_img_btn",
+          section: "Sidebar",
+          app_id: "Videonation",
+        });
         sendEvent({
           event: "Generate Image Slug",
           slug: slug,

@@ -1,11 +1,15 @@
 import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setUserData } from "../redux/slices/user";
+import { FANTV_API_URL } from "../constant/constants";
+import fetcher from "../dataProvider";
 
 const PlanModalContext = createContext();
 
 export const PlanModalProvider = ({ children }) => {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [isTrialOpen, setIsTrialOpen] = useState(false);
   const [isNoCreditModalOpen, setIsNoCreditModalOpen] = useState(false);
@@ -50,6 +54,19 @@ export const PlanModalProvider = ({ children }) => {
     }
   }, [userData?.isFreeTrial, userData?.isFreeTrialUsed]);
 
+  // Expose a function to refetch user data
+  const refetchUserData = async () => {
+    try {
+      const id = userData?._id || userData?.id;
+      if (!id) return;
+      const response = await fetcher.get(`${FANTV_API_URL}/api/v1/users/${id}`);
+      dispatch(setUserData(response.data));
+    } catch (err) {
+      // Optionally handle error
+      console.error("Failed to refetch user data", err);
+    }
+  };
+
   return (
     <PlanModalContext.Provider
       value={{
@@ -69,6 +86,7 @@ export const PlanModalProvider = ({ children }) => {
         openNoCreditModal,
         closeNoCreditModal,
         isNoCreditModalOpen,
+        refetchUserData,
       }}
     >
       {children}
