@@ -102,8 +102,11 @@ const FreeTrial = ({ app }) => {
             <div className="flex justify-between items-start mb-6">
               <div>
                 <h1 className="text-base font-semibold text-[#1E1E1E] mb-2">
-                  Start Creating Like a Pro, Free for 7 Days
+                  Start Creating Like a Pro
                 </h1>
+                <p className="bg-[#EFEEFF] border border-[#D0CCFF] border-[1.5px] rounded-[8px] p-2 text-[#6B61FF] font-inter text-[12px] font-medium leading-[150%]">
+                  We charge $1 for verification & refund it shortly
+                </p>
                 <p className="text-[#626262] text-sm">
                   Cancel anytime, secure sign up
                 </p>

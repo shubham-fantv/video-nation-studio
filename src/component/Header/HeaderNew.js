@@ -573,7 +573,7 @@ const HeaderNew = ({ app }) => {
                 <div className="text-left">
                   <p className="text-md font-semibold">
                     Start your{" "}
-                    <span className="font-bold">7 days free trial</span>
+                    <span className="font-bold">3 days trial</span>
                   </p>
                   <button className="mt-1 inline-flex items-center text-white font-medium hover:underline">
                     Start Now
