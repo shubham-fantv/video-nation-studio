@@ -604,7 +604,7 @@ const HeaderNew = ({ app }) => {
               <div className="flex md:hidden items-center justify-between text-white px-4 py-2 rounded-md space-x-4">
                 <div className="flex flex-col justify-center items-start">
                   <p className="text-xs">
-                    Start <span className="font-bold">7 days trial</span>
+                    Start <span className="font-bold">3 days trial</span>
                   </p>
                   <button className="mt-1 inline-flex items-center text-white hover:underline">
                     Start Now

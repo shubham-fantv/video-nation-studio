@@ -104,12 +104,14 @@ const FreeTrial = ({ app }) => {
                 <h1 className="text-base font-semibold text-[#1E1E1E] mb-2">
                   Start Creating Like a Pro
                 </h1>
-                <p className="bg-[#EFEEFF] border border-[#D0CCFF] border-[1.5px] rounded-[8px] p-2 text-[#6B61FF] font-inter text-[12px] font-medium leading-[150%]">
-                  We charge $1 for verification & refund it shortly
-                </p>
                 <p className="text-[#626262] text-sm">
                   Cancel anytime, secure sign up
                 </p>
+                <div className="rounded-[8px] border-[1.5px] py-2 mt-2 w-full border-[#D0CCFF] bg-[#EFEEFF]">
+                <p className="text-[#6B61FF] font-medium text-[12px] leading-[18px] font-inter not-italic px-2 ">
+                  We charge $1 for verification & refund it shortly
+                </p>
+                </div>
               </div>
               <div
                 onClick={() => handleClose()}
