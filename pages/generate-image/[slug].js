@@ -14,6 +14,7 @@ import SweetAlert2 from "react-sweetalert2";
 import { usePlanModal } from "../../src/context/PlanModalContext";
 import { useDispatch } from "react-redux";
 import { setUserData } from "../../src/redux/slices/user";
+import useIsMobile from "../../src/hooks/useIsMobile";
 
 const Index = ({ masterData }) => {
   const [template, setTemplate] = useState([]);
@@ -35,7 +36,7 @@ const Index = ({ masterData }) => {
   const dispatch = useDispatch();
   const [progressPercentage, setProgressPercentage] = useState(0);
   const quoteIndexRef = useRef(0);
-
+  const isMobile = useIsMobile();
   const [image, setImage] = useState("");
   const [newImage, setNewImage] = useState("");
   const [authToken, setAuthToken] = useState("");
@@ -412,6 +413,16 @@ const Index = ({ masterData }) => {
         </button>
       </div>
 
+      {isMobile && isLoading && (
+        <div className="w-full">
+          <Loading
+            title={"Please wait"}
+            subTitle={subTitle}
+            percentage={Math.round((progressPercentage * 95) / 100)}
+          />
+        </div>
+      )}
+
       <div className="w-full md:w-[25%] bg-[#FFFFFF0D] p-4">
         <div className="">
           {slug === "headshot" ? (
@@ -615,11 +626,13 @@ const Index = ({ masterData }) => {
 
       <div className="flex-1 flex flex-col items-center ">
         {isLoading ? (
-          <Loading
-            title={"Please wait"}
-            subTitle={subTitle}
-            percentage={Math.round((progressPercentage * 95) / 100)}
-          />
+          <div className="w-full hidden md:block">
+            <Loading
+              title={"Please wait"}
+              subTitle={subTitle}
+              percentage={Math.round((progressPercentage * 95) / 100)}
+            />
+          </div>
         ) : (
           <>
             <div className="hidden md:block w-full md:p-4 bg-[#F5F5F5]">
