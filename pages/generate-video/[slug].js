@@ -14,6 +14,7 @@ import SweetAlert2 from "react-sweetalert2";
 import { usePlanModal } from "../../src/context/PlanModalContext";
 import { useDispatch } from "react-redux";
 import { setUserData } from "../../src/redux/slices/user";
+import useIsMobile from "../../src/hooks/useIsMobile";
 
 const Index = ({ masterData, slug }) => {
   const CREDIT_AI_VIDEO = process.env.NEXT_PUBLIC_CREDIT_AI_VIDEO_VALUE;
@@ -31,6 +32,7 @@ const Index = ({ masterData, slug }) => {
   const [activeSlug, setActiveSlug] = useState(slug);
 
   const { isLoggedIn, userData } = useSelector((state) => state.user);
+  const isMobile = useIsMobile();
 
   useQuery(
     `${FANTV_API_URL}/api/v1/users/${userData?._id || userData?.id}`,
@@ -516,6 +518,16 @@ const Index = ({ masterData, slug }) => {
         </button>
       </div>
 
+      {isMobile && (isLoading || isPolling) && (
+        <div className="w-full">
+          <Loading
+            title={`Generating your video... (${progressPercentage}%)`}
+            subTitle={subTitle}
+            percentage={Math.round((progressPercentage * 95) / 100)}
+          />
+        </div>
+      )}
+
       <div className="w-full md:w-[25%] bg-[#FFFFFF0D] p-4">
         <div className="">
           <div className="mb-6">
@@ -865,9 +877,9 @@ const Index = ({ masterData, slug }) => {
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col items-center ">
+      <div className="flex-1 flex flex-col items-center">
         {isLoading || isPolling ? (
-          <div className="w-full h-screen">
+          <div className="w-full h-screen hidden md:block">
             <Loading
               title={`Generating your video... (${progressPercentage}%)`}
               subTitle={subTitle}

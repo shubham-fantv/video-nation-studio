@@ -17,7 +17,10 @@ const index = () => {
 
   const { refetch } = useQuery(
     `${FANTV_API_URL}/api/v1/users/${userData?._id || userData?.id}`,
-    () => fetcher.get(`${FANTV_API_URL}/api/v1/users/${userData?._id || userData?.id}`),
+    () =>
+      fetcher.get(
+        `${FANTV_API_URL}/api/v1/users/${userData?._id || userData?.id}`
+      ),
     {
       enabled: !!(userData?._id || userData?.id),
       refetchOnMount: "always",
@@ -38,25 +41,11 @@ const index = () => {
           email: userData?.email,
           name: userData?.name,
         });
-        sendEvent({
-          event: "trial_activated",
-          trial_start_timestamp: data?.session?.created,
-          plan_price: data?.session?.amount_total,
-          payment_type: data?.session?.payment_method_types,
-          trial_start_date: getDateTimeFromTimestamp(data?.session?.created),
-        });
       } else {
         sendGTM({
           event: "subscriptionActivatedVN",
           email: userData?.email,
           name: userData?.name,
-        });
-        sendEvent({
-          event: "subscription_activated",
-          trial_start_timestamp: data?.session?.created,
-          plan_price: data?.session?.amount_total,
-          payment_type: data?.session?.payment_method_types,
-          trial_start_date: getDateTimeFromTimestamp(data?.session?.created),
         });
       }
     } else {
