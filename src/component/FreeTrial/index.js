@@ -72,7 +72,7 @@ const FreeTrial = ({ app }) => {
         sub_page: "Banner",
         popup_type: "Nudge",
         popup_name: "Free Trial",
-        popup_messge_text: "Start creating like a pro, free for 7 days",
+        popup_messge_text: "Start creating like a pro, free for 3 days",
         ...getPageSubPage(router?.asPath),
       });
     }
@@ -157,7 +157,7 @@ const FreeTrial = ({ app }) => {
 
                 {!isMobile && (
                   <p className="text-[] mt-4 text-xs">
-                    Trial ends after 7 days
+                    Trial ends after 3 days
                   </p>
                 )}
               </div>
