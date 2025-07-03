@@ -58,7 +58,7 @@ const PricingPlans = () => {
 
       if (!userSubscriptionData || userSubscriptionData.length === 0) {
         const startDate = new Date(userData?.created_at);
-        const promoEndsAt = new Date(startDate.getTime() + 1 * 60 * 60 * 1000); // ⏱️ 1 hour from signup
+        const promoEndsAt = new Date(startDate.getTime() + 1 * 1000); // ⏱️ 1 sec from signup
 
         const diff = promoEndsAt - now;
 

@@ -33,11 +33,12 @@ const LoadingScreen = ({
   const radius = 45;
   const circumference = 2 * Math.PI * radius;
   const strokeDasharray = circumference;
-  const strokeDashoffset = circumference - (currentProgress / 100) * circumference;
+  const strokeDashoffset =
+    circumference - (currentProgress / 100) * circumference;
 
   return (
-    <div className=" fixed top-[72px] left-0 w-full h-full min-h-screen bg-gray-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white relative rounded-2xl shadow-sm p-12 w-[800px] text-center">
+    <div className="fixed md:top-[72px] left-0 w-full h-screen md:min-h-screen bg-gray-50 flex items-start md:items-center justify-center p-4 z-50">
+      <div className="bg-white relative rounded-2xl shadow-sm md:p-12 w-[800px] text-center">
         <div className="absolute inset-0 z-0 w-[800px]  w-full h-full overflow-hidden">
           <Lottie
             animationData={animationData}
@@ -49,7 +50,14 @@ const LoadingScreen = ({
         <div className="relative w-32 h-32 mx-auto mb-8">
           <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 100 100">
             {/* Background circle */}
-            <circle cx="50" cy="50" r={radius} stroke="#e5e7eb" strokeWidth="10" fill="none" />
+            <circle
+              cx="50"
+              cy="50"
+              r={radius}
+              stroke="#e5e7eb"
+              strokeWidth="10"
+              fill="none"
+            />
             {/* Progress circle */}
             <circle
               cx="50"

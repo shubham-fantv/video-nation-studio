@@ -13,7 +13,6 @@ const index = () => {
   const { userData } = useSelector((state) => state.user);
   const { sendEvent, sendGTM } = useGTM();
 
-
   const dispatch = useDispatch();
 
   const { refetch } = useQuery(
@@ -39,17 +38,7 @@ const index = () => {
           email: userData?.email,
           name: userData?.name,
           plan: router?.query?.plan || null,
-          plan_type:router?.query?.billed || null,
-
-        });
-        sendEvent({
-          event: "trial_activated",
-          trial_start_timestamp: data?.session?.created,
-          plan_price: data?.session?.amount_total,
-          payment_type: data?.session?.payment_method_types,
-          trial_start_date: getDateTimeFromTimestamp(data?.session?.created),
-          plan: router?.query?.plan || null,
-          plan_type:router?.query?.billed || null,
+          plan_type: router?.query?.billed || null,
         });
       } else {
         sendGTM({
@@ -57,16 +46,7 @@ const index = () => {
           email: userData?.email,
           name: userData?.name,
           plan: router?.query?.plan || null,
-          plan_type:router?.query?.billed || null,
-        });
-        sendEvent({
-          event: "subscription_activated",
-          trial_start_timestamp: data?.session?.created,
-          plan_price: data?.session?.amount_total,
-          payment_type: data?.session?.payment_method_types,
-          trial_start_date: getDateTimeFromTimestamp(data?.session?.created),
-          plan: router?.query?.plan || null,
-          plan_type:router?.query?.billed || null,
+          plan_type: router?.query?.billed || null,
         });
       }
     } else {

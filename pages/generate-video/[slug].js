@@ -14,8 +14,9 @@ import SweetAlert2 from "react-sweetalert2";
 import { usePlanModal } from "../../src/context/PlanModalContext";
 import { useDispatch } from "react-redux";
 import { setUserData } from "../../src/redux/slices/user";
+import useIsMobile from "../../src/hooks/useIsMobile";
 
-const Index = ({ masterData }) => {
+const Index = ({ masterData, slug }) => {
   const CREDIT_AI_VIDEO = process.env.NEXT_PUBLIC_CREDIT_AI_VIDEO_VALUE;
   const AI_VIDEO_LYPSYN = process.env.NEXT_PUBLIC_CREDIT_AI_VIDEO_LYPSYNC;
 
@@ -28,7 +29,10 @@ const Index = ({ masterData }) => {
   const audioRef = useRef(null); // reference for controlling audio
   const quoteIndexRef = useRef(0);
   const dispatch = useDispatch();
+  const [activeSlug, setActiveSlug] = useState(slug);
+
   const { isLoggedIn, userData } = useSelector((state) => state.user);
+  const isMobile = useIsMobile();
 
   useQuery(
     `${FANTV_API_URL}/api/v1/users/${userData?._id || userData?.id}`,
@@ -41,6 +45,28 @@ const Index = ({ masterData }) => {
       refetchOnMount: "always",
       onSuccess: ({ data }) => {
         dispatch(setUserData(data));
+      },
+    }
+  );
+
+  const [progressData, setProgressData] = useState(null);
+  const [isPolling, setIsPolling] = useState(true);
+  const { refetch } = useQuery(
+    `${FANTV_API_URL}/api/v1/ai-video/progress/${activeSlug}`,
+    () =>
+      fetcher.get(`${FANTV_API_URL}/api/v1/ai-video/progress/${activeSlug}`),
+    {
+      enabled: isPolling,
+      refetchOnMount: "always",
+      refetchInterval: isPolling ? 5000 : false, // Poll every 5 seconds if polling
+      onSuccess: ({ data }) => {
+        setProgressData(data);
+        if (data?.status === "completed" || data?.status === "failed") {
+          setProgressData(data);
+          setIsPolling(false);
+          setVideo(data.finalVideoUrl);
+          setLoading(false);
+        }
       },
     }
   );
@@ -120,18 +146,19 @@ const Index = ({ masterData }) => {
   const [imageUrl, setImageUrl] = useState("");
   const [uploading, setUploading] = useState(false);
   const [videoLoading, setVideoLoading] = useState(false);
-
   const [progressPercentage, setProgressPercentage] = useState(0);
   const [duration, setDuration] = useState("5 sec");
   const durationData = ["5 sec", "15 sec"];
 
   const [video, setVideo] = useState("");
+
+  console.log("video", video);
   const [newImage, setNewImage] = useState("");
   const [authToken, setAuthToken] = useState("");
   const [captionStyle, setCaptionStyle] = useState("");
   const [swalProps, setSwalProps] = useState({});
 
-  const { sendEvent } = useGTM();
+  const { sendEvent, sendGTM } = useGTM();
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const [selectedAvatar, setSelectedAvatar] = useState(null);
 
@@ -145,12 +172,12 @@ const Index = ({ masterData }) => {
     openUpgradeModal,
     openTrialModal,
     openNoCreditModal,
+    refetchUserData,
   } = usePlanModal();
 
   const [subTitle, setSubTitle] = useState("");
   const [isLoading, setLoading] = useState(false);
   const aspectRatioData = ["16:9", "9:16", "1:1"];
-  const { slug } = router.query;
 
   const aspectRatioSizeMap = {
     "1:1": "w-4 h-4",
@@ -196,6 +223,9 @@ const Index = ({ masterData }) => {
     {
       onSuccess: (response) => {
         //console.log("I AM HERE", response?.data);
+        sendGTM({
+          event: "videoGeneratedVN",
+        });
         sendEvent({
           event: "asset_generated",
           aspectRatio: aspectRatio,
@@ -213,15 +243,13 @@ const Index = ({ masterData }) => {
         setImagePreview(null);
         setImageUrl(null);
         setPrompt("");
-        setLoading(false);
         if (userData?.isTrialUser) {
           localStorage.setItem("lastTrialAction", Date.now().toString());
         }
-        //console.log("I AM HERE", response?.data._id);
-        //router.push("/my-library?tab=video");
         router.replace(`/generate-video/${response?.data._id}`, undefined, {
           scroll: false,
         });
+        refetchUserData();
       },
       onError: (error) => {
         setLoading(false);
@@ -273,6 +301,20 @@ const Index = ({ masterData }) => {
           openNoCreditModal();
         }
       } else {
+        sendEvent({
+          event: "button_clicked",
+          type: "Video",
+          aspect_ratio: aspectRatio,
+          url: window.location.pathname,
+          duration: duration,
+          caption: selectedCaptionStyle,
+          voiceover: selectedVoice,
+          prompt: prompt,
+          credits_used: creditsUsed,
+          section: "Sidebar",
+          button_id: "rect_vid_btn",
+          app_id: "Videonation",
+        });
         const requestBody = {
           prompt,
           imageInput: imageUrl ? [encodeURI(decodeURI(imageUrl))] : [],
@@ -302,7 +344,7 @@ const Index = ({ masterData }) => {
     }
   };
   useEffect(() => {
-    if (!isLoading) return;
+    if (!isLoading && !isPolling) return;
 
     let quoteInterval;
     let progressInterval;
@@ -342,14 +384,15 @@ const Index = ({ masterData }) => {
         Math.floor((elapsed / totalDuration) * 100),
         99
       ); // max 99%
-      setProgressPercentage(easedProgress);
+      console.log("progress", progress, " easedProgress=>", easedProgress);
+      setProgressPercentage(progress);
     }, updateInterval);
 
     return () => {
       clearInterval(quoteInterval);
       clearInterval(progressInterval);
     };
-  }, [isLoading]);
+  }, [isLoading, isPolling]);
 
   // Fetch new data on ID change
   useEffect(() => {
@@ -433,6 +476,25 @@ const Index = ({ masterData }) => {
     }
   };
 
+  // useEffect(() => {
+  //   if (isPolling) {
+  //     refetch();
+  //   }
+  // }, [isPolling, refetch]);
+
+  // Ensure polling restarts for new slug (video id)
+  useEffect(() => {
+    if (slug) {
+      setIsPolling(true);
+      refetch();
+    }
+  }, [slug, refetch]);
+
+  useEffect(() => {
+    setActiveSlug(slug);
+    setIsPolling(true);
+  }, [slug]);
+
   return (
     <div className="flex flex-col md:flex-row text-black md:gap-4">
       <div className="md:hidden w-full pl-2 md:p-4 ">
@@ -455,6 +517,16 @@ const Index = ({ masterData }) => {
           Back
         </button>
       </div>
+
+      {isMobile && (isLoading || isPolling) && (
+        <div className="w-full">
+          <Loading
+            title={`Generating your video... (${progressPercentage}%)`}
+            subTitle={subTitle}
+            percentage={Math.round((progressPercentage * 95) / 100)}
+          />
+        </div>
+      )}
 
       <div className="w-full md:w-[25%] bg-[#FFFFFF0D] p-4">
         <div className="">
@@ -793,8 +865,11 @@ const Index = ({ masterData }) => {
           </div>
           <div className="flex items-center justify-center gap-4 mt-2 mb-6">
             <button
+              disabled={isPolling}
               onClick={handleGenerateVideo}
-              className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
+              className={`flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base ${
+                isPolling ? "cursor-not-allowed opacity-60" : ""
+              }`}
             >
               ✨ Generate
             </button>
@@ -802,9 +877,9 @@ const Index = ({ masterData }) => {
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col items-center ">
-        {isLoading ? (
-          <div className="w-full h-screen">
+      <div className="flex-1 flex flex-col items-center">
+        {isLoading || isPolling ? (
+          <div className="w-full h-screen hidden md:block">
             <Loading
               title={`Generating your video... (${progressPercentage}%)`}
               subTitle={subTitle}
@@ -834,39 +909,44 @@ const Index = ({ masterData }) => {
               </button>
             </div>
             <div className="w-full p-4 md:p-4 bg-[#F5F5F5] px-4 md:px-[30px] py-4 md:py-[30px]">
-              <div className="bg-[#FFFFFF0D] rounded-lg aspect-video flex items-center justify-center mb-4 m-auto max-h-[300px] md:max-h-[450px]">
-                <div className="text-gray-500 w-full h-full">
-                  {/* Video */}
-                  {/* Video always rendered */}
-
-                  <video
-                    src={video}
-                    muted
-                    loop
-                    playsInline
-                    controls
-                    onMouseEnter={(e) => e.target.play()}
-                    onMouseLeave={(e) => e.target.pause()}
-                    onEnded={(e) => e.target.play()}
-                    className="w-full h-full object-contain rounded-xl max-h-[300px] md:max-h-[450px]"
-                  />
+              {progressData.status === "completed" ? (
+                <div className="bg-[#FFFFFF0D] rounded-lg aspect-video flex items-center justify-center mb-4 m-auto max-h-[300px] md:max-h-[450px]">
+                  <div className="text-gray-500 w-full h-full">
+                    <video
+                      src={video}
+                      muted
+                      loop
+                      playsInline
+                      controls
+                      onMouseEnter={(e) => e.target.play()}
+                      onMouseLeave={(e) => e.target.pause()}
+                      onEnded={(e) => e.target.play()}
+                      className="w-full h-full object-contain rounded-xl max-h-[300px] md:max-h-[450px]"
+                    />
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="w-full p-4 md:p-4 bg-[#F5F5F5] px-4 md:px-[30px] py-4 md:py-[30px]">
+                  Something went wrong while generating video.
+                </div>
+              )}
 
-              <div className="flex items-center justify-center flex-wrap gap-2 md:gap-4 mt-2">
-                <button
-                  onClick={handleDownloadVideo}
-                  className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
-                >
-                  ✨ Download
-                </button>
-                <button
-                  onClick={handleEdit}
-                  className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
-                >
-                  Edit
-                </button>
-              </div>
+              {progressData.status === "completed" && (
+                <div className="flex items-center justify-center flex-wrap gap-2 md:gap-4 mt-2">
+                  <button
+                    onClick={handleDownloadVideo}
+                    className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
+                  >
+                    ✨ Download
+                  </button>
+                  <button
+                    onClick={handleEdit}
+                    className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
+                  >
+                    Edit
+                  </button>
+                </div>
+              )}
             </div>
           </>
         )}
@@ -888,7 +968,7 @@ export async function getServerSideProps(ctx) {
 
   try {
     const {
-      params: { slug1 },
+      params: { slug },
     } = ctx;
 
     var [masterData] = await Promise.all([
@@ -907,6 +987,7 @@ export async function getServerSideProps(ctx) {
       props: {
         masterData: masterData?.data || [],
         withSideBar: false,
+        slug: slug,
       },
     };
   } catch (err) {

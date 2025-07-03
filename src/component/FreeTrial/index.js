@@ -72,7 +72,7 @@ const FreeTrial = ({ app }) => {
         sub_page: "Banner",
         popup_type: "Nudge",
         popup_name: "Free Trial",
-        popup_messge_text: "Start creating like a pro, free for 7 days",
+        popup_messge_text: "Start creating like a pro, free for 3 days",
         ...getPageSubPage(router?.asPath),
       });
     }
@@ -102,11 +102,16 @@ const FreeTrial = ({ app }) => {
             <div className="flex justify-between items-start mb-6">
               <div>
                 <h1 className="text-base font-semibold text-[#1E1E1E] mb-2">
-                  Start Creating Like a Pro, Free for 7 Days
+                  Start Creating Like a Pro
                 </h1>
                 <p className="text-[#626262] text-sm">
                   Cancel anytime, secure sign up
                 </p>
+                <div className="rounded-[8px] border-[1.5px] py-2 mt-2 w-full border-[#D0CCFF] bg-[#EFEEFF]">
+                <p className="text-[#6B61FF] font-medium text-[12px] leading-[18px] font-inter not-italic px-2 ">
+                  We charge $1 for verification & refund it shortly
+                </p>
+                </div>
               </div>
               <div
                 onClick={() => handleClose()}
@@ -152,7 +157,7 @@ const FreeTrial = ({ app }) => {
 
                 {!isMobile && (
                   <p className="text-[] mt-4 text-xs">
-                    Trial ends after 7 days
+                    Trial ends after 3 days
                   </p>
                 )}
               </div>

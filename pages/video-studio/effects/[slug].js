@@ -1,8 +1,144 @@
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { FANTV_API_URL } from "../../../src/constant/constants";
 import { parseCookies } from "nookies";
+import fetcher from "../../../src/dataProvider";
+
+const cards = [
+  {
+    _id: "1",
+    name: "Let's YMCA!",
+    title: "Let's YMCA!",
+    description: "Dance to the YMCA rhythm with AI animation.",
+    imageUrl: "https://assets.artistfirst.in/uploads/ymca.jpg",
+    videoUrl: "https://assets.artistfirst.in/uploads/ymca.mp4",
+    isActive: true,
+    slug: "lets-ymca",
+    order: 5,
+    categoryType: "video",
+  },
+  {
+    _id: "2",
+    name: "Subject 3 Fever",
+    title: "Subject 3 Fever",
+    description: "Feel the fever with Subject 3 visual style.",
+    imageUrl: "https://assets.artistfirst.in/uploads/subject3.jpg",
+    videoUrl: "https://assets.artistfirst.in/uploads/subject3.mp4",
+    isActive: true,
+    slug: "subject-3-fever",
+    order: 6,
+    categoryType: "video",
+  },
+  {
+    _id: "3",
+    name: "Ghibli Live!",
+    title: "Ghibli Live!",
+    description: "Transform your video into a live Ghibli scene.",
+    imageUrl: "https://assets.artistfirst.in/uploads/ghibli.jpg",
+    videoUrl: "https://assets.artistfirst.in/uploads/ghibli.mp4",
+    isActive: true,
+    slug: "ghibli-live",
+    order: 7,
+    categoryType: "video",
+  },
+  {
+    _id: "4",
+    name: "Suit Swagger",
+    title: "Suit Swagger",
+    description: "Put on a suit and strut with swagger.",
+    imageUrl: "https://assets.artistfirst.in/uploads/suit.jpg",
+    videoUrl: "https://assets.artistfirst.in/uploads/suit.mp4",
+    isActive: true,
+    slug: "suit-swagger",
+    order: 8,
+    categoryType: "video",
+  },
+  {
+    _id: "5",
+    name: "Muscle Surge",
+    title: "Muscle Surge",
+    description: "Bulk up instantly with AI-generated muscles.",
+    imageUrl: "https://assets.artistfirst.in/uploads/muscle.jpg",
+    videoUrl: "https://assets.artistfirst.in/uploads/muscle.mp4",
+    isActive: true,
+    slug: "muscle-surge",
+    order: 9,
+    categoryType: "video",
+  },
+  {
+    _id: "6",
+    name: "Emergency Beat",
+    title: "Emergency Beat",
+    description: "Dance like it’s an emergency drill!",
+    imageUrl: "https://assets.artistfirst.in/uploads/emergency.jpg",
+    videoUrl: "https://assets.artistfirst.in/uploads/emergency.mp4",
+    isActive: true,
+    slug: "emergency-beat",
+    order: 10,
+    categoryType: "video",
+  },
+  {
+    _id: "7",
+    name: "Kungfu Club",
+    title: "Kungfu Club",
+    description: "Enter the dojo with kungfu movie effects.",
+    imageUrl: "https://assets.artistfirst.in/uploads/kungfu.jpg",
+    videoUrl: "https://assets.artistfirst.in/uploads/kungfu.mp4",
+    isActive: true,
+    slug: "kungfu-club",
+    order: 11,
+    categoryType: "video",
+  },
+  {
+    _id: "8",
+    name: "Retro Anime Pop",
+    title: "Retro Anime Pop",
+    description: "Animate yourself in retro anime style.",
+    imageUrl: "https://assets.artistfirst.in/uploads/retro.jpg",
+    videoUrl: "https://assets.artistfirst.in/uploads/retro.mp4",
+    isActive: true,
+    slug: "retro-anime-pop",
+    order: 12,
+    categoryType: "video",
+  },
+  {
+    _id: "9",
+    name: "Vogue Walk",
+    title: "Vogue Walk",
+    description: "Strike a pose and walk the runway with AI flair.",
+    imageUrl: "https://assets.artistfirst.in/uploads/vogue.jpg",
+    videoUrl: "https://assets.artistfirst.in/uploads/vogue.mp4",
+    isActive: true,
+    slug: "vogue-walk",
+    order: 13,
+    categoryType: "video",
+  },
+  {
+    _id: "10",
+    name: "Mega Dive",
+    title: "Mega Dive",
+    description: "Jump into hyper-stylized cinematic action.",
+    imageUrl: "https://assets.artistfirst.in/uploads/mega.jpg",
+    videoUrl: "https://assets.artistfirst.in/uploads/mega.mp4",
+    isActive: true,
+    slug: "mega-dive",
+    order: 14,
+    categoryType: "video",
+  },
+  {
+    _id: "11",
+    name: "Evil Trigger",
+    title: "Evil Trigger",
+    description: "Unleash your dark side with Evil Trigger mode.",
+    imageUrl: "https://assets.artistfirst.in/uploads/evil.jpg",
+    videoUrl: "https://assets.artistfirst.in/uploads/evil.mp4",
+    isActive: true,
+    slug: "evil-trigger",
+    order: 15,
+    categoryType: "video",
+  },
+];
 
 const EffectPage = () => {
   const router = useRouter();
@@ -15,12 +151,38 @@ const EffectPage = () => {
   const [prompt, setPrompt] = useState("");
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [videoId, setVideoId] = useState(null);
+  const [videoUrl, setVideoUrl] = useState("");
+  const [status, setStatus] = useState(""); // Track the actual status from API
+  const [error, setError] = useState("");
+  const title = cards.find((c) => c.slug === slug)?.title;
+
+  const handleDownload = async () => {
+    try {
+      const response = await fetch(videoUrl);
+      const blob = await response.blob();
+
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = "video.mp4";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error("Video download failed:", error);
+    }
+  };
 
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
     setUploading(true);
+    setError("");
+
     const formData = new FormData();
     formData.append("file", file);
 
@@ -38,6 +200,7 @@ const EffectPage = () => {
       setImagePreview(URL.createObjectURL(file));
     } catch (error) {
       console.error("Upload failed", error);
+      setError("Failed to upload image. Please try again.");
     } finally {
       setUploading(false);
     }
@@ -47,41 +210,137 @@ const EffectPage = () => {
     setAspectRatio(ratio);
   };
 
+  const resetVideoState = () => {
+    setVideoId(null);
+    setVideoUrl("");
+    setProgress(0);
+    setStatus("");
+    setError("");
+  };
+
   const handleCreate = async () => {
     if (!imageUrl) {
       alert("Please upload an image.");
       return;
     }
 
+    // Reset all video-related state
+    resetVideoState();
     setLoading(true);
+
     try {
-      const res = await axios.post(
-        `${FANTV_API_URL}/api/v1/ai-video`,
+      const res = await fetcher.post(
+        `${FANTV_API_URL}/api/v1/ai-video-pixverse`,
         {
-          prompt: prompt || "Transform this person",
+          prompt: "smiling",
+          style: "anime",
           imageUrl,
-          style: "horse_ride",
-          aspectRatio,
-          duration: "5 sec",
-          creditsUsed: 35,
+          effect: title || "Ghibli Live!",
+          quality: "720p",
+          duration: 5,
+          motion_mode: "normal",
+          aspect_ratio: aspectRatio,
           visibility: "private",
-        },
-        {
-          headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MzQxOTI3MGRiYjU5M2FmNDc3NjZiNiIsIm5hbWUiOiJIaW1hbnNodSBKYWluIiwiaWF0IjoxNzQ5NzI0NzU5fQ.OnleWnLm_aXWHrgG3QLwTOAhOhz76Kjtive1ZQboSNw`,
-            "Content-Type": "application/json",
-          },
         }
       );
-      alert("Video creation started!");
-      console.log("API Response:", res.data);
+
+      console.log("Video creation response:", res);
+
+      const _id = res?.data?._id;
+      if (!_id) throw new Error("No video ID returned from server");
+
+      setVideoId(_id);
+      setStatus("processing");
+      // Start with a small progress to show something is happening
+      setProgress(5);
     } catch (err) {
-      console.error(err);
-      alert("Something went wrong!");
-    } finally {
+      console.error("Video creation failed:", err);
+      setError("Failed to start video creation. Please try again.");
       setLoading(false);
     }
   };
+
+  // Polling effect for video progress
+  useEffect(() => {
+    if (!videoId || !loading) return;
+
+    const pollProgress = async () => {
+      try {
+        const progressRes = await fetcher.get(
+          `https://api.videonation.xyz/api/v1/ai-video-pixverse/progress/${videoId}`
+        );
+
+        const responseData = progressRes?.data || {};
+        const {
+          finalVideoUrl,
+          status: apiStatus,
+          progress: apiProgress,
+        } = responseData;
+
+        console.log("Progress response:", responseData);
+
+        // Update status
+        setStatus(apiStatus || "processing");
+
+        // Handle progress
+        if (typeof apiProgress === "number") {
+          setProgress(Math.max(apiProgress, progress)); // Ensure progress only increases
+        }
+
+        // Handle completion
+        if (apiStatus === "completed" && finalVideoUrl) {
+          setProgress(100);
+          setVideoUrl(finalVideoUrl);
+          setLoading(false);
+          console.log("Video completed:", finalVideoUrl);
+        } else if (apiStatus === "failed" || apiStatus === "error") {
+          setError("Video generation failed. Please try again.");
+          setLoading(false);
+        }
+      } catch (err) {
+        console.error("Progress polling failed:", err);
+        setError("Failed to get video progress. Please refresh and try again.");
+        setLoading(false);
+      }
+    };
+
+    // Poll immediately, then every 3 seconds
+    pollProgress();
+    const interval = setInterval(pollProgress, 3000);
+
+    return () => clearInterval(interval);
+  }, [videoId, loading, progress]);
+
+  // Simulated progress for better UX (only when we don't have real progress)
+  useEffect(() => {
+    if (!loading || videoUrl || status === "completed") return;
+
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        // Don't simulate progress beyond 90% to leave room for real API progress
+        if (prev >= 90) return prev;
+
+        // Slower initial progress, faster in middle, slower near end
+        if (prev < 20) return prev + 1;
+        if (prev < 70) return prev + 2;
+        return prev + 0.5;
+      });
+    }, 1500);
+
+    return () => clearInterval(interval);
+  }, [loading, videoUrl, status]);
+
+  // Handle video completion with smooth transition
+  useEffect(() => {
+    if (progress >= 100 && videoUrl && loading) {
+      // Add a small delay for smooth UX
+      const timer = setTimeout(() => {
+        setLoading(false);
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [progress, videoUrl, loading]);
 
   return (
     <div className="min-h-screen bg-white text-black p-5 w-screen mx-4">
@@ -95,6 +354,12 @@ const EffectPage = () => {
       <h1 className="text-2xl font-semibold mb-6 capitalize">
         {slug?.replace(/-/g, " ")}
       </h1>
+
+      {error && (
+        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+          {error}
+        </div>
+      )}
 
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Left Panel */}
@@ -110,9 +375,11 @@ const EffectPage = () => {
                   className="h-full w-full object-contain rounded-lg hover:opacity-90"
                 />
                 <button
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.preventDefault();
                     setImageUrl("");
                     setImage(null);
+                    resetVideoState();
                   }}
                   className="absolute bottom-2 right-2 bg-black rounded-md border-2 border-white text-white p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                   title="Remove image"
@@ -169,7 +436,7 @@ const EffectPage = () => {
                     fill="#653EFF"
                   />
                 </svg>
-                Upload Image
+                {uploading ? "Uploading..." : "Upload Image"}
                 <br />
                 (JPG, PNG - Max 10 MB)
               </div>
@@ -180,6 +447,7 @@ const EffectPage = () => {
               accept="image/*"
               className="hidden"
               onChange={handleImageUpload}
+              disabled={uploading}
             />
           </label>
 
@@ -196,32 +464,23 @@ const EffectPage = () => {
                       ? "bg-purple-100 text-purple-700 border-purple-500"
                       : "text-gray-600"
                   }`}
+                  disabled={loading}
                 >
-                  <div className={`border-2 border-gray-400 rounded-md ${ratio == "16:9" ? "w-12 h-8" : "w-10 h-10"}`}></div>
+                  <div
+                    className={`border-2 border-gray-400 rounded-md ${
+                      ratio == "16:9" ? "w-12 h-8" : "w-10 h-10"
+                    }`}
+                  ></div>
                   <p>{ratio}</p>
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Creative Description
-          <div className="mb-4">
-            <label className="text-sm font-medium">
-              Creative Description{" "}
-              <span className="text-gray-400">(optional)</span>
-            </label>
-            <textarea
-              placeholder="Describe what you want the AI to generate"
-              className="w-full mt-2 p-2 border rounded-lg resize-none h-24 text-sm"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-            ></textarea>
-          </div> */}
-
           <button
-            className="w-full py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-xl shadow"
+            className="w-full py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-xl shadow disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={handleCreate}
-            disabled={loading}
+            disabled={loading || uploading || !imageUrl}
           >
             {loading ? "Creating..." : "✨ Create"}
           </button>
@@ -230,7 +489,31 @@ const EffectPage = () => {
         {/* Right Panel */}
         <div className="w-full lg:w-2/3 flex items-center justify-center">
           {loading ? (
-            <VideoProgressPanel progress={10} />
+            <VideoProgressPanel
+              progress={progress}
+              status={status}
+              showCompleted={progress >= 100 && videoUrl}
+            />
+          ) : videoUrl ? (
+            <div className="w-full max-w-xl mx-auto p-6 bg-[#F9FAFB] rounded-2xl shadow-md">
+              <div className="flex flex-col items-center space-y-4">
+                <video
+                  src={videoUrl}
+                  controls
+                  autoPlay
+                  className="rounded-lg w-[640px] h-[280px] shadow-md"
+                  onLoadStart={() => console.log("Video loading started")}
+                  onCanPlay={() => console.log("Video can play")}
+                />
+
+                <button
+                  onClick={handleDownload}
+                  className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
+                >
+                  Download Video
+                </button>
+              </div>
+            </div>
           ) : (
             <div className="text-center">
               <div className="mx-auto mb-4">
@@ -251,24 +534,47 @@ const EffectPage = () => {
   );
 };
 
-const VideoProgressPanel = ({ progress = 10 }) => {
+const VideoProgressPanel = ({
+  progress = 0,
+  status = "",
+  showCompleted = false,
+}) => {
+  const getStatusMessage = () => {
+    if (showCompleted) return "Video completed! 🎉";
+    if (progress >= 90) return "Finalizing your video...";
+    if (progress >= 70) return "Almost there...";
+    if (progress >= 30) return "Processing your video...";
+    return "Starting video creation...";
+  };
+
   return (
     <div className="p-6 w-full max-w-md">
       <div className="flex justify-between items-center mb-1">
         <div></div>
-        <span className="text-[#7A43FF] font-semibold text-lg">
-          {progress}%
+        <span
+          className={`font-semibold text-lg ${
+            showCompleted ? "text-green-600" : "text-[#7A43FF]"
+          }`}
+        >
+          {Math.round(progress)}%
         </span>
       </div>
       <div className="w-full h-2 bg-[#f5f0ff] rounded-full overflow-hidden">
         <div
-          className="h-full bg-gradient-to-r from-[#7A43FF] to-[#C88FFF] rounded-full transition-all"
-          style={{ width: `${progress}%` }}
+          className={`h-full rounded-full transition-all duration-500 ease-out ${
+            showCompleted
+              ? "bg-gradient-to-r from-green-500 to-green-400"
+              : "bg-gradient-to-r from-[#7A43FF] to-[#C88FFF]"
+          }`}
+          style={{ width: `${Math.max(progress, 0)}%` }}
         />
       </div>
-      <p className="text-black font-semibold mt-3 italic">
-        We are creating your video
-      </p>
+      <p className="text-black font-semibold mt-3">{getStatusMessage()}</p>
+      {status && (
+        <p className="text-sm text-gray-500 mt-1 capitalize">
+          Status: {status}
+        </p>
+      )}
     </div>
   );
 };
@@ -277,7 +583,6 @@ export default EffectPage;
 
 export async function getServerSideProps(ctx) {
   const cookie = parseCookies(ctx);
-
   const authToken = cookie["aToken"];
 
   try {
