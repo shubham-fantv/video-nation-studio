@@ -110,10 +110,10 @@ const FreeTrial = ({ app }) => {
                 <div className="rounded-[8px] border-[1.5px] py-2 mt-2 w-full border-[#D0CCFF] bg-[#EFEEFF]">
                   <ul className="list-disc list-inside">
                     <li className="text-[#6B61FF] font-medium text-[12px] leading-[18px] font-inter not-italic px-2 ">
-                      We charge $1 for verification & refund it shortly
+                      We charge $1 for verification & refund it instantly 
                     </li>
                     <li className="text-[#6B61FF] font-medium text-[12px] leading-[18px] font-inter not-italic px-2 ">
-                      Trial starts, cancel anytime.
+                      Trial starts, cancel anytime
                     </li>
                   </ul>
                 </div>
