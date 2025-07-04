@@ -519,7 +519,7 @@ const Index = ({ masterData, slug }) => {
       </div>
 
       {isMobile && (isLoading || isPolling) && (
-        <div className="w-full">
+        <div className="w-full mb-4">
           <Loading
             title={`Generating your video... (${progressPercentage}%)`}
             subTitle={subTitle}
