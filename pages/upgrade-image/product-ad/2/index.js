@@ -5,141 +5,6 @@ import { FANTV_API_URL } from "../../../../src/constant/constants";
 import { parseCookies } from "nookies";
 import fetcher from "../../../../src/dataProvider";
 
-const cards = [
-  {
-    _id: "1",
-    name: "Let's YMCA!",
-    title: "Let's YMCA!",
-    description: "Dance to the YMCA rhythm with AI animation.",
-    imageUrl: "https://assets.artistfirst.in/uploads/ymca.jpg",
-    videoUrl: "https://assets.artistfirst.in/uploads/ymca.mp4",
-    isActive: true,
-    slug: "lets-ymca",
-    order: 5,
-    categoryType: "video",
-  },
-  {
-    _id: "2",
-    name: "Subject 3 Fever",
-    title: "Subject 3 Fever",
-    description: "Feel the fever with Subject 3 visual style.",
-    imageUrl: "https://assets.artistfirst.in/uploads/subject3.jpg",
-    videoUrl: "https://assets.artistfirst.in/uploads/subject3.mp4",
-    isActive: true,
-    slug: "subject-3-fever",
-    order: 6,
-    categoryType: "video",
-  },
-  {
-    _id: "3",
-    name: "Ghibli Live!",
-    title: "Ghibli Live!",
-    description: "Transform your video into a live Ghibli scene.",
-    imageUrl: "https://assets.artistfirst.in/uploads/ghibli.jpg",
-    videoUrl: "https://assets.artistfirst.in/uploads/ghibli.mp4",
-    isActive: true,
-    slug: "ghibli-live",
-    order: 7,
-    categoryType: "video",
-  },
-  {
-    _id: "4",
-    name: "Suit Swagger",
-    title: "Suit Swagger",
-    description: "Put on a suit and strut with swagger.",
-    imageUrl: "https://assets.artistfirst.in/uploads/suit.jpg",
-    videoUrl: "https://assets.artistfirst.in/uploads/suit.mp4",
-    isActive: true,
-    slug: "suit-swagger",
-    order: 8,
-    categoryType: "video",
-  },
-  {
-    _id: "5",
-    name: "Muscle Surge",
-    title: "Muscle Surge",
-    description: "Bulk up instantly with AI-generated muscles.",
-    imageUrl: "https://assets.artistfirst.in/uploads/muscle.jpg",
-    videoUrl: "https://assets.artistfirst.in/uploads/muscle.mp4",
-    isActive: true,
-    slug: "muscle-surge",
-    order: 9,
-    categoryType: "video",
-  },
-  {
-    _id: "6",
-    name: "Emergency Beat",
-    title: "Emergency Beat",
-    description: "Dance like it’s an emergency drill!",
-    imageUrl: "https://assets.artistfirst.in/uploads/emergency.jpg",
-    videoUrl: "https://assets.artistfirst.in/uploads/emergency.mp4",
-    isActive: true,
-    slug: "emergency-beat",
-    order: 10,
-    categoryType: "video",
-  },
-  {
-    _id: "7",
-    name: "Kungfu Club",
-    title: "Kungfu Club",
-    description: "Enter the dojo with kungfu movie effects.",
-    imageUrl: "https://assets.artistfirst.in/uploads/kungfu.jpg",
-    videoUrl: "https://assets.artistfirst.in/uploads/kungfu.mp4",
-    isActive: true,
-    slug: "kungfu-club",
-    order: 11,
-    categoryType: "video",
-  },
-  {
-    _id: "8",
-    name: "Retro Anime Pop",
-    title: "Retro Anime Pop",
-    description: "Animate yourself in retro anime style.",
-    imageUrl: "https://assets.artistfirst.in/uploads/retro.jpg",
-    videoUrl: "https://assets.artistfirst.in/uploads/retro.mp4",
-    isActive: true,
-    slug: "retro-anime-pop",
-    order: 12,
-    categoryType: "video",
-  },
-  {
-    _id: "9",
-    name: "Vogue Walk",
-    title: "Vogue Walk",
-    description: "Strike a pose and walk the runway with AI flair.",
-    imageUrl: "https://assets.artistfirst.in/uploads/vogue.jpg",
-    videoUrl: "https://assets.artistfirst.in/uploads/vogue.mp4",
-    isActive: true,
-    slug: "vogue-walk",
-    order: 13,
-    categoryType: "video",
-  },
-  {
-    _id: "10",
-    name: "Mega Dive",
-    title: "Mega Dive",
-    description: "Jump into hyper-stylized cinematic action.",
-    imageUrl: "https://assets.artistfirst.in/uploads/mega.jpg",
-    videoUrl: "https://assets.artistfirst.in/uploads/mega.mp4",
-    isActive: true,
-    slug: "mega-dive",
-    order: 14,
-    categoryType: "video",
-  },
-  {
-    _id: "11",
-    name: "Evil Trigger",
-    title: "Evil Trigger",
-    description: "Unleash your dark side with Evil Trigger mode.",
-    imageUrl: "https://assets.artistfirst.in/uploads/evil.jpg",
-    videoUrl: "https://assets.artistfirst.in/uploads/evil.mp4",
-    isActive: true,
-    slug: "evil-trigger",
-    order: 15,
-    categoryType: "video",
-  },
-];
-
 const EffectPage = () => {
   const router = useRouter();
   const { slug } = router.query;
@@ -147,6 +12,9 @@ const EffectPage = () => {
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
+  const [image2, setImage2] = useState(null);
+  const [imageUrl2, setImageUrl2] = useState("");
+  const [imagePreview2, setImagePreview2] = useState(null);
   const [aspectRatio, setAspectRatio] = useState("16:9");
   const [prompt, setPrompt] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -156,7 +24,6 @@ const EffectPage = () => {
   const [videoUrl, setVideoUrl] = useState("");
   const [status, setStatus] = useState(""); // Track the actual status from API
   const [error, setError] = useState("");
-  const title = cards.find((c) => c.slug === slug)?.title;
 
   const handleDownload = async () => {
     try {
@@ -166,7 +33,7 @@ const EffectPage = () => {
       const blobUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = blobUrl;
-      link.download = "video.mp4";
+      link.download = "video.jpg";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -206,6 +73,36 @@ const EffectPage = () => {
     }
   };
 
+  const handleImageUpload2 = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    setUploading(true);
+    setError("");
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await axios.post(
+        "https://upload.artistfirst.in/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      setImageUrl2(response?.data?.data?.[0]?.url);
+      setImagePreview2(URL.createObjectURL(file));
+    } catch (error) {
+      console.error("Upload failed", error);
+      setError("Failed to upload image. Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleAspectClick = (ratio) => {
     setAspectRatio(ratio);
   };
@@ -223,24 +120,31 @@ const EffectPage = () => {
       alert("Please upload an image.");
       return;
     }
-
-    // Reset all video-related state
+    if (!imageUrl2) {
+      alert("Please upload an image.");
+      return;
+    }
+    if (!prompt) {
+      alert("Please enter a prompt.");
+      return;
+    }
+    const processedPrompt = processPrompt(prompt);
+    if (!processedPrompt) {
+      return;
+    }
     resetVideoState();
     setLoading(true);
 
     try {
       const res = await fetcher.post(
-        `${FANTV_API_URL}/api/v1/ai-video-pixverse`,
+        `${process.env.NEXT_PUBLIC_DEV_API_BASE_URL}/api/v1/ai-image/upgrade`,
         {
-          prompt: "smiling",
-          style: "anime",
+          prompt: processedPrompt,
           imageUrl,
-          effect: title || "Ghibli Live!",
-          quality: "720p",
-          duration: 5,
-          motion_mode: "normal",
-          aspect_ratio: aspectRatio,
-          visibility: "private",
+          imageUrl2,
+          aspectRatio,
+          tool: "product-ad-2",
+          creditsUsed: 10,
         }
       );
 
@@ -260,6 +164,23 @@ const EffectPage = () => {
     }
   };
 
+  const processPrompt = (prompt) => {
+    const modelRegex = /model|male|female|person/gi;
+    const productRegex = /product/gi;
+    const modelImage = imageUrl;
+    const productImage = imageUrl2;
+    if (!modelRegex.test(prompt) || !productRegex.test(prompt)) {
+      alert(
+        "To get the best image of your product shoot include word model and product in your prompt."
+      );
+      return;
+    }
+    const processedPrompt = prompt
+      .replace(modelRegex, "@model_image")
+      .replace(productRegex, "@product_image");
+    return processedPrompt;
+  };
+
   // Polling effect for video progress
   useEffect(() => {
     if (!videoId || !loading) return;
@@ -267,33 +188,22 @@ const EffectPage = () => {
     const pollProgress = async () => {
       try {
         const progressRes = await fetcher.get(
-          `https://api.videonation.xyz/api/v1/ai-video-pixverse/progress/${videoId}`
+          `${process.env.NEXT_PUBLIC_DEV_API_BASE_URL}/api/v1/image_templates/${videoId}`
         );
 
         const responseData = progressRes?.data || {};
-        const {
-          finalVideoUrl,
-          status: apiStatus,
-          progress: apiProgress,
-        } = responseData;
+        console.log("Progress response:", responseData);
+        const { finalImageUrl } = responseData;
 
         console.log("Progress response:", responseData);
 
-        // Update status
-        setStatus(apiStatus || "processing");
-
-        // Handle progress
-        if (typeof apiProgress === "number") {
-          setProgress(Math.max(apiProgress, progress)); // Ensure progress only increases
-        }
-
         // Handle completion
-        if (apiStatus === "completed" && finalVideoUrl) {
+        if (finalImageUrl) {
           setProgress(100);
-          setVideoUrl(finalVideoUrl);
+          setVideoUrl(finalImageUrl);
           setLoading(false);
-          console.log("Video completed:", finalVideoUrl);
-        } else if (apiStatus === "failed" || apiStatus === "error") {
+          console.log("Video completed:", finalImageUrl);
+        } else {
           setError("Video generation failed. Please try again.");
           setLoading(false);
         }
@@ -346,14 +256,10 @@ const EffectPage = () => {
     <div className="min-h-screen bg-white text-black p-5 w-screen mx-4">
       <button
         onClick={() => router.back()}
-        className="text-sm text-gray-600 mb-4 hover:underline"
+        className="text-sm text-gray-600 mb-1 hover:underline"
       >
         ← Back
       </button>
-
-      <h1 className="text-2xl font-semibold mb-6 capitalize">
-        {slug?.replace(/-/g, " ")}
-      </h1>
 
       {error && (
         <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
@@ -364,7 +270,7 @@ const EffectPage = () => {
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Left Panel */}
         <div className="w-full lg:w-1/3 border rounded-xl p-4 shadow-sm">
-          <div className="flex flex-row items-center mb-4 justify-around">
+          <div className="flex flex-row items-center mb-1 justify-around">
             <label
               htmlFor="image-upload"
               className="cursor-pointer border border-dashed rounded-lg flex items-center justify-center h-48 bg-gray-50 mb-4"
@@ -453,20 +359,20 @@ const EffectPage = () => {
             </label>
 
             <label
-              htmlFor="image-upload"
+              htmlFor="image-upload2"
               className="cursor-pointer border border-dashed rounded-lg flex items-center justify-center h-48 bg-gray-50 mb-4"
             >
-              {imageUrl ? (
+              {imageUrl2 ? (
                 <div className="relative h-full w-full group">
                   <img
-                    src={imageUrl}
+                    src={imageUrl2}
                     className="h-full w-full object-contain rounded-lg hover:opacity-90"
                   />
                   <button
                     onClick={(e) => {
                       e.preventDefault();
-                      setImageUrl("");
-                      setImage(null);
+                      setImageUrl2("");
+                      setImage2(null);
                       resetVideoState();
                     }}
                     className="absolute bottom-2 right-2 bg-black rounded-md border-2 border-white text-white p-1 opacity-0 group-hover:opacity-100 transition-opacity"
@@ -530,14 +436,19 @@ const EffectPage = () => {
                 </div>
               )}
               <input
-                id="image-upload"
+                id="image-upload2"
                 type="file"
                 accept="image/*"
                 className="hidden"
-                onChange={handleImageUpload}
+                onChange={handleImageUpload2}
                 disabled={uploading}
               />
             </label>
+          </div>
+
+          <div className="flex justify-around items-center mb-2">
+            <p className="text-sm text-gray-500 font-medium">Model Image</p>
+            <p className="text-sm text-gray-500">Product Image</p>
           </div>
 
           {/* Aspect Ratio */}
@@ -595,20 +506,16 @@ const EffectPage = () => {
           ) : videoUrl ? (
             <div className="w-full max-w-xl mx-auto p-6 bg-[#F9FAFB] rounded-2xl shadow-md">
               <div className="flex flex-col items-center space-y-4">
-                <video
+                <img
                   src={videoUrl}
-                  controls
-                  autoPlay
                   className="rounded-lg w-[640px] h-[280px] shadow-md"
-                  onLoadStart={() => console.log("Video loading started")}
-                  onCanPlay={() => console.log("Video can play")}
                 />
 
                 <button
                   onClick={handleDownload}
                   className="flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-4 md:px-6 py-2 md:py-3 text-white shadow-md transition-all hover:brightness-110 text-sm md:text-base"
                 >
-                  Download Video
+                  Download Image
                 </button>
               </div>
             </div>
