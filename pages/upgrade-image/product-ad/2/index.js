@@ -26,21 +26,14 @@ const EffectPage = () => {
   const [error, setError] = useState("");
 
   const handleDownload = async () => {
-    try {
-      const response = await fetch(videoUrl);
-      const blob = await response.blob();
-
-      const blobUrl = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = blobUrl;
-      link.download = "video.jpg";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(blobUrl);
-    } catch (error) {
-      console.error("Video download failed:", error);
-    }
+    if (!videoUrl) return;
+    const a = document.createElement("a");
+    a.href = videoUrl;
+    a.target = "_blank";
+    a.download = "image.jpg";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
   const handleImageUpload = async (event) => {
