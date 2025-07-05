@@ -151,7 +151,7 @@ const EffectPage = () => {
       console.log("Video creation response:", res);
 
       const _id = res?.data?._id;
-      if (!_id) throw new Error("No video ID returned from server");
+      if (!_id) throw new Error("No image ID returned from server");
 
       setVideoId(_id);
       setStatus("processing");
@@ -159,7 +159,7 @@ const EffectPage = () => {
       setProgress(5);
     } catch (err) {
       console.error("Video creation failed:", err);
-      setError("Failed to start video creation. Please try again.");
+      setError("Failed to start image creation. Please try again.");
       setLoading(false);
     }
   };
@@ -545,11 +545,11 @@ const VideoProgressPanel = ({
   showCompleted = false,
 }) => {
   const getStatusMessage = () => {
-    if (showCompleted) return "Video completed! 🎉";
-    if (progress >= 90) return "Finalizing your video...";
+    if (showCompleted) return "Image completed! 🎉";
+    if (progress >= 90) return "Finalizing your image...";
     if (progress >= 70) return "Almost there...";
-    if (progress >= 30) return "Processing your video...";
-    return "Starting video creation...";
+    if (progress >= 30) return "Processing your image...";
+    return "Starting image generation...";
   };
 
   return (
